@@ -9,10 +9,6 @@
 */	 	
 Jung Kai in
 Cheng Gee here
-<<<<<<< HEAD
 Jw here
 Kowshik in!
 5th member here
-=======
-Jw here
->>>>>>> parent of 2f1fe15... testing kow
