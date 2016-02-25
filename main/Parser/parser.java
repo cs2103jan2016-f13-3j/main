@@ -2,10 +2,11 @@ package Parser;
 import Logic.CRUD;
 import java.util.*;
 import java.io.*;
+
 public class parser {
 
 	private static Scanner sc = new Scanner(System.in);
-	private static String fileName_ = "temp";
+	private static String fileName_;
 	private static Date date;
 	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
 	private static final String WELCOME_MSG_2 = " is ready for use";
@@ -16,29 +17,22 @@ public class parser {
 	private static final String MARK_MSG = " is marked as completed";
 	private static final String INVALID_MSG = "Invalid inputs! Please try again";
 
-
-/*	public parser(String name) {
-		sc = new Scanner(System.in);
-		fileName_ = name;
-		date = new Date();
-	}
-*/
 	public static void main(String[] args) {
-		// Vector is used to store the words in sequence
-	/*	 fileName_ = args[0];
-			sc = new Scanner(System.in);
-			date = new Date();
-	*/System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
+		fileName_ = args[0];
+		sc = new Scanner(System.in);
+		date = new Date();
+		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
 		// run to simulate command line interactions
 		run();
 	}
+
 	/**
 	 * method that simulate command line interface that will responds to user's
 	 * inputs
 	 * 
 	 */
 	public static void run() {
-		while (true) { 
+		while (true) {
 			System.out.print("command: ");
 			String input = sc.nextLine();
 			String[] arr = input.split(" ");
@@ -69,7 +63,7 @@ public class parser {
 	 * @param option
 	 * @param s
 	 */
-	public static void parseCommands(String option, String s) {	
+	public static void parseCommands(String option, String s) {
 		switch (option) {
 		case "add":
 			Logic.CRUD.addLine(s);
@@ -77,35 +71,36 @@ public class parser {
 			break;
 		case "delete":
 			int num = Integer.parseInt(s);
-			//delete(num - 1);
-			//	System.out.println("deleted from " + fileName_ + ": \"" + items.get(num-1) + "\"");
+			Logic.CRUD.delete(num - 1);
+			//delete(num-1) suppose to print. 
 			break;
 		case "display":
-			Logic.CRUD.displayContents();
-			//display();
+
+			Logic.CRUD.display();
+			// display() suppose to print.
 			break;
 		case "clear":
-			//clear();
+			Logic.CRUD.clear();
 			System.out.println(CLEAR_MSG + fileName_);
 			break;
-		case "sort": //by alphabetical order
-			//sort();
+		case "sort": // by alphabetical order
+			Logic.CRUD.sort();
 			System.out.println(SORT_MSG);
 			break;
-		case "search": 
-			//search(s);
+		case "search":
+			Logic.CRUD.search(s);
+			// search suppose to print.
 			break;
 		case "mark":
-			//mark(s);
+			// Logic.CRUD.mark(s);
 			System.out.println(s + MARK_MSG);
 			break;
 		case "edit":
-			//edit(s);
+			// Logic.CRUD.edit(s);
 			System.out.println(s + EDIT_MSG);
 		case "exit":
-			//exit
+			Logic.CRUD.saveAndExit();
 			break;
-
 
 		default:
 			System.out.println(INVALID_MSG);
