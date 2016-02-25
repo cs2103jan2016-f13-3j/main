@@ -1,12 +1,12 @@
 package Parser;
-
+import Logic.CRUD;
 import java.util.*;
 import java.io.*;
 public class parser {
 
-	private Scanner sc;
-	private String fileName_;
-	private Date date;
+	private static Scanner sc;
+	private static String fileName_;
+	private static Date date;
 	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
 	private static final String WELCOME_MSG_2 = " is ready for use";
 	private static final String EMPTY_MSG = " is empty";
@@ -17,26 +17,29 @@ public class parser {
 	private static final String INVALID_MSG = "Invalid inputs! Please try again";
 
 
-	public parser(String name) {
+/*	public parser(String name) {
 		sc = new Scanner(System.in);
 		fileName_ = name;
 		date = new Date();
 	}
-
+*/
 	public static void main(String[] args) {
 		// Vector is used to store the words in sequence
-		String fileName = args[0];
-		System.out.println(WELCOME_MSG_1 + fileName + WELCOME_MSG_2);
-		parser a = new parser(fileName);
+		 fileName_ = args[0];
+			sc = new Scanner(System.in);
+			date = new Date();
+	
+		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
+	//	parser a = new parser(fileName);
 		// run to simulate command line interactions
-		a.run();
+		run();
 	}
 	/**
 	 * method that simulate command line interface that will responds to user's
 	 * inputs
 	 * 
 	 */
-	public void run() {
+	public static void run() {
 		while (true) { 
 			System.out.print("command: ");
 			String input = sc.nextLine();
@@ -68,7 +71,7 @@ public class parser {
 	 * @param option
 	 * @param s
 	 */
-	public void parseCommands(String option, String s) {	
+	public static void parseCommands(String option, String s) {	
 		switch (option) {
 		case "add":
 			String time = date.toString();
