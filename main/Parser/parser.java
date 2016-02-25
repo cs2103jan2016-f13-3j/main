@@ -4,8 +4,8 @@ import java.util.*;
 import java.io.*;
 public class parser {
 
-	private static Scanner sc;
-	private static String fileName_;
+	private static Scanner sc = new Scanner(System.in);
+	private static String fileName_ = "temp";
 	private static Date date;
 	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
 	private static final String WELCOME_MSG_2 = " is ready for use";
@@ -25,12 +25,10 @@ public class parser {
 */
 	public static void main(String[] args) {
 		// Vector is used to store the words in sequence
-		 fileName_ = args[0];
+	/*	 fileName_ = args[0];
 			sc = new Scanner(System.in);
 			date = new Date();
-	
-		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
-	//	parser a = new parser(fileName);
+	*/System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
 		// run to simulate command line interactions
 		run();
 	}
@@ -74,8 +72,7 @@ public class parser {
 	public static void parseCommands(String option, String s) {	
 		switch (option) {
 		case "add":
-			String time = date.toString();
-			//add(s.time);
+			Logic.CRUD.addLine(s);
 			System.out.println("added to " + fileName_ + ":\"" + s + "\" ");
 			break;
 		case "delete":
@@ -84,6 +81,7 @@ public class parser {
 			//	System.out.println("deleted from " + fileName_ + ": \"" + items.get(num-1) + "\"");
 			break;
 		case "display":
+			Logic.CRUD.displayContents();
 			//display();
 			break;
 		case "clear":

@@ -1,9 +1,16 @@
 package Storage;
-import Logic.CRUD;
+
+import java.util.ArrayList;
 
 public class access {
 
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
+	private static ArrayList<String> details = new ArrayList<String>();
+	
+	public static void addToStorage(String line) {
+		details.add(line);
+	}
+	
+	public static ArrayList<String> displayStorage() {
+		return details;
 	}
 }
