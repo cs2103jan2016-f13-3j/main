@@ -79,4 +79,11 @@ public class Task {
 		dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
 		return issue + dateString;
 	}
+	
+//	public String getDateString() { //not in use
+//		String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
+//		dateString += "/" + String.valueOf(date.get(Calendar.MONTH));
+//		dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
+//		return dateString;
+//	}
 }
