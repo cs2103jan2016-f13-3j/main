@@ -34,7 +34,7 @@ public class CRUD {
 
 		temp = Storage.access.displayStorage();
 		for(int i=0;i<temp.size();i++) {
-			System.out.println(temp.get(i).printTask());
+			System.out.println(temp.get(i).getTaskString());
 		}
 	}
 
@@ -52,10 +52,10 @@ public class CRUD {
 	public static void searchTasksByIssue(String keyword){
 		temp = Storage.access.searchStorageByIssue(keyword);
 		for(int i=0;i<temp.size();i++) {
-			temp.get(i).printTask();
+			temp.get(i).getTaskString();
 		}
 	}
-/*
+	/*
 	//Search the msg according to its Date
 	public static void searchTasksByDate(String keyword){
 		ArrayList<Task> temp = Storage.access.searchStorageByDate(keyword);
@@ -84,7 +84,7 @@ public class CRUD {
 			}
 		}
 	}
-	
+
 	public static void saveFile(ObjectOutputStream oos) throws IOException {
 		Storage.access.saveFile(oos);
 	}

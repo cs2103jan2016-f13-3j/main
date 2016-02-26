@@ -125,10 +125,12 @@ public class parser {
 			Logic.CRUD.saveFile(oos);
 			break;
 		case "search":
-			if (d.equals("-")) {
+			System.out.println("press 1 to search by issue, 2 to search by date");
+			int temp = sc.nextInt();
+			if (temp == 1) {
 				Logic.CRUD.searchTasksByIssue(s);
-			/*} else {
-				Logic.CRUD.searchTasksByDate(d);*/
+			} else {
+				//Logic.CRUD.searchTasksByDate(s);
 			}
 			Logic.CRUD.saveFile(oos);
 			break;

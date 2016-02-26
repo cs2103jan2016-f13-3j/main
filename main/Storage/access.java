@@ -69,9 +69,9 @@ public class access {
 			for(int j = i+1; j<details.size(); j++) {
 				int result = details.get(i).getIssue().compareTo(details.get(j).getIssue());
 				if(result > 0) {
-					String temp = details.get(i).getIssue();
-					details.get(i).setIssue(details.get(j).getIssue());
-					details.get(j).setIssue(temp);
+					Task temp = details.get(i);
+					details.set(i, details.get(j));
+					details.set(j, temp);
 				}
 
 			}
