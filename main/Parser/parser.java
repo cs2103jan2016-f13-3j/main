@@ -5,7 +5,7 @@ import java.util.*;
 import java.io.*;
 
 public class parser {
-
+	private static String date;
 	private static Scanner sc = new Scanner(System.in);
 	private static String fileName_;
 	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
@@ -19,7 +19,7 @@ public class parser {
 	private static final String DATE_MSG = "enter deadline in dd/mm/yyyy or enter - for no deadline";
 	private static final String WRONG_DATE_MSG = "please enter deadline in dd/mm/yyyy format or enter - for no deadline";
 
-	public static void main(String[] args) {
+	public static void main(String[] args) throws IOException {
 		fileName_ = args[0];
 		sc = new Scanner(System.in);
 		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
@@ -30,9 +30,11 @@ public class parser {
 	/**
 	 * method that simulate command line interface that will responds to user's
 	 * inputs
+	 * @throws IOException 
 	 * 
 	 */
-	public static void run() {
+	public static void run() throws IOException {
+		
 		while (true) {
 			System.out.print("command: ");
 			String input = sc.nextLine();
@@ -47,7 +49,7 @@ public class parser {
 				// get description
 				description = input.substring(cmd.length() + 1, input.length());
 			}
-			String date;
+			
 			if (cmd.equals("add")) {
 				System.out.println(DATE_MSG);
 				while (true) {
@@ -60,16 +62,17 @@ public class parser {
 					}
 					System.out.println(WRONG_DATE_MSG);
 				}
-				if (cmd.equals("search")) {
-					if (Logic.CRUD.checkDateformat(description)) {
-						date = description;
-					} else {
-						date = "-";
-					}
 
-				}
 			}
-		}
+			if (cmd.equals("search")) {
+				if (Logic.CRUD.checkDateformat(description)) {
+					date = description;
+				} else {
+					date = "-";
+				}
+
+			}
+		
 
 		// process commands
 		parseCommands(cmd, description, date);
@@ -87,8 +90,9 @@ public class parser {
 	 * 
 	 * @param option
 	 * @param s
+	 * @throws IOException 
 	 */
-	public static void parseCommands(String option, String s, String d) {
+	public static void parseCommands(String option, String s, String d) throws IOException {
 		switch (option) {
 		case "add":
 			if (d.equals("-")) {
@@ -116,9 +120,9 @@ public class parser {
 			break;
 		case "search":
 			if (d.equals("-")) {
-				Logic.CRUD.searchTasks(s);
+				Logic.CRUD.searchTasksByIssue(s);
 			} else {
-				Logic.CRUD.searchTask(d);
+				Logic.CRUD.searchTasksByDate(d);
 			}
 			break;
 		case "mark":
