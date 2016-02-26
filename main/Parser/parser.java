@@ -1,4 +1,5 @@
 package Parser;
+
 import Logic.CRUD;
 import java.util.*;
 import java.io.*;
@@ -7,7 +8,6 @@ public class parser {
 
 	private static Scanner sc = new Scanner(System.in);
 	private static String fileName_;
-	private static Date date;
 	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
 	private static final String WELCOME_MSG_2 = " is ready for use";
 	private static final String EMPTY_MSG = " is empty";
@@ -22,7 +22,6 @@ public class parser {
 	public static void main(String[] args) {
 		fileName_ = args[0];
 		sc = new Scanner(System.in);
-		date = new Date();
 		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
 		// run to simulate command line interactions
 		run();
@@ -40,38 +39,46 @@ public class parser {
 			String[] arr = input.split(" ");
 			// get command
 			String cmd = arr[0];
-			String content;
+			String description;
 			// handle lines with only the command
 			if (cmd.length() == input.length()) {
-				content = "";
+				description = "";
 			} else {
-				// get string that is not part of the command
-				content = input.substring(cmd.length() + 1, input.length());
+				// get description
+				description = input.substring(cmd.length() + 1, input.length());
 			}
-			String date = "";
+			String date;
 			if (cmd.equals("add")) {
 				System.out.println(DATE_MSG);
 				while (true) {
-				date = sc.nextLine();
-				if (date.equals("-")) {
-	                break;
+					date = sc.nextLine();
+					if (date.equals("-")) {
+						break;
+					}
+					if (Logic.CRUD.checkDateformat(date)) {
+						break;
+					}
+					System.out.println(WRONG_DATE_MSG);
 				}
-			    if (checkDateformat(date)) {
-					break;
-				} 
-			   System.out.println(WRONG_DATE_MSG);
-				}
-			}
-				
-			
+				if (cmd.equals("search")) {
+					if (Logic.CRUD.checkDateformat(description)) {
+						date = description;
+					} else {
+						date = "-";
+					}
 
-			// process commands
-			parseCommands(cmd, content,date);
-			// terminate the program if exit command is processed
-			if (cmd.equals("exit")) {
-				break;
+				}
 			}
 		}
+
+		// process commands
+		parseCommands(cmd, description, date);
+		// terminate the program if exit command is processed
+		if (cmd.equals("exit")) {
+			break;
+		}
+	}
+
 	}
 
 	/**
@@ -81,10 +88,14 @@ public class parser {
 	 * @param option
 	 * @param s
 	 */
-	public static void parseCommands(String option, String s,String d) {
+	public static void parseCommands(String option, String s, String d) {
 		switch (option) {
 		case "add":
-			Logic.CRUD.addTask(s);
+			if (d.equals("-")) {
+				Logic.CRUD.addTask(s);
+			} else {
+				Logic.CRUD.addTask(s, d);
+			}
 			System.out.println("added to " + fileName_ + ":\"" + s + "\" ");
 			break;
 		case "delete":
@@ -104,14 +115,18 @@ public class parser {
 			System.out.println(SORT_MSG);
 			break;
 		case "search":
-			Logic.CRUD.searchTasks(s);
+			if (d.equals("-")) {
+				Logic.CRUD.searchTasks(s);
+			} else {
+				Logic.CRUD.searchTask(d);
+			}
 			break;
 		case "mark":
 			// Logic.CRUD.mark(s);
 			System.out.println(s + MARK_MSG);
 			break;
 		case "edit":
-			// Logic.CRUD.edit(s);
+			// Logic.CRUD.edit(s,d);
 			System.out.println(s + EDIT_MSG);
 		case "exit":
 			Logic.CRUD.saveAndExit();
@@ -123,18 +138,15 @@ public class parser {
 		}
 
 	}
-public static boolean checkDateformat(String s) {
-	
-    Boolean isDate = true;
-	String[] temp = s.split("/");
-    try {
-      int day = Integer.parseInt(temp[0]);
-      int month = Integer.parseInt(temp[1]);
-      int year = Integer.parseInt(temp[2]);
-    } catch (Exception e) {
-    	isDate = false;
-    }
-      return isDate;
-}
-     
+	/*
+	 * public static boolean checkDateformat(String s) {
+	 * 
+	 * Boolean isDate = true; String[] temp = s.split("/"); try { int day =
+	 * Integer.parseInt(temp[0]); int month = Integer.parseInt(temp[1]); int
+	 * year = Integer.parseInt(temp[2]); } catch (Exception e) { isDate = false;
+	 * }
+	 * 
+	 * return isDate; }
+	 */
+
 }
