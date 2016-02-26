@@ -1,5 +1,3 @@
-package Storage;
-
 import Task.Task;
 import java.io.File;
 import java.io.FileInputStream;
@@ -20,26 +18,6 @@ public class access {
 	//ArrayList to store the lines in the file that contain the given search keyword 
 	private static ArrayList<Task> searchDetails;
 
-	private static String storageFile = "storage.txt";
-	private static FileInputStream fis;
-	private static FileOutputStream fos;
-	private static ObjectOutputStream oos;
-
-	public access() throws IOException {
-		try {
-			fis = new FileInputStream(new File(storageFile));
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("File not found");
-		}
-		try {
-			fos = new FileOutputStream(new File(storageFile));
-			oos = new ObjectOutputStream(fos);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			System.out.println("File not found");
-		}
-	}
 	/**
 	 * Function to return the ArrayList details
 	 * @return the ArrayList details
@@ -56,7 +34,6 @@ public class access {
 	 */
 	public static void addToStorage(Task task) throws IOException {
 		details.add(task);
-		oos.writeObject(task);
 	}
 
 	/**
@@ -127,13 +104,22 @@ public class access {
 	 * 
 	 * @return ArrayList searchDetails that contains the tasks which contain the given search keyword
 	 */
-	public static ArrayList<Task> searchStorageByDate(Calendar date) {
+	/*public static ArrayList<Task> searchStorageByDate(String date) {
 		searchDetails = new ArrayList<Task>();
 		for(int i = 0; i<details.size(); i++) {
-			if(details.get(i).getDate().equals(date)) {
+			if(details.get(i).getDateString().equals(date)) {
 				searchDetails.add(details.get(i));
 			}
 		}
 		return searchDetails;
+	}*/
+	
+	/**
+	 * Function that returns the tasks which are due by the given date
+	 * 
+	 * @param oos the outputstream object 
+	 */
+	public static void saveFile(ObjectOutputStream oos) throws IOException {
+		oos.writeObject(details);
 	}
 }

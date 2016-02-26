@@ -1,5 +1,3 @@
-package Parser;
-
 import Logic.CRUD;
 import java.util.*;
 import java.io.*;
@@ -7,9 +5,12 @@ import java.io.*;
 public class parser {
 	private static String date;
 	private static Scanner sc = new Scanner(System.in);
-	private static String fileName_;
-	private static final String WELCOME_MSG_1 = "Welcome to TextBuddy. ";
-	private static final String WELCOME_MSG_2 = " is ready for use";
+	private static String storageFile = "storage.txt";
+	private static FileInputStream fis;
+	private static FileOutputStream fos;
+	private static ObjectOutputStream oos;
+	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
+	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	private static final String EMPTY_MSG = " is empty";
 	private static final String CLEAR_MSG = "all content deleted from ";
 	private static final String SORT_MSG = "all items are sorted in alphabetical order";
@@ -20,9 +21,10 @@ public class parser {
 	private static final String WRONG_DATE_MSG = "please enter deadline in dd/mm/yyyy format or enter - for no deadline";
 
 	public static void main(String[] args) throws IOException {
-		fileName_ = args[0];
-		sc = new Scanner(System.in);
-		System.out.println(WELCOME_MSG_1 + fileName_ + WELCOME_MSG_2);
+		System.out.println(WELCOME_MSG_1 + WELCOME_MSG_2);
+		fos = new FileOutputStream(new File(storageFile));
+		oos = new ObjectOutputStream(fos);
+		
 		// run to simulate command line interactions
 		run();
 	}
@@ -100,38 +102,45 @@ public class parser {
 			} else {
 				Logic.CRUD.addTask(s, d);
 			}
-			System.out.println("added to " + fileName_ + ":\"" + s + "\" ");
+			System.out.println("added to "  + ":\"" + s + "\" ");
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "delete":
 			int num = Integer.parseInt(s);
 			Logic.CRUD.deleteTask(num - 1);
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "display":
-
 			Logic.CRUD.displayTasks();
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "clear":
 			Logic.CRUD.clearTasks();
-			System.out.println(CLEAR_MSG + fileName_);
+			System.out.println(CLEAR_MSG);
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "sort": // by alphabetical order
 			Logic.CRUD.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "search":
 			if (d.equals("-")) {
 				Logic.CRUD.searchTasksByIssue(s);
-			} else {
-				Logic.CRUD.searchTasksByDate(d);
+			/*} else {
+				Logic.CRUD.searchTasksByDate(d);*/
 			}
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "mark":
 			// Logic.CRUD.mark(s);
 			System.out.println(s + MARK_MSG);
+			Logic.CRUD.saveFile(oos);
 			break;
 		case "edit":
 			// Logic.CRUD.edit(s,d);
 			System.out.println(s + EDIT_MSG);
+			Logic.CRUD.saveFile(oos);
 		case "exit":
 			Logic.CRUD.saveAndExit();
 			break;
