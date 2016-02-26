@@ -2,7 +2,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-public class Task {
+public class Task implements java.io.Serializable {
 	private String issue;
 	private ArrayList<String> label;
 	private boolean isCompleted;
