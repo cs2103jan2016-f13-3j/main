@@ -66,29 +66,29 @@ public class parser {
 	public static void parseCommands(String option, String s) {
 		switch (option) {
 		case "add":
-			Logic.CRUD.addLine(s);
+			Logic.CRUD.addTask(s);
 			System.out.println("added to " + fileName_ + ":\"" + s + "\" ");
 			break;
 		case "delete":
 			int num = Integer.parseInt(s);
-			Logic.CRUD.delete(num - 1);
+			Logic.CRUD.deleteTasks(num - 1);
 			//delete(num-1) suppose to print. 
 			break;
 		case "display":
 
-			Logic.CRUD.display();
+			Logic.CRUD.displayTasks();
 			// display() suppose to print.
 			break;
 		case "clear":
-			Logic.CRUD.clear();
+			Logic.CRUD.clearTasks();
 			System.out.println(CLEAR_MSG + fileName_);
 			break;
 		case "sort": // by alphabetical order
-			Logic.CRUD.sort();
+			Logic.CRUD.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
 			break;
 		case "search":
-			Logic.CRUD.search(s);
+			Logic.CRUD.searchTasks(s);
 			// search suppose to print.
 			break;
 		case "mark":

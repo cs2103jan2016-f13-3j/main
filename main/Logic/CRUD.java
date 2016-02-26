@@ -4,38 +4,41 @@ import java.util.ArrayList;
 
 public class CRUD {
 
-	public static void addLine(String line) {
+	public static void addTask(String line) {
 		Storage.access.addToStorage(line);
 	}
 	
-	public static void delete(int index){
+	public static void deleteTask(int index){
 		Storage.access.delFromStorage(index);
 	}
 	
-	public static void display(){
-		Storage.access.displayStorage();
-	}
-	
-	public static void clear(){
-		Storage.access.clear();
-	}
-	
-	public static void sort(){
-		Storage.access.sortStorage();
-	}
-	public static void search(String keyword){
-		Storage.access.searchStorage(keyword);
-	}
-	public static void saveAndExit(){
-		System.exit();
-	}
-
-	public static void displayContents() {
+	public static void displayTasks() {
 		ArrayList<String> temp = new ArrayList<String>();
 		temp = Storage.access.displayStorage();
 		for(String s : temp) {
 			System.out.println(s);
 		}
 	}
+	
+	public static void clearTasks(){
+		Storage.access.clear();
+	}
+	
+	public static void sortTasksAlphabetically(){
+		Storage.access.sortAlphabetically();
+	}
+	
+	public static void searchTasks(String keyword){
+		ArrayList<String> temp = Storage.access.searchStorage(keyword);
+		for(String s : temp) {
+			System.out.println(s);
+		}
+	}
+	
+	public static void saveAndExit(){
+		System.exit(0);
+	}
+
+	
 
 }
