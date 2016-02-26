@@ -16,6 +16,8 @@ public class parser {
 	private static final String EDIT_MSG = " is edited and saved";
 	private static final String MARK_MSG = " is marked as completed";
 	private static final String INVALID_MSG = "Invalid inputs! Please try again";
+	private static final String DATE_MSG = "enter deadline in dd/mm/yyyy or enter - for no deadline";
+	private static final String WRONG_DATE_MSG = "please enter deadline in dd/mm/yyyy format or enter - for no deadline";
 
 	public static void main(String[] args) {
 		fileName_ = args[0];
@@ -46,9 +48,25 @@ public class parser {
 				// get string that is not part of the command
 				content = input.substring(cmd.length() + 1, input.length());
 			}
+			String date = "";
+			if (cmd.equals("add")) {
+				System.out.println(DATE_MSG);
+				while (true) {
+				date = sc.nextLine();
+				if (date.equals("-")) {
+	                break;
+				}
+			    if (checkDateformat(date)) {
+					break;
+				} 
+			   System.out.println(WRONG_DATE_MSG);
+				}
+			}
+				
+			
 
 			// process commands
-			parseCommands(cmd, content);
+			parseCommands(cmd, content,date);
 			// terminate the program if exit command is processed
 			if (cmd.equals("exit")) {
 				break;
@@ -63,7 +81,7 @@ public class parser {
 	 * @param option
 	 * @param s
 	 */
-	public static void parseCommands(String option, String s) {
+	public static void parseCommands(String option, String s,String d) {
 		switch (option) {
 		case "add":
 			Logic.CRUD.addTask(s);
@@ -71,13 +89,11 @@ public class parser {
 			break;
 		case "delete":
 			int num = Integer.parseInt(s);
-			Logic.CRUD.deleteTasks(num - 1);
-			//delete(num-1) suppose to print. 
+			Logic.CRUD.deleteTask(num - 1);
 			break;
 		case "display":
 
 			Logic.CRUD.displayTasks();
-			// display() suppose to print.
 			break;
 		case "clear":
 			Logic.CRUD.clearTasks();
@@ -89,7 +105,6 @@ public class parser {
 			break;
 		case "search":
 			Logic.CRUD.searchTasks(s);
-			// search suppose to print.
 			break;
 		case "mark":
 			// Logic.CRUD.mark(s);
@@ -108,4 +123,18 @@ public class parser {
 		}
 
 	}
+public static boolean checkDateformat(String s) {
+	
+    Boolean isDate = true;
+	String[] temp = s.split("/");
+    try {
+      int day = Integer.parseInt(temp[0]);
+      int month = Integer.parseInt(temp[1]);
+      int year = Integer.parseInt(temp[2]);
+    } catch (Exception e) {
+    	isDate = false;
+    }
+      return isDate;
+}
+     
 }
