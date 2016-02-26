@@ -1,5 +1,6 @@
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.GregorianCalendar;
 
 public class Task {
 	private String issue;
@@ -8,19 +9,25 @@ public class Task {
 	private Calendar date;
 	
 	// Constructors
+	
+	// Constructor for dateless tasks
 	public Task(String issue) {
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
+		date = null;
 	}
 	
-	public Task(String issue, String date) {
+	// Constructor for tasks with date given
+	public Task(String issue, String date) { // assuming String date provided is of the format DD/MM/YYYY
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
-//		split the String date into separate integers for next line, no idea how date input format is yet
-//		Calendar tempCalendar = new GregorianCalendar(year, month, day);
-//		this.date = tempCalendar;
+		String[] splitDates = date.split("/");
+		int year = Integer.parseInt(splitDates[2]);
+		int month = Integer.parseInt(splitDates[1]);
+		int day = Integer.parseInt(splitDates[0]);
+		this.date = new GregorianCalendar(year, month, day);
 	}
 	
 	// Setter methods
