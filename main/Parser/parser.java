@@ -17,8 +17,11 @@ public class parser {
 	private static final String EDIT_MSG = " is edited and saved";
 	private static final String MARK_MSG = " is marked as completed";
 	private static final String INVALID_MSG = "Invalid inputs! Please try again";
-	private static final String DATE_MSG = "enter deadline in dd/mm/yyyy or enter - for no deadline";
-	private static final String WRONG_DATE_MSG = "please enter deadline in dd/mm/yyyy format or enter - for no deadline";
+	private static final String DEADLINE_MSG = "enter deadline in dd/mm/yyyy or enter - for no deadline";
+	private static final String WRONG_DEADLINE_MSG = "please enter deadline in dd/mm/yyyy format or enter - for no deadline";
+	private static final String SEARCH_MSG = "press 1 to search by issue, 2 to search by date";
+	private static final String DATE_MSG = "enter date in dd/mm/yyyy";
+	private static final String WRONG_DATE_MSG = "please enter date in dd/mm/yyyy format";
 
 	public static void main(String[] args) throws IOException {
 		System.out.println(WELCOME_MSG_1 + WELCOME_MSG_2);
@@ -51,33 +54,13 @@ public class parser {
 				// get description
 				description = input.substring(cmd.length() + 1, input.length());
 			}
-			
-			if (cmd.equals("add")) {
-				System.out.println(DATE_MSG);
-				while (true) {
-					date = sc.nextLine();
-					if (date.equals("-")) {
-						break;
-					}
-					if (Logic.CRUD.checkDateformat(date)) {
-						break;
-					}
-					System.out.println(WRONG_DATE_MSG);
-				}
+				
 
-			}
-			if (cmd.equals("search")) {
-				if (Logic.CRUD.checkDateformat(description)) {
-					date = description;
-				} else {
-					date = "-";
-				}
-
-			}
+		
 		
 
 		// process commands
-		parseCommands(cmd, description, date);
+		parseCommands(cmd, description);
 		// terminate the program if exit command is processed
 		if (cmd.equals("exit")) {
 			break;
@@ -94,13 +77,24 @@ public class parser {
 	 * @param s
 	 * @throws IOException 
 	 */
-	public static void parseCommands(String option, String s, String d) throws IOException {
+	public static void parseCommands(String option, String s ) throws IOException {
 		switch (option) {
 		case "add":
-			if (d.equals("-")) {
+			System.out.println(DEADLINE_MSG);
+			while (true) { //check if the user want to add date
+				date = sc.nextLine();
+				if (date.equals("-")) {
+					break;
+				}
+				if (Logic.CRUD.checkDateformat(date)) {
+					break;
+				}
+				System.out.println(WRONG_DEADLINE_MSG);
+			} 
+			if (date.equals("-")) {
 				Logic.CRUD.addTask(s);
 			} else {
-				Logic.CRUD.addTask(s, d);
+				Logic.CRUD.addTask(s, date);
 			}
 			System.out.println("added to "  + ":\"" + s + "\" ");
 			Logic.CRUD.saveFile(oos);
@@ -125,13 +119,22 @@ public class parser {
 			Logic.CRUD.saveFile(oos);
 			break;
 		case "search":
-			System.out.println("press 1 to search by issue, 2 to search by date");
+			System.out.println(SEARCH_MSG);
 			int temp = sc.nextInt();
 			if (temp == 1) {
 				Logic.CRUD.searchTasksByIssue(s);
 			} else {
-				//Logic.CRUD.searchTasksByDate(s);
+				System.out.println(DATE_MSG);
+				while (true) {
+					date = sc.nextLine();				
+ 				 if (Logic.CRUD.checkDateformat(date)) {
+			       Logic.CRUD.searchTasksByDate(date);
+			       break;
+				} else {
+					System.out.println(WRONG_DATE_MSG);
+				}
 			}
+			}		
 			Logic.CRUD.saveFile(oos);
 			break;
 		case "mark":
@@ -153,15 +156,6 @@ public class parser {
 		}
 
 	}
-	/*
-	 * public static boolean checkDateformat(String s) {
-	 * 
-	 * Boolean isDate = true; String[] temp = s.split("/"); try { int day =
-	 * Integer.parseInt(temp[0]); int month = Integer.parseInt(temp[1]); int
-	 * year = Integer.parseInt(temp[2]); } catch (Exception e) { isDate = false;
-	 * }
-	 * 
-	 * return isDate; }
-	 */
+	
 
 }
