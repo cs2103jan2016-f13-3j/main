@@ -71,4 +71,12 @@ public class Task {
 	public Calendar getDate() {
 		return date;
 	}
+	
+	// Returns date in string format of DD/MM/YYYY
+	public String printTask() {
+		String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
+		dateString += "/" + String.valueOf(date.get(Calendar.MONTH));
+		dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
+		return issue + dateString;
+	}
 }
