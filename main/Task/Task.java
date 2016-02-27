@@ -1,3 +1,5 @@
+package Task;
+
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -80,7 +82,7 @@ public class Task implements java.io.Serializable {
 			String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
 			dateString += "/" + String.valueOf(date.get(Calendar.MONTH));
 			dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
-			return issue + dateString;
+			return issue + " " + dateString;
 		}
 	}
 

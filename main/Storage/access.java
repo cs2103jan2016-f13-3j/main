@@ -1,3 +1,5 @@
+package Storage;
+
 import Task.Task;
 import java.io.File;
 import java.io.FileInputStream;
@@ -104,15 +106,15 @@ public class access {
 	 * 
 	 * @return ArrayList searchDetails that contains the tasks which contain the given search keyword
 	 */
-	/*public static ArrayList<Task> searchStorageByDate(String date) {
+	public static ArrayList<Task> searchStorageByDate(Calendar date) {
 		searchDetails = new ArrayList<Task>();
 		for(int i = 0; i<details.size(); i++) {
-			if(details.get(i).getDateString().equals(date)) {
+			if(details.get(i).getDate().equals(date)) {
 				searchDetails.add(details.get(i));
 			}
 		}
 		return searchDetails;
-	}*/
+	}
 	
 	/**
 	 * Function that returns the tasks which are due by the given date
