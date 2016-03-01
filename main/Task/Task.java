@@ -32,7 +32,7 @@ public class Task implements java.io.Serializable {
 		this.date = new GregorianCalendar(year, month, day);
 	}
 
-	// Setter methods
+	// Setter Methods
 	public void setIssue(String issue) {
 		this.issue = issue;
 	}
