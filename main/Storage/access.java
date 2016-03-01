@@ -16,7 +16,7 @@ public class access {
 	//ArrayList to store the contents added to the file
 	private static ArrayList<Task> details = new ArrayList<Task>();
 	//ArrayList to store the contents added to the file in sorted order
-	private static ArrayList<Task> sortedDetails = new ArrayList<Task>();
+	private static ArrayList<Task> sortedDetails = new ArrayList<Task>();   // <------ currently unused
 	//ArrayList to store the lines in the file that contain the given search keyword 
 	private static ArrayList<Task> searchDetails;
 
@@ -121,7 +121,15 @@ public class access {
 	 * 
 	 * @param oos the outputstream object 
 	 */
-	public static void saveFile(ObjectOutputStream oos) throws IOException {
-		oos.writeObject(details);
+	public static void saveFile(String fileName) throws IOException {
+		try {
+			FileOutputStream fout = new FileOutputStream(fileName);
+			ObjectOutputStream oos = new ObjectOutputStream(fout);
+			for (Task t : details) {
+				oos.writeObject(t);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
 	}
 }
