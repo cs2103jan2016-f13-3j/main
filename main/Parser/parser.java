@@ -163,28 +163,11 @@ public class parser {
 		if (!f.exists()) {
 			f.createNewFile();
 		} else {
-			importTasksFromFile(f);
+			importTasksFromFile();
 		}
 	}
 	
-	public static void importTasksFromFile(File f) throws IOException {
-		FileInputStream fis = new FileInputStream(storageFileName);
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(fis);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		while (true) {
-			try {
-				Task task = (Task)ois.readObject();
-				Logic.CRUD.addTaskViaImport(task);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				break;
-			}
-		}
-		fis.close();
-	}	
+	public static void importTasksFromFile() throws IOException {
+		Logic.CRUD.importTasks(storageFileName);
+	}
 }

@@ -3,7 +3,11 @@ package Logic;
 import Task.Task;
 import Storage.access;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -140,6 +144,27 @@ public class CRUD {
 			}
 		}
 	}
+	
+	public static void importTasks(String fileName) throws IOException {
+		FileInputStream fis = new FileInputStream(fileName);
+		ObjectInputStream ois = null;
+		try {
+			ois = new ObjectInputStream(fis);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while (true) {
+			try {
+				Task task = (Task)ois.readObject();
+				Logic.CRUD.addTaskViaImport(task);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				break;
+			}
+		}
+		fis.close();
+	}	
 
 	/**
 	 * Function to save the file into storage.ser
