@@ -1,18 +1,14 @@
 package Parser;
 
-import Logic.CRUD;
 import java.util.*;
 import java.io.*;
+import Task.Task;
 
 public class parser {
 	private static String date;
-	private static String storageFile = "storage.txt";
+	private static String storageFileName = "storage.ser";
 	
 	private static Scanner sc = new Scanner(System.in);
-	
-	private static FileInputStream fis;
-	private static FileOutputStream fos;
-	private static ObjectOutputStream oos;
 	
 	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
@@ -29,9 +25,11 @@ public class parser {
 	private static final String WRONG_DATE_MSG = "Please enter date in dd/mm/yyyy format";
 
 	public static void main(String[] args) throws IOException {
+		
+		File file = new File(storageFileName);
+		checkIfFileExistsAndImportIfExists(file);
+		
 		System.out.println(WELCOME_MSG_1 + WELCOME_MSG_2);
-		fos = new FileOutputStream(new File(storageFile));
-		oos = new ObjectOutputStream(fos);
 
 		// run to simulate command line interactions
 		run();
@@ -66,8 +64,9 @@ public class parser {
 			if (cmd.equals("exit")) {
 				break;
 			}
+			// save all tasks into the actual file after command is done
+			Logic.CRUD.saveFile(storageFileName);
 		}
-
 	}
 
 	/**
@@ -98,31 +97,26 @@ public class parser {
 				Logic.CRUD.addTask(s, date);
 			}
 			System.out.println( "\"" + s + "\" " + "is added to the task list.");
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "delete":
 			int num = Integer.parseInt(s);
 			Logic.CRUD.deleteTask(num - 1);
 			System.out.println( "\"" + s + "\" " + "is deleted from the task list.");
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "display":
 			Logic.CRUD.displayTasks();
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "clear":
 			Logic.CRUD.clearTasks();
 			System.out.println(CLEAR_MSG);
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "sort": // by alphabetical order
 			Logic.CRUD.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "search":
@@ -143,31 +137,54 @@ public class parser {
 					}
 				}
 			}		
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "mark":
 			// Logic.CRUD.mark(s);
 			System.out.println(s + MARK_MSG);
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "edit":
 			// Logic.CRUD.edit(s,d);
 			System.out.println(s + EDIT_MSG);
-			Logic.CRUD.saveFile(oos);
 			break;
 
 		case "exit":
-			Logic.CRUD.saveAndExit();
+			Logic.CRUD.exit();
 			break;
 
 		default:
 			System.out.println(INVALID_MSG);
 			break;
 		}
-
 	}
-
-
+	
+	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
+		if (!f.exists()) {
+			f.createNewFile();
+		} else {
+			importTasksFromFile(f);
+		}
+	}
+	
+	public static void importTasksFromFile(File f) throws IOException {
+		FileInputStream fis = new FileInputStream(storageFileName);
+		ObjectInputStream ois = null;
+		try {
+			ois = new ObjectInputStream(fis);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		while (true) {
+			try {
+				Task task = (Task)ois.readObject();
+				Logic.CRUD.addTaskViaImport(task);
+			} catch (ClassNotFoundException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				break;
+			}
+		}
+		fis.close();
+	}	
 }
