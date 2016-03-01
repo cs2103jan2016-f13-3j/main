@@ -32,6 +32,10 @@ public class CRUD {
 
 		Storage.access.addToStorage(task);
 	}
+	
+	public static void addTaskViaImport(Task task) throws IOException {
+		Storage.access.addToStorage(task);
+	}
 
 	/**
 	 * Function to delete task according to index in storage
@@ -47,8 +51,11 @@ public class CRUD {
 	 */
 	public static void displayTasks() {
 		temp = Storage.access.displayStorage();
-		for(int i=0;i<temp.size();i++) {
+		for(int i=0; i<temp.size(); i++) {
 			System.out.println((i+1) + ". " + temp.get(i).getTaskString());
+		}
+		if (temp.isEmpty()) {
+			System.out.println("There is no stored task to display");
 		}
 	}
 
@@ -135,14 +142,15 @@ public class CRUD {
 	}
 
 	/**
-	 * Function to save the file into storage
+	 * Function to save the file into storage.ser
 	 * 
 	 */
-	public static void saveFile(ObjectOutputStream oos) throws IOException {
-		Storage.access.saveFile(oos);
+	public static void saveFile(String fileName) throws IOException {
+		Storage.access.saveFile(fileName);
 	}
+	
 	//Close the application
-	public static void saveAndExit(){
+	public static void exit(){
 		System.exit(0);
 	}
 
