@@ -79,9 +79,25 @@ public class Task implements java.io.Serializable {
 		if (date == null) {
 			return issue;
 		} else {
-			String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
-			dateString += "/" + String.valueOf(date.get(Calendar.MONTH));
-			dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
+			String dateString = "";
+			String day = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
+			if (day.length() == 1) {
+				day = "0" + day;
+			}
+			dateString += day;
+			String month = String.valueOf(date.get(Calendar.MONTH));
+			if (month.equals("0")) {
+				month = "12";
+			}
+			if (month.length() == 1) {
+				month = "0" + month;
+			}
+			dateString += "/" + month;
+			int year = date.get(Calendar.YEAR);
+			if (month.equals("12")) {
+				year -= 1;
+			}
+			dateString += "/" + year;
 			return issue + " " + dateString;
 		}
 	}
