@@ -7,9 +7,9 @@ import Task.Task;
 public class parser {
 	private static String date;
 	private static String storageFileName = "storage.ser";
-	
+
 	private static Scanner sc = new Scanner(System.in);
-	
+
 	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	private static final String EMPTY_MSG = " is empty";
@@ -25,10 +25,10 @@ public class parser {
 	private static final String WRONG_DATE_MSG = "Please enter date in dd/mm/yyyy format";
 
 	public static void main(String[] args) throws IOException {
-		
+
 		File file = new File(storageFileName);
 		checkIfFileExistsAndImportIfExists(file);
-		
+
 		System.out.println(WELCOME_MSG_1 + WELCOME_MSG_2);
 
 		// run to simulate command line interactions
@@ -78,8 +78,7 @@ public class parser {
 	 * @throws IOException 
 	 */
 	public static void parseCommands(String option, String s ) throws IOException {
-		switch (option) {
-		case "add":
+		if(option.equals("add")) {
 			System.out.println(DEADLINE_MSG);
 			while (true) { //check if the user want to add date
 				date = sc.nextLine();
@@ -90,36 +89,37 @@ public class parser {
 					break;
 				}
 				System.out.println(WRONG_DEADLINE_MSG);
-			} 
+			}
+
 			if (date.equals("-")) {
 				Logic.CRUD.addTask(s);
 			} else {
 				Logic.CRUD.addTask(s, date);
 			}
 			System.out.println( "\"" + s + "\" " + "is added to the task list.");
-			break;
+		}
 
-		case "delete":
+		else if(option.equals("delete")) {
 			int num = Integer.parseInt(s);
 			Logic.CRUD.deleteTask(num - 1);
 			System.out.println( "\"" + s + "\" " + "is deleted from the task list.");
-			break;
+		}
 
-		case "display":
+		else if(option.equals("display")) {
 			Logic.CRUD.displayTasks();
-			break;
+		}
 
-		case "clear":
+		else if(option.equals("clear")) {
 			Logic.CRUD.clearTasks();
 			System.out.println(CLEAR_MSG);
-			break;
+		}
 
-		case "sort": // by alphabetical order
+		else if(option.equals("sort")) { // by alphabetical order
 			Logic.CRUD.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
-			break;
+		}
 
-		case "search":
+		else if(option.equals("search")) {
 			System.out.println(SEARCH_MSG);
 			int temp = sc.nextInt();
 			if (temp == 1) {
@@ -127,38 +127,37 @@ public class parser {
 			} else {
 				System.out.println(DATE_MSG);
 				while (true) {
-					date = sc.nextLine();		
-					System.out.println(date);
-					if (Logic.CRUD.checkDateformat(date)) {
-						Logic.CRUD.searchTasksByDate(date);
+					//date = sc.nextLine();		
+					//System.out.println(date);
+					if (Logic.CRUD.checkDateformat(s)) {
+						Logic.CRUD.searchTasksByDate(s);
 						break;
 					} else {
 						System.out.println(WRONG_DATE_MSG);
 					}
 				}
 			}		
-			break;
+		}
 
-		case "mark":
+		else if (option.equals("mark")) {
 			// Logic.CRUD.mark(s);
 			System.out.println(s + MARK_MSG);
-			break;
+		}
 
-		case "edit":
+		else if(option.equals("edit")) {
 			// Logic.CRUD.edit(s,d);
 			System.out.println(s + EDIT_MSG);
-			break;
+		}
 
-		case "exit":
+		else if(option.equals("exit")) {
 			Logic.CRUD.exit();
-			break;
+		}
 
-		default:
+		else {
 			System.out.println(INVALID_MSG);
-			break;
 		}
 	}
-	
+
 	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
 		if (!f.exists()) {
 			f.createNewFile();
@@ -166,7 +165,7 @@ public class parser {
 			importTasksFromFile();
 		}
 	}
-	
+
 	public static void importTasksFromFile() throws IOException {
 		Logic.CRUD.importTasks(storageFileName);
 	}
