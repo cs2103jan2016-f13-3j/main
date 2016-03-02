@@ -1,7 +1,7 @@
 package Logic;
 
 import Task.Task;
-import Storage.access;
+import Storage.localStorage;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ public class CRUD {
 	 */
 	public static void addTask(String line) throws IOException {
 		Task task=new Task(line);
-		Storage.access.addToStorage(task);
+		Storage.localStorage.addToStorage(task);
 	}
 
 	/**
@@ -34,11 +34,11 @@ public class CRUD {
 	public static void addTask(String line,String date) throws IOException {
 		Task task=new Task(line,date);
 
-		Storage.access.addToStorage(task);
+		Storage.localStorage.addToStorage(task);
 	}
 	
 	public static void addTaskViaImport(Task task) throws IOException {
-		Storage.access.addToStorage(task);
+		Storage.localStorage.addToStorage(task);
 	}
 
 	/**
@@ -46,7 +46,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void deleteTask(int index){
-		Storage.access.delFromStorage(index);
+		Storage.localStorage.delFromStorage(index);
 	}
 
 	/**
@@ -54,7 +54,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void displayTasks() {
-		temp = Storage.access.displayStorage();
+		temp = Storage.localStorage.displayStorage();
 		for(int i=0; i<temp.size(); i++) {
 			System.out.println((i+1) + ". " + temp.get(i).getTaskString());
 		}
@@ -68,7 +68,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void clearTasks(){
-		Storage.access.clear();
+		Storage.localStorage.clear();
 	}
 
 	/**
@@ -76,7 +76,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void sortTasksAlphabetically(){
-		Storage.access.sortAlphabetically();
+		Storage.localStorage.sortAlphabetically();
 	}
 
 	/**
@@ -84,7 +84,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void searchTasksByIssue(String keyword){
-		temp = Storage.access.searchStorageByIssue(keyword);
+		temp = Storage.localStorage.searchStorageByIssue(keyword);
 		for(int i=0;i<temp.size();i++) {
 			System.out.println((i+1) + ". " + temp.get(i).getTaskString());
 		}
@@ -102,7 +102,7 @@ public class CRUD {
 			int year = Integer.parseInt(dateInput[2]);
 			
 			Calendar date = new GregorianCalendar(day, month, year);
-			ArrayList<Task> temp = Storage.access.searchStorageByDate(date);
+			ArrayList<Task> temp = Storage.localStorage.searchStorageByDate(date);
 			for(int i=0;i<temp.size();i++) {
 				temp.get(i).getTaskString();
 			}
@@ -171,7 +171,7 @@ public class CRUD {
 	 * 
 	 */
 	public static void saveFile(String fileName) throws IOException {
-		Storage.access.saveFile(fileName);
+		Storage.fileStorage.saveFile(fileName, Storage.localStorage.getArrayList());
 	}
 	
 	//Close the application
