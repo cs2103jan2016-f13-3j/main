@@ -60,7 +60,7 @@ public class parser {
 			// process commands
 			parseCommands(cmd, description);
 			// save all tasks into the actual file after command is done
-			Logic.CRUD.saveFile(storageFileName);
+			Logic.save.saveFile(storageFileName);
 		}
 	}
 
@@ -161,6 +161,6 @@ public class parser {
 	}
 
 	public static void importTasksFromFile() throws IOException {
-		Logic.CRUD.importTasks(storageFileName);
+		Logic.importTasks.importTasksFromStorage(storageFileName);
 	}
 }

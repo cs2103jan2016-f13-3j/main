@@ -2,17 +2,11 @@ package Logic;
 
 import Task.Task;
 import Storage.localStorage;
-
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 
 public class CRUD {
-	
+
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 
 	/**
@@ -32,7 +26,12 @@ public class CRUD {
 		Task task=new Task(line,date);
 		Storage.localStorage.addToStorage(task);
 	}
-	
+
+	/**
+	 * Function to import the tasks from the storage file
+	 * @param task the tasks to be added to the arraylist storage
+	 * @throws IOException 
+	 */
 	public static void addTaskViaImport(Task task) throws IOException {
 		Storage.localStorage.addToStorage(task);
 	}
@@ -67,39 +66,9 @@ public class CRUD {
 		Storage.localStorage.clear();
 	}
 
-
-	
-	
-	public static void importTasks(String fileName) throws IOException {
-		FileInputStream fis = new FileInputStream(fileName);
-		ObjectInputStream ois = null;
-		try {
-			ois = new ObjectInputStream(fis);
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		while (true) {
-			try {
-				Task task = (Task)ois.readObject();
-				Logic.CRUD.addTaskViaImport(task);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (IOException e) {
-				break;
-			}
-		}
-		fis.close();
-	}	
-
 	/**
-	 * Function to save the file into storage.ser
-	 * 
+	 * Function to exit the application when user enters exit command
 	 */
-	public static void saveFile(String fileName) throws IOException {
-		Storage.fileStorage.saveFile(fileName, Storage.localStorage.getArrayList());
-	}
-	
-	//Close the application
 	public static void exit(){
 		System.exit(0);
 	}
