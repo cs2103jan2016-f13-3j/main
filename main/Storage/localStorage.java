@@ -1,22 +1,14 @@
 package Storage;
 
 import Task.Task;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Collections;
 
 public class localStorage {
 
 	//ArrayList to store the contents added to the file
 	private static ArrayList<Task> details = new ArrayList<Task>();
-	//ArrayList to store the contents added to the file in sorted order
-	private static ArrayList<Task> sortedDetails = new ArrayList<Task>();   // <------ currently unused
 	//ArrayList to store the lines in the file that contain the given search keyword 
 	private static ArrayList<Task> searchDetails;
 

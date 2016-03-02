@@ -85,7 +85,6 @@ public class parser {
 				}
 				System.out.println(WRONG_DEADLINE_MSG);
 			}
-
 			if (date.equals("-")) {
 				Logic.CRUD.addTask(s);
 			} else {
@@ -110,7 +109,7 @@ public class parser {
 		}
 
 		else if(option.equals("sort")) { // by alphabetical order
-			Logic.CRUD.sortTasksAlphabetically();
+			Logic.Sort.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
 		}
 

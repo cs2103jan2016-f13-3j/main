@@ -33,7 +33,6 @@ public class CRUD {
 	 */
 	public static void addTask(String line,String date) throws IOException {
 		Task task=new Task(line,date);
-
 		Storage.localStorage.addToStorage(task);
 	}
 	
@@ -71,13 +70,6 @@ public class CRUD {
 		Storage.localStorage.clear();
 	}
 
-	/**
-	 * Function to sorts tasks in storage alphabetically
-	 * 
-	 */
-	public static void sortTasksAlphabetically(){
-		Storage.localStorage.sortAlphabetically();
-	}
 
 	/**
 	 * Function to search task according to issue in the storage
