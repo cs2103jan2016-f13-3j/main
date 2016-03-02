@@ -86,30 +86,30 @@ public class parser {
 				System.out.println(WRONG_DEADLINE_MSG);
 			}
 			if (date.equals("-")) {
-				Logic.CRUD.addTask(s);
+				Logic.crud.addTask(s);
 			} else {
-				Logic.CRUD.addTask(s, date);
+				Logic.crud.addTask(s, date);
 			}
 			System.out.println( "\"" + s + "\" " + "is added to the task list.");
 		}
 
 		else if(option.equals("delete")) {
 			int num = Integer.parseInt(s);
-			Logic.CRUD.deleteTask(num - 1);
+			Logic.crud.deleteTask(num - 1);
 			System.out.println( "\"" + s + "\" " + "is deleted from the task list.");
 		}
 
 		else if(option.equals("display")) {
-			Logic.CRUD.displayTasks();
+			Logic.crud.displayTasks();
 		}
 
 		else if(option.equals("clear")) {
-			Logic.CRUD.clearTasks();
+			Logic.crud.clearTasks();
 			System.out.println(CLEAR_MSG);
 		}
 
 		else if(option.equals("sort")) { // by alphabetical order
-			Logic.Sort.sortTasksAlphabetically();
+			Logic.sort.sortTasksAlphabetically();
 			System.out.println(SORT_MSG);
 		}
 
@@ -117,14 +117,14 @@ public class parser {
 			System.out.println(SEARCH_MSG);
 			int temp = sc.nextInt();
 			if (temp == 1) {
-				Logic.Search.searchTasksByIssue(s);
+				Logic.search.searchTasksByIssue(s);
 			} else {
 				System.out.println(DATE_MSG);
 				while (true) {
 					//date = sc.nextLine();		
 					//System.out.println(date);
 					if (Logic.checkDate.checkDateformat(s)) {
-						Logic.Search.searchTasksByDate(s);
+						Logic.search.searchTasksByDate(s);
 						break;
 					} else {
 						System.out.println(WRONG_DATE_MSG);
@@ -134,17 +134,17 @@ public class parser {
 		}
 
 		else if (option.equals("mark")) {
-			// Logic.CRUD.mark(s);
+			// Logic.crud.mark(s);
 			System.out.println(s + MARK_MSG);
 		}
 
 		else if(option.equals("edit")) {
-			// Logic.CRUD.edit(s,d);
+			// Logic.crud.edit(s,d);
 			System.out.println(s + EDIT_MSG);
 		}
 
 		else if(option.equals("exit")) {
-			Logic.CRUD.exit();
+			Logic.crud.exit();
 		}
 
 		else {

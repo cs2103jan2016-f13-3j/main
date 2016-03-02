@@ -1,6 +1,6 @@
 package Logic;
 
-public class Sort {
+public class sort {
 
 
 	/**

@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 
 import Task.Task;
 
-public class Search {
+public class search {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 	
