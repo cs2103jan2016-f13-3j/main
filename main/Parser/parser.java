@@ -42,7 +42,6 @@ public class parser {
 	 * 
 	 */
 	public static void run() throws IOException {
-
 		while (true) {
 			System.out.print("command: ");
 			String input = sc.nextLine();
@@ -60,10 +59,6 @@ public class parser {
 
 			// process commands
 			parseCommands(cmd, description);
-			// terminate the program if exit command is processed
-			if (cmd.equals("exit")) {
-				break;
-			}
 			// save all tasks into the actual file after command is done
 			Logic.CRUD.saveFile(storageFileName);
 		}
