@@ -80,7 +80,7 @@ public class parser {
 				if (date.equals("-")) {
 					break;
 				}
-				if (Logic.CRUD.checkDateformat(date)) {
+				if (Logic.Search.checkDateformat(date)) {
 					break;
 				}
 				System.out.println(WRONG_DEADLINE_MSG);
@@ -117,14 +117,14 @@ public class parser {
 			System.out.println(SEARCH_MSG);
 			int temp = sc.nextInt();
 			if (temp == 1) {
-				Logic.CRUD.searchTasksByIssue(s);
+				Logic.Search.searchTasksByIssue(s);
 			} else {
 				System.out.println(DATE_MSG);
 				while (true) {
 					//date = sc.nextLine();		
 					//System.out.println(date);
-					if (Logic.CRUD.checkDateformat(s)) {
-						Logic.CRUD.searchTasksByDate(s);
+					if (Logic.Search.checkDateformat(s)) {
+						Logic.Search.searchTasksByDate(s);
 						break;
 					} else {
 						System.out.println(WRONG_DATE_MSG);
