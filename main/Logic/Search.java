@@ -8,8 +8,6 @@ import Task.Task;
 
 public class Search {
 
-	private static int[] leapYearDate = new int[]{31,29,31,30,31,30,31,31,30,31,30,31};
-	private static int[] commonYearDate= new int[]{31,28,31,30,31,30,31,31,30,31,30,31};
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 	
 	/**
@@ -28,7 +26,7 @@ public class Search {
 	 * 
 	 */
 	public static void searchTasksByDate(String keyword){
-		if(checkDateformat(keyword)){
+		if(Logic.checkDate.checkDateformat(keyword)){
 			String[] dateInput = keyword.split("/");
 			int day = Integer.parseInt(dateInput[0]);
 			int month = Integer.parseInt(dateInput[1]);
@@ -46,35 +44,5 @@ public class Search {
 
 	}
 
-	/**
-	 * Function to check the format of the string if it follows the date convention
-	 * 
-	 */
-	public static boolean checkDateformat(String msg){
-		String[] msgArray=msg.split("/");
-		if(msgArray.length!=3 && msg.matches("^\\d{2}/\\d{2}/\\d{4}")) {
-			return false;
-		} else {
-			int date=Integer.parseInt(msgArray[0]);
-			int month=Integer.parseInt(msgArray[1]);
-			int year=Integer.parseInt(msgArray[2]);
-
-			if(year%4==0 && month>=1 && month<=12) {
-				if(date<=leapYearDate[month-1]) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-			else {
-				if(date<=commonYearDate[month-1]) {
-					return true;
-				}
-				else {
-					return false;
-				}
-			}
-		}
-	}
+	
 }
