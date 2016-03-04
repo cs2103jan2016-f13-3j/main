@@ -6,12 +6,9 @@ import Task.Task;
 
 public class parser {
 	private static String date;
-	private static String storageFileName = "storage.ser";
 
 	private static Scanner sc = new Scanner(System.in);
 
-	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
-	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	private static final String EMPTY_MSG = " is empty";
 	private static final String CLEAR_MSG = "All content deleted from ";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
@@ -24,44 +21,16 @@ public class parser {
 	private static final String DATE_MSG = "Enter date in dd/mm/yyyy";
 	private static final String WRONG_DATE_MSG = "Please enter date in dd/mm/yyyy format";
 
-	public static void main(String[] args) throws IOException {
-
-		File file = new File(storageFileName);
-		checkIfFileExistsAndImportIfExists(file);
-
-		System.out.println(WELCOME_MSG_1 + WELCOME_MSG_2);
-
-		// run to simulate command line interactions
-		run();
-	}
-
 	/**
 	 * method that simulate command line interface that will responds to user's
 	 * inputs
 	 * @throws IOException 
 	 * 
 	 */
-	public static void run() throws IOException {
-		while (true) {
-			System.out.print("command: ");
-			String input = sc.nextLine();
-			String[] arr = input.split(" ");
-			// get command
-			String cmd = arr[0];
-			String description;
-			// handle lines with only the command
-			if (cmd.length() == input.length()) {
-				description = "";
-			} else {
-				// get description
-				description = input.substring(cmd.length() + 1, input.length());
-			}
+	public static void run(String cmd, String description) throws IOException {
+		// process commands
+		parseCommands(cmd, description);
 
-			// process commands
-			parseCommands(cmd, description);
-			// save all tasks into the actual file after command is done
-			Logic.save.saveFile(storageFileName);
-		}
 	}
 
 	/**
@@ -152,15 +121,5 @@ public class parser {
 		}
 	}
 
-	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
-		if (!f.exists()) {
-			f.createNewFile();
-		} else {
-			importTasksFromFile();
-		}
-	}
 
-	public static void importTasksFromFile() throws IOException {
-		Logic.importTasks.importTasksFromStorage(storageFileName);
-	}
 }
