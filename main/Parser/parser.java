@@ -115,8 +115,8 @@ public class parser {
 
 		else if(option.equals("search")) {
 			System.out.println(SEARCH_MSG);
-			int temp = sc.nextInt();
-			if (temp == 1) {
+			String temp = sc.nextLine();
+			if (temp.equals("1"))  {
 				Logic.search.searchTasksByIssue(s);
 			} else {
 				System.out.println(DATE_MSG);
