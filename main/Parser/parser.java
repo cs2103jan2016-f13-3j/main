@@ -2,7 +2,7 @@ package Parser;
 
 import java.util.*;
 
-import Logic.crud;
+import Logic.CRUD;
 
 import java.io.*;
 import Task.Task;
@@ -58,30 +58,30 @@ public class parser {
 				UI.ui.print(WRONG_DEADLINE_MSG);
 			}
 			if (date.equals("-")) {
-				Logic.crud.addTask(s);
+				Logic.CRUD.addTask(s);
 			} else {
-				Logic.crud.addTask(s, date);
+				Logic.CRUD.addTask(s, date);
 			}
 			UI.ui.print( "\"" + s + "\" " + "is added to the task list.");
 		}
 
 		else if(option.equals("delete")) {
 			int num = Integer.parseInt(s);
-			Logic.crud.deleteTask(num - 1);
+			Logic.CRUD.deleteTask(num - 1);
 			UI.ui.print( "\"" + s + "\" " + "is deleted from the task list.");
 		}
 
 		else if(option.equals("display")) {
-			Logic.crud.displayTasks();
+			Logic.CRUD.displayTasks();
 		}
 
 		else if(option.equals("clear")) {
-			Logic.crud.clearTasks();
+			Logic.CRUD.clearTasks();
 			UI.ui.print(CLEAR_MSG);
 		}
 
 		else if(option.equals("sort")) { // by alphabetical order
-			Logic.sort.sortTasksAlphabetically();
+			Logic.Sort.sortTasksAlphabetically();
 			UI.ui.print(SORT_MSG);
 		}
 
@@ -89,11 +89,11 @@ public class parser {
 			UI.ui.print(SEARCH_MSG);
 			String temp = sc.nextLine();
 			if (temp.equals("1"))  {
-				Logic.search.searchTasksByIssue(s);
-			} else {
+				Logic.Search.searchTasksByIssue(s);
+			} else if(temp.equals("2")){
 				while (true) {
 					if (Logic.checkDate.checkDateformat(s)) {
-						Logic.search.searchTasksByDate(s);
+						Logic.Search.searchTasksByDate(s);
 						break;
 					} else {
 						UI.ui.print(WRONG_DATE_MSG);
@@ -113,7 +113,7 @@ public class parser {
 		}
 
 		else if(option.equals("exit")) {
-			Logic.crud.exit();
+			Logic.CRUD.exit();
 		}
 
 		else {

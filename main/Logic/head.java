@@ -44,6 +44,7 @@ public class head {
 	}
 
 	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
+		
 		if (!f.exists()) {
 			f.createNewFile();
 		} else {

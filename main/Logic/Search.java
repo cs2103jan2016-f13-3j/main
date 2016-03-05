@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 
 import Task.Task;
 
-public class search {
+public class Search {
 
 	/**
 	 * Function to search task according to issue in the storage
@@ -41,8 +41,12 @@ public class search {
 			
 			Calendar date = new GregorianCalendar(year, month, day);
 			ArrayList<Task> temp = Storage.localStorage.searchStorageByDate(date);
+			int index=-1;
 			for(int i=0; i<temp.size(); i++) {
-				temp.get(i).getTaskString();
+				index=i+1;
+				System.out.println(index+". "+temp.get(i).getTaskString());
+			}if(index==-1){
+				System.out.println("No tasks found");
 			}
 		}
 		else {

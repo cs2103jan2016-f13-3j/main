@@ -1,4 +1,4 @@
-package Storage;
+package Logic;
 
 import Task.Task;
 import java.io.IOException;
