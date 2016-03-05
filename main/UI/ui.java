@@ -10,6 +10,10 @@ public class ui {
 		System.out.print(temp);
 	}
 	
+	public static void printEmptyLine() {
+		System.out.println();
+	}
+	
 	public static String acceptCommand() {
 		String command = sc.nextLine();
 		return command;

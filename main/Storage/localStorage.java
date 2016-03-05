@@ -72,25 +72,7 @@ public class localStorage {
 		}
 	}
 
-	/**
-	 * Function that returns the tasks which contain the given search keyword
-	 * 
-	 * @param searchKeyword the keyword to be searched for 
-	 * 
-	 * @return ArrayList searchDetails that contains the tasks which contain the given search keyword
-	 */
-	public static ArrayList<Task> searchStorageByIssue(String searchKeyword) {
-		searchDetails = new ArrayList<Task>();
-		for(int i = 0; i<details.size(); i++)
-		{
-			if(details.get(i).getIssue().contains(searchKeyword)) {
-				searchDetails.add(details.get(i));
-			}
-		}
-		
-		return searchDetails;
-	}
-	
+
 	/**
 	 * Function that returns the tasks which are due by the given date
 	 * 
@@ -101,14 +83,14 @@ public class localStorage {
 	public static ArrayList<Task> searchStorageByDate(Calendar date) {
 		searchDetails = new ArrayList<Task>();
 		for(int i = 0; i<details.size(); i++) {
-			Task task=details.get(i);
-			if(task.getDate()!=null){
-			if(task.getDate().get(Calendar.DATE)==date.get(Calendar.DATE)) {
-				searchDetails.add(details.get(i));
-			}
+			Task task = details.get(i);
+			if(task.getDate()!= null){
+				if(task.getDate().get(Calendar.DATE)== date.get(Calendar.DATE)) {
+					searchDetails.add(details.get(i));
+				}
 			}
 		}
 		return searchDetails;
 	}
-	
+
 }

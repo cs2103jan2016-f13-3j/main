@@ -6,18 +6,26 @@ import java.util.GregorianCalendar;
 
 import Task.Task;
 
-public class Search {
+public class search {
 
-	private static ArrayList<Task> temp = new ArrayList<Task>();
-	
 	/**
 	 * Function to search task according to issue in the storage
 	 * 
+	 * @param keyword the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByIssue(String keyword){
-		temp = Storage.localStorage.searchStorageByIssue(keyword);
-		for(int i=0;i<temp.size();i++) {
-			System.out.println((i+1) + ". " + temp.get(i).getTaskString());
+		ArrayList<Task> temp = Storage.localStorage.getArrayList();
+		ArrayList<Task> searchedTasks = new ArrayList<Task>();
+		
+		for(int i=0; i<temp.size(); i++) {
+			if(temp.get(i).getIssue().contains(keyword)) {
+				searchedTasks.add(temp.get(i));
+			}
+		}
+		
+		for(int i=0; i<searchedTasks.size(); i++) {
+			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
+			UI.ui.printEmptyLine();
 		}
 	}
 
@@ -34,7 +42,7 @@ public class Search {
 			
 			Calendar date = new GregorianCalendar(year, month, day);
 			ArrayList<Task> temp = Storage.localStorage.searchStorageByDate(date);
-			for(int i=0;i<temp.size();i++) {
+			for(int i=0; i<temp.size(); i++) {
 				temp.get(i).getTaskString();
 			}
 		}
