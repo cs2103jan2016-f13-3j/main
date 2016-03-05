@@ -19,6 +19,14 @@ public class localStorage {
 	public static ArrayList<Task> getArrayList() {
 		return details;
 	}
+	
+	/**
+	 * Function to assign details array list to given array list
+	 * @param changedDetails the arraylist to be assigned to details
+	 */
+	public static void setArrayList(ArrayList<Task> changedDetails) {
+		details = changedDetails;
+	}
 
 	/**
 	 * Function to add a task to the file
@@ -54,24 +62,6 @@ public class localStorage {
 	public static void clear() {
 		details.clear();
 	}
-
-	/**
-	 * Function to sort the contents of the file in alphabetical order
-	 */
-	public static void sortAlphabetically() {
-		for(int i =0; i<details.size()-1; i++) {
-			for(int j = i+1; j<details.size(); j++) {
-				int result = details.get(i).getIssue().compareTo(details.get(j).getIssue());
-				if(result > 0) {
-					Task temp = details.get(i);
-					details.set(i, details.get(j));
-					details.set(j, temp);
-				}
-
-			}
-		}
-	}
-
 
 	/**
 	 * Function that returns the tasks which are due by the given date

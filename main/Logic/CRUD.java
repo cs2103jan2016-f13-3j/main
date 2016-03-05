@@ -51,10 +51,10 @@ public class crud {
 	public static void displayTasks() {
 		temp = Storage.localStorage.displayStorage();
 		for(int i=0; i<temp.size(); i++) {
-			System.out.println((i+1) + ". " + temp.get(i).getTaskString());
+			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
 		}
 		if (temp.isEmpty()) {
-			System.out.println("There is no stored task to display");
+			UI.ui.print("There is no stored task to display");
 		}
 	}
 
