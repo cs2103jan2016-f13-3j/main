@@ -25,7 +25,6 @@ public class search {
 		
 		for(int i=0; i<searchedTasks.size(); i++) {
 			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
-			UI.ui.printEmptyLine();
 		}
 	}
 

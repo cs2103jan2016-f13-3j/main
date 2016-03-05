@@ -46,7 +46,7 @@ public class parser {
 	 */
 	public static void parseCommands(String option, String s ) throws IOException {
 		if(option.equals("add")) {
-			System.out.println(DEADLINE_MSG);
+			UI.ui.print(DEADLINE_MSG);
 			while (true) { //check if the user want to add date
 				date = sc.nextLine();
 				if (date.equals("-")) {
@@ -55,20 +55,20 @@ public class parser {
 				if (Logic.checkDate.checkDateformat(date)) {
 					break;
 				}
-				System.out.println(WRONG_DEADLINE_MSG);
+				UI.ui.print(WRONG_DEADLINE_MSG);
 			}
 			if (date.equals("-")) {
 				Logic.crud.addTask(s);
 			} else {
 				Logic.crud.addTask(s, date);
 			}
-			System.out.println( "\"" + s + "\" " + "is added to the task list.");
+			UI.ui.print( "\"" + s + "\" " + "is added to the task list.");
 		}
 
 		else if(option.equals("delete")) {
 			int num = Integer.parseInt(s);
 			Logic.crud.deleteTask(num - 1);
-			System.out.println( "\"" + s + "\" " + "is deleted from the task list.");
+			UI.ui.print( "\"" + s + "\" " + "is deleted from the task list.");
 		}
 
 		else if(option.equals("display")) {
@@ -77,16 +77,16 @@ public class parser {
 
 		else if(option.equals("clear")) {
 			Logic.crud.clearTasks();
-			System.out.println(CLEAR_MSG);
+			UI.ui.print(CLEAR_MSG);
 		}
 
 		else if(option.equals("sort")) { // by alphabetical order
 			Logic.sort.sortTasksAlphabetically();
-			System.out.println(SORT_MSG);
+			UI.ui.print(SORT_MSG);
 		}
 
 		else if(option.equals("search")) {
-			System.out.println(SEARCH_MSG);
+			UI.ui.print(SEARCH_MSG);
 			String temp = sc.nextLine();
 			if (temp.equals("1"))  {
 				Logic.search.searchTasksByIssue(s);
@@ -96,7 +96,7 @@ public class parser {
 						Logic.search.searchTasksByDate(s);
 						break;
 					} else {
-						System.out.println(WRONG_DATE_MSG);
+						UI.ui.print(WRONG_DATE_MSG);
 					}
 				}
 			}		
@@ -104,12 +104,12 @@ public class parser {
 
 		else if (option.equals("mark")) {
 			// Logic.crud.mark(s);
-			System.out.println(s + MARK_MSG);
+			UI.ui.print(s + MARK_MSG);
 		}
 
 		else if(option.equals("edit")) {
 			// Logic.crud.edit(s,d);
-			System.out.println(s + EDIT_MSG);
+			UI.ui.print(s + EDIT_MSG);
 		}
 
 		else if(option.equals("exit")) {
@@ -117,7 +117,7 @@ public class parser {
 		}
 
 		else {
-			System.out.println(INVALID_MSG);
+			UI.ui.print(INVALID_MSG);
 		}
 	}
 
