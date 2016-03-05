@@ -83,7 +83,7 @@ public class localStorage {
 		searchDetails = new ArrayList<Task>();
 		for(int i = 0; i<details.size(); i++)
 		{
-			if(details.get(i).getIssue().equals(searchKeyword)) {
+			if(details.get(i).getIssue().contains(searchKeyword)) {
 				searchDetails.add(details.get(i));
 			}
 		}
@@ -101,8 +101,11 @@ public class localStorage {
 	public static ArrayList<Task> searchStorageByDate(Calendar date) {
 		searchDetails = new ArrayList<Task>();
 		for(int i = 0; i<details.size(); i++) {
-			if(details.get(i).getDate().equals(date)) {
+			Task task=details.get(i);
+			if(task.getDate()!=null){
+			if(task.getDate().get(Calendar.DATE)==date.get(Calendar.DATE)) {
 				searchDetails.add(details.get(i));
+			}
 			}
 		}
 		return searchDetails;

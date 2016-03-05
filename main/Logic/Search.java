@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 
 import Task.Task;
 
-public class search {
+public class Search {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 	
@@ -32,7 +32,7 @@ public class search {
 			int month = Integer.parseInt(dateInput[1]);
 			int year = Integer.parseInt(dateInput[2]);
 			
-			Calendar date = new GregorianCalendar(day, month, year);
+			Calendar date = new GregorianCalendar(year, month, day);
 			ArrayList<Task> temp = Storage.localStorage.searchStorageByDate(date);
 			for(int i=0;i<temp.size();i++) {
 				temp.get(i).getTaskString();

@@ -16,7 +16,7 @@ public class head {
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		File file = new File(storageFileName);
 		checkIfFileExistsAndImportIfExists(file);
-		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
+		UI.ui.print(WELCOME_MSG_1 +"/n"+ WELCOME_MSG_2);
 		runProgram();
 	}
 
