@@ -4,7 +4,7 @@ import java.util.ArrayList;
 
 import Task.Task;
 
-public class Sort {
+public class sort {
 
 	/**
 	 * Function to sorts tasks in storage alphabetically

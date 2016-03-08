@@ -26,7 +26,7 @@ public class importTasks {
 		while (true) {
 			try {
 				Task task = (Task)ois.readObject();
-				Logic.CRUD.addTaskViaImport(task);
+				Logic.crud.addTaskViaImport(task);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (IOException e) {

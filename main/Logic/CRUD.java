@@ -5,7 +5,7 @@ import Storage.localStorage;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class CRUD {
+public class crud {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 
