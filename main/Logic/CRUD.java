@@ -14,7 +14,7 @@ public class crud {
 	 * 
 	 */
 	public static void addTask(String line) throws IOException {
-		Task task=new Task(line);
+		Task task = new Task(line);
 		Storage.localStorage.addToStorage(task);
 	}
 
@@ -23,7 +23,7 @@ public class crud {
 	 * 
 	 */
 	public static void addTask(String line,String date) throws IOException {
-		Task task=new Task(line,date);
+		Task task = new Task(line,date);
 		Storage.localStorage.addToStorage(task);
 	}
 
@@ -36,6 +36,29 @@ public class crud {
 		Storage.localStorage.addToStorage(task);
 	}
 
+	/**
+	 * Function to edit task without editing date according to index in storage
+	 * 
+	 * @param line the updated task description
+	 * @param index the index of the task to be edited
+	 * @throws IOException
+	 */
+	public static void editTask(int index, String line) throws IOException {
+		Task editedTask = new Task(line);
+		Storage.localStorage.setTask(index, editedTask);
+	}
+	
+	/**
+	 * Function to edit task along with date according to index in storage
+	 * 
+	 * @param index the index of the task to be edited
+	 * @param line the updated task description
+	 * @param date the updated task date
+	 */
+	public static void editTask(int index, String line, String date) {
+		Task editedTask = new Task(line,date);
+		Storage.localStorage.setTask(index, editedTask);
+	}
 	/**
 	 * Function to delete task according to index in storage
 	 * 

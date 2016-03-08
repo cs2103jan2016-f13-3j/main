@@ -9,8 +9,6 @@ public class localStorage {
 
 	//ArrayList to store the contents added to the file
 	private static ArrayList<Task> details = new ArrayList<Task>();
-	//ArrayList to store the lines in the file that contain the given search keyword 
-	private static ArrayList<Task> searchDetails;
 
 	/**
 	 * Function to return the ArrayList details
@@ -18,6 +16,32 @@ public class localStorage {
 	 */
 	public static ArrayList<Task> getArrayList() {
 		return details;
+	}
+	
+	/**
+	 * Function to get a particular task from the list of tasks
+	 * 
+	 * @param index the index of the task that is required
+	 * 
+	 * @return Task task of specified index
+	 */
+	public static Task getTask(int index) {
+		Task temp = null;
+		for(int i = 0; i<details.size(); i++) {
+			if(i == index) {
+				temp = details.get(i);
+			}
+		}
+		return temp;
+	}
+	
+	/**
+	 * Function to set a task to a particular index
+	 * @param index
+	 * @param temp
+	 */
+	public static void setTask(int index, Task temp) {
+		details.set(index, temp);
 	}
 
 	/**
