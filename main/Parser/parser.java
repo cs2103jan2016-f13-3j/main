@@ -2,18 +2,20 @@ package Parser;
 
 import java.util.*;
 
-import Logic.CRUD;
+import Logic.crud;
 
 import java.io.*;
 import Task.Task;
 
 public class parser {
 	private static String date, issue, keyword;
-	
+
 	private static Scanner sc = new Scanner(System.in);
 
 	private static final String EMPTY_MSG = " Unable to delete from empty task list";
 	private static final String CLEAR_MSG = "All content deleted";
+	private static final String ADD_MSG = "is added to the task list.";
+	private static final String DELETE_MSG = "is deleted from the task list.";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
 	private static final String EDIT_MSG = " is edited and saved";
 	private static final String MARK_MSG = " is marked as completed";
@@ -61,11 +63,11 @@ public class parser {
 				UI.ui.print(WRONG_DEADLINE_MSG);
 			}
 			if (date.equals("-")) {
-				Logic.CRUD.addTask(s);
+				Logic.crud.addTask(s);
 			} else {
-				Logic.CRUD.addTask(s, date);
+				Logic.crud.addTask(s, date);
 			}
-			UI.ui.print("\"" + s + "\" " + "is added to the task list.");
+			UI.ui.print("\"" + s + "\" " + ADD_MSG);
 		}
 
 		else if (option.equals("delete")) {
@@ -80,22 +82,22 @@ public class parser {
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.CRUD.deleteTask(num - 1);
-				UI.ui.print("\"" + issue + "\" " + "is deleted from the task list.");
+				Logic.crud.deleteTask(num - 1);
+				UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 			}
 		}
 
 		else if (option.equals("display")) {
-			Logic.CRUD.displayTasks();
+			Logic.crud.displayTasks();
 		}
 
 		else if (option.equals("clear")) {
-			Logic.CRUD.clearTasks();
+			Logic.crud.clearTasks();
 			UI.ui.print(CLEAR_MSG);
 		}
 
 		else if (option.equals("sort")) { // by alphabetical order
-			Logic.Sort.sortTasksAlphabetically();
+			Logic.sort.sortTasksAlphabetically();
 			UI.ui.print(SORT_MSG);
 		}
 
@@ -111,14 +113,14 @@ public class parser {
 				if (temp.equals("1")) {
 					UI.ui.print(ISSUE_PROMPT);
 					keyword = sc.nextLine();
-					Logic.Search.searchTasksByIssue(keyword);
+					Logic.search.searchTasksByIssue(keyword);
 				} else if (temp.equals("2")) {
 					UI.ui.print(DATE_PROMPT);
 					while (true) {
 						date = sc.nextLine();
 
 						if (Logic.checkDate.checkDateformat(date)) {
-							Logic.Search.searchTasksByDate(date);
+							Logic.search.searchTasksByDate(date);
 							break;
 						} else {
 							UI.ui.print(WRONG_DATE_MSG);
@@ -135,13 +137,31 @@ public class parser {
 			UI.ui.print(s + MARK_MSG);
 		}
 
-		else if (option.equals("edit")) {// Assume issue is the argument
-			// Logic.crud.edit(s);
-			UI.ui.print(s + EDIT_MSG);
+		else if (option.equals("edit")) {
+			int num = Integer.parseInt(s);
+			UI.ui.print("Enter edited task:");
+			String taskDescription = sc.nextLine();
+			UI.ui.print("Enter the edited date:");
+			while (true) { // check if the user want to add date
+				date = sc.nextLine();
+				if (date.equals("-")) {
+					break;
+				}
+				if (Logic.checkDate.checkDateformat(date)) {
+					break;
+				}
+				UI.ui.print(WRONG_DEADLINE_MSG);
+			}
+			if (date.equals("-")) {
+				Logic.crud.editTask(num - 1, taskDescription);
+			} else {
+				Logic.crud.editTask(num - 1, taskDescription, date);
+			}
+			UI.ui.print("Task number " + s + EDIT_MSG);
 		}
 
 		else if (option.equals("exit")) {
-			Logic.CRUD.exit();
+			Logic.crud.exit();
 		}
 
 		else {
