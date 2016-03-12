@@ -11,10 +11,10 @@ public class mark {
 	 * @throws IOException 
 	 */
 	public static void markTaskAsCompleted(int index) throws IOException {
-		Task temp = Storage.localStorage.getTask(index);
+		Task temp = Storage.localStorage.getUncompletedTask(index);
 		temp.setComplete();
-		Storage.localStorage.setTask(index, temp);
-		switchCompletedTaskToCompletedList(index);
+		Storage.localStorage.setUncompletedTask(index, temp);
+		switchUncompletedTaskToCompletedList(index);
 	}
 	
 	/**
@@ -23,8 +23,19 @@ public class mark {
 	 * @param index the index of the task to be switched
 	 * @throws IOException
 	 */
-	public static void switchCompletedTaskToCompletedList(int index) throws IOException {
+	public static void switchUncompletedTaskToCompletedList(int index) throws IOException {
 		Task temp = Storage.localStorage.delFromUncompletedTasks(index);
 		Storage.localStorage.addToCompletedTasks(temp);
+	}
+	
+	public static void markTaskAsUncompleted(int index) throws IOException {
+		Task temp = Storage.localStorage.getUncompletedTask(index);
+		temp.setUncomplete();
+		Storage.localStorage.setCompletedTask(index, temp);		
+	}
+	
+	public static void switchCompletedTaskToUncompletedList(int index) throws IOException {
+		Task temp = Storage.localStorage.delFromCompletedTasks(index);
+		Storage.localStorage.addToUncompletedTasks(temp);
 	}
 }

@@ -26,11 +26,21 @@ public class localStorage {
 	 * 
 	 * @return Task task of specified index
 	 */
-	public static Task getTask(int index) {
+	public static Task getUncompletedTask(int index) {
 		Task temp = null;
 		for(int i = 0; i<uncompletedTasks.size(); i++) {
 			if(i == index) {
 				temp = uncompletedTasks.get(i);
+			}
+		}
+		return temp;
+	}
+	
+	public static Task getCompletedTask(int index) {
+		Task temp = null;
+		for(int i = 0; i<completedTasks.size(); i++) {
+			if(i == index) {
+				temp = completedTasks.get(i);
 			}
 		}
 		return temp;
@@ -41,8 +51,12 @@ public class localStorage {
 	 * @param index
 	 * @param temp
 	 */
-	public static void setTask(int index, Task temp) {
+	public static void setUncompletedTask(int index, Task temp) {
 		uncompletedTasks.set(index, temp);
+	}
+	
+	public static void setCompletedTask(int index, Task temp) {
+		completedTasks.set(index, temp);
 	}
 
 	/**

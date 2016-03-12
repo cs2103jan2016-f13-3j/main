@@ -72,7 +72,11 @@ public class parser {
 		}
 
 		else if(option.equals("display")) {
-			Logic.crud.displayTasks();
+			Logic.crud.displayUncompletedTasks();
+		}
+		
+		else if(option.equals("displaycompleted")) {
+			Logic.crud.displayCompletedTasks();
 		}
 
 		else if(option.equals("clear")) {

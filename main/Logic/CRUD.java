@@ -45,7 +45,7 @@ public class crud {
 	 */
 	public static void editTask(int index, String line) throws IOException {
 		Task editedTask = new Task(line);
-		Storage.localStorage.setTask(index, editedTask);
+		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
 	
 	/**
@@ -57,7 +57,7 @@ public class crud {
 	 */
 	public static void editTask(int index, String line, String date) {
 		Task editedTask = new Task(line,date);
-		Storage.localStorage.setTask(index, editedTask);
+		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
 	/**
 	 * Function to delete task according to index in storage
@@ -68,10 +68,10 @@ public class crud {
 	}
 
 	/**
-	 * Function to display all the tasks in the storage
+	 * Function to display all the uncompleted tasks in the storage
 	 * 
 	 */
-	public static void displayTasks() {
+	public static void displayUncompletedTasks() {
 		temp = Storage.localStorage.displayUncompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
 			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
@@ -81,6 +81,10 @@ public class crud {
 		}
 	}
 	
+	/**
+	 * Function to display all the completed tasks in the storage
+	 * 
+	 */
 	public static void displayCompletedTasks() {
 		temp = Storage.localStorage.displayCompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
