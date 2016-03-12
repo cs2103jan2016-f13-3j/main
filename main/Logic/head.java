@@ -38,8 +38,9 @@ public class head {
 			}
 			
 			Parser.parser.run(cmd, description);
+			Logic.sort.sortTasksChronologically();
 			// save all tasks into the actual file after command is done
-			Logic.save.saveFile(storageFileName);
+			Logic.save.saveFile(storageFileName);			
 		}
 	}
 

@@ -15,7 +15,7 @@ public class crud {
 	 */
 	public static void addTask(String line) throws IOException {
 		Task task = new Task(line);
-		Storage.localStorage.addToStorage(task);
+		Storage.localStorage.addToUncompletedTasks(task);
 	}
 
 	/**
@@ -24,7 +24,7 @@ public class crud {
 	 */
 	public static void addTask(String line,String date) throws IOException {
 		Task task = new Task(line,date);
-		Storage.localStorage.addToStorage(task);
+		Storage.localStorage.addToUncompletedTasks(task);
 	}
 
 	/**
@@ -33,7 +33,7 @@ public class crud {
 	 * @throws IOException 
 	 */
 	public static void addTaskViaImport(Task task) throws IOException {
-		Storage.localStorage.addToStorage(task);
+		Storage.localStorage.addToUncompletedTasks(task);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class crud {
 	 * 
 	 */
 	public static void deleteTask(int index){
-		Storage.localStorage.delFromStorage(index);
+		Storage.localStorage.delFromUncompletedTasks(index);
 	}
 
 	/**
@@ -72,7 +72,17 @@ public class crud {
 	 * 
 	 */
 	public static void displayTasks() {
-		temp = Storage.localStorage.displayStorage();
+		temp = Storage.localStorage.displayUncompletedTasks();
+		for(int i=0; i<temp.size(); i++) {
+			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
+		}
+		if (temp.isEmpty()) {
+			UI.ui.print("There is no stored task to display");
+		}
+	}
+	
+	public static void displayCompletedTasks() {
+		temp = Storage.localStorage.displayCompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
 			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
 		}

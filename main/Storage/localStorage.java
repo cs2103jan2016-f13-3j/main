@@ -8,14 +8,15 @@ import java.util.Calendar;
 public class localStorage {
 
 	//ArrayList to store the contents added to the file
-	private static ArrayList<Task> details = new ArrayList<Task>();
-
+	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
+	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
+	
 	/**
 	 * Function to return the ArrayList details
 	 * @return the ArrayList details
 	 */
 	public static ArrayList<Task> getArrayList() {
-		return details;
+		return uncompletedTasks;
 	}
 	
 	/**
@@ -27,9 +28,9 @@ public class localStorage {
 	 */
 	public static Task getTask(int index) {
 		Task temp = null;
-		for(int i = 0; i<details.size(); i++) {
+		for(int i = 0; i<uncompletedTasks.size(); i++) {
 			if(i == index) {
-				temp = details.get(i);
+				temp = uncompletedTasks.get(i);
 			}
 		}
 		return temp;
@@ -41,7 +42,7 @@ public class localStorage {
 	 * @param temp
 	 */
 	public static void setTask(int index, Task temp) {
-		details.set(index, temp);
+		uncompletedTasks.set(index, temp);
 	}
 
 	/**
@@ -49,17 +50,27 @@ public class localStorage {
 	 * @param changedDetails the arraylist to be assigned to details
 	 */
 	public static void setArrayList(ArrayList<Task> changedDetails) {
-		details = changedDetails;
+		uncompletedTasks = changedDetails;
 	}
 
 	/**
-	 * Function to add a task to the file
+	 * Function to add a task to the uncompleted task list
 	 * 
-	 * @param line contains the task to be added
+	 * @param task contains the task to be added
 	 * @throws IOException 
 	 */
-	public static void addToStorage(Task task) throws IOException {
-		details.add(task);
+	public static void addToUncompletedTasks(Task task) throws IOException {
+		uncompletedTasks.add(task);
+	}
+	
+	/**
+	 * Function to add a task to the list of completed tasks
+	 * 
+	 * @param task the task to be added
+	 * @throws IOException
+	 */
+	public static void addToCompletedTasks(Task task) throws IOException {
+		completedTasks.add(task);
 	}
 
 	/**
@@ -67,23 +78,42 @@ public class localStorage {
 	 * 
 	 * @param index contains the index of the task to be deleted
 	 */
-	public static void delFromStorage(int index) {
-		details.remove(index);
+	public static void delFromUncompletedTasks(int index) {
+		uncompletedTasks.remove(index);
 	}
 
 	/**
-	 * Function to return the contents of the file to Logic
+	 * Function to delete a task from the list of completed tasks
 	 * 
-	 * @return ArrayList details that contains the file contents
+	 * @param index contains the index of the task to be deleted
 	 */
-	public static ArrayList<Task> displayStorage() {
-		return details;
+	public static void delFromCompletedTasks(int index) {
+		completedTasks.remove(index);
+	}
+
+	/**
+	 * Function to return the uncompleted list of tasks to Logic
+	 * 
+	 * @return ArrayList details that contains the list of uncompleted tasks
+	 */
+	public static ArrayList<Task> displayUncompletedTasks() {
+		return uncompletedTasks;
+	}
+	
+	/**
+	 * Function to return the completed list of tasks to Logic
+	 * 
+	 * @return ArrayList details that contains the list of completed tasks
+	 */
+	public static ArrayList<Task> displayCompletedTasks() {
+		return completedTasks;
 	}
 
 	/**
 	 * Function to clear the contents of the file
 	 */
 	public static void clear() {
-		details.clear();
+		uncompletedTasks.clear();
+		completedTasks.clear();
 	}
 }

@@ -13,12 +13,12 @@ public class search {
 	 * 
 	 * @param keyword the string to be searched for in the list of tasks
 	 */
-	public static void searchTasksByIssue(String keyword){
+	public static void searchTasksByKeyword(String keyword){
 		ArrayList<Task> temp = Storage.localStorage.getArrayList();
 		ArrayList<Task> searchedTasks = new ArrayList<Task>();
 
 		for(int i=0; i<temp.size(); i++) {
-			if(temp.get(i).getIssue().contains(keyword)) {
+			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
 			}
 		}
@@ -32,7 +32,7 @@ public class search {
 	 * Function that returns the tasks which are due by the given date
 	 * 
 	 * @param keyword the deadline date to be searched for 
-	 */
+	 *//*
 	public static void searchTasksByDate(String keyword){
 		if(Logic.checkDate.checkDateformat(keyword)){
 			String[] dateInput = keyword.split("/");
@@ -68,14 +68,14 @@ public class search {
 
 	}
 
-	/**
+	*//**
 	 * Function to check if two dates are equal
 	 * 
 	 * @param d1 the first date
 	 * @param d2 the second date
 	 * 
 	 * @return boolean value true or false based on whether the dates are equal or not
-	 */
+	 *//*
 	public static boolean compareCalendar(Calendar d1,Calendar d2){
 		if(d1.get(Calendar.DATE) == d2.get(Calendar.DATE)){
 			if(d1.get(Calendar.MONTH) == d2.get(Calendar.MONTH)){
@@ -92,7 +92,5 @@ public class search {
 		}
 
 	}
-
-
-
+*/
 }
