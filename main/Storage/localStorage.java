@@ -78,8 +78,9 @@ public class localStorage {
 	 * 
 	 * @param index contains the index of the task to be deleted
 	 */
-	public static void delFromUncompletedTasks(int index) {
-		uncompletedTasks.remove(index);
+	public static Task delFromUncompletedTasks(int index) {
+		Task temp = uncompletedTasks.remove(index);
+		return temp;
 	}
 
 	/**
@@ -87,8 +88,9 @@ public class localStorage {
 	 * 
 	 * @param index contains the index of the task to be deleted
 	 */
-	public static void delFromCompletedTasks(int index) {
-		completedTasks.remove(index);
+	public static Task delFromCompletedTasks(int index) {
+		Task temp = completedTasks.remove(index);
+		return temp;
 	}
 
 	/**

@@ -34,7 +34,7 @@ public class sort {
 
 		for(int i = 0; i<tempTasks.size() - 1; i++) {
 			for(int j = 1; j<tempTasks.size(); j++) {
-				if((tempTasks.get(i).getDate() != null) || (tempTasks.get(j).getDate() != null)) {
+				if((tempTasks.get(i).getDate() != null) && (tempTasks.get(j).getDate() != null)) {
 					int result = tempTasks.get(i).getDate().compareTo(tempTasks.get(j).getDate());
 					if(result > 0) {
 						Task temp = tempTasks.get(i);
