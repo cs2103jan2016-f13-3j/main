@@ -78,6 +78,11 @@ public class parser {
 		else if(option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
 		}
+		
+		else if(option.equals("view") || option.equals("v")) {
+			int num = Integer.parseInt(s);
+			Logic.crud.viewIndividualTask(num - 1);
+		}
 
 		else if(option.equals("clear") || option.equals("c")) {
 			Logic.crud.clearTasks();
@@ -95,7 +100,7 @@ public class parser {
 
 		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);
-			Logic.mark.markTaskAsCompleted(num);
+			Logic.mark.markTaskAsCompleted(num - 1);
 			UI.ui.print(s + MARK_MSG);
 		}
 
@@ -121,6 +126,13 @@ public class parser {
 				Logic.crud.editTask(num - 1, taskDescription, date);
 			}			
 			UI.ui.print("Task number " + s + EDIT_MSG);
+		}
+		
+		else if(option.equals("p")) {
+			int num = Integer.parseInt(s);
+			UI.ui.print("Enter priority");
+			String priority = sc.nextLine();
+			Logic.mark.setPriority(num - 1, priority);
 		}
 
 		else if(option.equals("exit")) {

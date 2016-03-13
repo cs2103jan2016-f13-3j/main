@@ -3,6 +3,7 @@ package Logic;
 import Task.Task;
 import Storage.localStorage;
 import java.io.IOException;
+import java.rmi.server.UID;
 import java.util.ArrayList;
 
 public class crud {
@@ -47,7 +48,7 @@ public class crud {
 		Task editedTask = new Task(line);
 		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
-	
+
 	/**
 	 * Function to edit task along with date according to index in storage
 	 * 
@@ -80,7 +81,25 @@ public class crud {
 			UI.ui.print("There is no stored task to display");
 		}
 	}
-	
+
+	public static void viewIndividualTask(int num) {
+		Task temp = Storage.localStorage.getUncompletedTask(num);
+
+		boolean isCompleted = temp.getCompletedStatus();
+		String completed = "Not completed";
+		if(isCompleted) {
+			completed = "Completed";
+		}
+
+		UI.ui.print(temp.getTaskString());
+		UI.ui.print("Status: " + completed);
+		UI.ui.print("Priority: " + temp.getPriority());
+		UI.ui.print("Labels:");
+		for(String label : temp.getLabel()) {
+			UI.ui.print(label);
+		}
+	}
+
 	/**
 	 * Function to display all the completed tasks in the storage
 	 * 
@@ -109,7 +128,4 @@ public class crud {
 	public static void exit(){
 		System.exit(0);
 	}
-
-
-
 }
