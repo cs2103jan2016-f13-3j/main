@@ -13,7 +13,7 @@ public class parser {
 	private static Scanner sc = new Scanner(System.in);
 
 	private static final String EMPTY_MSG = " is empty";
-	private static final String CLEAR_MSG = "All content deleted from ";
+	private static final String CLEAR_MSG = "All content has been cleared.";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
 	private static final String EDIT_MSG = " is edited and saved";
 	private static final String MARK_MSG = " is marked as completed";
@@ -45,7 +45,7 @@ public class parser {
 	 * @throws IOException 
 	 */
 	public static void parseCommands(String option, String s) throws IOException {
-		if(option.equals("add")) {
+		if(option.equals("add") || option.equals("a") || option.equals("+")) {
 			UI.ui.print(DEADLINE_MSG);
 			while (true) { //check if the user want to add date
 				date = sc.nextLine();
@@ -65,21 +65,21 @@ public class parser {
 			UI.ui.print( "\"" + s + "\" " + "is added to the task list.");
 		}
 
-		else if(option.equals("delete")) {
+		else if(option.equals("delete") ||option.equals("-")) {
 			int num = Integer.parseInt(s);
 			Logic.crud.deleteTask(num - 1);
 			UI.ui.print( "\"" + s + "\" " + "is deleted from the task list.");
 		}
 
-		else if(option.equals("display")) {
+		else if(option.equals("display") || option.equals("d")) {
 			Logic.crud.displayUncompletedTasks();
 		}
 		
-		else if(option.equals("displaycompleted")) {
+		else if(option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
 		}
 
-		else if(option.equals("clear")) {
+		else if(option.equals("clear") || option.equals("c")) {
 			Logic.crud.clearTasks();
 			UI.ui.print(CLEAR_MSG);
 		}
@@ -89,17 +89,17 @@ public class parser {
 			UI.ui.print(SORT_MSG);
 		}
 
-		else if(option.equals("search")) {
+		else if(option.equals("search") || option.equals("s")) {
 			Logic.search.searchTasksByKeyword(s);	
 		}
 
-		else if (option.equals("mark")) {
+		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);
 			Logic.mark.markTaskAsCompleted(num);
 			UI.ui.print(s + MARK_MSG);
 		}
 
-		else if(option.equals("edit")) {
+		else if(option.equals("edit") ||  option.equals("e")) {
 			int num = Integer.parseInt(s);
 			UI.ui.print("Enter edited task:");
 			String taskDescription = sc.nextLine();
@@ -125,6 +125,10 @@ public class parser {
 
 		else if(option.equals("exit")) {
 			Logic.crud.exit();
+		}
+		
+		else if(option.equals("help")) {
+			Logic.help.printHelpMenu();
 		}
 
 		else {

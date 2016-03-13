@@ -17,7 +17,8 @@ public class head {
 		File file = new File(storageFileName);
 		checkIfFileExistsAndImportIfExists(file);
 		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
-		System.out.println();
+		UI.ui.print("\n");
+		UI.ui.print("Enter \"help\" for instructions.");
 		runProgram();
 	}
 
