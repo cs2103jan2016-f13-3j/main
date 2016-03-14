@@ -14,18 +14,46 @@ public class crud {
 	 * Function to add task without time into storage
 	 * 
 	 */
-	public static void addTask(String line) throws IOException {
+	public static boolean addTask(String line) throws IOException {
 		Task task = new Task(line);
-		Storage.localStorage.addToUncompletedTasks(task);
+		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		boolean noDuplicate = true;
+		for(Task temp : tempTasks) {
+			if(temp.getTaskString().equals(task.getTaskString())) {
+				noDuplicate = false;
+			}
+		}
+		if(noDuplicate) {
+			Storage.localStorage.addToUncompletedTasks(task);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
 	 * Function to add task with time into storage
 	 * 
 	 */
-	public static void addTask(String line,String date) throws IOException {
+	public static boolean addTask(String line,String date) throws IOException {
 		Task task = new Task(line,date);
-		Storage.localStorage.addToUncompletedTasks(task);
+		
+		boolean noDuplicate = true;
+		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		for(Task temp : tempTasks) {
+			if(temp.getTaskString().equals(task.getTaskString())) {
+				System.out.println(temp.getTaskString());
+				noDuplicate = false;
+			}
+		}
+		if(noDuplicate) {
+			Storage.localStorage.addToUncompletedTasks(task);
+			return true;
+		}
+		else {
+			return false;
+		}
 	}
 
 	/**
@@ -98,8 +126,13 @@ public class crud {
 		}
 	}
 
-	public static void viewIndividualTask(int num) {
-		Task temp = Storage.localStorage.getUncompletedTask(num);
+	/**
+	 * Function to display the details of an individual task
+	 * 
+	 * @param index the index of the task to be displayed
+	 */
+	public static void viewIndividualTask(int index) {
+		Task temp = Storage.localStorage.getUncompletedTask(index);
 
 		boolean isCompleted = temp.getCompletedStatus();
 		String completed = "Not completed";

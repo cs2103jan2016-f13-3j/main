@@ -14,6 +14,7 @@ public class parser {
 	private static final String EMPTY_MSG = " Unable to delete from empty task list";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
+	private static final String DUPLICATE_ADD_MSG = "Duplicate task detected.";
 	private static final String DELETE_MSG = "is deleted from the task list.";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
 	private static final String EDIT_MSG = " is edited and saved";
@@ -54,6 +55,7 @@ public class parser {
 			String[] temp = s.split(" ");
 			int index = getIndexOfKey(temp);
 			date = "-";
+			boolean isAdded;
 			if (index != -1) {// if s contains date
 				// read date
 				date = temp[index + 1];
@@ -63,12 +65,22 @@ public class parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, index);
-					Logic.crud.addTask(issue, date);
-					UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+					isAdded = Logic.crud.addTask(issue, date);
+					if(isAdded) {
+						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+					}
+					else {
+						UI.ui.print(DUPLICATE_ADD_MSG);
+					}
 				}
 			} else {
-				Logic.crud.addTask(s);
-				UI.ui.print("\"" + s + "\" " + ADD_MSG);
+				isAdded = Logic.crud.addTask(s);
+				if(isAdded) {
+					UI.ui.print("\"" + s + "\" " + ADD_MSG);
+				}
+				else {
+					UI.ui.print(DUPLICATE_ADD_MSG);
+				}
 			}
 
 		}
