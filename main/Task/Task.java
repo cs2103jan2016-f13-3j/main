@@ -9,6 +9,7 @@ public class Task implements java.io.Serializable {
 	private ArrayList<String> label;
 	private boolean isCompleted;
 	private Calendar date;
+	private int priority=0;
 
 	// Constructors
 
@@ -73,7 +74,19 @@ public class Task implements java.io.Serializable {
 	public Calendar getDate() {
 		return date;
 	}
-
+	public String getPriority(){
+		if(priority==1){
+			return "high";
+			
+		}else{
+			return "low";
+		}
+	}
+	public void setPriority(String pri){
+		if(pri.equalsIgnoreCase("high")){
+			priority=1;
+		}
+	}
 	// Returns date in string format of DD/MM/YYYY
 	public String getTaskString() {
 		if (date == null) {

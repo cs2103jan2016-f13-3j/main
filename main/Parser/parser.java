@@ -2,7 +2,7 @@ package Parser;
 
 import java.util.*;
 
-import Logic.CRUD;
+import Logic.crud;
 
 import java.io.*;
 import Task.Task;
@@ -63,11 +63,11 @@ public class parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, index);
-					Logic.CRUD.addTask(issue, date);
+					Logic.crud.addTask(issue, date);
 					UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 				}
 			} else {
-				Logic.CRUD.addTask(s);
+				Logic.crud.addTask(s);
 				UI.ui.print("\"" + s + "\" " + ADD_MSG);
 			}
 
@@ -85,36 +85,36 @@ public class parser {
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.CRUD.deleteTask(num - 1);
+				Logic.crud.deleteTask(num - 1);
 				UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 			}
 		}
 
 		else if (option.equals("display") || option.equals("d")) {
-			Logic.CRUD.displayUncompletedTasks();
+			Logic.crud.displayUncompletedTasks();
 		}
 
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
-			Logic.CRUD.displayCompletedTasks();
+			Logic.crud.displayCompletedTasks();
 		}
 
 		else if (option.equals("view") || option.equals("v")) {
 			int num = Integer.parseInt(s);
-			Logic.CRUD.viewIndividualTask(num - 1);
+			Logic.crud.viewIndividualTask(num - 1);
 		}
 
 		else if (option.equals("clear") || option.equals("c")) {
-			Logic.CRUD.clearTasks();
+			Logic.crud.clearTasks();
 			UI.ui.print(CLEAR_MSG);
 		}
 
 		else if (option.equals("sort")) { // by alphabetical order
-			Logic.Sort.sortTasksAlphabetically();
+			Logic.sort.sortTasksAlphabetically();
 			UI.ui.print(SORT_MSG);
 		}
 
 		else if (option.equals("search") || option.equals("s")) {
-			Logic.Search.searchTasksByKeyword(s);
+			Logic.search.searchTasksByKeyword(s);
 		}
 
 		else if (option.equals("mark") || option.equals("m")) {
@@ -140,9 +140,9 @@ public class parser {
 				UI.ui.print(WRONG_DEADLINE_MSG);
 			}
 			if (date.equals("-")) {
-				Logic.CRUD.editTask(num - 1, issue);
+				Logic.crud.editTask(num - 1, issue);
 			} else {
-				Logic.CRUD.editTask(num - 1, issue, date);
+				Logic.crud.editTask(num - 1, issue, date);
 			}
 			UI.ui.print("Task number " + s + EDIT_MSG);
 		}
@@ -155,7 +155,7 @@ public class parser {
 		}
 
 		else if (option.equals("exit")) {
-			Logic.CRUD.exit();
+			Logic.crud.exit();
 		}
 
 		else if (option.equals("help")) {
