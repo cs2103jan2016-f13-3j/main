@@ -162,6 +162,10 @@ public class parser {
 		else if (option.equals("search") || option.equals("s")) {
 			Logic.search.searchTasksByKeyword(s);
 		}
+		
+		else if (option.equals("searchcompleted") || option.equals("sc")) {
+			Logic.search.searchCompletedTasksByKeyword(s);
+		}
 
 		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);

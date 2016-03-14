@@ -11,18 +11,20 @@ import Task.Task;
 
 public class search {
 	
-	private static ArrayList<Task> searchedTasks = new ArrayList<Task>();
+	private static ArrayList<Task> searchedTasks;
 	
 	public static ArrayList<Task> getSearchedTasks() {
 		return searchedTasks;
 		
 	}
+
 	/**
-	 * Function to search task according to issue in the storage
+	 * Function to search task according to keyword in list of uncompleted tasks
 	 * 
 	 * @param keyword the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByKeyword(String keyword){
+		searchedTasks = new ArrayList<Task>();
 		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
@@ -35,6 +37,23 @@ public class search {
 		}
 	}
 	
+	/**
+	 * Function to search task according to keyword in list of completed tasks
+	 * 
+	 * @param keyword the string to be searched for in the list of tasks
+	 */
+	public static void searchCompletedTasksByKeyword(String keyword) {
+		searchedTasks = new ArrayList<Task>();
+		ArrayList<Task> temp = Storage.localStorage.getCompletedTasks();
+		for(int i = 0; i<temp.size(); i++) {
+			if(temp.get(i).getTaskString().contains(keyword)) {
+				searchedTasks.add(temp.get(i));
+			}
+		}
+		for(int i=0; i<searchedTasks.size(); i++) {
+			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
+		}
+	}
 
 	/**
 	 * Function that returns the tasks which are due by the given date
