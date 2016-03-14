@@ -1,5 +1,8 @@
 package Logic;
 
+/**
+ * @author Kowshik
+ */
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
@@ -7,16 +10,20 @@ import java.util.GregorianCalendar;
 import Task.Task;
 
 public class search {
-
+	
+	private static ArrayList<Task> searchedTasks = new ArrayList<Task>();
+	
+	public static ArrayList<Task> getSearchedTasks() {
+		return searchedTasks;
+		
+	}
 	/**
 	 * Function to search task according to issue in the storage
 	 * 
 	 * @param keyword the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByKeyword(String keyword){
-		ArrayList<Task> temp = Storage.localStorage.getArrayList();
-		ArrayList<Task> searchedTasks = new ArrayList<Task>();
-
+		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
@@ -27,6 +34,7 @@ public class search {
 			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
 		}
 	}
+	
 
 	/**
 	 * Function that returns the tasks which are due by the given date

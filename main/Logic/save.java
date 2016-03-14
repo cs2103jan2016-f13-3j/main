@@ -1,5 +1,8 @@
 package Logic;
 
+/**
+ * @author Kowshik
+ */
 import java.io.IOException;
 
 public class save {
@@ -9,7 +12,7 @@ public class save {
 	 * 
 	 */
 	public static void saveFile(String fileName) throws IOException {
-		Storage.fileStorage.saveFile(fileName, Storage.localStorage.getArrayList());
+		Storage.fileStorage.saveFile(fileName, Storage.localStorage.getUncompletedTasks());
 	}
 	
 }

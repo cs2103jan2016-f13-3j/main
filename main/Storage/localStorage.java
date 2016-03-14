@@ -1,5 +1,7 @@
 package Storage;
-
+/**
+ * @author Kowshik
+ */
 import Task.Task;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,8 +17,12 @@ public class localStorage {
 	 * Function to return the ArrayList details
 	 * @return the ArrayList details
 	 */
-	public static ArrayList<Task> getArrayList() {
+	public static ArrayList<Task> getUncompletedTasks() {
 		return uncompletedTasks;
+	}
+	
+	public static ArrayList<Task> getCompletedTasks() {
+		return completedTasks;
 	}
 	
 	/**
@@ -132,4 +138,6 @@ public class localStorage {
 		uncompletedTasks.clear();
 		completedTasks.clear();
 	}
+
+	
 }

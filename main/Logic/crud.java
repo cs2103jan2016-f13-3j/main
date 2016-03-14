@@ -64,8 +64,24 @@ public class crud {
 	 * Function to delete task according to index in storage
 	 * 
 	 */
-	public static void deleteTask(int index){
-		Storage.localStorage.delFromUncompletedTasks(index);
+	public static void deleteTask(int index, int listOfTasks){
+		if(listOfTasks == 1) { //delete from uncompleted tasks
+			Storage.localStorage.delFromUncompletedTasks(index);
+		}
+		else if(listOfTasks == 2) { //delete from completed tasks
+			Storage.localStorage.delFromCompletedTasks(index);
+		}
+		else if(listOfTasks == 3) { //delete from search completed tasks view
+			ArrayList<Task> searchTemp = search.getSearchedTasks();
+			Task taskToBeDeleted = searchTemp.get(index);
+			ArrayList<Task> uncompletedTemp = Storage.localStorage.getUncompletedTasks();
+			for(int i = 0; i<uncompletedTemp.size(); i++) {
+				if(uncompletedTemp.get(i).equals(taskToBeDeleted)) {
+					uncompletedTemp.remove(i);
+					break;
+				}
+			}
+		}
 	}
 
 	/**

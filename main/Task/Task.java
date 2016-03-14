@@ -9,7 +9,7 @@ public class Task implements java.io.Serializable {
 	private ArrayList<String> label;
 	private boolean isCompleted;
 	private Calendar date;
-	private int priority=0;
+	private int priority = 0;
 
 	// Constructors
 
@@ -74,17 +74,19 @@ public class Task implements java.io.Serializable {
 	public Calendar getDate() {
 		return date;
 	}
+
 	public String getPriority(){
-		if(priority==1){
+		if(priority == 1){
 			return "high";
-			
-		}else{
+
+		} else {
 			return "low";
 		}
 	}
+
 	public void setPriority(String pri){
 		if(pri.equalsIgnoreCase("high")){
-			priority=1;
+			priority = 1;
 		}
 	}
 	// Returns date in string format of DD/MM/YYYY
@@ -114,6 +116,7 @@ public class Task implements java.io.Serializable {
 			return issue + " " + dateString;
 		}
 	}
+
 
 	//	public String getDateString() { //not in use
 	//		String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));

@@ -1,5 +1,8 @@
 package Logic;
 
+/**
+ * @author Kowshik
+ */
 import java.util.ArrayList;
 
 import Task.Task;
@@ -11,7 +14,7 @@ public class sort {
 	 * 
 	 */
 	public static void sortTasksAlphabetically(){
-		ArrayList<Task> temp = Storage.localStorage.getArrayList();
+		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
 
 		for(int i = 0; i<temp.size()-1; i++) {
 			for(int j = i+1; j<temp.size(); j++) {
@@ -30,7 +33,7 @@ public class sort {
 	 * Function to sort tasks in chronological order
 	 */
 	public static void sortTasksChronologically() {
-		ArrayList<Task> tempTasks = Storage.localStorage.getArrayList();
+		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		for(int i = 0; i<tempTasks.size() - 1; i++) {
 			for(int j = 1; j<tempTasks.size(); j++) {

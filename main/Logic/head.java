@@ -12,6 +12,7 @@ public class head {
 	private static final String USER_PROMPT = "command: ";
 	private static String storageFileName = "storage.ser";
 	private static Scanner sc = new Scanner(System.in);
+	private static String lastCommand = "";
 
 	public static void main(String[] args) throws FileNotFoundException, IOException {
 		File file = new File(storageFileName);
@@ -39,12 +40,18 @@ public class head {
 			}
 			
 			Parser.parser.run(cmd, description);
+			lastCommand = cmd;
 			Logic.sort.sortTasksChronologically();
 			// save all tasks into the actual file after command is done
 			Logic.save.saveFile(storageFileName);			
 		}
 	}
 
+	//getter method
+	public static String getLastCommand() {
+		return lastCommand;
+	}
+	
 	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
 		
 		if (!f.exists()) {
