@@ -79,6 +79,20 @@ public class Task implements java.io.Serializable {
 	public Calendar getDate() {
 		return date;
 	}
+	public String getDateString(){
+		if(date!=null){
+		String a=date.get(Calendar.DAY_OF_MONTH)+"/";
+		int n=date.get(Calendar.MONTH);
+		if(n==0){
+			n=12;
+		}
+		a+=n+"/";
+		a+=date.get(Calendar.YEAR);
+		return a;
+		}else{
+			return "";
+		}
+	}
 
 	public String getPriority(){
 		if(priority == 1){

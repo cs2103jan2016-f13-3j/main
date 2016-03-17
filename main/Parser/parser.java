@@ -175,9 +175,10 @@ public class parser {
 
 		else if (option.equals("edit") || option.equals("e")) {
 			int num = Integer.parseInt(s);
+			Logic.crud.copyTask(num);
 			UI.ui.print("Enter edited task:");
 			issue = sc.nextLine();
-
+			Logic.crud.copyTaskDate(num);
 			UI.ui.print("Enter the edited date:");
 			while (true) { // check if the user want to add date
 				date = sc.nextLine();

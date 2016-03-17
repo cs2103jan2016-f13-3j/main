@@ -2,6 +2,10 @@ package Logic;
 
 import Task.Task;
 import Storage.localStorage;
+
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.rmi.server.UID;
 import java.util.ArrayList;
@@ -72,6 +76,24 @@ public class crud {
 	 * @param index the index of the task to be edited
 	 * @throws IOException
 	 */
+	public static void copyTask(int index){
+		Task edit=Storage.localStorage.getUncompletedTask(index-1);
+		if(edit!=null){
+		String copy=edit.getIssue();
+		StringSelection selec= new StringSelection(copy);
+		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		   clipboard.setContents(selec, selec);
+		}
+	}
+	public static void copyTaskDate(int index){
+		Task edit=Storage.localStorage.getUncompletedTask(index-1);
+		if(edit!=null){
+		String copy=edit.getDateString();
+		StringSelection selec= new StringSelection(copy);
+		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+		   clipboard.setContents(selec, selec);
+		}
+	}
 	public static void editTask(int index, String line) throws IOException {
 		Task editedTask = new Task(line);
 		Storage.localStorage.setUncompletedTask(index, editedTask);

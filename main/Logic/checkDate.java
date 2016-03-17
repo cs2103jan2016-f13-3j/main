@@ -11,15 +11,15 @@ public class checkDate {
 	 */
 	public static boolean checkDateformat(String msg){
 		String[] msgArray=msg.split("/");
-		if(msgArray.length != 3 && msg.matches("^\\d{2}/\\d{2}/\\d{4}")) {
+		if(msgArray.length != 3 || !msg.matches("^\\d{2}/\\d{2}/\\d{4}")) {
 			return false;
 		} else {
 			int date=Integer.parseInt(msgArray[0]);
 			int month=Integer.parseInt(msgArray[1]);
 			int year=Integer.parseInt(msgArray[2]);
-
-			if((year % 4) == 0 && (month >= 1) && (month <= 12)) {
-				if(date <= leapYearDate[month-1]) {
+			if(month>=1 && month<=12){
+				if((year % 4) == 0 ) {
+					if(date <= leapYearDate[month-1]) {
 					return true;
 				}
 				else {
@@ -33,6 +33,9 @@ public class checkDate {
 				else {
 					return false;
 				}
+			}
+			}else{
+				return false;
 			}
 		}
 	}

@@ -41,7 +41,13 @@ public class localStorage {
 		}
 		return temp;
 	}
-	
+	public static Task getCertainUncompletedTask(int index) {
+		Task temp = null;
+		if(index>=0&&index<uncompletedTasks.size())
+			return uncompletedTasks.get(index);
+		else
+			return temp;
+	}
 	public static Task getCompletedTask(int index) {
 		Task temp = null;
 		for(int i = 0; i<completedTasks.size(); i++) {
