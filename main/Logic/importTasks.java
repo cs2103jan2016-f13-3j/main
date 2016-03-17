@@ -1,6 +1,8 @@
 package Logic;
 
+import java.io.EOFException;
 import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 
@@ -16,20 +18,31 @@ public class importTasks {
 	 */
 	
 	public static void importTasksFromStorage(String fileName) throws IOException {
-		FileInputStream fis = new FileInputStream(fileName);
+		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
+			fis = new FileInputStream(fileName);		
 			ois = new ObjectInputStream(fis);
+		} catch (FileNotFoundException e1) {
+			e1.printStackTrace();
+		} catch (EOFException e) {
+			fis.close();
+			return;
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		
 		while (true) {
 			try {
 				Task task = (Task)ois.readObject();
 				Logic.crud.addTaskViaImport(task);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
+			} catch (EOFException e) {
+				break;
 			} catch (IOException e) {
+				break;
+			} catch (NullPointerException e) {
 				break;
 			}
 		}
