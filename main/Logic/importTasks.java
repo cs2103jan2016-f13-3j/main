@@ -5,10 +5,16 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import java.util.logging.SimpleFormatter;
 
 import Task.Task;
 
 public class importTasks {
+	
+	private final static Logger logger = Logger.getLogger(Class.class.getName()); 
 
 	/**
 	 * Function to import tasks from the storage file "storage.ser"
@@ -18,6 +24,7 @@ public class importTasks {
 	 */
 	
 	public static void importTasksFromStorage(String fileName) throws IOException {
+		LoggerTry.startLog();
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
@@ -39,8 +46,10 @@ public class importTasks {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (EOFException e) {
+				logger.log(Level.WARNING, e.toString(), e);
 				break;
 			} catch (IOException e) {
+				logger.log(Level.SEVERE, e.toString(), e);
 				break;
 			} catch (NullPointerException e) {
 				break;
@@ -48,5 +57,17 @@ public class importTasks {
 		}
 		fis.close();
 	}	
+}
 
+class LoggerTry {
+	private final static Logger logger = Logger.getLogger(Class.class.getName());
+	private static FileHandler fileHandler = null;
+
+	public static void startLog() throws SecurityException, IOException {
+		fileHandler = new FileHandler("loggerFile.log", true);
+		Logger logger = Logger.getLogger("");
+		fileHandler.setFormatter(new SimpleFormatter());
+		logger.addHandler(fileHandler);
+		logger.setLevel(Level.CONFIG);
+	}
 }

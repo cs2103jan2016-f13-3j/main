@@ -14,7 +14,7 @@ public class head {
 	private static Scanner sc = new Scanner(System.in);
 	private static String lastCommand = "";
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {
+	public static void main(String[] args) throws FileNotFoundException, IOException {		
 		File file = new File(storageFileName);
 		checkIfFileExistsAndImportIfExists(file);
 		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
@@ -38,7 +38,7 @@ public class head {
 				// get description
 				description = input.substring(cmd.length() + 1, input.length());
 			}
-			
+
 			Parser.parser.run(cmd, description);
 			lastCommand = cmd;
 			Logic.sort.sortTasksChronologically();
@@ -51,9 +51,9 @@ public class head {
 	public static String getLastCommand() {
 		return lastCommand;
 	}
-	
+
 	public static void checkIfFileExistsAndImportIfExists(File f) throws IOException, FileNotFoundException {
-		
+
 		if (!f.exists()) {
 			f.createNewFile();
 		} else {

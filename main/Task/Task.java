@@ -15,6 +15,7 @@ public class Task implements java.io.Serializable {
 
 	// Constructor for dateless tasks
 	public Task(String issue) {
+		assert issue != null;
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
@@ -23,6 +24,7 @@ public class Task implements java.io.Serializable {
 
 	// Constructor for tasks with date given
 	public Task(String issue, String date) { // assuming String date provided is of the format DD/MM/YYYY
+		assert issue != null;
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
@@ -35,14 +37,17 @@ public class Task implements java.io.Serializable {
 
 	// Setter Methods
 	public void setIssue(String issue) {
+		assert issue != null;
 		this.issue = issue;
 	}
 
 	public void setLabel(String label) {
+		assert label != null;
 		this.label.add(label);
 	}
 
 	public void removeLabel(String label) {
+		assert label != null;
 		this.label.remove(label);
 	}
 
