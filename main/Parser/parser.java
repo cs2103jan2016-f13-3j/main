@@ -10,7 +10,7 @@ import Task.Task;
 public class parser {
 	private static String date, issue;
 	private static Scanner sc = new Scanner(System.in);
-	private static final String[] key = { "by", "at", "in", "on", "during" };
+	private static final String[] key = { "by", "at", "in", "on", "during","before"};
 	private static final String EMPTY_MSG = " Unable to delete from empty task list";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
@@ -35,9 +35,10 @@ public class parser {
 	 * @throws IOException
 	 * 
 	 */
-	public static void run(String cmd, String description) throws IOException {
+	public static boolean run(String cmd, String description) throws IOException {
 		// process commands
-		parseCommands(cmd, description);
+		boolean valid = parseCommands(cmd, description);
+		return valid;
 
 	}
 
@@ -49,7 +50,8 @@ public class parser {
 	 * @param s
 	 * @throws IOException
 	 */
-	public static void parseCommands(String option, String s) throws IOException {
+	public static boolean parseCommands(String option, String s) throws IOException {
+		Boolean valid = true;
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			// get index of key
 			String[] temp = s.split(" ");
@@ -215,7 +217,8 @@ public class parser {
 
 		else {
 			UI.ui.print(INVALID_MSG);
-		}
+			valid = false;
+		} return valid;
 	}
 
 	/**
@@ -264,7 +267,7 @@ public class parser {
 	 */
 	public static int getIndexOfKey(String[] arr) {
 		int idx = -1;
-		for (int i = 0; i < 5; i++) {
+		for (int i = 0; i < key.length; i++) {
 			for (int j = 1; j < arr.length; j++) {
 				if (arr[j].equals(key[i])) {
 					idx = j;
@@ -274,5 +277,10 @@ public class parser {
 		}
 		return idx;
 	}
-
+	public static String getIssue() {
+		return issue;
+	}
+	public static String getDate() {
+		return date;
+	}
 }
