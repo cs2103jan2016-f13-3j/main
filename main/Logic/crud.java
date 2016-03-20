@@ -88,6 +88,7 @@ public class crud {
 		   clipboard.setContents(selec, selec);
 		}
 	}
+
 	public static void copyTaskDate(int index){
 		Task edit=Storage.localStorage.getUncompletedTask(index-1);
 		if(edit!=null){
