@@ -11,7 +11,7 @@ public class checkDate {
 	 */
 	public static boolean checkDateformat(String msg){
 		String[] msgArray=msg.split("/");
-		if(msgArray.length != 3 || !msg.matches("^\\d{2}/\\d{2}/\\d{4}")) {
+		if(msgArray.length != 3 && !msg.matches("^\\d{2}/\\d{2}/\\d{4}")) {
 			return false;
 		} else {
 			int date=Integer.parseInt(msgArray[0]);

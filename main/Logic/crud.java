@@ -13,7 +13,7 @@ import java.util.ArrayList;
 public class crud {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
-
+	private static Task temp1;
 	/**
 	 * Function to add task without time into storage
 	 * 
@@ -34,6 +34,9 @@ public class crud {
 		else {
 			return false;
 		}
+	}
+	public static ArrayList<Task> getTemp(){
+		return temp;
 	}
 
 	/**
@@ -154,19 +157,19 @@ public class crud {
 	 * @param index the index of the task to be displayed
 	 */
 	public static void viewIndividualTask(int index) {
-		Task temp = Storage.localStorage.getUncompletedTask(index);
+		temp1 = Storage.localStorage.getUncompletedTask(index);
 
-		boolean isCompleted = temp.getCompletedStatus();
+		boolean isCompleted = temp1.getCompletedStatus();
 		String completed = "Not completed";
 		if(isCompleted) {
 			completed = "Completed";
 		}
 
-		UI.ui.print(temp.getTaskString());
+		UI.ui.print(temp1.getTaskString());
 		UI.ui.print("Status: " + completed);
-		UI.ui.print("Priority: " + temp.getPriority());
+		UI.ui.print("Priority: " + temp1.getPriority());
 		UI.ui.print("Labels:");
-		for(String label : temp.getLabel()) {
+		for(String label : temp1.getLabel()) {
 			UI.ui.print(label);
 		}
 	}

@@ -46,10 +46,10 @@ public class importTasks {
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (EOFException e) {
-				logger.log(Level.WARNING, e.toString(), e);
+				//logger.log(Level.WARNING, e.toString(), e);
 				break;
 			} catch (IOException e) {
-				logger.log(Level.SEVERE, e.toString(), e);
+				//logger.log(Level.SEVERE, e.toString(), e);
 				break;
 			} catch (NullPointerException e) {
 				break;
