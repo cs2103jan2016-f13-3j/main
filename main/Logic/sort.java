@@ -1,19 +1,24 @@
 package Logic;
 
+import java.io.IOException;
 /**
  * @author Kowshik
  */
 import java.util.ArrayList;
 
+import Storage.localStorage;
 import Task.Task;
 
 public class sort {
 
 	/**
 	 * Function to sorts tasks in storage alphabetically
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static void sortTasksAlphabetically(){
+	public static void sortTasksAlphabetically() throws ClassNotFoundException, IOException{
+		localStorage.copyCurrentState();
 		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
 
 		for(int i = 0; i<temp.size()-1; i++) {
@@ -31,8 +36,10 @@ public class sort {
 
 	/**
 	 * Function to sort tasks in chronological order
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void sortTasksChronologically() {
+	public static void sortTasksChronologically() throws ClassNotFoundException, IOException {
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		for(int i = 0; i<tempTasks.size() - 1; i++) {
@@ -48,5 +55,6 @@ public class sort {
 			}
 		}
 		Storage.localStorage.setArrayList(tempTasks);
+		Storage.localStorage.setUnchanged();
 	}
 }

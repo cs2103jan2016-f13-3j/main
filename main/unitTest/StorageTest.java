@@ -14,7 +14,7 @@ import Task.Task;
 public class StorageTest {
 
 	@Test
-	public void testClearTasks() { //To test if arraylist has actually been cleared
+	public void testClearTasks() throws ClassNotFoundException, IOException { //To test if arraylist has actually been cleared
 		Task task = new Task("Hello", "21/03/2016");
 		try {
 			localStorage.addToUncompletedTasks(task);
@@ -27,7 +27,7 @@ public class StorageTest {
 	}
 	
 	@Test
-	public void testIfTaskIsAdded() { //To test if task has been added to the arraylist
+	public void testIfTaskIsAdded() throws ClassNotFoundException { //To test if task has been added to the arraylist
 		Task temp = new Task("Testing", "21/03/2016");
 		try {
 			localStorage.addToUncompletedTasks(temp);
@@ -39,7 +39,7 @@ public class StorageTest {
 	}
 	
 	@Test
-	public void testIfTaskIsDeleted() { //To test if task has been deleted from arraylist
+	public void testIfTaskIsDeleted() throws ClassNotFoundException, IOException { //To test if task has been deleted from arraylist
 		int deleteIndex = 0;
 		boolean isContained = false;
 		

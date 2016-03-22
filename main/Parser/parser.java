@@ -2,6 +2,7 @@ package Parser;
 
 import java.util.*;
 
+import Logic.Undo;
 import Logic.crud;
 
 import java.io.*;
@@ -33,13 +34,17 @@ public class parser {
 	 * inputs
 	 * 
 	 * @throws IOException
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static boolean run(String cmd, String description) throws IOException {
+	public static boolean run(String cmd, String description) throws IOException, ClassNotFoundException {
 		// process commands
 		boolean valid = parseCommands(cmd, description);
+		if (!description.equals("")) {
+			cmd += " " + description;
+		}
+		Undo.getInstance().storePreviousStateIfNeeded(cmd);
 		return valid;
-
 	}
 
 	/**
@@ -49,8 +54,9 @@ public class parser {
 	 * @param option
 	 * @param s
 	 * @throws IOException
+	 * @throws ClassNotFoundException 
 	 */
-	public static boolean parseCommands(String option, String s) throws IOException {
+	public static boolean parseCommands(String option, String s) throws IOException, ClassNotFoundException {
 		Boolean valid = true;
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			// get index of key
@@ -205,6 +211,16 @@ public class parser {
 			UI.ui.print("Enter priority");
 			String priority = sc.nextLine();
 			Logic.mark.setPriority(num - 1, priority);
+		}
+		
+		else if (option.equals("history")) {
+			String pastCommands = Undo.getInstance().viewPastCommands();
+			UI.ui.print(pastCommands);
+		}
+		
+		else if (option.equals("undo")) {
+			String outcome = Undo.getInstance().undo();
+			UI.ui.print(outcome);
 		}
 
 		else if (option.equals("exit")) {

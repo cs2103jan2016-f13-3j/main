@@ -16,9 +16,10 @@ public class crud {
 	private static Task temp1;
 	/**
 	 * Function to add task without time into storage
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static boolean addTask(String line) throws IOException {
+	public static boolean addTask(String line) throws IOException, ClassNotFoundException {
 		Task task = new Task(line);
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		boolean noDuplicate = true;
@@ -41,9 +42,10 @@ public class crud {
 
 	/**
 	 * Function to add task with time into storage
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static boolean addTask(String line,String date) throws IOException {
+	public static boolean addTask(String line,String date) throws IOException, ClassNotFoundException {
 		Task task = new Task(line,date);
 		
 		boolean noDuplicate = true;
@@ -67,9 +69,11 @@ public class crud {
 	 * Function to import the tasks from the storage file
 	 * @param task the tasks to be added to the arraylist storage
 	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void addTaskViaImport(Task task) throws IOException {
+	public static void addTaskViaImport(Task task) throws IOException, ClassNotFoundException {
 		Storage.localStorage.addToUncompletedTasks(task);
+		Storage.localStorage.setUnchanged();
 	}
 
 	/**
@@ -98,7 +102,7 @@ public class crud {
 		   clipboard.setContents(selec, selec);
 		}
 	}
-	public static void editTask(int index, String line) throws IOException {
+	public static void editTask(int index, String line) throws IOException, ClassNotFoundException {
 		Task editedTask = new Task(line);
 		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
@@ -109,16 +113,20 @@ public class crud {
 	 * @param index the index of the task to be edited
 	 * @param line the updated task description
 	 * @param date the updated task date
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 */
-	public static void editTask(int index, String line, String date) {
+	public static void editTask(int index, String line, String date) throws ClassNotFoundException, IOException {
 		Task editedTask = new Task(line,date);
 		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
 	/**
 	 * Function to delete task according to index in storage
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static void deleteTask(int index, int listOfTasks){
+	public static void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException{
 		if(listOfTasks == 1) { //delete from uncompleted tasks
 			Storage.localStorage.delFromUncompletedTasks(index);
 		}
@@ -191,9 +199,11 @@ public class crud {
 
 	/**
 	 * Function to clear storage
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static void clearTasks(){
+	public static void clearTasks() throws ClassNotFoundException, IOException{
 		Storage.localStorage.clear();
 	}
 

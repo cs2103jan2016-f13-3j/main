@@ -14,7 +14,7 @@ public class head {
 	private static Scanner sc = new Scanner(System.in);
 	private static String lastCommand = "";
 
-	public static void main(String[] args) throws FileNotFoundException, IOException {		
+	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		File file = new File(storageFileName);
 		checkIfFileExistsAndImportIfExists(file);
 		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
@@ -23,7 +23,7 @@ public class head {
 		runProgram();
 	}
 
-	public static void runProgram() throws IOException {
+	public static void runProgram() throws IOException, ClassNotFoundException {
 		while (true) {
 			UI.ui.print(USER_PROMPT);
 			String input = UI.ui.acceptCommand();
