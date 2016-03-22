@@ -25,6 +25,7 @@ public class Task implements java.io.Serializable {
 	// Constructor for tasks with date given
 	public Task(String issue, String date) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
+		assert date.contains("/");
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
@@ -83,11 +84,15 @@ public class Task implements java.io.Serializable {
 		if(date!=null){
 		String a=date.get(Calendar.DAY_OF_MONTH)+"/";
 		int n=date.get(Calendar.MONTH);
-		if(n==0){
+		if(n == 0) {
 			n=12;
 		}
 		a+=n+"/";
-		a+=date.get(Calendar.YEAR);
+		int year = date.get(Calendar.YEAR);
+		if (n == 12) {
+			year -= 1;
+		}
+		a+=year;
 		return a;
 		}else{
 			return "";

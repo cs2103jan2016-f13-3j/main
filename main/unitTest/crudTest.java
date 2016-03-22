@@ -14,7 +14,7 @@ import Task.Task;
 public class crudTest {
 
 	@Test
-	public void testAddTaskString() {
+	public void testAddTaskString() throws ClassNotFoundException {
 		boolean test=false;
 		try {
 			test = Logic.crud.addTask("testing");
@@ -25,7 +25,7 @@ public class crudTest {
 		assertEquals(true,test);
 	}
 	@Test
-	public void testTaskAdded() throws IOException{
+	public void testTaskAdded() throws IOException, ClassNotFoundException{
 		Logic.crud.clearTasks();
 		boolean test= Logic.crud.addTask("testing");
 		Logic.crud.displayUncompletedTasks();
@@ -34,7 +34,7 @@ public class crudTest {
 		
 	}	
 	@Test
-	public void testEditTask() throws IOException{
+	public void testEditTask() throws IOException, ClassNotFoundException{
 		
 		boolean test= Logic.crud.addTask("testing");
 		Logic.crud.editTask(0,"lalala");
