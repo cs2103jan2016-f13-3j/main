@@ -65,7 +65,7 @@ public class parser {
 			date = "-";
 			boolean isAdded;
 			if (index != -1) {// if s contains date
-				// read date
+				// read date 
 				date = temp[index + 1];
 				if (!Logic.checkDate.checkDateformat(date)) {
 					UI.ui.print(WRONG_DATE_MSG);
