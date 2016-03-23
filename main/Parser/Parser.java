@@ -89,7 +89,7 @@ public class Parser {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
-					isAdded = Logic.crud.addTask(issue, date);
+					isAdded = Logic.crud.addTask(issue, date,s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -122,7 +122,7 @@ public class Parser {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, startDate);
+					isAdded = Logic.crud.addTask(issue, startDate,s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -151,7 +151,7 @@ public class Parser {
 					// get issue
 					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, date);
+					isAdded = Logic.crud.addTask(issue, date,s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -274,16 +274,24 @@ public class Parser {
 
 		// edit <task number>|<issue>|<date>
 		else if (option.equals("edit") || option.equals("e")) {
-			String[] temp = s.split("\\|");
+			String[] temp = s.split(" ");
 			int num = Integer.parseInt(temp[0]);
-			issue = temp[1];
-			date = temp[2];
-			Logic.crud.copyTask(num);
-			Logic.crud.copyTaskDate(num);
+			
+			UI.ui.print("Please Insert Message");
+			Logic.crud.copyDescription(num);
+			String des=sc.nextLine();
+			String[] arr=des.split(" ");
+			
+			//
+			int start = getStartingIndex(arr); // start has value of -1 if it has no start date
+			int end = getIndexOfKey(arr); // end has value of -1 if it has no end date
+			issue = getIssue(arr, start, end, hasStartTime(arr), hasEndTime(arr));
+			date=arr[end+1];
+			
 			if (!Logic.checkDate.checkDateformat(date)) {
 				Logic.crud.editTask(num - 1, issue);
 			} else {
-				Logic.crud.editTask(num - 1, issue, date);
+				Logic.crud.editTask(num - 1, issue, date,des);
 			}
 			UI.ui.print("Task number " + num + EDIT_MSG);
 			arraylistsHaveBeenModified = true;

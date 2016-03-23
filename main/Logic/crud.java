@@ -48,8 +48,8 @@ public class crud {
 	 * @throws ClassNotFoundException 
 	 * 
 	 */
-	public static boolean addTask(String line,String date) throws IOException, ClassNotFoundException {
-		Task task = new Task(line,date);
+	public static boolean addTask(String line,String date, String msg) throws IOException, ClassNotFoundException {
+		Task task = new Task(line,date,msg);
 
 		boolean noDuplicate = true;
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -100,6 +100,15 @@ public class crud {
 			clipboard.setContents(selec, selec);
 		}
 	}
+	public static void copyDescription(int index){
+		Task edit = Storage.localStorage.getUncompletedTask(index-1);
+		if(edit != null){
+			String copy = edit.getDescription();
+			StringSelection selec = new StringSelection(copy);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selec, selec);
+		}
+	}
 
 	public static void copyTaskDate(int index){
 		Task edit = Storage.localStorage.getUncompletedTask(index-1);
@@ -124,8 +133,8 @@ public class crud {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void editTask(int index, String line, String date) throws ClassNotFoundException, IOException {
-		Task editedTask = new Task(line,date);
+	public static void editTask(int index, String line, String date,String msg) throws ClassNotFoundException, IOException {
+		Task editedTask = new Task(line,date,msg);
 		Storage.localStorage.setUncompletedTask(index, editedTask);
 	}
 	/**

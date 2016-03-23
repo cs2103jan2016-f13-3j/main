@@ -6,6 +6,7 @@ import java.util.GregorianCalendar;
 
 public class Task implements java.io.Serializable {
 	private String issue;
+	private String msg;
 	private ArrayList<String> label;
 	private boolean isCompleted;
 	private Calendar date;
@@ -16,6 +17,7 @@ public class Task implements java.io.Serializable {
 	// Constructor for dateless tasks
 	public Task(String issue) {
 		assert issue != null;
+		this.msg=msg;
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
@@ -23,9 +25,10 @@ public class Task implements java.io.Serializable {
 	}
 
 	// Constructor for tasks with date given
-	public Task(String issue, String date) { // assuming String date provided is of the format DD/MM/YYYY
+	public Task(String issue, String date,String msg) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
+		this.msg=msg;
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
@@ -67,6 +70,9 @@ public class Task implements java.io.Serializable {
 	// Getter Methods
 	public String getIssue() {
 		return issue;
+	}
+	public String getDescription(){
+		return msg;
 	}
 
 	public ArrayList<String> getLabel() {
