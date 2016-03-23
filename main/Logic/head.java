@@ -55,6 +55,18 @@ public class head {
 	public static String getLastCommand() {
 		return lastCommand;
 	}
+	
+	// creates the necessary storage files if they do not exist
+	// and import tasks from they, if any
+	public static void prepareAndImportFiles() throws FileNotFoundException, IOException {
+		File UncompletedTasksFile = new File(storageFileNameUncompletedTasks);
+		File CompletedTasksFile = new File(storageFileNameCompletedTasks);
+		File FloatingTasksFile = new File(storageFileNameFloatingTasks);
+		checkIfFileExists(UncompletedTasksFile);
+		checkIfFileExists(CompletedTasksFile);
+		checkIfFileExists(FloatingTasksFile);
+		importTasksFromFiles(UncompletedTasksFile, CompletedTasksFile, FloatingTasksFile);
+	}
 
 	public static void checkIfFileExists(File f) throws IOException, FileNotFoundException {
 		if (!f.exists()) {
@@ -72,15 +84,5 @@ public class head {
 		Logic.save.saveFile(storageFileNameUncompletedTasks);
 		Logic.save.saveFile(storageFileNameCompletedTasks);
 		Logic.save.saveFile(storageFileNameFloatingTasks);
-	}
-
-	public static void prepareAndImportFiles() throws FileNotFoundException, IOException {
-		File UncompletedTasksFile = new File(storageFileNameUncompletedTasks);
-		File CompletedTasksFile = new File(storageFileNameCompletedTasks);
-		File FloatingTasksFile = new File(storageFileNameFloatingTasks);
-		checkIfFileExists(UncompletedTasksFile);
-		checkIfFileExists(CompletedTasksFile);
-		checkIfFileExists(FloatingTasksFile);
-		importTasksFromFiles(UncompletedTasksFile, CompletedTasksFile, FloatingTasksFile);
 	}
 }

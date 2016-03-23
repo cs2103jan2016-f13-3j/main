@@ -47,7 +47,7 @@ public class mark {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
-		localStorage.copyCurrentState();
+//		localStorage.copyCurrentState();
 		Task temp = Storage.localStorage.getUncompletedTask(index);
 		temp.setPriority(priority);
 		Storage.localStorage.setUncompletedTask(index, temp);

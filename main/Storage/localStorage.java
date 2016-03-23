@@ -18,8 +18,6 @@ public class localStorage {
 	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> floatingTasks = new ArrayList<Task>();
-	private static ArrayList<Task> formerCompletedTasks, formerUncompletedTasks;
-	private static boolean changesWereMade = false;
 
 	/**
 	 * Function to return the ArrayList details
@@ -89,21 +87,16 @@ public class localStorage {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void setUncompletedTask(int index, Task temp) throws ClassNotFoundException, IOException {
-		//		copyCurrentState();
+	public static void setUncompletedTask(int index, Task temp) {
 		uncompletedTasks.set(index, temp);
-		changesWereMade = true;
 	}
 
-	public static void setCompletedTask(int index, Task temp) throws ClassNotFoundException, IOException {
-		//		copyCurrentState();
+	public static void setCompletedTask(int index, Task temp) {
 		completedTasks.set(index, temp);
-		changesWereMade = true;
 	}
 	
-	public static void setFloatingTask(int index, Task temp) throws ClassNotFoundException, IOException {
+	public static void setFloatingTask(int index, Task temp) {
 		floatingTasks.set(index, temp);
-		changesWereMade = true;
 	}
 
 	/**
@@ -113,9 +106,7 @@ public class localStorage {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void setArrayList(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
-		//		copyCurrentState();
 		uncompletedTasks = changedDetails;
-		changesWereMade = true;
 	}
 
 	/**
@@ -125,10 +116,8 @@ public class localStorage {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void addToUncompletedTasks(Task task) throws IOException, ClassNotFoundException {
-		copyCurrentState();
+	public static void addToUncompletedTasks(Task task) {
 		uncompletedTasks.add(task);
-		changesWereMade = true;
 	}
 
 	/**
@@ -139,14 +128,11 @@ public class localStorage {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
-		copyCurrentState();
 		completedTasks.add(task);
-		changesWereMade = true;
 	}
 	
-	public static void addToFloatingTasks(Task task) throws IOException, ClassNotFoundException {
+	public static void addToFloatingTasks(Task task) {
 		floatingTasks.add(task);
-		changesWereMade = true;
 	}
 
 	/**
@@ -156,10 +142,8 @@ public class localStorage {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Task delFromUncompletedTasks(int index) throws ClassNotFoundException, IOException {
-		copyCurrentState();
+	public static Task delFromUncompletedTasks(int index) {
 		Task temp = uncompletedTasks.remove(index);
-		changesWereMade = true;
 		return temp;
 	}
 
@@ -170,16 +154,13 @@ public class localStorage {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static Task delFromCompletedTasks(int index) throws ClassNotFoundException, IOException {
-		copyCurrentState();
+	public static Task delFromCompletedTasks(int index) {
 		Task temp = completedTasks.remove(index);
-		changesWereMade = true;
 		return temp;
 	}
 	
 	public static Task delFromFloatingTasks(int index) {
 		Task temp = floatingTasks.remove(index);
-		changesWereMade = true;
 		return temp;
 	}
 
@@ -210,77 +191,18 @@ public class localStorage {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void clear() throws ClassNotFoundException, IOException {
-		copyCurrentState();
+	public static void clear() {
 		uncompletedTasks.clear();
 		completedTasks.clear();
 		floatingTasks.clear();
-		changesWereMade = true;
 	}
 
-	public static void copyCurrentState() throws IOException, ClassNotFoundException {
-		copyCurrentCompletedTasks();
-		copyCurrentUncompletedTasks();
-	}
-
-	public static ArrayList<Task> getFormerCompletedTasks() {
-		return formerCompletedTasks;
-	}
-
-	public static ArrayList<Task> getFormerUncompletedTasks() {
-		return formerUncompletedTasks;
-	}
-
-	public static void copyCurrentCompletedTasks() throws IOException, ClassNotFoundException {
-		// copies completed tasks for storing into undo's history
-		ArrayList<Task> completedCopy = new ArrayList<Task>(completedTasks.size());
-		for (Task t : completedTasks) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(t);
-			oos.flush();
-			oos.close();
-			bos.close();
-			byte[] byteData = bos.toByteArray();
-
-			// restore
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-			Task tempTask = (Task) new ObjectInputStream(bais).readObject();
-			completedCopy.add(tempTask);
-		}
-		formerCompletedTasks = completedCopy;
-	}
-
-	public static void copyCurrentUncompletedTasks() throws IOException, ClassNotFoundException {
-		// copies uncompleted tasks for storing into undo's history
-		ArrayList<Task> uncompletedCopy = new ArrayList<Task>(uncompletedTasks.size());
-		for (Task t : uncompletedTasks) {
-			ByteArrayOutputStream bos = new ByteArrayOutputStream();
-			ObjectOutputStream oos = new ObjectOutputStream(bos);
-			oos.writeObject(t);
-			oos.flush();
-			oos.close();
-			bos.close();
-			byte[] byteData = bos.toByteArray();
-
-			// restore
-			ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
-			Task tempTask = (Task) new ObjectInputStream(bais).readObject();
-			uncompletedCopy.add(tempTask);
-		}
-		formerUncompletedTasks = uncompletedCopy;
-	}
-
-	public static void revertToPreviousState(ArrayList<Task> previousCompleted, ArrayList<Task> previousUncompleted) {
+	// replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
+	public static void revertToPreviousState(ArrayList<Task> previousCompleted, 
+											 ArrayList<Task> previousUncompleted,
+											 ArrayList<Task> previousFloating) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
-	}
-
-	public static boolean hasBeenChanged() {
-		return changesWereMade;
-	}
-
-	public static void setUnchanged() {
-		changesWereMade = false;
+		floatingTasks = previousFloating;
 	}
 }
