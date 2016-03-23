@@ -94,7 +94,8 @@ public class parser {
 		}
 
 		else if (option.equals("delete") || option.equals("-")) {
-			if((Logic.head.getLastCommand().equals("dc") || Logic.head.getLastCommand().equals("displaycompleted"))!= true) {
+			if((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display"))== true) {
+				//delete from uncompleted tasks
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				if (list.size() == 0) {
@@ -111,6 +112,7 @@ public class parser {
 				}
 			}
 			else if((Logic.head.getLastCommand().equals("search")|| Logic.head.getLastCommand().equals("s"))) {
+				//delete from search results
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Logic.search.getSearchedTasks();
 				if (list.size() == 0) {
@@ -126,7 +128,8 @@ public class parser {
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 				}
 			}
-			else {
+			else if((Logic.head.getLastCommand().equals("dc") || (Logic.head.getLastCommand().equals("displaycompleted") == true))){
+				//delete from completed tasks
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
 				if (list.size() == 0) {
@@ -142,6 +145,22 @@ public class parser {
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 				}
 			}
+			else {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getFloatingTasks();
+				if (list.size() == 0) {
+					UI.ui.print(EMPTY_MSG);
+				} else if (list.size() < num || num - 1 < 0) {
+					// handle indexOutofBoundException
+					UI.ui.print(DNE_MSG);
+
+				} else {
+					Task deleted = list.get(num - 1);
+					issue = deleted.getIssue();
+					Logic.crud.deleteTask(num - 1, 4);
+					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+				}
+			}
 		}
 
 		else if (option.equals("display") || option.equals("d")) {
@@ -150,6 +169,10 @@ public class parser {
 
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
+		}
+		
+		else if(option.equals("displayfloating") || option.equals("df")) {
+			Logic.crud.displayFloatingTasks();
 		}
 
 		else if (option.equals("view") || option.equals("v")) {

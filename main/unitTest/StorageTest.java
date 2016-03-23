@@ -33,6 +33,12 @@ public class StorageTest {
 		} catch (IOException e) {
 			System.out.println(e);
 		}
+		
+		/*try {
+			localStorage.addToCompletedTasks(temp1);
+		} catch (IOException e) {
+			result = 
+		}*/
 
 		Task isMatch = localStorage.getUncompletedTask(0);
 		assertEquals(temp, isMatch);

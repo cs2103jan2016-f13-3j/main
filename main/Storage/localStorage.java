@@ -144,7 +144,7 @@ public class localStorage {
 		changesWereMade = true;
 	}
 	
-	public static void addToFloatingTasks(Task task) {
+	public static void addToFloatingTasks(Task task) throws IOException, ClassNotFoundException {
 		floatingTasks.add(task);
 		changesWereMade = true;
 	}

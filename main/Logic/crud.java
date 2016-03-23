@@ -47,7 +47,7 @@ public class crud {
 	 */
 	public static boolean addTask(String line,String date) throws IOException, ClassNotFoundException {
 		Task task = new Task(line,date);
-		
+
 		boolean noDuplicate = true;
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		for(Task temp : tempTasks) {
@@ -72,8 +72,14 @@ public class crud {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void addTaskViaImport(Task task) throws IOException, ClassNotFoundException {
-		Storage.localStorage.addToUncompletedTasks(task);
-		Storage.localStorage.setUnchanged();
+		if(task.getDate() == null) {
+			Storage.localStorage.addToFloatingTasks(task);
+			Storage.localStorage.setUnchanged();	
+		}
+		else {
+			Storage.localStorage.addToUncompletedTasks(task);
+			Storage.localStorage.setUnchanged();
+		}
 	}
 
 	/**
@@ -86,20 +92,20 @@ public class crud {
 	public static void copyTask(int index){
 		Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		if(edit != null){
-		String copy = edit.getIssue();
-		StringSelection selec = new StringSelection(copy);
-		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		   clipboard.setContents(selec, selec);
+			String copy = edit.getIssue();
+			StringSelection selec = new StringSelection(copy);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selec, selec);
 		}
 	}
 
 	public static void copyTaskDate(int index){
 		Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		if(edit != null){
-		String copy = edit.getDateString();
-		StringSelection selec = new StringSelection(copy);
-		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-		   clipboard.setContents(selec, selec);
+			String copy = edit.getDateString();
+			StringSelection selec = new StringSelection(copy);
+			Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			clipboard.setContents(selec, selec);
 		}
 	}
 	public static void editTask(int index, String line) throws IOException, ClassNotFoundException {
@@ -143,6 +149,9 @@ public class crud {
 					break;
 				}
 			}
+		}
+		else if(listOfTasks == 4) { //delete from floating tasks view
+			Storage.localStorage.delFromFloatingTasks(index);
 		}
 	}
 
@@ -189,6 +198,20 @@ public class crud {
 	 */
 	public static void displayCompletedTasks() {
 		temp = Storage.localStorage.displayCompletedTasks();
+		for(int i=0; i<temp.size(); i++) {
+			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
+		}
+		if (temp.isEmpty()) {
+			UI.ui.print("There is no stored task to display");
+		}
+	}
+
+	/**
+	 * Function to display all the floating tasks in the storage
+	 * 
+	 */
+	public static void displayFloatingTasks() {
+		temp = Storage.localStorage.displayFloatingTasks();
 		for(int i=0; i<temp.size(); i++) {
 			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
 		}
