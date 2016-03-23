@@ -8,10 +8,10 @@ import Logic.crud;
 import java.io.*;
 import Task.Task;
 
-public class parser {
-	private static String date, issue;
+public class Parser {
+	private static String startDate, date, issue, startTime, time;
 	private static Scanner sc = new Scanner(System.in);
-	private static final String[] key = { "by", "at", "in", "on", "during","before"};
+	private static final String[] key = { "by", "at", "in", "on", "during", "before" };
 	private static final String EMPTY_MSG = " Unable to delete from empty task list";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
@@ -34,8 +34,8 @@ public class parser {
 	 * inputs
 	 * 
 	 * @throws IOException
-	 * @throws ClassNotFoundException 
-	 * 
+	 * @throws ClassNotFoundException
+	 * return boolean
 	 */
 	public static boolean run(String cmd, String description) throws IOException, ClassNotFoundException {
 		// process commands
@@ -54,48 +54,107 @@ public class parser {
 	 * @param option
 	 * @param s
 	 * @throws IOException
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
+	 * return boolean
 	 */
 	public static boolean parseCommands(String option, String s) throws IOException, ClassNotFoundException {
 		Boolean valid = true;
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			// get index of key
 			String[] temp = s.split(" ");
-			int index = getIndexOfKey(temp);
-			date = "-";
+			int start = getStartingIndex(temp); // start has value of -1 if it has no start date
+			int end = getIndexOfKey(temp); // end has value of -1 if it has no end date
 			boolean isAdded;
-			if (index != -1) {// if s contains date
-				// read date 
-				date = temp[index + 1];
+			if (start == -1 && end != -1) {// no start date but has end date
+				startDate = "-";
+				startTime = "-";
+				// read date & time
+				date = temp[end + 1];
+
+				if (hasEndTime(temp)) {// check if contain end time
+					time = temp[end + 2];
+				} else {
+					time = "-";
+				}
 				if (!Logic.checkDate.checkDateformat(date)) {
 					UI.ui.print(WRONG_DATE_MSG);
 
 				} else {
 					// get issue
-					issue = getIssue(temp, index);
+					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
 					isAdded = Logic.crud.addTask(issue, date);
-					if(isAdded) {
+					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
-					}
-					else {
+					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
 				}
-			} else {
+			} else if (start == -1 && end == -1) {// no end date and no start date
 				isAdded = Logic.crud.addTask(s);
-				if(isAdded) {
+				if (isAdded) {
 					UI.ui.print("\"" + s + "\" " + ADD_MSG);
-				}
-				else {
+				} else {
 					UI.ui.print(DUPLICATE_ADD_MSG);
 				}
+
+			} else if (start != -1 && end == -1) {// has start date but no end date
+				date = "-";
+				time = "-";
+				startDate = temp[start + 1];
+
+				if (hasStartTime(temp)) {
+					startTime = temp[start + 2];
+				} else {
+					startTime = "-";
+				}
+				if (!Logic.checkDate.checkDateformat(startDate)) {
+					UI.ui.print(WRONG_DATE_MSG);
+
+				} else {
+					// get issue
+					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+					isAdded = Logic.crud.addTask(issue, startDate);
+					if (isAdded) {
+						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+					} else {
+						UI.ui.print(DUPLICATE_ADD_MSG);
+					}
+				}
+			} else { // has both start date and end date
+				startDate = temp[start + 1];
+				date = temp[end + 1];
+				if (hasStartTime(temp)) {
+					startTime = temp[start + 2];
+				} else {
+					startTime = "-";
+				}
+				if (hasEndTime(temp)) {
+					time = temp[end + 2];
+
+				} else {
+					time = "-";
+				}
+
+				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+					UI.ui.print(WRONG_DATE_MSG);
+				} else {
+					// get issue
+					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
+					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+					isAdded = Logic.crud.addTask(issue, date);
+					if (isAdded) {
+						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+					} else {
+						UI.ui.print(DUPLICATE_ADD_MSG);
+					}
+				}
+
 			}
-
-		}
-
-		else if (option.equals("delete") || option.equals("-")) {
-			if((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display"))== true) {
-				//delete from uncompleted tasks
+		} else if (option.equals("delete") || option.equals("-")) {
+			if ((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display")) == true) {
+				// delete from uncompleted tasks
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				if (list.size() == 0) {
@@ -110,9 +169,8 @@ public class parser {
 					Logic.crud.deleteTask(num - 1, 1);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 				}
-			}
-			else if((Logic.head.getLastCommand().equals("search")|| Logic.head.getLastCommand().equals("s"))) {
-				//delete from search results
+			} else if ((Logic.head.getLastCommand().equals("search") || Logic.head.getLastCommand().equals("s"))) {
+				// delete from search results
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Logic.search.getSearchedTasks();
 				if (list.size() == 0) {
@@ -127,9 +185,9 @@ public class parser {
 					Logic.crud.deleteTask(num - 1, 3);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 				}
-			}
-			else if((Logic.head.getLastCommand().equals("dc") || (Logic.head.getLastCommand().equals("displaycompleted") == true))){
-				//delete from completed tasks
+			} else if ((Logic.head.getLastCommand().equals("dc")
+					|| (Logic.head.getLastCommand().equals("displaycompleted") == true))) {
+				// delete from completed tasks
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
 				if (list.size() == 0) {
@@ -144,8 +202,7 @@ public class parser {
 					Logic.crud.deleteTask(num - 1, 2);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 				}
-			}
-			else {
+			} else {
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getFloatingTasks();
 				if (list.size() == 0) {
@@ -170,8 +227,8 @@ public class parser {
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
 		}
-		
-		else if(option.equals("displayfloating") || option.equals("df")) {
+
+		else if (option.equals("displayfloating") || option.equals("df")) {
 			Logic.crud.displayFloatingTasks();
 		}
 
@@ -193,7 +250,7 @@ public class parser {
 		else if (option.equals("search") || option.equals("s")) {
 			Logic.search.searchTasksByKeyword(s);
 		}
-		
+
 		else if (option.equals("searchcompleted") || option.equals("sc")) {
 			Logic.search.searchCompletedTasksByKeyword(s);
 		}
@@ -204,29 +261,20 @@ public class parser {
 			UI.ui.print(s + MARK_MSG);
 		}
 
+		// edit <task number>|<issue>|<date>
 		else if (option.equals("edit") || option.equals("e")) {
-			int num = Integer.parseInt(s);
+			String[] temp = s.split("\\|");
+			int num = Integer.parseInt(temp[0]);
+			issue = temp[1];
+			date = temp[2];
 			Logic.crud.copyTask(num);
-			UI.ui.print("Enter edited task:");
-			issue = sc.nextLine();
 			Logic.crud.copyTaskDate(num);
-			UI.ui.print("Enter the edited date:");
-			while (true) { // check if the user want to add date
-				date = sc.nextLine();
-				if (date.equals("-")) {
-					break;
-				}
-				if (Logic.checkDate.checkDateformat(date)) {
-					break;
-				}
-				UI.ui.print(WRONG_DEADLINE_MSG);
-			}
-			if (date.equals("-")) {
+			if (!Logic.checkDate.checkDateformat(date)) {
 				Logic.crud.editTask(num - 1, issue);
 			} else {
 				Logic.crud.editTask(num - 1, issue, date);
 			}
-			UI.ui.print("Task number " + s + EDIT_MSG);
+			UI.ui.print("Task number " + num + EDIT_MSG);
 		}
 
 		else if (option.equals("p")) {
@@ -235,12 +283,12 @@ public class parser {
 			String priority = sc.nextLine();
 			Logic.mark.setPriority(num - 1, priority);
 		}
-		
+
 		else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
 			UI.ui.print(pastCommands);
 		}
-		
+
 		else if (option.equals("undo")) {
 			String outcome = Undo.getInstance().undo();
 			UI.ui.print(outcome);
@@ -257,7 +305,8 @@ public class parser {
 		else {
 			UI.ui.print(INVALID_MSG);
 			valid = false;
-		} return valid;
+		}
+		return valid;
 	}
 
 	/**
@@ -273,28 +322,142 @@ public class parser {
 	}
 
 	/**
-	 * method that return the description of task from the String[] and position
-	 * of keyword derived from the user's input
+	 * method that return the description of task from the String[],position of
+	 * start keyword , position of end keyword,boolean value of startTime and
+	 * boolean value of endTime
 	 * 
 	 * @param arr
-	 * @param pos
+	 * @param start
+	 * @param end
+	 * @param startTime
+	 * @param endTime
 	 * @return String
 	 */
-	public static String getIssue(String[] arr, int pos) {
-		int size = arr.length - 2;
-		String[] temp = new String[size];
-		int i;
-		// copy of arr to temp without the command,keyword and date
-		for (i = 0; i < size; i++) {
-			if (i >= pos) {
-				temp[i] = arr[i + 2];
+	public static String getIssue(String[] arr, int start, int end, boolean startTime, boolean endTime) {
+		if (start == -1) {// no start date
+			if (endTime) { // has end time
+				int size = arr.length - 3;
+				String[] temp = new String[size];
+				int i;
 
-			} else {
-				temp[i] = arr[i];
+				for (i = 0; i < size; i++) {
+					if (i >= end) {
+						temp[i] = arr[i + 3];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			} else {// no end time
+				int size = arr.length - 2;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= end) {
+						temp[i] = arr[i + 2];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			}
+
+		} else if (end == -1) { // no end date
+			if (startTime) {// has start time
+				int size = arr.length - 3;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start) {
+						temp[i] = arr[i + 3];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			} else {// no start time
+				int size = arr.length - 2;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start) {
+						temp[i] = arr[i + 2];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			}
+
+		} else {// has both start date and end date
+			if (startTime && endTime) { // has start time and end time
+				int size = arr.length - 6;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start && i < end) {
+						temp[i] = arr[i + 3];
+					} else if (i >= end) {
+						temp[i] = arr[i + 3];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			} else if (startTime == false && endTime == true) { // has only end
+																// time
+				int size = arr.length - 5;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start && i < end) {
+						temp[i] = arr[i + 2];
+					} else if (i >= end) {
+						temp[i] = arr[i + 3];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			} else if (startTime = true && endTime == false) {// has only start
+																// time
+				int size = arr.length - 5;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start && i < end) {
+						temp[i] = arr[i + 3];
+					} else if (i >= end) {
+						temp[i] = arr[i + 2];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
+			} else { // has no start time and no end time
+				int size = arr.length - 4;
+				String[] temp = new String[size];
+				int i;
+				for (i = 0; i < size; i++) {
+					if (i >= start && i < end) {
+						temp[i] = arr[i + 2];
+					} else if (i >= end) {
+						temp[i] = arr[i + 2];
+
+					} else {
+						temp[i] = arr[i];
+					}
+				}
+				return arrayToString(temp);
 			}
 		}
-		return arrayToString(temp);
-
 	}
 
 	/**
@@ -310,16 +473,85 @@ public class parser {
 			for (int j = 1; j < arr.length; j++) {
 				if (arr[j].equals(key[i])) {
 					idx = j;
-					break;
 				}
 			}
 		}
 		return idx;
 	}
+
+	/**
+	 * Method that return the index of "from" from the input String[] and return
+	 * -1 if no starting index is present
+	 * 
+	 * @param arr
+	 * @return Integer
+	 */
+	public static int getStartingIndex(String[] arr) {
+		int idx = -1;
+		for (int i = 0; i < arr.length; i++) {
+			if (arr[i].equals("from")) {
+				idx = i;
+			}
+
+		}
+		return idx;
+	}
+
+	/**
+	 * method that return a boolean value to indicate if input string[] contains
+	 * starting time
+	 * 
+	 * @param arr
+	 * @return boolean
+	 */
+	public static boolean hasStartTime(String[] arr) {
+		boolean containTime = true;
+		int start = getStartingIndex(arr);
+		// if date is the last argument => no time
+		if (start + 2 >= arr.length) {
+			containTime = false;
+		} else {
+			if (!checkTimeFormat(arr[start + 2])) {
+				containTime = false;
+			}
+		}
+		return containTime;
+	}
+
+	/**
+	 * method that return a boolean value to indicate if input String[] contains
+	 * ending time
+	 * 
+	 * @param arr
+	 * @return boolean
+	 */
+	public static boolean hasEndTime(String[] arr) {
+		boolean containTime = true;
+		int end = getIndexOfKey(arr);
+		// if date is the last argument => no time
+		if (end + 2 >= arr.length) {
+			containTime = false;
+
+		} else {
+			if (!checkTimeFormat(arr[end + 2])) {
+				containTime = false;
+			}
+		}
+		return containTime;
+	}
+
+	// return existing issue processed by the parser
 	public static String getIssue() {
 		return issue;
 	}
+
+	// return existing date processed by the parser
 	public static String getDate() {
 		return date;
+	}
+
+	// to be implemented
+	public static boolean checkTimeFormat(String s) {// assume no time
+		return true;
 	}
 }

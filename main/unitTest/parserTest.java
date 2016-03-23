@@ -1,10 +1,10 @@
 package unitTest;
 
 import static org.junit.Assert.*;
-
+import Parser.Parser;
+import Task.Task;
+import java.util.ArrayList;
 import org.junit.Test;
-
-import Parser.parser;
 
 public class parserTest {
 
@@ -16,10 +16,9 @@ public class parserTest {
 		
 			String testDescription = "task 1";
 			String testDate = "20/03/2016";
-			assertTrue(parser.run(cmd,s));
-			String description = parser.getIssue();
-			String date = parser.getDate();
-			System.out.println("***"+ date+ "****");
+			assertTrue(Parser.run(cmd,s));
+			String description = Parser.getIssue();
+			String date = Parser.getDate();
 			assertEquals(testDescription, description);
 			assertEquals(testDate, date);
 		} catch (Exception e) {
@@ -27,32 +26,35 @@ public class parserTest {
 		}
 	}
 
+	
+	@Test
+	public void SearchTest() {
+		try {
+			Parser.run("add" ,"mission 3");
+			String cmd = "search";
+			String s = "mission";
+			Parser.run("display","");
+			assertTrue(Parser.run(cmd,s));
+			ArrayList<Task> arr = Logic.search.getSearchedTasks();
+			assertEquals(arr.get(0).getTaskString(),"mission 3");
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	} 
 	@Test
 	public void deleteTest() {
 
 		try {
 			String s = "1";
 			String cmd = "delete";
-	
-			assertTrue(parser.run(cmd,s));
-
+			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			Task deleted = list.get(0);
+			assertTrue(Parser.run(cmd,s));			
+			assertEquals(deleted.getIssue(),"task 1");
+			Parser.run("clear"," ");
+		
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	@Test
-	public void markTest() {
-		try {
-			parser.run("add","task 2 by 20/03/2016");
-			parser.run("add" ,"task 3 by 19/03/2016");
-			String cmd = "mark";
-			String s = "1";
-		
-			assertTrue(parser.run(cmd,s));
-			parser.run("clear"," ");
-			parser.run("exit"," ");
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	} 
 }
