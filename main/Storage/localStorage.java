@@ -17,6 +17,7 @@ public class localStorage {
 	//ArrayList to store the contents added to the file
 	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
+	private static ArrayList<Task> floatingTasks = new ArrayList<Task>();
 	private static ArrayList<Task> formerCompletedTasks, formerUncompletedTasks;
 	private static boolean changesWereMade = false;
 
@@ -30,6 +31,10 @@ public class localStorage {
 
 	public static ArrayList<Task> getCompletedTasks() {
 		return completedTasks;
+	}
+	
+	public static ArrayList<Task> getFloatingTasks() {
+		return floatingTasks;
 	}
 
 	/**
@@ -66,6 +71,16 @@ public class localStorage {
 		}
 		return temp;
 	}
+	
+	public static Task getFloatingTask(int index) {
+		Task temp = null;
+		for(int i = 0; i<floatingTasks.size(); i++) {
+			if(i == index) {
+				temp = floatingTasks.get(i);
+			}
+		}
+		return temp;
+	}
 
 	/**
 	 * Function to set a task to a particular index
@@ -83,6 +98,11 @@ public class localStorage {
 	public static void setCompletedTask(int index, Task temp) throws ClassNotFoundException, IOException {
 		//		copyCurrentState();
 		completedTasks.set(index, temp);
+		changesWereMade = true;
+	}
+	
+	public static void setFloatingTask(int index, Task temp) throws ClassNotFoundException, IOException {
+		floatingTasks.set(index, temp);
 		changesWereMade = true;
 	}
 
@@ -123,6 +143,11 @@ public class localStorage {
 		completedTasks.add(task);
 		changesWereMade = true;
 	}
+	
+	public static void addToFloatingTasks(Task task) {
+		floatingTasks.add(task);
+		changesWereMade = true;
+	}
 
 	/**
 	 * Function to delete a task from the file
@@ -151,6 +176,12 @@ public class localStorage {
 		changesWereMade = true;
 		return temp;
 	}
+	
+	public static Task delFromFloatingTasks(int index) {
+		Task temp = floatingTasks.remove(index);
+		changesWereMade = true;
+		return temp;
+	}
 
 	/**
 	 * Function to return the uncompleted list of tasks to Logic
@@ -169,6 +200,10 @@ public class localStorage {
 	public static ArrayList<Task> displayCompletedTasks() {
 		return completedTasks;
 	}
+	
+	public static ArrayList<Task> displayFloatingTasks() {
+		return floatingTasks;
+	}
 
 	/**
 	 * Function to clear the contents of the file
@@ -179,6 +214,7 @@ public class localStorage {
 		copyCurrentState();
 		uncompletedTasks.clear();
 		completedTasks.clear();
+		floatingTasks.clear();
 		changesWereMade = true;
 	}
 

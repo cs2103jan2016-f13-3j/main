@@ -29,7 +29,7 @@ public class crud {
 			}
 		}
 		if(noDuplicate) {
-			Storage.localStorage.addToUncompletedTasks(task);
+			Storage.localStorage.addToFloatingTasks(task);
 			return true;
 		}
 		else {
@@ -84,20 +84,20 @@ public class crud {
 	 * @throws IOException
 	 */
 	public static void copyTask(int index){
-		Task edit=Storage.localStorage.getUncompletedTask(index-1);
-		if(edit!=null){
-		String copy=edit.getIssue();
-		StringSelection selec= new StringSelection(copy);
+		Task edit = Storage.localStorage.getUncompletedTask(index-1);
+		if(edit != null){
+		String copy = edit.getIssue();
+		StringSelection selec = new StringSelection(copy);
 		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		   clipboard.setContents(selec, selec);
 		}
 	}
 
 	public static void copyTaskDate(int index){
-		Task edit=Storage.localStorage.getUncompletedTask(index-1);
-		if(edit!=null){
-		String copy=edit.getDateString();
-		StringSelection selec= new StringSelection(copy);
+		Task edit = Storage.localStorage.getUncompletedTask(index-1);
+		if(edit != null){
+		String copy = edit.getDateString();
+		StringSelection selec = new StringSelection(copy);
 		   Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 		   clipboard.setContents(selec, selec);
 		}
