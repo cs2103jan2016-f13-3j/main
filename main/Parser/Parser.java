@@ -9,6 +9,7 @@ import java.io.*;
 import Task.Task;
 
 public class Parser {
+	private static boolean arraylistsHaveBeenModified;
 	private static String startDate, date, issue, startTime, time;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] key = { "by", "at", "in", "on", "during", "before" };
@@ -39,12 +40,18 @@ public class Parser {
 	 */
 	public static boolean run(String cmd, String description) throws IOException, ClassNotFoundException {
 		// process commands
-		boolean valid = parseCommands(cmd, description);
+		
+		// take "snapshots" of current storage state
+		Undo.getInstance().copyCurrentTasksState();
+		boolean modificationsWereMade = parseCommands(cmd, description);
 		if (!description.equals("")) {
 			cmd += " " + description;
 		}
-		Undo.getInstance().storePreviousStateIfNeeded(cmd);
-		return valid;
+		if (modificationsWereMade) {
+			// store the "snapshots" into Undo class if arraylists have been modified
+			Undo.getInstance().storePreviousState(cmd);
+		}
+		return modificationsWereMade;
 	}
 
 	/**
@@ -58,7 +65,7 @@ public class Parser {
 	 * return boolean
 	 */
 	public static boolean parseCommands(String option, String s) throws IOException, ClassNotFoundException {
-		Boolean valid = true;
+		arraylistsHaveBeenModified = false;
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			// get index of key
 			String[] temp = s.split(" ");
@@ -78,7 +85,6 @@ public class Parser {
 				}
 				if (!Logic.checkDate.checkDateformat(date)) {
 					UI.ui.print(WRONG_DATE_MSG);
-
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
@@ -86,6 +92,7 @@ public class Parser {
 					isAdded = Logic.crud.addTask(issue, date);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+						arraylistsHaveBeenModified = true;
 					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
@@ -94,6 +101,7 @@ public class Parser {
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
 					UI.ui.print("\"" + s + "\" " + ADD_MSG);
+					arraylistsHaveBeenModified = true;
 				} else {
 					UI.ui.print(DUPLICATE_ADD_MSG);
 				}
@@ -110,7 +118,6 @@ public class Parser {
 				}
 				if (!Logic.checkDate.checkDateformat(startDate)) {
 					UI.ui.print(WRONG_DATE_MSG);
-
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
@@ -118,6 +125,7 @@ public class Parser {
 					isAdded = Logic.crud.addTask(issue, startDate);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+						arraylistsHaveBeenModified = true;
 					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
@@ -146,11 +154,11 @@ public class Parser {
 					isAdded = Logic.crud.addTask(issue, date);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+						arraylistsHaveBeenModified = true;
 					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
 				}
-
 			}
 		} else if (option.equals("delete") || option.equals("-")) {
 			if ((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display")) == true) {
@@ -162,12 +170,12 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
-
 				} else {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.crud.deleteTask(num - 1, 1);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+					arraylistsHaveBeenModified = true;
 				}
 			} else if ((Logic.head.getLastCommand().equals("search") || Logic.head.getLastCommand().equals("s"))) {
 				// delete from search results
@@ -178,12 +186,12 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
-
 				} else {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.crud.deleteTask(num - 1, 3);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+					arraylistsHaveBeenModified = true;
 				}
 			} else if ((Logic.head.getLastCommand().equals("dc")
 					|| (Logic.head.getLastCommand().equals("displaycompleted") == true))) {
@@ -195,12 +203,12 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
-
 				} else {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.crud.deleteTask(num - 1, 2);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+					arraylistsHaveBeenModified = true;
 				}
 			} else {
 				int num = Integer.parseInt(s);
@@ -210,12 +218,12 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
-
 				} else {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.crud.deleteTask(num - 1, 4);
 					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+					arraylistsHaveBeenModified = true;
 				}
 			}
 		}
@@ -240,11 +248,13 @@ public class Parser {
 		else if (option.equals("clear") || option.equals("c")) {
 			Logic.crud.clearTasks();
 			UI.ui.print(CLEAR_MSG);
+			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("sort")) { // by alphabetical order
 			Logic.sort.sortTasksAlphabetically();
 			UI.ui.print(SORT_MSG);
+			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("search") || option.equals("s")) {
@@ -259,6 +269,7 @@ public class Parser {
 			int num = Integer.parseInt(s);
 			Logic.mark.markTaskAsCompleted(num - 1);
 			UI.ui.print(s + MARK_MSG);
+			arraylistsHaveBeenModified = true;
 		}
 
 		// edit <task number>|<issue>|<date>
@@ -275,6 +286,7 @@ public class Parser {
 				Logic.crud.editTask(num - 1, issue, date);
 			}
 			UI.ui.print("Task number " + num + EDIT_MSG);
+			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("p")) {
@@ -282,6 +294,7 @@ public class Parser {
 			UI.ui.print("Enter priority");
 			String priority = sc.nextLine();
 			Logic.mark.setPriority(num - 1, priority);
+			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("history")) {
@@ -304,9 +317,8 @@ public class Parser {
 
 		else {
 			UI.ui.print(INVALID_MSG);
-			valid = false;
 		}
-		return valid;
+		return arraylistsHaveBeenModified;
 	}
 
 	/**

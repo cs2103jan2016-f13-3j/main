@@ -1,6 +1,7 @@
 package Logic;
 
 import java.io.EOFException;
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -14,21 +15,21 @@ import Task.Task;
 
 public class importTasks {
 	
-	private final static Logger logger = Logger.getLogger(Class.class.getName()); 
+	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
 
 	/**
-	 * Function to import tasks from the storage file "storage.ser"
+	 * Function to import tasks from a given storage file
 	 * 
 	 * @param fileName String that contains the name of the storage file
 	 * @throws IOException
 	 */
 	
-	public static void importTasksFromStorage(String fileName) throws IOException {
-		LoggerTry.startLog();
+	public static void importTasksFromStorage(File file, String flag) throws IOException {
+//		LoggerTry.startLog();
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
-			fis = new FileInputStream(fileName);		
+			fis = new FileInputStream(file);		
 			ois = new ObjectInputStream(fis);
 		} catch (FileNotFoundException e1) {
 			e1.printStackTrace();
@@ -42,7 +43,7 @@ public class importTasks {
 		while (true) {
 			try {
 				Task task = (Task)ois.readObject();
-				Logic.crud.addTaskViaImport(task);
+				Logic.crud.addTaskViaImport(task, flag);
 			} catch (ClassNotFoundException e) {
 				e.printStackTrace();
 			} catch (EOFException e) {
@@ -56,7 +57,7 @@ public class importTasks {
 			}
 		}
 		fis.close();
-	}	
+	}
 }
 
 class LoggerTry {

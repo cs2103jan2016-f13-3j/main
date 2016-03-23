@@ -12,9 +12,8 @@ import Task.Task;
 public class fileStorage {
 
 	/**
-	 * Function that returns the tasks which are due by the given date
+	 * Function that saves the given arraylist into a file named as the String fileName
 	 * 
-	 * @param oos the outputstream object 
 	 */
 	public static void saveFile(String fileName, ArrayList<Task> details) throws IOException {
 		try {
