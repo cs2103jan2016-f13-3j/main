@@ -12,7 +12,7 @@ import Task.Task;
 public class fileStorage {
 
 	/**
-	 * Function that returns the tasks which are due by the given date
+	 * Function that returns the tasks which are due by the given date <<<<<<<<<<<< !!!!
 	 * 
 	 * @param oos the outputstream object 
 	 */

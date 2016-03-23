@@ -14,6 +14,9 @@ public class crud {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
 	private static Task temp1;
+	private static final String FLAG_UNCOMPLETED = "uncompleted";
+	private static final String FLAG_COMPLETED = "completed";
+	private static final String FLAG_FLOATING = "floating";
 	/**
 	 * Function to add task without time into storage
 	 * @throws ClassNotFoundException 
@@ -71,14 +74,13 @@ public class crud {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void addTaskViaImport(Task task) throws IOException, ClassNotFoundException {
-		if(task.getDate() == null) {
-			Storage.localStorage.addToFloatingTasks(task);
-			Storage.localStorage.setUnchanged();	
-		}
-		else {
+	public static void addTaskViaImport(Task task, String flag) throws IOException, ClassNotFoundException {
+		if (flag.equals(FLAG_UNCOMPLETED)) {
 			Storage.localStorage.addToUncompletedTasks(task);
-			Storage.localStorage.setUnchanged();
+		} else if (flag.equals(FLAG_COMPLETED)) {
+			Storage.localStorage.addToCompletedTasks(task);
+		} else if (flag.equals(FLAG_FLOATING)) {
+			Storage.localStorage.addToFloatingTasks(task);
 		}
 	}
 
