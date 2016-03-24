@@ -1,10 +1,14 @@
 package Logic;
 
+import static org.fusesource.jansi.Ansi.ansi;
+import static org.fusesource.jansi.Ansi.Color.YELLOW;
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 public class head {
 
 	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
@@ -18,10 +22,28 @@ public class head {
 	private static String storageFileNameFloatingTasks = "storageFloating.ser";
 	private static Scanner sc = new Scanner(System.in);
 	private static String lastCommand = "";
-
+	private static String logo1="********   ********   ********  **       **   *****       ********   **    **";
+	private static String logo2="********   ********   ********  ***      **   **   **     ********   **    **";
+	private static String logo3="**    **   **         **        ****     **   **    **    **    **   **    **";
+	private static String logo4="**    **   **         ******    *** **   **   **     **   **    **   ********";
+	private static String logo5="********   **   ***   ******    ***  **  **   **     **   ********   ********";
+	private static String logo6="********   **    **   **        ***   ** **   **     **   ********   **    **";
+	private static String logo7="**    **   ********   ********  ***    ****   **    **    **    **   **    **";
+	private static String logo8="**    **   ********   ********  ***     ***   *******     **    **   **    **";
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		prepareAndImportFiles();
+		System.out.print(ansi().eraseScreen().fgBright(RED));
+		UI.ui.print(logo1);
+		UI.ui.print(logo2);
+		UI.ui.print(logo3);
+		UI.ui.print(logo4);
+		UI.ui.print(logo5);
+		UI.ui.print(logo6);
+		UI.ui.print(logo7);
+		UI.ui.print(logo8);
+		
 		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
+		System.out.print(ansi().reset());
 		UI.ui.print("\n");
 		UI.ui.print("Enter \"help\" for instructions.");
 		runProgram();

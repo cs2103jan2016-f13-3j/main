@@ -9,7 +9,8 @@ import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.rmi.server.UID;
 import java.util.ArrayList;
-
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 public class crud {
 
 	private static ArrayList<Task> temp = new ArrayList<Task>();
@@ -171,6 +172,7 @@ public class crud {
 	 * 
 	 */
 	public static void displayUncompletedTasks() {
+		System.out.print(ansi().eraseScreen().fgBright(YELLOW));
 		temp = Storage.localStorage.displayUncompletedTasks();
 		for(int i=0; i<temp.size(); i++) {
 			UI.ui.print((i+1) + ". " + temp.get(i).getTaskString());
@@ -178,6 +180,7 @@ public class crud {
 		if (temp.isEmpty()) {
 			UI.ui.print("There is no stored task to display");
 		}
+		System.out.print(ansi().reset());
 	}
 
 	/**
