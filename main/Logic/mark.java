@@ -4,6 +4,7 @@ package Logic;
  * @author Kowshik
  */
 import java.io.IOException;
+import java.util.ArrayList;
 
 import Storage.localStorage;
 import Task.Task;
@@ -18,12 +19,22 @@ public class mark {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void markTaskAsCompleted(int index) throws IOException, ClassNotFoundException {
-		Task temp = Storage.localStorage.getUncompletedTask(index);
-		temp.setComplete();
-		Storage.localStorage.delFromUncompletedTasks(index);
-		Storage.localStorage.addToCompletedTasks(temp);
+		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+
+		if(index < getSize.size()) {
+			Task temp = Storage.localStorage.getUncompletedTask(index);
+			temp.setComplete();
+			Storage.localStorage.delFromUncompletedTasks(index);
+			Storage.localStorage.addToCompletedTasks(temp);
+		}
+		else {
+			Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
+			temp.setComplete();
+			Storage.localStorage.delFromFloatingTasks(index - getSize.size());
+			Storage.localStorage.addToCompletedTasks(temp);
+		}
 	}
-	
+
 	/**
 	 * Function to mark a task as uncompleted
 	 * 
@@ -47,7 +58,7 @@ public class mark {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
-//		localStorage.copyCurrentState();
+		//		localStorage.copyCurrentState();
 		Task temp = Storage.localStorage.getUncompletedTask(index);
 		temp.setPriority(priority);
 		Storage.localStorage.setUncompletedTask(index, temp);

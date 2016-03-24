@@ -170,17 +170,27 @@ public class Parser {
 				// delete from uncompleted tasks
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				if (list.size() == 0) {
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
 					UI.ui.print(EMPTY_MSG);
-				} else if (list.size() < num || num - 1 < 0) {
+				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
 				} else {
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 1);
-					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-					arraylistsHaveBeenModified = true;
+					if(num < list.size()) {
+						Task deleted = list.get(num - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 1);
+						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+					else {
+						Task deleted = list2.get(num - list.size() - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 1);
+						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+						arraylistsHaveBeenModified = true;
+					}
 				}
 			} else if ((Logic.head.getLastCommand().equals("search") || Logic.head.getLastCommand().equals("s"))) {
 				// delete from search results
@@ -234,15 +244,12 @@ public class Parser {
 		}
 
 		else if (option.equals("display") || option.equals("d")) {
-			Logic.crud.displayUncompletedTasks();
+			UI.ui.print("UNCOMPLETED TASKS");
+			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
 
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
-		}
-
-		else if (option.equals("displayfloating") || option.equals("df")) {
-			Logic.crud.displayFloatingTasks();
 		}
 
 		else if (option.equals("view") || option.equals("v")) {
@@ -266,23 +273,26 @@ public class Parser {
 			Logic.search.searchTasksByKeyword(s);
 		}
 
-		else if (option.equals("searchcompleted") || option.equals("sc")) {
+		/*else if (option.equals("searchcompleted") || option.equals("sc")) {
 			Logic.search.searchCompletedTasksByKeyword(s);
-		}
+		}*/
 
 		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);
 			Logic.mark.markTaskAsCompleted(num - 1);
 			UI.ui.print(s + MARK_MSG);
 			arraylistsHaveBeenModified = true;
-		} else if (option.equals("edit") || option.equals("e")) {
+		} 
+
+		else if (option.equals("edit") || option.equals("e")) {
 			int num = Integer.parseInt(s);
 			// check if user input integer is valid. If it is valid, edit should
 			// work
 			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
 			if (list.size() == 0) {
 				UI.ui.print(EMPTY_MSG);
-			} else if (list.size() < num || num - 1 < 0) {
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 				UI.ui.print(EDIT_FAIL_MSG);
 			} else {
 				UI.ui.print(EDIT_PROMPT);
@@ -481,7 +491,7 @@ public class Parser {
 
 		} else {// has both start date and end date
 			if (startTime == true && endTime == true) { // has start time and
-														// end time
+				// end time
 				int size = arr.length - 6;
 
 				String[] temp = new String[size];
@@ -498,7 +508,7 @@ public class Parser {
 				}
 				return arrayToString(temp);
 			} else if (startTime == false && endTime == true) { // has only end
-																// time
+				// time
 				int size = arr.length - 5;
 				String[] temp = new String[size];
 				int i;

@@ -14,7 +14,7 @@ import java.util.logging.SimpleFormatter;
 import Task.Task;
 
 public class importTasks {
-	
+
 	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
 
 	/**
@@ -23,9 +23,9 @@ public class importTasks {
 	 * @param fileName String that contains the name of the storage file
 	 * @throws IOException
 	 */
-	
+
 	public static void importTasksFromStorage(File file, String flag) throws IOException {
-//		LoggerTry.startLog();
+		//		LoggerTry.startLog();
 		FileInputStream fis = null;
 		ObjectInputStream ois = null;
 		try {
@@ -39,7 +39,7 @@ public class importTasks {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		
+
 		while (true) {
 			try {
 				Task task = (Task)ois.readObject();

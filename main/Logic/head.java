@@ -1,15 +1,15 @@
 package Logic;
 
-import static org.fusesource.jansi.Ansi.ansi;
+/*import static org.fusesource.jansi.Ansi.ansi;
 import static org.fusesource.jansi.Ansi.Color.YELLOW;
-
+*/
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-import static org.fusesource.jansi.Ansi.*;
+/*import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
-public class head {
+*/public class head {
 
 	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
@@ -32,7 +32,7 @@ public class head {
 	private static String logo8="**    **   ********   ********  ***     ***   *******     **    **   **    **";
 	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		prepareAndImportFiles();
-		System.out.print(ansi().eraseScreen().fgBright(RED));
+		//System.out.print(ansi().eraseScreen().fgBright(RED));
 		UI.ui.print(logo1);
 		UI.ui.print(logo2);
 		UI.ui.print(logo3);
@@ -43,7 +43,7 @@ public class head {
 		UI.ui.print(logo8);
 		
 		UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
-		System.out.print(ansi().reset());
+		//System.out.print(ansi().reset());
 		UI.ui.print("\n");
 		UI.ui.print("Enter \"help\" for instructions.");
 		runProgram();

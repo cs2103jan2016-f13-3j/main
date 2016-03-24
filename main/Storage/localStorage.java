@@ -165,28 +165,6 @@ public class localStorage {
 	}
 
 	/**
-	 * Function to return the uncompleted list of tasks to Logic
-	 * 
-	 * @return ArrayList details that contains the list of uncompleted tasks
-	 */
-	public static ArrayList<Task> displayUncompletedTasks() {
-		return uncompletedTasks;
-	}
-
-	/**
-	 * Function to return the completed list of tasks to Logic
-	 * 
-	 * @return ArrayList details that contains the list of completed tasks
-	 */
-	public static ArrayList<Task> displayCompletedTasks() {
-		return completedTasks;
-	}
-	
-	public static ArrayList<Task> displayFloatingTasks() {
-		return floatingTasks;
-	}
-
-	/**
 	 * Function to clear the contents of the file
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 

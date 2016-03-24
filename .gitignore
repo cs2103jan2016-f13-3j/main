@@ -1,3 +1,4 @@
 *.class
 *.class
 main/Parser/parser.class
+main/Storage/localStorage.class
