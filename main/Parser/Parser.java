@@ -12,10 +12,12 @@ public class Parser {
 	private static boolean arraylistsHaveBeenModified;
 	private static String startDate, date, issue, startTime, time;
 	private static Scanner sc = new Scanner(System.in);
-	private static final String[] key = { "by", "at", "in", "on", "during", "before" };
-	private static final String EMPTY_MSG = " Unable to delete from empty task list";
+	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
+	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
+	private static final String EDIT_PROMPT = "Insert new description and deadline for the task.";
+	private static final String EDIT_FAIL_MSG = "Fail to edit. Please insert a valid task number.";
 	private static final String DUPLICATE_ADD_MSG = "Duplicate task detected.";
 	private static final String DELETE_MSG = "is deleted from the task list.";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
@@ -40,7 +42,7 @@ public class Parser {
 	 */
 	public static boolean run(String cmd, String description) throws IOException, ClassNotFoundException {
 		// process commands
-		
+
 		// take "snapshots" of current storage state
 		Undo.getInstance().copyCurrentTasksState();
 		boolean modificationsWereMade = parseCommands(cmd, description);
@@ -48,7 +50,8 @@ public class Parser {
 			cmd += " " + description;
 		}
 		if (modificationsWereMade) {
-			// store the "snapshots" into Undo class if arraylists have been modified
+			// store the "snapshots" into Undo class if arraylists have been
+			// modified
 			Undo.getInstance().storePreviousState(cmd);
 		}
 		return modificationsWereMade;
@@ -62,7 +65,7 @@ public class Parser {
 	 * @param s
 	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * return boolean
+	 *             return boolean
 	 */
 	public static boolean parseCommands(String option, String s) throws IOException, ClassNotFoundException {
 		arraylistsHaveBeenModified = false;
@@ -88,8 +91,9 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+					display(issue);
 					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
-					isAdded = Logic.crud.addTask(issue, date,s);
+					isAdded = Logic.crud.addTask(issue, date, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -121,8 +125,9 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+					display(issue);
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, startDate,s);
+					isAdded = Logic.crud.addTask(issue, startDate, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -144,14 +149,14 @@ public class Parser {
 				} else {
 					time = "-";
 				}
-
 				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 					UI.ui.print(WRONG_DATE_MSG);
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
+
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, date,s);
+					isAdded = Logic.crud.addTask(issue, date, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -270,31 +275,92 @@ public class Parser {
 			Logic.mark.markTaskAsCompleted(num - 1);
 			UI.ui.print(s + MARK_MSG);
 			arraylistsHaveBeenModified = true;
-		}
-
-		// edit <task number>|<issue>|<date>
-		else if (option.equals("edit") || option.equals("e")) {
-			String[] temp = s.split(" ");
-			int num = Integer.parseInt(temp[0]);
-			
-			UI.ui.print("Please Insert Message");
-			Logic.crud.copyDescription(num);
-			String des=sc.nextLine();
-			String[] arr=des.split(" ");
-			
-			//
-			int start = getStartingIndex(arr); // start has value of -1 if it has no start date
-			int end = getIndexOfKey(arr); // end has value of -1 if it has no end date
-			issue = getIssue(arr, start, end, hasStartTime(arr), hasEndTime(arr));
-			date=arr[end+1];
-			
-			if (!Logic.checkDate.checkDateformat(date)) {
-				Logic.crud.editTask(num - 1, issue);
+		} else if (option.equals("edit") || option.equals("e")) {
+			int num = Integer.parseInt(s);
+			// check if user input integer is valid. If it is valid, edit should
+			// work
+			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			if (list.size() == 0) {
+				UI.ui.print(EMPTY_MSG);
+			} else if (list.size() < num || num - 1 < 0) {
+				UI.ui.print(EDIT_FAIL_MSG);
 			} else {
-				Logic.crud.editTask(num - 1, issue, date,des);
+				UI.ui.print(EDIT_PROMPT);
+				Logic.crud.copyDescription(num);
+				String input = sc.nextLine();
+				String[] temp = input.split(" ");
+				int start = getStartingIndex(temp); // start has value of -1 if it has no start date
+				int end = getIndexOfKey(temp); // end has value of -1 if it has no end date
+				if (start == -1 && end != -1) {// no start date but has end date
+					startDate = "-";
+					startTime = "-";
+					// read date & time
+					date = temp[end + 1];
+
+					if (hasEndTime(temp)) {// check if contain end time
+						time = temp[end + 2];
+					} else {
+						time = "-";
+					}
+					if (!Logic.checkDate.checkDateformat(date)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						//Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input) (to be implemented)
+						Logic.crud.editTask(num - 1, issue, date, input);
+						UI.ui.print("Task number " + num + EDIT_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				} else if (start == -1 && end == -1) {// no end date and no start date
+					Logic.crud.editTask(num - 1, input);
+					UI.ui.print("Task number " + num + EDIT_MSG);
+					arraylistsHaveBeenModified = true;
+				} else if (start != -1 && end == -1) {// has start date but no end date
+					date = "-";
+					time = "-";
+					startDate = temp[start + 1];
+					if (hasStartTime(temp)) {
+						startTime = temp[start + 2];
+					} else {
+						startTime = "-";
+					}
+					if (!Logic.checkDate.checkDateformat(startDate)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
+						Logic.crud.editTask(num - 1, issue, startDate, input);
+						UI.ui.print("Task number " + num + EDIT_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				} else { // has both start date and end date
+					startDate = temp[start + 1];
+					date = temp[end + 1];
+					if (hasStartTime(temp)) {
+						startTime = temp[start + 2];
+					} else {
+						startTime = "-";
+					}
+					if (hasEndTime(temp)) {
+						time = temp[end + 2];
+
+					} else {
+						time = "-";
+					}
+					if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+						Logic.crud.addTask(issue, date, input);
+						UI.ui.print("Task number " + num + EDIT_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				}
 			}
-			UI.ui.print("Task number " + num + EDIT_MSG);
-			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("p")) {
@@ -414,8 +480,10 @@ public class Parser {
 			}
 
 		} else {// has both start date and end date
-			if (startTime && endTime) { // has start time and end time
+			if (startTime == true && endTime == true) { // has start time and
+														// end time
 				int size = arr.length - 6;
+
 				String[] temp = new String[size];
 				int i;
 				for (i = 0; i < size; i++) {
@@ -445,8 +513,7 @@ public class Parser {
 					}
 				}
 				return arrayToString(temp);
-			} else if (startTime = true && endTime == false) {// has only start
-																// time
+			} else if (startTime == true && endTime == false) {// has only start time
 				int size = arr.length - 5;
 				String[] temp = new String[size];
 				int i;
@@ -462,6 +529,7 @@ public class Parser {
 				}
 				return arrayToString(temp);
 			} else { // has no start time and no end time
+
 				int size = arr.length - 4;
 				String[] temp = new String[size];
 				int i;
@@ -573,5 +641,9 @@ public class Parser {
 	// to be implemented
 	public static boolean checkTimeFormat(String s) {// assume no time
 		return true;
+	}
+
+	public static void display(String s) {
+		System.out.println(s);
 	}
 }
