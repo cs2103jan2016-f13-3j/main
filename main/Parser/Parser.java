@@ -23,6 +23,7 @@ public class Parser {
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
 	private static final String EDIT_MSG = " is edited and saved";
 	private static final String MARK_MSG = " is marked as completed";
+	private static final String UNMARK_MSG = " is marked as uncompleted";
 	private static final String INVALID_MSG = "Invalid inputs! Please try again";
 	private static final String DEADLINE_PROMPT = "Enter deadline in dd/mm/yyyy or enter - for no deadline";
 	private static final String WRONG_DEADLINE_MSG = "Please enter deadline in dd/mm/yyyy format or enter - for no deadline";
@@ -273,16 +274,19 @@ public class Parser {
 			Logic.search.searchTasksByKeyword(s);
 		}
 
-		/*else if (option.equals("searchcompleted") || option.equals("sc")) {
-			Logic.search.searchCompletedTasksByKeyword(s);
-		}*/
-
 		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);
 			Logic.mark.markTaskAsCompleted(num - 1);
 			UI.ui.print(s + MARK_MSG);
 			arraylistsHaveBeenModified = true;
-		} 
+		}
+		
+		else if(option.equals("unmark") || option.equals("um")) {
+			int num = Integer.parseInt(s);
+			Logic.mark.markTaskAsUncompleted(num - 1);
+			UI.ui.print(s + UNMARK_MSG);
+			arraylistsHaveBeenModified = true;
+		}
 
 		else if (option.equals("edit") || option.equals("e")) {
 			int num = Integer.parseInt(s);

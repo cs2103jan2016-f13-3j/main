@@ -43,10 +43,20 @@ public class mark {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
-		Task temp = Storage.localStorage.getUncompletedTask(index);
-		temp.setUncomplete();
-		Storage.localStorage.delFromCompletedTasks(index);
-		Storage.localStorage.addToUncompletedTasks(temp);
+		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+
+		if(index < getSize.size()) {
+			Task temp = Storage.localStorage.getCompletedTask(index);
+			temp.setUncomplete();
+			Storage.localStorage.delFromCompletedTasks(index);
+			Storage.localStorage.addToUncompletedTasks(temp);
+		}
+		else {
+			Task temp = Storage.localStorage.getCompletedTask(index);
+			temp.setUncomplete();
+			Storage.localStorage.delFromCompletedTasks(index);
+			Storage.localStorage.addToFloatingTasks(temp);
+		}
 	}
 
 	/**
@@ -59,8 +69,17 @@ public class mark {
 	 */
 	public static void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
 		//		localStorage.copyCurrentState();
-		Task temp = Storage.localStorage.getUncompletedTask(index);
-		temp.setPriority(priority);
-		Storage.localStorage.setUncompletedTask(index, temp);
+		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+
+		if(index < getSize.size()) {
+			Task temp = Storage.localStorage.getUncompletedTask(index);
+			temp.setPriority(priority);
+			Storage.localStorage.setUncompletedTask(index, temp);
+		}
+		else {
+			Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
+			temp.setPriority(priority);
+			Storage.localStorage.setFloatingTask(index - getSize.size(), temp);
+		}
 	}
 }
