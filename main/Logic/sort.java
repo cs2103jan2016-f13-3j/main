@@ -56,6 +56,23 @@ public class sort {
 			e.printStackTrace();
 		}
 	}
+	
+	/**
+	 * Function to sort tasks according to priority
+	 */
+	public static void sortTasksPriority() {
+		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		
+		for(int i = 0; i<tempTasks.size(); i++) {
+			for(int j = i+1; j<tempTasks.size(); j++) {
+				if(tempTasks.get(i).getPriority().equals("high") && tempTasks.get(j).getPriority().equals("low")) {
+					Task temp = tempTasks.get(i);
+					tempTasks.set(i, tempTasks.get(j));
+					tempTasks.set(j, temp);
+				}
+			}
+		}
+	}
 }
 
 

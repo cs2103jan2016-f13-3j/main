@@ -384,6 +384,11 @@ public class Parser {
 			Logic.mark.setPriority(num - 1, priority);
 			arraylistsHaveBeenModified = true;
 		}
+		
+		else if(option.equals("sortp") || option.equals("sp")) {
+			Logic.sort.sortTasksPriority();
+			Logic.crud.displayUncompletedAndFloatingTasks();
+		}
 
 		else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
