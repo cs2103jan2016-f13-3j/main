@@ -187,22 +187,30 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 //System.out.print(ansi().eraseScreen().fgBright(YELLOW));
 		 boolean isEmptyUn = false;
 		 temp = Storage.localStorage.getUncompletedTasks();
+		 String dt="";
 		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((i+1) + ". " + temp.get(i).getDateString() + "\t" + temp.get(i).getIssue());
-			 UI.ui.print("________________________________________________________________");
-			 UI.ui.print("\n");
+			 if(dt.equals(temp.get(i).getDateString())){
+			 UI.ui.print((i+1) + ". " + "\t" + temp.get(i).getIssue());
+			 }else{
+				 dt=temp.get(i).getDateString();
+				 UI.ui.print("\nDate: "+dt);
+				 UI.ui.print("Index\tStart Time\tTask");
+				 UI.ui.print((i+1) + ". " + "\t" + temp.get(i).getIssue());
+			 }
+			 
 
 		 }
 		 if (temp.isEmpty()) {
 			 isEmptyUn = true;
 		 }
-
+		 UI.ui.print("________________________________________________________________");
 		 UI.ui.print("FLOATING TASKS");
+		 UI.ui.print("Index\tTask");
 		 boolean isEmptyF = false;
 		 temp = Storage.localStorage.getFloatingTasks();
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((getSize.size() + i+1) + ". " + temp.get(i).getIssue());
+			 UI.ui.print((getSize.size() + i+1) + ".\t" + temp.get(i).getIssue());
 		 }
 		 if (temp.isEmpty()) {
 			 isEmptyF = true;
