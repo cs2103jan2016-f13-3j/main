@@ -45,12 +45,62 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 /**
-	  * Function to add task with time into storage
+	  * Function to add task with only start date into storage
 	  * @throws ClassNotFoundException 
 	  * 
 	  */
-	 public static boolean addTask(String line,String date, String msg) throws IOException, ClassNotFoundException {
-		 Task task = new Task(line,date,msg);
+	 public static boolean addTaskWithStartDate(String line,String date, String msg) throws IOException, ClassNotFoundException {
+		 Task task = new Task(line, date, msg, true);
+
+		 boolean noDuplicate = true;
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 for(Task temp : tempTasks) {
+			 if(temp.getTaskString().equals(task.getTaskString())) {
+				 System.out.println(temp.getTaskString());
+				 noDuplicate = false;
+			 }
+		 }
+		 if(noDuplicate) {
+			 Storage.localStorage.addToUncompletedTasks(task);
+			 return true;
+		 }
+		 else {
+			 return false;
+		 }
+	 }
+	 
+	 /**
+	  * Function to add task with only end date into storage
+	  * @throws ClassNotFoundException 
+	  * 
+	  */
+	 public static boolean addTaskWithEndDate(String line, String date, String msg) throws IOException, ClassNotFoundException {
+		 Task task = new Task(line, date, msg, false);
+
+		 boolean noDuplicate = true;
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 for(Task temp : tempTasks) {
+			 if(temp.getTaskString().equals(task.getTaskString())) {
+				 System.out.println(temp.getTaskString());
+				 noDuplicate = false;
+			 }
+		 }
+		 if(noDuplicate) {
+			 Storage.localStorage.addToUncompletedTasks(task);
+			 return true;
+		 }
+		 else {
+			 return false;
+		 }
+	 }
+	 
+	 /**
+	  * Function to add task with both start and end date into storage
+	  * @throws ClassNotFoundException 
+	  * 
+	  */
+	 public static boolean addTaskWithBothDates(String line,String startDate, String endDate, String msg) throws IOException, ClassNotFoundException {
+		 Task task = new Task(line, startDate, endDate, msg);
 
 		 boolean noDuplicate = true;
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -101,26 +151,18 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 clipboard.setContents(selec, selec);
 		 }
 	 }
-	 public static void copyDescription(int index){
-		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
-		 if(edit != null){
-			 String copy = edit.getDescription();
-			 StringSelection selec = new StringSelection(copy);
-			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			 clipboard.setContents(selec, selec);
-		 }
-	 }
-
-	 public static void copyTaskDate(int index){
-		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
-		 if(edit != null){
-			 String copy = edit.getDateString();
-			 StringSelection selec = new StringSelection(copy);
-			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			 clipboard.setContents(selec, selec);
-		 }
-	 }
-	 public static void editTask(int index, String line) throws IOException, ClassNotFoundException {
+	 
+	 
+	 /**
+	  * Function to edit task (edited task has no date)
+	  * @param line
+	  * @param date
+	  * @param msg
+	  * @param index
+	  * @throws IOException
+	  * @throws ClassNotFoundException
+	  */
+	 public static void editTaskWithNoDate(String line, String msg, int index) throws IOException, ClassNotFoundException {
 		 Task editedTask = new Task(line);
 		 ArrayList<Task> getSize = Storage.localStorage.getFloatingTasks();
 		 if(index < getSize.size()) {
@@ -130,20 +172,62 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 Storage.localStorage.setFloatingTask(index - getSize.size(), editedTask);
 		 }
 	 }
-
 	 /**
-	  * Function to edit task along with date according to index in storage
-	  * 
-	  * @param index the index of the task to be edited
-	  * @param line the updated task description
-	  * @param date the updated task date
-	  * @throws IOException 
-	  * @throws ClassNotFoundException 
+	  * Function to edit task (edited task has only start date)
+	  * @param line
+	  * @param date
+	  * @param msg
+	  * @param index
+	  * @throws IOException
+	  * @throws ClassNotFoundException
 	  */
-	 public static void editTask(int index, String line, String date,String msg) throws ClassNotFoundException, IOException {
-		 Task editedTask = new Task(line, date, msg);
-		 Storage.localStorage.setUncompletedTask(index, editedTask);
+	 public static void editTaskWithStartDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {
+		 Task editedTask = new Task(line, date, msg, true);
+		 ArrayList<Task> getSize = Storage.localStorage.getFloatingTasks();
+		 if(index < getSize.size()) {
+			 Storage.localStorage.setUncompletedTask(index, editedTask);
+		 }
+		 else {
+			 Storage.localStorage.setFloatingTask(index - getSize.size(), editedTask);
+		 }
 	 }
+	 
+	 /**
+	  * Function to edit task (edited task has only end date)
+	  * @param index
+	  * @param line
+	  * @throws IOException
+	  * @throws ClassNotFoundException
+	  */
+	 public static void editTaskWithEndDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {
+		 Task editedTask = new Task(line, date, msg, false);
+		 ArrayList<Task> getSize = Storage.localStorage.getFloatingTasks();
+		 if(index < getSize.size()) {
+			 Storage.localStorage.setUncompletedTask(index, editedTask);
+		 }
+		 else {
+			 Storage.localStorage.setFloatingTask(index - getSize.size(), editedTask);
+		 }
+	 }
+	 
+	 /**
+	  * Function to edit task (edited task has both start and end dates)
+	  * @param index
+	  * @param line
+	  * @throws IOException
+	  * @throws ClassNotFoundException
+	  */
+	 public static void editTaskWithBothDates(String line, String startDate, String endDate, String msg, int index) throws IOException, ClassNotFoundException {
+		 Task editedTask = new Task(line, startDate, endDate, msg);
+		 ArrayList<Task> getSize = Storage.localStorage.getFloatingTasks();
+		 if(index < getSize.size()) {
+			 Storage.localStorage.setUncompletedTask(index, editedTask);
+		 }
+		 else {
+			 Storage.localStorage.setFloatingTask(index - getSize.size(), editedTask);
+		 }
+	 }
+
 	 /**
 	  * Function to delete task according to index in storage
 	  * @throws IOException 
