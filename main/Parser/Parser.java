@@ -327,7 +327,7 @@ public class Parser {
 						arraylistsHaveBeenModified = true;
 					}
 				} else if (start == -1 && end == -1) {// no end date and no start date
-					Logic.crud.editTaskWithNoDate(issue, input, num-1);
+					Logic.crud.editTaskWithNoDate(input, input, num-1);
 					UI.ui.print("Task number " + num + EDIT_MSG);
 					arraylistsHaveBeenModified = true;
 				} else if (start != -1 && end == -1) {// has start date but no end date
@@ -343,7 +343,7 @@ public class Parser {
 						UI.ui.print(WRONG_DATE_MSG);
 					} else {
 						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						issue = getIssue(input.split(" "), start, end, false, false);
 						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
 						Logic.crud.editTaskWithStartDate(issue, startDate, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);

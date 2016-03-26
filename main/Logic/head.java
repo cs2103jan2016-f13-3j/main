@@ -67,9 +67,9 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 			 Parser.Parser.run(cmd, description);
 			 lastCommand = cmd;
-			 if(lastCommand.equals("sortp") || lastCommand.equals("sp") != true) {
+			 /*if(lastCommand.equals("sortp") || lastCommand.equals("sp") != true) {
 				 Logic.sort.sortTasksChronologically();
-			 }
+			 }*/
 			 // save all tasks into the actual file after command is done
 			 saveToFile();		
 		 }

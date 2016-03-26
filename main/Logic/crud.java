@@ -163,14 +163,19 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @throws ClassNotFoundException
 	  */
 	 public static void editTaskWithNoDate(String line, String msg, int index) throws IOException, ClassNotFoundException {
-		 Task editedTask = new Task(line);
-		 ArrayList<Task> getSize = Storage.localStorage.getFloatingTasks();
+		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+		 Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
+		 temp.setIssue(line);
+		 Storage.localStorage.setFloatingTask(index - getSize.size(), temp);
+		 System.out.println(line);
+		 /* Task editedTask = new Task(line);
+		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 if(index < getSize.size()) {
 			 Storage.localStorage.setUncompletedTask(index, editedTask);
 		 }
 		 else {
 			 Storage.localStorage.setFloatingTask(index - getSize.size(), editedTask);
-		 }
+		 }*/
 	 }
 	 /**
 	  * Function to edit task (edited task has only start date)
@@ -273,16 +278,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 temp = Storage.localStorage.getUncompletedTasks();
 		 String dt="";
 		 for(int i=0; i<temp.size(); i++) {
-			 if(dt.equals(temp.get(i).getDateString())){
-			 UI.ui.print((i+1) + ". " + "\t" + temp.get(i).getIssue());
-			 }else{
-				 dt=temp.get(i).getDateString();
-				 UI.ui.print("\nDate: "+dt);
-				 UI.ui.print("Index\tStart Time\tTask");
-				 UI.ui.print((i+1) + ". " + "\t" + temp.get(i).getIssue());
-			 }
-			 
-
+			 UI.ui.print((i+1) + ".\t" + temp.get(i).getStartDateString() + "\t" + temp.get(i).getEndDateString() + "\t" + temp.get(i).getIssue());
 		 }
 		 if (temp.isEmpty()) {
 			 isEmptyUn = true;
@@ -341,7 +337,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayCompletedTasks() {
 		 temp = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((i+1) + ". " + temp.get(i).getDateString() + "\t" + temp.get(i).getIssue());
+			 UI.ui.print((i+1) + ".\t" + temp.get(i).getStartDateString() + "\t" + temp.get(i).getEndDateString() + "\t" + temp.get(i).getIssue());
 		 }
 		 if (temp.isEmpty()) {
 			 UI.ui.print("There is no stored task to display");

@@ -68,6 +68,8 @@ public class Task implements java.io.Serializable {
 		this.endDate = new GregorianCalendar(year, month, day);
 	}
 
+	
+
 	// Setter Methods
 	public void setIssue(String issue) {
 		assert issue != null;
