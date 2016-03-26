@@ -212,8 +212,16 @@ public class Task implements java.io.Serializable {
 			}
 			result += year;
 			if (hasTime) {
-				result += " " + startDate.get(Calendar.HOUR_OF_DAY);
-				result += ":" + startDate.get(Calendar.MINUTE);
+				String hour = Integer.toString(startDate.get(Calendar.HOUR_OF_DAY));
+				if (hour.length() == 1) {
+					hour = "0" + hour;
+				}
+				result += " " + hour;
+				String minute = Integer.toString(startDate.get(Calendar.MINUTE));
+				if (minute.length() == 1) {
+					minute = "0" + minute;
+				}
+				result += ":" + minute;
 			}
 			return result;
 		} else { // return empty string if the task has no start date
@@ -235,8 +243,16 @@ public class Task implements java.io.Serializable {
 			}
 			result += year;
 			if (hasTime) {
-				result += " " + endDate.get(Calendar.HOUR_OF_DAY);
-				result += ":" + endDate.get(Calendar.MINUTE);
+				String hour = Integer.toString(endDate.get(Calendar.HOUR_OF_DAY));
+				if (hour.length() == 1) {
+					hour = "0" + hour;
+				}
+				result += " " + hour;
+				String minute = Integer.toString(endDate.get(Calendar.MINUTE));
+				if (minute.length() == 1) {
+					minute = "0" + minute;
+				}
+				result += ":" + minute;
 			}
 			return result;
 		} else { // return empty string if the task has no end date
