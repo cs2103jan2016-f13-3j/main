@@ -39,4 +39,23 @@ public class checkDate {
 			}
 		}
 	}
+	  public static boolean checkTimeformat(String msg){
+		    String[] msgArray=msg.split(":");
+		    if(msgArray.length != 2 && !msg.matches("^\\d{2}:\\d{2}")) {
+		     return false;
+		    } else if(msg.endsWith("am")||msg.endsWith("pm")){
+		     msg=msg.substring(0, msg.length()-2);
+		     int hour=Integer.parseInt(msgArray[0]);
+		      int minute=Integer.parseInt(msgArray[1]);
+		      if(minute>=0&&minute<60&&hour>=0&&hour<=23){
+		        return true;
+		     }return false;
+		    }else {
+		     int hour=Integer.parseInt(msgArray[0]);
+		     int minute=Integer.parseInt(msgArray[1]);
+		     if(minute>=0&&minute<60&&hour>=0&&hour<=23){
+		       return true;
+		    }return false;
+		   }
+		   }
 }
