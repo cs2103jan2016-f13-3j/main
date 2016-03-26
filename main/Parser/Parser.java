@@ -10,7 +10,7 @@ import Task.Task;
 
 public class Parser {
 	private static boolean arraylistsHaveBeenModified;
-	private static String startDate, date, issue, startTime, time;
+	private static String startDate, date, issue, startTime, time,input;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
@@ -18,6 +18,9 @@ public class Parser {
 	private static final String ADD_MSG = "is added to the task list.";
 	private static final String EDIT_PROMPT = "Insert new description and deadline for the task.";
 	private static final String EDIT_FAIL_MSG = "Fail to edit. Please insert a valid task number.";
+	private static final String MARK_FAIL_MSG = "Fail to mark task as completed. Please insert a valid task number.";
+	private static final String UNMARK_FAIL_MSG = "Fail to mark task as uncompleted. Please insert a valid task number.";
+	private static final String NoCompleted_MSG = "No task has been completed yet.";
 	private static final String DUPLICATE_ADD_MSG = "Duplicate task detected.";
 	private static final String DELETE_MSG = "is deleted from the task list.";
 	private static final String SORT_MSG = "All items are sorted in alphabetical order";
@@ -32,6 +35,7 @@ public class Parser {
 	private static final String DATE_PROMPT = "Enter date in dd/mm/yyyy";
 	private static final String WRONG_DATE_MSG = "Please enter date in dd/mm/yyyy format";
 	private static final String DNE_MSG = "Task does not exists";
+	private static final String PRIORITY_FAIL_MSG = "Fail to set priority. Please insert a valid task number.";
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -39,7 +43,7 @@ public class Parser {
 	 * 
 	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * return boolean
+	 *             return boolean
 	 */
 	public static boolean run(String cmd, String description) throws IOException, ClassNotFoundException {
 		// process commands
@@ -92,7 +96,6 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					display(issue);
 					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
 					isAdded = Logic.crud.addTaskWithEndDate(issue, date, s);
 					if (isAdded) {
@@ -101,7 +104,8 @@ public class Parser {
 					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
-				}
+				} 
+				
 			} else if (start == -1 && end == -1) {// no end date and no start date
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
@@ -126,7 +130,6 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					display(issue);
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 					isAdded = Logic.crud.addTaskWithStartDate(issue,startDate,s);
 					if (isAdded) {
@@ -178,14 +181,13 @@ public class Parser {
 					// handle indexOutofBoundException
 					UI.ui.print(DNE_MSG);
 				} else {
-					if(num < list.size()) {
+					if (num < list.size()) {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
 						arraylistsHaveBeenModified = true;
-					}
-					else {
+					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
@@ -276,16 +278,34 @@ public class Parser {
 
 		else if (option.equals("mark") || option.equals("m")) {
 			int num = Integer.parseInt(s);
-			Logic.mark.markTaskAsCompleted(num - 1);
-			UI.ui.print(s + MARK_MSG);
-			arraylistsHaveBeenModified = true;
-		}
-		
-		else if(option.equals("unmark") || option.equals("um")) {
+			// check if user input integer is valid. If it is valid, mark should
+			// work
+			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			if (list.size() + list2.size() == 0) {
+				UI.ui.print(EMPTY_MSG);
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+				UI.ui.print(MARK_FAIL_MSG);
+			} else {
+				Logic.mark.markTaskAsCompleted(num - 1);
+				UI.ui.print(s + MARK_MSG);
+				arraylistsHaveBeenModified = true;
+			}
+		} else if (option.equals("unmark") || option.equals("um")) {
 			int num = Integer.parseInt(s);
-			Logic.mark.markTaskAsUncompleted(num - 1);
-			UI.ui.print(s + UNMARK_MSG);
-			arraylistsHaveBeenModified = true;
+			// check if user input integer is valid. If it is valid, unmark
+			// should
+			// work
+			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+			if (list.size() == 0) {
+				UI.ui.print(NoCompleted_MSG);
+			} else if (list.size() < num || num - 1 < 0) {
+				UI.ui.print(UNMARK_FAIL_MSG);
+			} else {
+				Logic.mark.markTaskAsUncompleted(num - 1);
+				UI.ui.print(s + UNMARK_MSG);
+				arraylistsHaveBeenModified = true;
+			}
 		}
 
 		else if (option.equals("edit") || option.equals("e")) {
@@ -294,14 +314,14 @@ public class Parser {
 			// work
 			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() == 0) {
+			if (list.size()+list2.size() == 0) {
 				UI.ui.print(EMPTY_MSG);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 				UI.ui.print(EDIT_FAIL_MSG);
 			} else {
 				UI.ui.print(EDIT_PROMPT);
 			//	Logic.crud.copyDescription(num);
-				String input = sc.nextLine();
+				input = sc.nextLine();
 				String[] temp = input.split(" ");
 				int start = getStartingIndex(temp); // start has value of -1 if it has no start date
 				int end = getIndexOfKey(temp); // end has value of -1 if it has no end date
@@ -320,6 +340,7 @@ public class Parser {
 						UI.ui.print(WRONG_DATE_MSG);
 					} else {
 						// get issue
+						
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						//Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input) (to be implemented)
 						Logic.crud.editTaskWithEndDate(issue, date, input, num-1);
@@ -343,7 +364,7 @@ public class Parser {
 						UI.ui.print(WRONG_DATE_MSG);
 					} else {
 						// get issue
-						issue = getIssue(input.split(" "), start, end, false, false);
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
 						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
 						Logic.crud.editTaskWithStartDate(issue, startDate, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
@@ -367,8 +388,7 @@ public class Parser {
 						UI.ui.print(WRONG_DATE_MSG);
 					} else {
 						// get issue
-						
-						issue = getIssue(temp, start, end, false, false);
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						Logic.crud.editTaskWithBothDates(issue,startDate,date,input,num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
@@ -377,16 +397,24 @@ public class Parser {
 				}
 			}
 		}
-
 		else if (option.equals("p")) {
+
 			int num = Integer.parseInt(s);
-			UI.ui.print("Enter priority");
-			String priority = sc.nextLine();
-			Logic.mark.setPriority(num - 1, priority);
-			arraylistsHaveBeenModified = true;
-		}
-		
-		else if(option.equals("sortp") || option.equals("sp")) {
+			// check if user input integer is valid. If it is valid, edit should
+			// work
+			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			if (list.size() + list2.size() == 0) {
+				UI.ui.print(EMPTY_MSG);
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+				UI.ui.print(PRIORITY_FAIL_MSG);
+			} else {
+				UI.ui.print("Enter priority");
+				String priority = sc.nextLine();
+				Logic.mark.setPriority(num - 1, priority);
+				arraylistsHaveBeenModified = true;
+			}
+		} else if (option.equals("sortp") || option.equals("sp")) {
 			Logic.sort.sortTasksPriority();
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
@@ -533,7 +561,8 @@ public class Parser {
 					}
 				}
 				return arrayToString(temp);
-			} else if (startTime == true && endTime == false) {// has only start time
+			} else if (startTime == true && endTime == false) {// has only start
+																// time
 				int size = arr.length - 5;
 				String[] temp = new String[size];
 				int i;
@@ -619,7 +648,7 @@ public class Parser {
 		if (start + 2 >= arr.length) {
 			containTime = false;
 		} else {
-			if (!checkTimeFormat(arr[start + 2])) {
+			if (!Logic.checkDate.checkTimeformat(arr[start + 2])) {
 				containTime = false;
 			}
 		}
@@ -641,7 +670,7 @@ public class Parser {
 			containTime = false;
 
 		} else {
-			if (!checkTimeFormat(arr[end + 2])) {
+			if (!Logic.checkDate.checkTimeformat(arr[end + 2])) {
 				containTime = false;
 			}
 		}
@@ -656,11 +685,6 @@ public class Parser {
 	// return existing date processed by the parser
 	public static String getDate() {
 		return date;
-	}
-
-	// to be implemented
-	public static boolean checkTimeFormat(String s) {// assume no time
-		return true;
 	}
 
 	public static void display(String s) {
