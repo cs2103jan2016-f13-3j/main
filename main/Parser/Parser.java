@@ -6,11 +6,13 @@ import Logic.Undo;
 import Logic.crud;
 
 import java.io.*;
+import java.security.Timestamp;
+
 import Task.Task;
 
 public class Parser {
 	private static boolean arraylistsHaveBeenModified;
-	private static String startDate, date, issue, startTime, time,input;
+	private static String startDate, date, issue, startTime, time,input,dateIn,dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
@@ -84,20 +86,24 @@ public class Parser {
 				startDate = "-";
 				startTime = "-";
 				// read date & time
+				
 				date = temp[end + 1];
-
+				dateIn = date;
 				if (hasEndTime(temp)) {// check if contain end time
 					time = temp[end + 2];
+					time = time.replaceAll(":", "/");
+					dateIn = dateIn + "/" + time;
 				} else {
 					time = "-";
 				}
+
 				if (!Logic.checkDate.checkDateformat(date)) {
 					UI.ui.print(WRONG_DATE_MSG);
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
-					isAdded = Logic.crud.addTaskWithEndDate(issue, date, s);
+					isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -119,9 +125,12 @@ public class Parser {
 				date = "-";
 				time = "-";
 				startDate = temp[start + 1];
+				dateIn2 = startDate;
 
 				if (hasStartTime(temp)) {
 					startTime = temp[start + 2];
+					startTime = startTime.replaceAll(":","/");
+					dateIn2 = dateIn2 +"/" + startTime;
 				} else {
 					startTime = "-";
 				}
@@ -131,7 +140,7 @@ public class Parser {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithStartDate(issue,startDate,s);
+					isAdded = Logic.crud.addTaskWithStartDate(issue,dateIn2,s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -142,13 +151,19 @@ public class Parser {
 			} else { // has both start date and end date
 				startDate = temp[start + 1];
 				date = temp[end + 1];
+				dateIn = date;
+				dateIn2 = startDate;
 				if (hasStartTime(temp)) {
 					startTime = temp[start + 2];
+					startTime = startTime.replaceAll(":", "/");
+					dateIn2 = dateIn2+ "/" + startTime;
 				} else {
 					startTime = "-";
 				}
 				if (hasEndTime(temp)) {
 					time = temp[end + 2];
+					time = time.replaceAll(":", "/");
+					dateIn = dateIn+ "/" + time;
 
 				} else {
 					time = "-";
@@ -160,7 +175,7 @@ public class Parser {
 					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
 
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithBothDates(issue,startDate, date, s);
+					isAdded = Logic.crud.addTaskWithBothDates(issue,dateIn2, dateIn, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -330,9 +345,12 @@ public class Parser {
 					startTime = "-";
 					// read date & time
 					date = temp[end + 1];
+					dateIn = date;
 
 					if (hasEndTime(temp)) {// check if contain end time
 						time = temp[end + 2];
+						time.replaceAll(":","/");
+						dateIn = dateIn + "/" + time;
 					} else {
 						time = "-";
 					}
@@ -343,7 +361,7 @@ public class Parser {
 						
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						//Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input) (to be implemented)
-						Logic.crud.editTaskWithEndDate(issue, date, input, num-1);
+						Logic.crud.editTaskWithEndDate(issue, dateIn, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
@@ -355,8 +373,11 @@ public class Parser {
 					date = "-";
 					time = "-";
 					startDate = temp[start + 1];
+					dateIn2 = startDate;
 					if (hasStartTime(temp)) {
 						startTime = temp[start + 2];
+						startTime = startTime.replaceAll(":", "/");
+						dateIn2 = dateIn2 + "/" + startTime;
 					} else {
 						startTime = "-";
 					}
@@ -366,20 +387,26 @@ public class Parser {
 						// get issue
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
 						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-						Logic.crud.editTaskWithStartDate(issue, startDate, input, num-1);
+						Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
 				} else { // has both start date and end date
 					startDate = temp[start + 1];
 					date = temp[end + 1];
+					dateIn = date;
+					dateIn2 = startDate;
 					if (hasStartTime(temp)) {
 						startTime = temp[start + 2];
+						startTime.replaceAll(":","/");
+						dateIn2 = dateIn2 + "/" + startTime;
 					} else {
 						startTime = "-";
 					}
 					if (hasEndTime(temp)) {
 						time = temp[end + 2];
+						time = time.replaceAll(":", "/");
+						dateIn = dateIn + "/" + time;
 
 					} else {
 						time = "-";
@@ -390,7 +417,7 @@ public class Parser {
 						// get issue
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						Logic.crud.editTaskWithBothDates(issue,startDate,date,input,num-1);
+						Logic.crud.editTaskWithBothDates(issue,dateIn2,dateIn,input,num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
