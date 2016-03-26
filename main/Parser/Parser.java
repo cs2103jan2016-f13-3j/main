@@ -94,7 +94,7 @@ public class Parser {
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					display(issue);
 					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
-					isAdded = Logic.crud.addTask(issue, date, s);
+					isAdded = Logic.crud.addTaskWithEndDate(issue, date, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -128,7 +128,7 @@ public class Parser {
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 					display(issue);
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, startDate, s);
+					isAdded = Logic.crud.addTaskWithStartDate(issue,startDate,s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -157,7 +157,7 @@ public class Parser {
 					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
 
 					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTask(issue, date, s);
+					isAdded = Logic.crud.addTaskWithBothDates(issue,startDate, date, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -300,7 +300,7 @@ public class Parser {
 				UI.ui.print(EDIT_FAIL_MSG);
 			} else {
 				UI.ui.print(EDIT_PROMPT);
-				Logic.crud.copyDescription(num);
+			//	Logic.crud.copyDescription(num);
 				String input = sc.nextLine();
 				String[] temp = input.split(" ");
 				int start = getStartingIndex(temp); // start has value of -1 if it has no start date
@@ -322,12 +322,12 @@ public class Parser {
 						// get issue
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						//Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input) (to be implemented)
-						Logic.crud.editTask(num - 1, issue, date, input);
+						Logic.crud.editTaskWithEndDate(issue, date, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
 				} else if (start == -1 && end == -1) {// no end date and no start date
-					Logic.crud.editTask(num - 1, input);
+					Logic.crud.editTaskWithNoDate(issue, input, num-1);
 					UI.ui.print("Task number " + num + EDIT_MSG);
 					arraylistsHaveBeenModified = true;
 				} else if (start != -1 && end == -1) {// has start date but no end date
@@ -345,7 +345,7 @@ public class Parser {
 						// get issue
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-						Logic.crud.editTask(num - 1, issue, startDate, input);
+						Logic.crud.editTaskWithStartDate(issue, startDate, input, num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
@@ -369,7 +369,7 @@ public class Parser {
 						// get issue
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						Logic.crud.addTask(issue, date, input);
+						Logic.crud.editTaskWithBothDates(issue,startDate,date,input,num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					}
