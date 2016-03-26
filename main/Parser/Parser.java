@@ -335,7 +335,7 @@ public class Parser {
 				UI.ui.print(EDIT_FAIL_MSG);
 			} else {
 				UI.ui.print(EDIT_PROMPT);
-			//	Logic.crud.copyDescription(num);
+				Logic.crud.copyEditingTask(num);
 				input = sc.nextLine();
 				String[] temp = input.split(" ");
 				int start = getStartingIndex(temp); // start has value of -1 if it has no start date
