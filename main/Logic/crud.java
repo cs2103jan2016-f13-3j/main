@@ -147,7 +147,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void copyTask(int index){
 		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		 if(edit != null){
-			 String copy = edit.getIssue();
+			 String copy = edit.getDescription();
 			 StringSelection selec = new StringSelection(copy);
 			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			 clipboard.setContents(selec, selec);
@@ -157,10 +157,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 ArrayList<Task> task1=Storage.localStorage.getUncompletedTasks();
 		 
 		 int size=task1.size();
-		 if(index<size){
+		 if(index<=size){
 		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		 if(edit != null){
-			 String copy = edit.getIssue();
+			 String copy = edit.getDescription();
 			 StringSelection selec = new StringSelection(copy);
 			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
 			 clipboard.setContents(selec, selec);
