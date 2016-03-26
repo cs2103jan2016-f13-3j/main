@@ -9,7 +9,7 @@ public class Task implements java.io.Serializable {
 	private String msg;
 	private ArrayList<String> label;
 	private boolean isCompleted;
-	private Calendar date;
+	private Calendar startDate, endDate;
 	private int priority = 0;
 
 	// Constructors
@@ -17,15 +17,16 @@ public class Task implements java.io.Serializable {
 	// Constructor for dateless tasks
 	public Task(String issue) {
 		assert issue != null;
-		this.msg=msg;
+		this.msg = issue;
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
-		date = null;
+		startDate = null;
+		endDate = null;
 	}
 
-	// Constructor for tasks with date given
-	public Task(String issue, String date,String msg) { // assuming String date provided is of the format DD/MM/YYYY
+	// Constructor for tasks with only start date given
+	public Task(String issue, String date,String msg, boolean isStartDate) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
 		this.msg=msg;
@@ -36,7 +37,35 @@ public class Task implements java.io.Serializable {
 		int year = Integer.parseInt(splitDates[2]);
 		int month = Integer.parseInt(splitDates[1]);
 		int day = Integer.parseInt(splitDates[0]);
-		this.date = new GregorianCalendar(year, month, day);
+		if (isStartDate) { // the date provided is a start date
+			startDate = new GregorianCalendar(year, month, day);
+			endDate = null;
+		} else { // the date provided is an end date
+			startDate = null;
+			endDate = new GregorianCalendar(year, month, day);
+		}
+	}
+
+	// Constructor for tasks with start and end dates given
+	public Task(String issue, String startDate, String endDate, String msg) { // assuming String date provided is of the format DD/MM/YYYY
+		assert issue != null;
+		assert startDate.contains("/");
+		assert endDate.contains("/");
+		this.msg=msg;
+		this.issue = issue;
+		isCompleted = false;
+		label = new ArrayList<String>();
+		String[] splitStartDate = startDate.split("/");
+		int year = Integer.parseInt(splitStartDate[2]);
+		int month = Integer.parseInt(splitStartDate[1]);
+		int day = Integer.parseInt(splitStartDate[0]);
+		this.startDate = new GregorianCalendar(year, month, day);
+
+		String[] splitEndDate = endDate.split("/");
+		year = Integer.parseInt(splitEndDate[2]);
+		month = Integer.parseInt(splitEndDate[1]);
+		day = Integer.parseInt(splitEndDate[0]);
+		this.endDate = new GregorianCalendar(year, month, day);
 	}
 
 	// Setter Methods
@@ -63,8 +92,12 @@ public class Task implements java.io.Serializable {
 		isCompleted = false;
 	}
 
-	public void setDate(Calendar date) {
-		this.date = date;
+	public void setStartDate(Calendar date) {
+		this.startDate = date;
+	}
+
+	public void setEndDate(Calendar date) {
+		this.endDate = date;
 	}
 
 	// Getter Methods
@@ -83,24 +116,48 @@ public class Task implements java.io.Serializable {
 		return isCompleted;
 	}
 
-	public Calendar getDate() {
-		return date;
+	public Calendar getStartDate() {
+		return startDate;
 	}
-	public String getDateString(){
-		if(date!=null){
-		String a=date.get(Calendar.DAY_OF_MONTH)+"/";
-		int n=date.get(Calendar.MONTH);
-		if(n == 0) {
-			n=12;
+
+	public Calendar getEndDate() {
+		return endDate;
+	}
+
+	public String getStartDateString() {
+		if (startDate != null) {
+			String result = startDate.get(Calendar.DAY_OF_MONTH) + "/";
+			int month = startDate.get(Calendar.MONTH);
+			if (month == 0) {
+				month = 12;
+			}
+			result += month + "/";
+			int year = startDate.get(Calendar.YEAR);
+			if (month == 12) {
+				year -= 1;
+			}
+			result += year;
+			return result;
+		} else { // return empty string if the task has no start date
+			return "";
 		}
-		a+=n+"/";
-		int year = date.get(Calendar.YEAR);
-		if (n == 12) {
-			year -= 1;
-		}
-		a+=year;
-		return a;
-		}else{
+	}
+
+	public String getEndDateString() {
+		if (endDate != null) {
+			String result = endDate.get(Calendar.DAY_OF_MONTH) + "/";
+			int month = endDate.get(Calendar.MONTH);
+			if (month == 0) {
+				month = 12;
+			}
+			result += month + "/";
+			int year = endDate.get(Calendar.YEAR);
+			if (month == 12) {
+				year -= 1;
+			}
+			result += year;
+			return result;
+		} else { // return empty string if the task has no end date
 			return "";
 		}
 	}
@@ -121,37 +178,18 @@ public class Task implements java.io.Serializable {
 	}
 	// Returns date in string format of DD/MM/YYYY
 	public String getTaskString() {
-		if (date == null) {
+		if (startDate == null && endDate == null) {
 			return issue;
 		} else {
-			String dateString = "";
-			String day = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
-			if (day.length() == 1) {
-				day = "0" + day;
+			String startDateString = "";
+			String endDateString = "";
+			if (startDate != null) {
+				startDateString = getStartDateString();
 			}
-			dateString += day;
-			String month = String.valueOf(date.get(Calendar.MONTH));
-			if (month.equals("0")) {
-				month = "12";
-			}
-			if (month.length() == 1) {
-				month = "0" + month;
-			}
-			dateString += "/" + month;
-			int year = date.get(Calendar.YEAR);
-			if (month.equals("12")) {
-				year -= 1;
-			}
-			dateString += "/" + year;
-			return issue + " " + dateString;
+			if (endDate != null) {
+				endDateString = getEndDateString();
+			} 		
+			return issue + " " + startDateString + " " + endDateString;
 		}
 	}
-
-
-	//	public String getDateString() { //not in use
-	//		String dateString = String.valueOf(date.get(Calendar.DAY_OF_MONTH));
-	//		dateString += "/" + String.valueOf(date.get(Calendar.MONTH));
-	//		dateString += "/" + String.valueOf(date.get(Calendar.YEAR));
-	//		return dateString;
-	//	}
 }
