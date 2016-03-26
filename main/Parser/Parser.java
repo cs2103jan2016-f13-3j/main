@@ -12,7 +12,7 @@ import Task.Task;
 
 public class Parser {
 	private static boolean arraylistsHaveBeenModified;
-	private static String startDate, date, issue, startTime, time,input,dateIn,dateIn2;
+	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
@@ -79,14 +79,16 @@ public class Parser {
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			// get index of key
 			String[] temp = s.split(" ");
-			int start = getStartingIndex(temp); // start has value of -1 if it has no start date
-			int end = getIndexOfKey(temp); // end has value of -1 if it has no end date
+			int start = getStartingIndex(temp); // start has value of -1 if it
+												// has no start date
+			int end = getIndexOfKey(temp); // end has value of -1 if it has no
+											// end date
 			boolean isAdded;
 			if (start == -1 && end != -1) {// no start date but has end date
 				startDate = "-";
 				startTime = "-";
 				// read date & time
-				
+
 				date = temp[end + 1];
 				dateIn = date;
 				if (hasEndTime(temp)) {// check if contain end time
@@ -102,7 +104,9 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					// isAdded =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime) (to be implemented)
+					// isAdded
+					// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
+					// (to be implemented)
 					isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
@@ -110,9 +114,10 @@ public class Parser {
 					} else {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
-				} 
-				
-			} else if (start == -1 && end == -1) {// no end date and no start date
+				}
+
+			} else if (start == -1 && end == -1) {// no end date and no start
+													// date
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
 					UI.ui.print("\"" + s + "\" " + ADD_MSG);
@@ -121,7 +126,8 @@ public class Parser {
 					UI.ui.print(DUPLICATE_ADD_MSG);
 				}
 
-			} else if (start != -1 && end == -1) {// has start date but no end date
+			} else if (start != -1 && end == -1) {// has start date but no end
+													// date
 				date = "-";
 				time = "-";
 				startDate = temp[start + 1];
@@ -129,8 +135,8 @@ public class Parser {
 
 				if (hasStartTime(temp)) {
 					startTime = temp[start + 2];
-					startTime = startTime.replaceAll(":","/");
-					dateIn2 = dateIn2 +"/" + startTime;
+					startTime = startTime.replaceAll(":", "/");
+					dateIn2 = dateIn2 + "/" + startTime;
 				} else {
 					startTime = "-";
 				}
@@ -139,8 +145,9 @@ public class Parser {
 				} else {
 					// get issue
 					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithStartDate(issue,dateIn2,s);
+					// isAdded =
+					// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+					isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -156,14 +163,14 @@ public class Parser {
 				if (hasStartTime(temp)) {
 					startTime = temp[start + 2];
 					startTime = startTime.replaceAll(":", "/");
-					dateIn2 = dateIn2+ "/" + startTime;
+					dateIn2 = dateIn2 + "/" + startTime;
 				} else {
 					startTime = "-";
 				}
 				if (hasEndTime(temp)) {
 					time = temp[end + 2];
 					time = time.replaceAll(":", "/");
-					dateIn = dateIn+ "/" + time;
+					dateIn = dateIn + "/" + time;
 
 				} else {
 					time = "-";
@@ -174,8 +181,9 @@ public class Parser {
 					// get issue
 					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
 
-					// isAdded = Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithBothDates(issue,dateIn2, dateIn, s);
+					// isAdded =
+					// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+					isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
 					if (isAdded) {
 						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
 						arraylistsHaveBeenModified = true;
@@ -187,81 +195,93 @@ public class Parser {
 		} else if (option.equals("delete") || option.equals("-")) {
 			if ((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display")) == true) {
 				// delete from uncompleted tasks
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.print(EMPTY_MSG);
-				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.print(DNE_MSG);
-				} else {
-					if (num < list.size()) {
-						Task deleted = list.get(num - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-						arraylistsHaveBeenModified = true;
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.print(EMPTY_MSG);
+					} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.print(DNE_MSG);
 					} else {
-						Task deleted = list2.get(num - list.size() - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-						arraylistsHaveBeenModified = true;
+						if (num < list.size()) {
+							Task deleted = list.get(num - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+							arraylistsHaveBeenModified = true;
+						} else {
+							Task deleted = list2.get(num - list.size() - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+							arraylistsHaveBeenModified = true;
+						}
 					}
+				} catch (Exception e) {
 				}
 			} else if ((Logic.head.getLastCommand().equals("search") || Logic.head.getLastCommand().equals("s"))) {
 				// delete from search results
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Logic.search.getSearchedTasks();
-				if (list.size() == 0) {
-					UI.ui.print(EMPTY_MSG);
-				} else if (list.size() < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.print(DNE_MSG);
-				} else {
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 3);
-					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-					arraylistsHaveBeenModified = true;
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.search.getSearchedTasks();
+					if (list.size() == 0) {
+						UI.ui.print(EMPTY_MSG);
+					} else if (list.size() < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.print(DNE_MSG);
+					} else {
+						Task deleted = list.get(num - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 3);
+						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
 				}
 			} else if ((Logic.head.getLastCommand().equals("dc")
 					|| (Logic.head.getLastCommand().equals("displaycompleted") == true))) {
 				// delete from completed tasks
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
-				if (list.size() == 0) {
-					UI.ui.print(EMPTY_MSG);
-				} else if (list.size() < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.print(DNE_MSG);
-				} else {
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 2);
-					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-					arraylistsHaveBeenModified = true;
-				}
-			} else {
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getFloatingTasks();
-				if (list.size() == 0) {
-					UI.ui.print(EMPTY_MSG);
-				} else if (list.size() < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.print(DNE_MSG);
-				} else {
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 4);
-					UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-					arraylistsHaveBeenModified = true;
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+					if (list.size() == 0) {
+						UI.ui.print(EMPTY_MSG);
+					} else if (list.size() < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.print(DNE_MSG);
+					} else {
+						Task deleted = list.get(num - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 2);
+						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
 				}
 			}
-		}
 
-		else if (option.equals("display") || option.equals("d")) {
+			else {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getFloatingTasks();
+					if (list.size() == 0) {
+						UI.ui.print(EMPTY_MSG);
+					} else if (list.size() < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.print(DNE_MSG);
+					} else {
+						Task deleted = list.get(num - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 4);
+						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
+			}
+		} else if (option.equals("display") || option.equals("d")) {
 			UI.ui.print("UNCOMPLETED TASKS");
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
@@ -271,8 +291,11 @@ public class Parser {
 		}
 
 		else if (option.equals("view") || option.equals("v")) {
-			int num = Integer.parseInt(s);
-			Logic.crud.viewIndividualTask(num - 1);
+			try {
+				int num = Integer.parseInt(s);
+				Logic.crud.viewIndividualTask(num - 1);
+			} catch (Exception e) {
+			}
 		}
 
 		else if (option.equals("clear") || option.equals("c")) {
@@ -292,156 +315,177 @@ public class Parser {
 		}
 
 		else if (option.equals("mark") || option.equals("m")) {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, mark should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.print(EMPTY_MSG);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.print(MARK_FAIL_MSG);
-			} else {
-				Logic.mark.markTaskAsCompleted(num - 1);
-				UI.ui.print(s + MARK_MSG);
-				arraylistsHaveBeenModified = true;
+			try {
+				int num = Integer.parseInt(s);
+				// check if user input integer is valid. If it is valid, mark
+				// should
+				// work
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.print(EMPTY_MSG);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.print(MARK_FAIL_MSG);
+				} else {
+					Logic.mark.markTaskAsCompleted(num - 1);
+					UI.ui.print(s + MARK_MSG);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+
 			}
 		} else if (option.equals("unmark") || option.equals("um")) {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, unmark
-			// should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
-			if (list.size() == 0) {
-				UI.ui.print(NoCompleted_MSG);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.print(UNMARK_FAIL_MSG);
-			} else {
-				Logic.mark.markTaskAsUncompleted(num - 1);
-				UI.ui.print(s + UNMARK_MSG);
-				arraylistsHaveBeenModified = true;
-			}
-		}
-
-		else if (option.equals("edit") || option.equals("e")) {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, edit should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size()+list2.size() == 0) {
-				UI.ui.print(EMPTY_MSG);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.print(EDIT_FAIL_MSG);
-			} else {
-				UI.ui.print(EDIT_PROMPT);
-				Logic.crud.copyEditingTask(num);
-				input = sc.nextLine();
-				String[] temp = input.split(" ");
-				int start = getStartingIndex(temp); // start has value of -1 if it has no start date
-				int end = getIndexOfKey(temp); // end has value of -1 if it has no end date
-				if (start == -1 && end != -1) {// no start date but has end date
-					startDate = "-";
-					startTime = "-";
-					// read date & time
-					date = temp[end + 1];
-					dateIn = date;
-
-					if (hasEndTime(temp)) {// check if contain end time
-						time = temp[end + 2];
-						time.replaceAll(":","/");
-						dateIn = dateIn + "/" + time;
-					} else {
-						time = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(date)) {
-						UI.ui.print(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						//Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input) (to be implemented)
-						Logic.crud.editTaskWithEndDate(issue, dateIn, input, num-1);
-						UI.ui.print("Task number " + num + EDIT_MSG);
-						arraylistsHaveBeenModified = true;
-					}
-				} else if (start == -1 && end == -1) {// no end date and no start date
-					Logic.crud.editTaskWithNoDate(input, input, num-1);
-					UI.ui.print("Task number " + num + EDIT_MSG);
+			try {
+				int num = Integer.parseInt(s);
+				// check if user input integer is valid. If it is valid, unmark
+				// should
+				// work
+				ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+				if (list.size() == 0) {
+					UI.ui.print(NoCompleted_MSG);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.print(UNMARK_FAIL_MSG);
+				} else {
+					Logic.mark.markTaskAsUncompleted(num - 1);
+					UI.ui.print(s + UNMARK_MSG);
 					arraylistsHaveBeenModified = true;
-				} else if (start != -1 && end == -1) {// has start date but no end date
-					date = "-";
-					time = "-";
-					startDate = temp[start + 1];
-					dateIn2 = startDate;
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime = startTime.replaceAll(":", "/");
-						dateIn2 = dateIn2 + "/" + startTime;
-					} else {
-						startTime = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(startDate)) {
-						UI.ui.print(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
-						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-						Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num-1);
-						UI.ui.print("Task number " + num + EDIT_MSG);
-						arraylistsHaveBeenModified = true;
-					}
-				} else { // has both start date and end date
-					startDate = temp[start + 1];
-					date = temp[end + 1];
-					dateIn = date;
-					dateIn2 = startDate;
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime.replaceAll(":","/");
-						dateIn2 = dateIn2 + "/" + startTime;
-					} else {
-						startTime = "-";
-					}
-					if (hasEndTime(temp)) {
-						time = temp[end + 2];
-						time = time.replaceAll(":", "/");
-						dateIn = dateIn + "/" + time;
+				}
+			} catch (Exception e) {
 
-					} else {
-						time = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-						UI.ui.print(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						Logic.crud.editTaskWithBothDates(issue,dateIn2,dateIn,input,num-1);
+			}
+		} else if (option.equals("edit") || option.equals("e")) {
+			try {
+				int num = Integer.parseInt(s);
+				// check if user input integer is valid. If it is valid, edit
+				// should
+				// work
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.print(EMPTY_MSG);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.print(EDIT_FAIL_MSG);
+				} else {
+					UI.ui.print(EDIT_PROMPT);
+					Logic.crud.copyEditingTask(num);
+					input = sc.nextLine();
+					String[] temp = input.split(" ");
+					int start = getStartingIndex(temp); // start has value of -1
+														// if it has no start
+														// date
+					int end = getIndexOfKey(temp); // end has value of -1 if it
+													// has no end date
+					if (start == -1 && end != -1) {// no start date but has end
+													// date
+						startDate = "-";
+						startTime = "-";
+						// read date & time
+						date = temp[end + 1];
+						dateIn = date;
+
+						if (hasEndTime(temp)) {// check if contain end time
+							time = temp[end + 2];
+							time.replaceAll(":", "/");
+							dateIn = dateIn + "/" + time;
+						} else {
+							time = "-";
+						}
+						if (!Logic.checkDate.checkDateformat(date)) {
+							UI.ui.print(WRONG_DATE_MSG);
+						} else {
+							// get issue
+
+							issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+							// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
+							// (to be implemented)
+							Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
+							UI.ui.print("Task number " + num + EDIT_MSG);
+							arraylistsHaveBeenModified = true;
+						}
+					} else if (start == -1 && end == -1) {// no end date and no
+															// start date
+						Logic.crud.editTaskWithNoDate(input, input, num - 1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
+					} else if (start != -1 && end == -1) {// has start date but
+															// no end date
+						date = "-";
+						time = "-";
+						startDate = temp[start + 1];
+						dateIn2 = startDate;
+						if (hasStartTime(temp)) {
+							startTime = temp[start + 2];
+							startTime = startTime.replaceAll(":", "/");
+							dateIn2 = dateIn2 + "/" + startTime;
+						} else {
+							startTime = "-";
+						}
+						if (!Logic.checkDate.checkDateformat(startDate)) {
+							UI.ui.print(WRONG_DATE_MSG);
+						} else {
+							// get issue
+							issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
+							// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
+							Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
+							UI.ui.print("Task number " + num + EDIT_MSG);
+							arraylistsHaveBeenModified = true;
+						}
+					} else { // has both start date and end date
+						startDate = temp[start + 1];
+						date = temp[end + 1];
+						dateIn = date;
+						dateIn2 = startDate;
+						if (hasStartTime(temp)) {
+							startTime = temp[start + 2];
+							startTime.replaceAll(":", "/");
+							dateIn2 = dateIn2 + "/" + startTime;
+						} else {
+							startTime = "-";
+						}
+						if (hasEndTime(temp)) {
+							time = temp[end + 2];
+							time = time.replaceAll(":", "/");
+							dateIn = dateIn + "/" + time;
+
+						} else {
+							time = "-";
+						}
+						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+							UI.ui.print(WRONG_DATE_MSG);
+						} else {
+							// get issue
+							issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+							// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+							Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
+							UI.ui.print("Task number " + num + EDIT_MSG);
+							arraylistsHaveBeenModified = true;
+						}
 					}
 				}
+			} catch (Exception e) {
 			}
-		}
-		else if (option.equals("p")) {
-
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, edit should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.print(EMPTY_MSG);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.print(PRIORITY_FAIL_MSG);
-			} else {
-				UI.ui.print("Enter priority");
-				String priority = sc.nextLine();
-				Logic.mark.setPriority(num - 1, priority);
-				arraylistsHaveBeenModified = true;
+		} else if (option.equals("p")) {
+			try {
+				int num = Integer.parseInt(s);
+				// check if user input integer is valid. If it is valid, edit
+				// should
+				// work
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.print(EMPTY_MSG);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.print(PRIORITY_FAIL_MSG);
+				} else {
+					UI.ui.print("Enter priority");
+					String priority = sc.nextLine();
+					Logic.mark.setPriority(num - 1, priority);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
 			}
 		} else if (option.equals("sortp") || option.equals("sp")) {
+
 			Logic.sort.sortTasksPriority();
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
