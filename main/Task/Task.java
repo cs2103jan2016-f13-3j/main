@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+// modify all get date string methods to work with time!!
+// get startdateString() (also enddatestring) return as "01/01/2000 12:00"
+
 public class Task implements java.io.Serializable {
 	private String issue;
 	private String msg;
 	private ArrayList<String> label;
-	private boolean isCompleted;
+	private boolean isCompleted, hasTime;
 	private Calendar startDate, endDate;
 	private int priority = 0;
 
@@ -20,13 +23,14 @@ public class Task implements java.io.Serializable {
 		this.msg = issue;
 		this.issue = issue;
 		isCompleted = false;
+		hasTime = false;
 		label = new ArrayList<String>();
 		startDate = null;
 		endDate = null;
 	}
 
-	// Constructor for tasks with only start date given
-	public Task(String issue, String date,String msg, boolean isStartDate) { // assuming String date provided is of the format DD/MM/YYYY
+	// Constructor for tasks with only one date given
+	public Task(String issue, String date, String msg, boolean isStartDate) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
 		this.msg=msg;
@@ -37,12 +41,28 @@ public class Task implements java.io.Serializable {
 		int year = Integer.parseInt(splitDates[2]);
 		int month = Integer.parseInt(splitDates[1]);
 		int day = Integer.parseInt(splitDates[0]);
+		int hour = 0;
+		int minute = 0;
+		if (splitDates.length > 3) { // given date includes time
+			hour = Integer.parseInt(splitDates[3]);
+			minute = Integer.parseInt(splitDates[4]);
+		}
 		if (isStartDate) { // the date provided is a start date
-			startDate = new GregorianCalendar(year, month, day);
+			if (splitDates.length > 3) { // has time
+				hasTime = true;
+				startDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else { // does not have time
+				startDate = new GregorianCalendar(year, month, day);
+			}
 			endDate = null;
 		} else { // the date provided is an end date
 			startDate = null;
-			endDate = new GregorianCalendar(year, month, day);
+			if (splitDates.length > 3) { // has time
+				hasTime = true;
+				endDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else { // no time given
+				endDate = new GregorianCalendar(year, month, day);
+			}
 		}
 	}
 
@@ -59,16 +79,30 @@ public class Task implements java.io.Serializable {
 		int year = Integer.parseInt(splitStartDate[2]);
 		int month = Integer.parseInt(splitStartDate[1]);
 		int day = Integer.parseInt(splitStartDate[0]);
-		this.startDate = new GregorianCalendar(year, month, day);
+		int hour = 0;
+		int minute = 0;
+		if (splitStartDate.length > 3) { // given start date includes time
+			hasTime = true;
+			hour = Integer.parseInt(splitStartDate[3]);
+			minute = Integer.parseInt(splitStartDate[4]);
+			this.startDate = new GregorianCalendar(year, month, day, hour, minute);
+		} else { // given start date does not have time
+			this.startDate = new GregorianCalendar(year, month, day);
+		}
 
 		String[] splitEndDate = endDate.split("/");
 		year = Integer.parseInt(splitEndDate[2]);
 		month = Integer.parseInt(splitEndDate[1]);
 		day = Integer.parseInt(splitEndDate[0]);
-		this.endDate = new GregorianCalendar(year, month, day);
+		if (splitEndDate.length > 3) { // given end date includes time
+			hasTime = true;
+			hour = Integer.parseInt(splitEndDate[3]);
+			minute = Integer.parseInt(splitEndDate[4]);
+			this.endDate = new GregorianCalendar(year, month, day, hour, minute);
+		} else { // given end date has not time
+			this.endDate = new GregorianCalendar(year, month, day);
+		}
 	}
-
-	
 
 	// Setter Methods
 	public void setIssue(String issue) {
@@ -95,19 +129,49 @@ public class Task implements java.io.Serializable {
 	}
 
 	public void setStartDate(String startDate) {
-		String[] splitStartDate = startDate.split("/");
-		int year = Integer.parseInt(splitStartDate[2]);
-		int month = Integer.parseInt(splitStartDate[1]);
-		int day = Integer.parseInt(splitStartDate[0]);
-		this.startDate = new GregorianCalendar(year, month, day);
+		if (startDate == null) {
+			hasTime = false;
+			this.startDate = null;
+		} else {
+			String[] splitStartDate = startDate.split("/");
+			int year = Integer.parseInt(splitStartDate[2]);
+			int month = Integer.parseInt(splitStartDate[1]);
+			int day = Integer.parseInt(splitStartDate[0]);
+			int hour = 0;
+			int minute = 0;
+			if (splitStartDate.length > 3) { // given date includes time
+				hasTime = true;
+				hour = Integer.parseInt(splitStartDate[3]);
+				minute = Integer.parseInt(splitStartDate[4]);
+				this.startDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else {
+				hasTime = false;
+				this.startDate = new GregorianCalendar(year, month, day);
+			}
+		}
 	}
 
 	public void setEndDate(String endDate) {
-		String[] splitStartDate = endDate.split("/");
-		int year = Integer.parseInt(splitStartDate[2]);
-		int month = Integer.parseInt(splitStartDate[1]);
-		int day = Integer.parseInt(splitStartDate[0]);
-		this.endDate = new GregorianCalendar(year, month, day);
+		if (endDate == null) {
+			hasTime = false;
+			this.endDate = null;
+		} else {
+			String[] splitEndDate = endDate.split("/");
+			int year = Integer.parseInt(splitEndDate[2]);
+			int month = Integer.parseInt(splitEndDate[1]);
+			int day = Integer.parseInt(splitEndDate[0]);
+			int hour = 0;
+			int minute = 0;
+			if (splitEndDate.length > 3) { // given date includes time
+				hasTime = true;
+				hour = Integer.parseInt(splitEndDate[3]);
+				minute = Integer.parseInt(splitEndDate[4]);
+				this.endDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else {
+				hasTime = false;
+				this.endDate = new GregorianCalendar(year, month, day);
+			}
+		}
 	}
 
 	// Getter Methods
@@ -147,6 +211,10 @@ public class Task implements java.io.Serializable {
 				year -= 1;
 			}
 			result += year;
+			if (hasTime) {
+				result += " " + startDate.get(Calendar.HOUR_OF_DAY);
+				result += ":" + startDate.get(Calendar.MINUTE);
+			}
 			return result;
 		} else { // return empty string if the task has no start date
 			return "";
@@ -166,6 +234,10 @@ public class Task implements java.io.Serializable {
 				year -= 1;
 			}
 			result += year;
+			if (hasTime) {
+				result += " " + endDate.get(Calendar.HOUR_OF_DAY);
+				result += ":" + endDate.get(Calendar.MINUTE);
+			}
 			return result;
 		} else { // return empty string if the task has no end date
 			return "";
@@ -191,15 +263,13 @@ public class Task implements java.io.Serializable {
 		if (startDate == null && endDate == null) {
 			return issue;
 		} else {
-			String startDateString = "";
-			String endDateString = "";
-			if (startDate != null) {
-				startDateString = getStartDateString();
+			if (startDate == null) {
+				return issue + " - " + getEndDateString();
+			} else if (endDate == null) {
+				return issue + " " + getStartDateString() + " -";
+			}  else {
+				return issue + " " + getStartDateString() + " " + getEndDateString();
 			}
-			if (endDate != null) {
-				endDateString = getEndDateString();
-			} 		
-			return issue + " " + startDateString + " " + endDateString;
 		}
 	}
 }
