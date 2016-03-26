@@ -94,12 +94,20 @@ public class Task implements java.io.Serializable {
 		isCompleted = false;
 	}
 
-	public void setStartDate(Calendar date) {
-		this.startDate = date;
+	public void setStartDate(String startDate) {
+		String[] splitStartDate = startDate.split("/");
+		int year = Integer.parseInt(splitStartDate[2]);
+		int month = Integer.parseInt(splitStartDate[1]);
+		int day = Integer.parseInt(splitStartDate[0]);
+		this.startDate = new GregorianCalendar(year, month, day);
 	}
 
-	public void setEndDate(Calendar date) {
-		this.endDate = date;
+	public void setEndDate(String endDate) {
+		String[] splitStartDate = endDate.split("/");
+		int year = Integer.parseInt(splitStartDate[2]);
+		int month = Integer.parseInt(splitStartDate[1]);
+		int day = Integer.parseInt(splitStartDate[0]);
+		this.endDate = new GregorianCalendar(year, month, day);
 	}
 
 	// Getter Methods

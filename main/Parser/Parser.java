@@ -367,7 +367,8 @@ public class Parser {
 						UI.ui.print(WRONG_DATE_MSG);
 					} else {
 						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						
+						issue = getIssue(temp, start, end, false, false);
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						Logic.crud.editTaskWithBothDates(issue,startDate,date,input,num-1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
