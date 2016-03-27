@@ -20,6 +20,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
+	 
+	 //@@author Kowshik
 	 /**
 	  * Function to add task without time into storage
 	  * @throws ClassNotFoundException 
@@ -121,6 +123,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
+	//@@author Jie Wei
 	 /**
 	  * Function to import the tasks from the storage file
 	  * @param task the tasks to be added to the arraylist storage
@@ -137,6 +140,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
+	 //@@author Cheng Gee
 	 /**
 	  * Function to edit task without editing date according to index in storage
 	  * 
@@ -272,6 +276,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 Storage.localStorage.setUncompletedTask(index, temp);
 	 }
 
+	 //@@author Kowshik
 	 /**
 	  * Function to delete task according to index in storage
 	  * @throws IOException 

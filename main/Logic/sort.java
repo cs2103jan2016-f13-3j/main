@@ -1,10 +1,6 @@
+//@@author Kowshik
 package Logic;
 import java.io.IOException;
-
-/**
- * @author Kowshik
- */
-
 import java.util.ArrayList;
 import Task.Task;
 

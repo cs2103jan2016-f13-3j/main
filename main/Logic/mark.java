@@ -1,8 +1,5 @@
+//@@author Kowshik
 package Logic;
-
-/**
- * @author Kowshik
- */
 import java.io.IOException;
 import java.util.ArrayList;
 

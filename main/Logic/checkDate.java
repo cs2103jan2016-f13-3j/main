@@ -1,5 +1,5 @@
+//@@author Cheng Gee
 package Logic;
-
 public class checkDate {
 
 	private static int[] leapYearDate = new int[]{31,29,31,30,31,30,31,31,30,31,30,31};

@@ -1,8 +1,5 @@
+//@@author Jie Wei
 package Logic;
-
-/**
- * @author Kowshik
- */
 import java.io.IOException;
 
 public class save {

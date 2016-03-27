@@ -1,7 +1,5 @@
+//@@author Kowshik
 package Storage;
-/**
- * @author Kowshik
- */
 import Task.Task;
 
 import java.io.ByteArrayInputStream;
