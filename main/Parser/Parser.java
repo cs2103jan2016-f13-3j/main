@@ -80,9 +80,9 @@ public class Parser {
 			// get index of key
 			String[] temp = s.split(" ");
 			int start = getStartingIndex(temp); // start has value of -1 if it
-												// has no start date
+			// has no start date
 			int end = getIndexOfKey(temp); // end has value of -1 if it has no
-											// end date
+			// end date
 			boolean isAdded;
 			if (start == -1 && end != -1) {// no start date but has end date
 				startDate = "-";
@@ -117,7 +117,7 @@ public class Parser {
 				}
 
 			} else if (start == -1 && end == -1) {// no end date and no start
-													// date
+				// date
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
 					UI.ui.print("\"" + s + "\" " + ADD_MSG);
@@ -127,7 +127,7 @@ public class Parser {
 				}
 
 			} else if (start != -1 && end == -1) {// has start date but no end
-													// date
+				// date
 				date = "-";
 				time = "-";
 				startDate = temp[start + 1];
@@ -192,7 +192,9 @@ public class Parser {
 					}
 				}
 			}
-		} else if (option.equals("delete") || option.equals("-")) {
+		} 
+		//@@author Kowshik
+		else if (option.equals("delete") || option.equals("-")) {
 			if ((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display")) == true) {
 				// delete from uncompleted tasks
 				try {
@@ -353,7 +355,9 @@ public class Parser {
 			} catch (Exception e) {
 
 			}
-		} else if (option.equals("edit") || option.equals("e")) {
+		} 
+		//@@author Jung Kai
+		else if (option.equals("edit") || option.equals("e")) {
 			try {
 				int num = Integer.parseInt(s);
 				// check if user input integer is valid. If it is valid, edit
@@ -371,12 +375,12 @@ public class Parser {
 					input = sc.nextLine();
 					String[] temp = input.split(" ");
 					int start = getStartingIndex(temp); // start has value of -1
-														// if it has no start
-														// date
+					// if it has no start
+					// date
 					int end = getIndexOfKey(temp); // end has value of -1 if it
-													// has no end date
+					// has no end date
 					if (start == -1 && end != -1) {// no start date but has end
-													// date
+						// date
 						startDate = "-";
 						startTime = "-";
 						// read date & time
@@ -403,12 +407,12 @@ public class Parser {
 							arraylistsHaveBeenModified = true;
 						}
 					} else if (start == -1 && end == -1) {// no end date and no
-															// start date
+						// start date
 						Logic.crud.editTaskWithNoDate(input, input, num - 1);
 						UI.ui.print("Task number " + num + EDIT_MSG);
 						arraylistsHaveBeenModified = true;
 					} else if (start != -1 && end == -1) {// has start date but
-															// no end date
+						// no end date
 						date = "-";
 						time = "-";
 						startDate = temp[start + 1];
@@ -464,7 +468,9 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
-		} else if (option.equals("p")) {
+		} 
+		//@@author Kowshik
+		else if (option.equals("p")) {
 			try {
 				int num = Integer.parseInt(s);
 				// check if user input integer is valid. If it is valid, edit
@@ -514,6 +520,7 @@ public class Parser {
 		return arraylistsHaveBeenModified;
 	}
 
+	//@@author Jung Kai
 	/**
 	 * method that convert String[] to String
 	 * 
@@ -633,7 +640,7 @@ public class Parser {
 				}
 				return arrayToString(temp);
 			} else if (startTime == true && endTime == false) {// has only start
-																// time
+				// time
 				int size = arr.length - 5;
 				String[] temp = new String[size];
 				int i;
