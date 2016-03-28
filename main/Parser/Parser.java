@@ -227,7 +227,7 @@ public class Parser {
 				// delete from search results
 				try {
 					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.search.getSearchedTasks();
+					ArrayList<Task> list = Logic.Search.getSearchedTasks();
 					if (list.size() == 0) {
 						UI.ui.print(EMPTY_MSG);
 					} else if (list.size() < num || num - 1 < 0) {
@@ -267,18 +267,27 @@ public class Parser {
 			else {
 				try {
 					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Storage.localStorage.getFloatingTasks();
-					if (list.size() == 0) {
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
 						UI.ui.print(EMPTY_MSG);
-					} else if (list.size() < num || num - 1 < 0) {
+					} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
 						// handle indexOutofBoundException
 						UI.ui.print(DNE_MSG);
 					} else {
-						Task deleted = list.get(num - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 4);
-						UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
-						arraylistsHaveBeenModified = true;
+						if (num < list.size()) {
+							Task deleted = list.get(num - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+							arraylistsHaveBeenModified = true;
+						} else {
+							Task deleted = list2.get(num - list.size() - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.print("\"" + issue + "\" " + DELETE_MSG);
+							arraylistsHaveBeenModified = true;
+						}
 					}
 				} catch (Exception e) {
 				}
@@ -307,13 +316,13 @@ public class Parser {
 		}
 
 		else if (option.equals("sort")) { // by alphabetical order
-			Logic.sort.sortTasksAlphabetically();
+			Logic.Sort.sortTasksAlphabetically();
 			UI.ui.print(SORT_MSG);
 			arraylistsHaveBeenModified = true;
 		}
 
 		else if (option.equals("search") || option.equals("s")) {
-			Logic.search.searchTasksByKeyword(s);
+			Logic.Search.searchTasksByKeyword(s);
 		}
 
 		else if (option.equals("mark") || option.equals("m")) {
@@ -329,7 +338,7 @@ public class Parser {
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 					UI.ui.print(MARK_FAIL_MSG);
 				} else {
-					Logic.mark.markTaskAsCompleted(num - 1);
+					Logic.Mark.markTaskAsCompleted(num - 1);
 					UI.ui.print(s + MARK_MSG);
 					arraylistsHaveBeenModified = true;
 				}
@@ -348,7 +357,7 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					UI.ui.print(UNMARK_FAIL_MSG);
 				} else {
-					Logic.mark.markTaskAsUncompleted(num - 1);
+					Logic.Mark.markTaskAsUncompleted(num - 1);
 					UI.ui.print(s + UNMARK_MSG);
 					arraylistsHaveBeenModified = true;
 				}
@@ -485,14 +494,14 @@ public class Parser {
 				} else {
 					UI.ui.print("Enter priority");
 					String priority = sc.nextLine();
-					Logic.mark.setPriority(num - 1, priority);
+					Logic.Mark.setPriority(num - 1, priority);
 					arraylistsHaveBeenModified = true;
 				}
 			} catch (Exception e) {
 			}
 		} else if (option.equals("sortp") || option.equals("sp")) {
 
-			Logic.sort.sortTasksPriority();
+			Logic.Sort.sortTasksPriority();
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
 

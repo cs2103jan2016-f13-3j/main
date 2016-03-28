@@ -6,7 +6,7 @@ import java.util.GregorianCalendar;
 
 import Task.Task;
 
-public class search {
+public class Search {
 	
 	private static ArrayList<Task> searchedTasks;
 	
@@ -50,7 +50,7 @@ public class search {
 			counter++;
 		}
 		
-		temp = Storage.localStorage.getFloatingTasks();
+		temp = Storage.localStorage.getCompletedTasks();
 		UI.ui.print("________________________________________");
 		UI.ui.print("\n");
 		UI.ui.print("COMPLETED TASKS");

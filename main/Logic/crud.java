@@ -297,7 +297,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 Storage.localStorage.delFromCompletedTasks(index);
 		 }
 		 else if(listOfTasks == 3) { //delete from search completed tasks view
-			 ArrayList<Task> searchTemp = search.getSearchedTasks();
+			 ArrayList<Task> searchTemp = Search.getSearchedTasks();
 			 Task taskToBeDeleted = searchTemp.get(index);
 			 ArrayList<Task> uncompletedTemp = Storage.localStorage.getUncompletedTasks();
 			 for(int i = 0; i<uncompletedTemp.size(); i++) {

@@ -3,3 +3,7 @@
 main/Parser/parser.class
 main/Storage/localStorage.class
 *.class
+*.class
+main/Storage/fileStorage.class
+*.class
+*.class

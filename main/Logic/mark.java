@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import Storage.localStorage;
 import Task.Task;
 
-public class mark {
+public class Mark {
 
 	/**
 	 * Function to mark tasks as completed
