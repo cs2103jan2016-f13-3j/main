@@ -1,6 +1,6 @@
 //@@author Kowshik
 package Logic;
-public class help {
+public class Help {
 
 	public static void printHelpMenu() {
 		String addCommand = "Type \"add/+/a\" followed by task description. Press Enter. Now enter the date or -.";

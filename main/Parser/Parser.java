@@ -195,7 +195,7 @@ public class Parser {
 		} 
 		//@@author Kowshik
 		else if (option.equals("delete") || option.equals("-")) {
-			if ((Logic.head.getLastCommand().equals("d") || Logic.head.getLastCommand().equals("display")) == true) {
+			if ((Logic.Head.getLastCommand().equals("d") || Logic.Head.getLastCommand().equals("display")) == true) {
 				// delete from uncompleted tasks
 				try {
 					int num = Integer.parseInt(s);
@@ -223,7 +223,7 @@ public class Parser {
 					}
 				} catch (Exception e) {
 				}
-			} else if ((Logic.head.getLastCommand().equals("search") || Logic.head.getLastCommand().equals("s"))) {
+			} else if ((Logic.Head.getLastCommand().equals("search") || Logic.Head.getLastCommand().equals("s"))) {
 				// delete from search results
 				try {
 					int num = Integer.parseInt(s);
@@ -242,8 +242,8 @@ public class Parser {
 					}
 				} catch (Exception e) {
 				}
-			} else if ((Logic.head.getLastCommand().equals("dc")
-					|| (Logic.head.getLastCommand().equals("displaycompleted") == true))) {
+			} else if ((Logic.Head.getLastCommand().equals("dc")
+					|| (Logic.Head.getLastCommand().equals("displaycompleted") == true))) {
 				// delete from completed tasks
 				try {
 					int num = Integer.parseInt(s);
@@ -511,7 +511,7 @@ public class Parser {
 		}
 
 		else if (option.equals("help")) {
-			Logic.help.printHelpMenu();
+			Logic.Help.printHelpMenu();
 		}
 
 		else {

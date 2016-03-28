@@ -4,16 +4,21 @@ import java.io.EOFException;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.ObjectInputStream;
+import java.util.ArrayList;
 import java.util.logging.FileHandler;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
 
+import com.google.gson.Gson;
+import com.google.gson.stream.JsonReader;
+
 import Task.Task;
 
-public class importTasks {
+public class ImportTasks {
 
 	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
 
@@ -22,41 +27,27 @@ public class importTasks {
 	 * 
 	 * @param fileName String that contains the name of the storage file
 	 * @throws IOException
+	 * @throws ClassNotFoundException 
 	 */
 
-	public static void importTasksFromStorage(File file, String flag) throws IOException {
+	public static void importTasksFromStorage(String fileName, String flag) throws IOException, ClassNotFoundException {
 		//		LoggerTry.startLog();
-		FileInputStream fis = null;
-		ObjectInputStream ois = null;
+		JsonReader reader = new JsonReader(new FileReader(fileName));
+		ArrayList<Task> GsonObjects = new ArrayList<Task>();
 		try {
-			fis = new FileInputStream(file);		
-			ois = new ObjectInputStream(fis);
-		} catch (FileNotFoundException e1) {
-			e1.printStackTrace();
-		} catch (EOFException e) {
-			fis.close();
-			return;
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-
-		while (true) {
-			try {
-				Task task = (Task)ois.readObject();
-				Logic.crud.addTaskViaImport(task, flag);
-			} catch (ClassNotFoundException e) {
-				e.printStackTrace();
-			} catch (EOFException e) {
-				//logger.log(Level.WARNING, e.toString(), e);
-				break;
-			} catch (IOException e) {
-				//logger.log(Level.SEVERE, e.toString(), e);
-				break;
-			} catch (NullPointerException e) {
-				break;
+			reader.beginArray();
+			while (reader.hasNext()) {
+				Task obj = (new Gson()).fromJson(reader, Task.class);
+				GsonObjects.add(obj);
 			}
+			reader.endArray();
+			reader.close();
+			for (Task t : GsonObjects) {
+				Logic.crud.addTaskViaImport(t, flag);
+			}
+		} catch (EOFException e) {
+			return;
 		}
-		fis.close();
 	}
 }
 

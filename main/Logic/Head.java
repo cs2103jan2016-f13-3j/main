@@ -1,15 +1,16 @@
 package Logic;
 
-/*import static org.fusesource.jansi.Ansi.ansi;
+import static org.fusesource.jansi.Ansi.ansi;
 import static org.fusesource.jansi.Ansi.Color.YELLOW;
- */
+
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
-/*import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
- */public class head {
+
+public class Head {
 
 	 private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	 private static final String WELCOME_MSG_2 = "Agendah is ready for use";
@@ -17,9 +18,9 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
-	 private static String storageFileNameCompletedTasks = "storageCompleted.ser";
-	 private static String storageFileNameUncompletedTasks = "storageUncompleted.ser";
-	 private static String storageFileNameFloatingTasks = "storageFloating.ser";
+	 private static String storageFileNameCompletedTasks = "TasksCompleted.txt";
+	 private static String storageFileNameUncompletedTasks = "TasksUncompleted.txt";
+	 private static String storageFileNameFloatingTasks = "TasksFloating.txt";
 	 private static Scanner sc = new Scanner(System.in);
 	 private static String lastCommand = "";
 	 private static String logo1="********   ********   ********  **       **   *****       ********   **    **";
@@ -32,7 +33,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static String logo8="**    **   ********   ********  ***     ***   *******     **    **   **    **";
 	 public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		 prepareAndImportFiles();
-		 //System.out.print(ansi().eraseScreen().fgBright(RED));
+//		 System.out.print(ansi().eraseScreen().fgBright(RED));
 		 UI.ui.print(logo1);
 		 UI.ui.print(logo2);
 		 UI.ui.print(logo3);
@@ -43,7 +44,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 UI.ui.print(logo8);
 
 		 UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
-		 //System.out.print(ansi().reset());
+//		 System.out.print(ansi().reset());
 		 UI.ui.print("\n");
 		 UI.ui.print("Enter \"help\" for instructions.");
 		 runProgram();
@@ -82,14 +83,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 	 // creates the necessary storage files if they do not exist
 	 // and import tasks from they, if any
-	 public static void prepareAndImportFiles() throws FileNotFoundException, IOException {
+	 public static void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
 		 File UncompletedTasksFile = new File(storageFileNameUncompletedTasks);
 		 File CompletedTasksFile = new File(storageFileNameCompletedTasks);
 		 File FloatingTasksFile = new File(storageFileNameFloatingTasks);
 		 checkIfFileExists(UncompletedTasksFile);
 		 checkIfFileExists(CompletedTasksFile);
 		 checkIfFileExists(FloatingTasksFile);
-		 importTasksFromFiles(UncompletedTasksFile, CompletedTasksFile, FloatingTasksFile);
+		 importTasksFromFiles(storageFileNameUncompletedTasks, storageFileNameCompletedTasks, storageFileNameFloatingTasks);
 	 }
 
 	 public static void checkIfFileExists(File f) throws IOException, FileNotFoundException {
@@ -98,15 +99,15 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	 public static void importTasksFromFiles(File file1, File file2, File file3) throws IOException {
-		 Logic.importTasks.importTasksFromStorage(file1, FLAG_UNCOMPLETED);
-		 Logic.importTasks.importTasksFromStorage(file2, FLAG_COMPLETED);
-		 Logic.importTasks.importTasksFromStorage(file3, FLAG_FLOATING);
+	 public static void importTasksFromFiles(String fileName1, String fileName2, String fileName3) throws IOException, ClassNotFoundException {
+		 Logic.ImportTasks.importTasksFromStorage(fileName1, FLAG_UNCOMPLETED);
+		 Logic.ImportTasks.importTasksFromStorage(fileName2, FLAG_COMPLETED);
+		 Logic.ImportTasks.importTasksFromStorage(fileName3, FLAG_FLOATING);
 	 }
 
 	 public static void saveToFile() throws IOException {
-		 Logic.save.saveFile(storageFileNameUncompletedTasks);
-		 Logic.save.saveFile(storageFileNameCompletedTasks);
-		 Logic.save.saveFile(storageFileNameFloatingTasks);
+		 Logic.Save.saveUncompletedTasksToFile(storageFileNameUncompletedTasks);
+		 Logic.Save.saveCompletedTasksToFile(storageFileNameCompletedTasks);
+		 Logic.Save.saveFloatingTasksToFile(storageFileNameFloatingTasks);
 	 }
  }
