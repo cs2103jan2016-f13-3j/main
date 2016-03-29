@@ -221,11 +221,14 @@ public class Task implements java.io.Serializable {
 				if (minute.length() == 1) {
 					minute = "0" + minute;
 				}
-				result += ":" + minute;
+				result += ":" + minute + "\t";
+			}else{
+				result += "\t";
 			}
 			return result;
+			
 		} else { // return empty string if the task has no start date
-			return "";
+			return "\t\t";
 		}
 	}
 
@@ -252,11 +255,13 @@ public class Task implements java.io.Serializable {
 				if (minute.length() == 1) {
 					minute = "0" + minute;
 				}
-				result += ":" + minute;
+				result += ":" + minute + "\t";
+			}else{
+				result += "\t";
 			}
 			return result;
 		} else { // return empty string if the task has no end date
-			return "";
+			return "\t\t";
 		}
 	}
 
@@ -276,7 +281,8 @@ public class Task implements java.io.Serializable {
 	}
 	// Returns date in string format of DD/MM/YYYY
 	public String getTaskString() {
-		if (startDate == null && endDate == null) {
+		return getStartDateString() +  getEndDateString() +issue;
+		/*if (startDate == null && endDate == null) {
 			return issue;
 		} else {
 			if (startDate == null) {
@@ -286,6 +292,6 @@ public class Task implements java.io.Serializable {
 			}  else {
 				return getStartDateString() + " " + getEndDateString() + " " + issue;
 			}
-		}
+		}*/
 	}
 }

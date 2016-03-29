@@ -2,8 +2,13 @@ package unitTest;
 
 import static org.junit.Assert.*;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
+import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -14,7 +19,21 @@ import Logic.crud;
 import Task.Task;
 
 public class crudTest {
+	@Test
+	public void testHead() throws ClassNotFoundException, IOException{
+		final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(outContent));
+		Logic.Head.runProgram();
+		
+		
+		assertEquals("test",1);
+		ByteArrayInputStream in = new ByteArrayInputStream("exit".getBytes());
+		System.setIn(in);
+		assertEquals("test",1);
+		 System.out.println("test"+outContent.toString());
 
+		 
+	}/*
 	@Test
 	public void testAddTaskString() throws ClassNotFoundException {
 		boolean test=false;
@@ -25,7 +44,8 @@ public class crudTest {
 			e.printStackTrace();
 		}
 		assertEquals(true,test);
-	}
+	}*/
+	/*
 	@Test
 	public void testTaskAdded() throws IOException, ClassNotFoundException{
 		Logic.crud.clearTasks();
@@ -45,7 +65,8 @@ public class crudTest {
 		String msg=test1.get(0).getIssue();
 		assertEquals(msg,"lalala");
 		
-	}
+	}*/
+	/*
 	@Test
 	public void testCheckDateformat() {
 		final Logger logger= Logger.getLogger( Class.class.getName() );
@@ -57,6 +78,6 @@ public class crudTest {
 			logger.log( Level.SEVERE, e.toString(), e );
 			
 		}
-	}
+	}*/
 
 }
