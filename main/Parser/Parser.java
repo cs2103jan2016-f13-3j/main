@@ -293,12 +293,16 @@ public class Parser {
 				}
 			}
 		} else if (option.equals("display") || option.equals("d")) {
-			UI.ui.print("UNCOMPLETED TASKS");
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}
 
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
+		}
+		
+		else if (option.equals("displaydate")) {
+			String inputDate = s;
+			Logic.crud.displayScheduleForADay(inputDate);
 		}
 
 		else if (option.equals("view") || option.equals("v")) {

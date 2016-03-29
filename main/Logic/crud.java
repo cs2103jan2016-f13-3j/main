@@ -11,6 +11,7 @@ import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 /*import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
  */public class crud {
@@ -45,6 +46,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 return false;
 		 }
 	 }
+
 	 public static ArrayList<Task> getTemp(){
 		 return temp;
 	 }
@@ -201,7 +203,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-
+	 //@@author Kowshik
 	 /**
 	  * Function to edit task (edited task has no date)
 	  * @param line
@@ -212,15 +214,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @throws ClassNotFoundException
 	  */
 	 public static void editTaskWithNoDate(String line, String msg, int index) throws IOException, ClassNotFoundException {
-		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
-		 if(index<uncompleteList){
+		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
+
+		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 deleteTask(index,1);
 			 temp.setStartDate(null);
 			 temp.setEndDate(null);
 			 temp.setIssue(line);
 			 addTask(msg);
-		 }else{
+		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 temp.setStartDate(null);
 			 temp.setEndDate(null);
@@ -239,14 +242,15 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @throws ClassNotFoundException
 	  */
 	 public static void editTaskWithStartDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {		 
-		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
-		 if(index<uncompleteList){
+		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
+
+		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 temp.setIssue(line);
 			 temp.setEndDate(null);
 			 temp.setStartDate(date);
 			 Storage.localStorage.setUncompletedTask(index, temp);
-		 }else{
+		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
 			 temp.setIssue(line);
 			 temp.setEndDate(null);
@@ -264,16 +268,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  */
 	 public static void editTaskWithEndDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {
 		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
-		 if(index<uncompleteList){
 
+		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 temp.setIssue(line);
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
 			 Storage.localStorage.setUncompletedTask(index, temp);
-		 }else{
-			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
-			 deleteTask(index,1);
+		 } else {
+			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
+			 deleteTask(index, 1);
 			 temp.setIssue(line);
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
@@ -297,7 +301,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 Storage.localStorage.setUncompletedTask(index, temp);
 	 }
 
-	 //@@author Kowshik
 	 /**
 	  * Function to delete task according to index in storage
 	  * @throws IOException 
@@ -339,11 +342,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  */
 	 public static void displayUncompletedAndFloatingTasks() {
 		 //System.out.print(ansi().eraseScreen().fgBright(YELLOW));
+		 
+		 UI.ui.print("UNCOMPLETED TASKS");
+		 UI.ui.print("Index\tTask");
 		 boolean isEmptyUn = false;
 		 temp = Storage.localStorage.getUncompletedTasks();
 		 String dt="";
 		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((i+1) + ".\t" + temp.get(i).getStartDateString() + "\t" + temp.get(i).getEndDateString() + "\t" + temp.get(i).getIssue());
+			 UI.ui.print((i+1) + ".\t" + temp.get(i).getTaskString());
 		 }
 		 if (temp.isEmpty()) {
 			 isEmptyUn = true;
@@ -406,6 +412,42 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 if (temp.isEmpty()) {
 			 UI.ui.print("There is no stored task to display");
+		 }
+	 }
+
+	 public static void displayScheduleForADay(String inputDate) {
+		 /* String[] splitEndDate = inputDate.split("/");
+		 Calendar date;
+		 int year = Integer.parseInt(splitEndDate[2]);
+		 int month = Integer.parseInt(splitEndDate[1]);
+		 int day = Integer.parseInt(splitEndDate[0]);
+
+		 if (splitEndDate.length > 3) { // given end date includes time
+			 int hour = Integer.parseInt(splitEndDate[3]);
+			 int minute = Integer.parseInt(splitEndDate[4]);
+			 date = new GregorianCalendar(year, month, day, hour, minute);
+		 } else { // given end date has not time
+			 date = new GregorianCalendar(year, month, day);
+		 }*/
+
+		 //run through all the tasks and find which have same date
+		 ArrayList<Task> tempTasks = new ArrayList<Task>();
+		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+
+		 for(Task temp : tempUncompletedTasks) {
+			 if(temp.getEndDateString().contains(inputDate) || temp.getStartDateString().contains(inputDate)) {
+				 tempTasks.add(temp);
+			 }
+		 }
+
+		 if (tempTasks.isEmpty()) {
+			 UI.ui.print("There is no stored task to display");
+		 }
+		 else {
+			 UI.ui.print("Index\tTask");
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+			 }
 		 }
 	 }
 

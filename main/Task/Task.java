@@ -280,11 +280,11 @@ public class Task implements java.io.Serializable {
 			return issue;
 		} else {
 			if (startDate == null) {
-				return issue + " - " + getEndDateString();
+				return " - " + getEndDateString() + " " + issue;
 			} else if (endDate == null) {
-				return issue + " " + getStartDateString() + " -";
+				return getStartDateString() + " -" + " " + issue  ;
 			}  else {
-				return issue + " " + getStartDateString() + " " + getEndDateString();
+				return getStartDateString() + " " + getEndDateString() + " " + issue;
 			}
 		}
 	}
