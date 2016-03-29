@@ -7,3 +7,5 @@ main/Storage/localStorage.class
 main/Storage/fileStorage.class
 *.class
 *.class
+*.class
+main/Logic/importTasks.class

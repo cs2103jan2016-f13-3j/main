@@ -207,7 +207,7 @@ public class Parser {
 						// handle indexOutofBoundException
 						UI.ui.print(DNE_MSG);
 					} else {
-						if (num < list.size()) {
+						if ((num - 1) < list.size()) {
 							Task deleted = list.get(num - 1);
 							issue = deleted.getIssue();
 							Logic.crud.deleteTask(num - 1, 1);
@@ -275,7 +275,7 @@ public class Parser {
 						// handle indexOutofBoundException
 						UI.ui.print(DNE_MSG);
 					} else {
-						if (num < list.size()) {
+						if ((num - 1) < list.size()) {
 							Task deleted = list.get(num - 1);
 							issue = deleted.getIssue();
 							Logic.crud.deleteTask(num - 1, 1);
