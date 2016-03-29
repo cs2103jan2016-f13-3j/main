@@ -15,12 +15,6 @@ public class Head {
 	 private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	 private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	 private static final String USER_PROMPT = "command: ";
-	 private static final String FLAG_UNCOMPLETED = "uncompleted";
-	 private static final String FLAG_COMPLETED = "completed";
-	 private static final String FLAG_FLOATING = "floating";
-	 private static String storageFileNameCompletedTasks = "TasksCompleted.txt";
-	 private static String storageFileNameUncompletedTasks = "TasksUncompleted.txt";
-	 private static String storageFileNameFloatingTasks = "TasksFloating.txt";
 	 private static Scanner sc = new Scanner(System.in);
 	 private static String lastCommand = "";
 	 private static String logo1="********   ********   ********  **       **   *****       ********   **    **";
@@ -32,7 +26,7 @@ public class Head {
 	 private static String logo7="**    **   ********   ********  ***    ****   **    **    **    **   **    **";
 	 private static String logo8="**    **   ********   ********  ***     ***   *******     **    **   **    **";
 	 public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
-		 prepareAndImportFiles();
+		 Logic.ImportTasks.prepareAndImportFiles();
 //		 System.out.print(ansi().eraseScreen().fgBright(RED));
 		 UI.ui.print(logo1);
 		 UI.ui.print(logo2);
@@ -72,42 +66,12 @@ public class Head {
 				 Logic.Sort.sortTasksChronologically();
 			 }
 			 // save all tasks into the actual file after command is done
-			 saveToFile();		
+			 Logic.Save.saveToFile();		
 		 }
 	 }
 
 	 //getter method
 	 public static String getLastCommand() {
 		 return lastCommand;
-	 }
-
-	 // creates the necessary storage files if they do not exist
-	 // and import tasks from they, if any
-	 public static void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
-		 File UncompletedTasksFile = new File(storageFileNameUncompletedTasks);
-		 File CompletedTasksFile = new File(storageFileNameCompletedTasks);
-		 File FloatingTasksFile = new File(storageFileNameFloatingTasks);
-		 checkIfFileExists(UncompletedTasksFile);
-		 checkIfFileExists(CompletedTasksFile);
-		 checkIfFileExists(FloatingTasksFile);
-		 importTasksFromFiles(storageFileNameUncompletedTasks, storageFileNameCompletedTasks, storageFileNameFloatingTasks);
-	 }
-
-	 public static void checkIfFileExists(File f) throws IOException, FileNotFoundException {
-		 if (!f.exists()) {
-			 f.createNewFile();
-		 }
-	 }
-
-	 public static void importTasksFromFiles(String fileName1, String fileName2, String fileName3) throws IOException, ClassNotFoundException {
-		 Logic.ImportTasks.importTasksFromStorage(fileName1, FLAG_UNCOMPLETED);
-		 Logic.ImportTasks.importTasksFromStorage(fileName2, FLAG_COMPLETED);
-		 Logic.ImportTasks.importTasksFromStorage(fileName3, FLAG_FLOATING);
-	 }
-
-	 public static void saveToFile() throws IOException {
-		 Logic.Save.saveUncompletedTasksToFile(storageFileNameUncompletedTasks);
-		 Logic.Save.saveCompletedTasksToFile(storageFileNameCompletedTasks);
-		 Logic.Save.saveFloatingTasksToFile(storageFileNameFloatingTasks);
 	 }
  }

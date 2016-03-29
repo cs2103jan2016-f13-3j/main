@@ -168,6 +168,7 @@ public class localStorage {
 		floatingTasks.clear();
 	}
 
+	//@@author Jie Wei
 	// replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
 	public static void revertToPreviousState(ArrayList<Task> previousCompleted, 
 			ArrayList<Task> previousUncompleted,

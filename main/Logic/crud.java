@@ -20,7 +20,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
-	 
+	 private static boolean noDuplicate;
+
 	 //@@author Kowshik
 	 /**
 	  * Function to add task without time into storage
@@ -72,7 +73,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 return false;
 		 }
 	 }
-	 
+
 	 /**
 	  * Function to add task with only end date into storage
 	  * @throws ClassNotFoundException 
@@ -97,7 +98,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 return false;
 		 }
 	 }
-	 
+
 	 /**
 	  * Function to add task with both start and end date into storage
 	  * @throws ClassNotFoundException 
@@ -123,7 +124,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	//@@author Jie Wei
+	 //@@author Jie Wei
 	 /**
 	  * Function to import the tasks from the storage file
 	  * @param task the tasks to be added to the arraylist storage
@@ -132,12 +133,32 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  */
 	 public static void addTaskViaImport(Task task, String flag) throws IOException, ClassNotFoundException {
 		 if (flag.equals(FLAG_UNCOMPLETED)) {
-			 Storage.localStorage.addToUncompletedTasks(task);
+			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getUncompletedTasks());
+			 if (noDuplicate) {
+				 Storage.localStorage.addToUncompletedTasks(task);
+			 }
 		 } else if (flag.equals(FLAG_COMPLETED)) {
-			 Storage.localStorage.addToCompletedTasks(task);
+			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getCompletedTasks());
+			 if (noDuplicate) {
+				 Storage.localStorage.addToCompletedTasks(task);
+			 }
 		 } else if (flag.equals(FLAG_FLOATING)) {
-			 Storage.localStorage.addToFloatingTasks(task);
+			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getFloatingTasks());
+			 if (noDuplicate) {
+				 Storage.localStorage.addToFloatingTasks(task);
+			 }
 		 }
+	 }
+
+	 private static boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
+		 boolean noDuplicate = true;
+		 for(Task temp : destination) {
+			 if(temp.getTaskString().equals(task.getTaskString())) {
+				 noDuplicate = false;
+				 break;
+			 }
+		 }
+		 return noDuplicate;
 	 }
 
 	 //@@author Cheng Gee
@@ -159,16 +180,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 	 public static void copyEditingTask(int index){
 		 ArrayList<Task> task1=Storage.localStorage.getUncompletedTasks();
-		 
+
 		 int size=task1.size();
 		 if(index<=size){
-		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
-		 if(edit != null){
-			 String copy = edit.getDescription();
-			 StringSelection selec = new StringSelection(copy);
-			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
-			 clipboard.setContents(selec, selec);
-		 }
+			 Task edit = Storage.localStorage.getUncompletedTask(index-1);
+			 if(edit != null){
+				 String copy = edit.getDescription();
+				 StringSelection selec = new StringSelection(copy);
+				 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+				 clipboard.setContents(selec, selec);
+			 }
 		 }else{
 			 Task edit = Storage.localStorage.getFloatingTask(index-size-1);
 			 if(edit != null){
@@ -179,8 +200,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 	 }
-	 
-	 
+
+
 	 /**
 	  * Function to edit task (edited task has no date)
 	  * @param line
@@ -206,7 +227,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setIssue(line);
 			 Storage.localStorage.setFloatingTask(index - uncompleteList, temp);
 		 }
-		 
+
 	 }
 	 /**
 	  * Function to edit task (edited task has only start date)
@@ -233,7 +254,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 }
 	 }
-	 
+
 	 /**
 	  * Function to edit task (edited task has only end date)
 	  * @param index
@@ -244,12 +265,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void editTaskWithEndDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {
 		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
 		 if(index<uncompleteList){
-		 
-		 Task temp = Storage.localStorage.getUncompletedTask(index);
-		 temp.setIssue(line);
-		 temp.setStartDate(null);
-		 temp.setEndDate(date);
-		 Storage.localStorage.setUncompletedTask(index, temp);
+
+			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 temp.setIssue(line);
+			 temp.setStartDate(null);
+			 temp.setEndDate(date);
+			 Storage.localStorage.setUncompletedTask(index, temp);
 		 }else{
 			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
 			 deleteTask(index,1);
@@ -257,10 +278,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
 			 addTaskWithStartDate(line, date, msg);
-			 
+
 		 }
 	 }
-	 
+
 	 /**
 	  * Function to edit task (edited task has both start and end dates)
 	  * @param index

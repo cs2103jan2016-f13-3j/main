@@ -11,12 +11,18 @@ import com.google.gson.GsonBuilder;
 import Task.Task;
 
 public class Save {
+	
+	public static void saveToFile() throws IOException {
+		 saveUncompletedTasksToFile(Logic.ImportTasks.getUncompletedTasksStorageFileName());
+		 saveCompletedTasksToFile(Logic.ImportTasks.getCompletedTasksStorageFileName());
+		 saveFloatingTasksToFile(Logic.ImportTasks.getFloatingTasksStorageFileName());
+	 }
 
 	/**
 	 * Function to save the uncompleted tasks arraylist into the storage file
 	 * 
 	 */
-	public static void saveUncompletedTasksToFile(String fileName) throws IOException {
+	private static void saveUncompletedTasksToFile(String fileName) throws IOException {
 		saveArrayToFile(Storage.localStorage.getUncompletedTasks(), fileName);
 	}
 
@@ -24,7 +30,7 @@ public class Save {
 	 * Function to save the completed tasks arraylist into the storage file
 	 * 
 	 */
-	public static void saveCompletedTasksToFile(String fileName) throws IOException {
+	private static void saveCompletedTasksToFile(String fileName) throws IOException {
 		saveArrayToFile(Storage.localStorage.getCompletedTasks(), fileName);
 	}
 
@@ -32,7 +38,7 @@ public class Save {
 	 * Function to save the floating tasks arraylist into the storage file
 	 * 
 	 */
-	public static void saveFloatingTasksToFile(String fileName) throws IOException {
+	private static void saveFloatingTasksToFile(String fileName) throws IOException {
 		saveArrayToFile(Storage.localStorage.getFloatingTasks(), fileName);
 	}
 

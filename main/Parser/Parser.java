@@ -521,7 +521,14 @@ public class Parser {
 		else if (option.equals("help")) {
 			Logic.Help.printHelpMenu();
 		}
+		
+		//@@author Jie Wei
+		else if (option.equals("dir")) {
+			String feedback = Logic.ImportTasks.changeStorageDestination(s);
+			UI.ui.print(feedback);
+		}
 
+		//@@author Jung Kai
 		else {
 			UI.ui.print(INVALID_MSG);
 		}
