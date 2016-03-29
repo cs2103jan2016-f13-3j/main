@@ -500,7 +500,6 @@ public class Parser {
 			} catch (Exception e) {
 			}
 		} else if (option.equals("sortp") || option.equals("sp")) {
-
 			Logic.Sort.sortTasksPriority();
 			Logic.crud.displayUncompletedAndFloatingTasks();
 		}

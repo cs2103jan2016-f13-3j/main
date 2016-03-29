@@ -12,15 +12,12 @@ import java.util.Calendar;
 
 public class localStorage {
 
-	//ArrayList to store the contents added to the file
+	//ArrayLists to store the contents added to the file
 	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> floatingTasks = new ArrayList<Task>();
 
-	/**
-	 * Function to return the ArrayList details
-	 * @return the ArrayList details
-	 */
+	//getter methods
 	public static ArrayList<Task> getUncompletedTasks() {
 		return uncompletedTasks;
 	}
@@ -28,18 +25,11 @@ public class localStorage {
 	public static ArrayList<Task> getCompletedTasks() {
 		return completedTasks;
 	}
-	
+
 	public static ArrayList<Task> getFloatingTasks() {
 		return floatingTasks;
 	}
 
-	/**
-	 * Function to get a particular task from the list of tasks
-	 * 
-	 * @param index the index of the task that is required
-	 * 
-	 * @return Task task of specified index
-	 */
 	public static Task getUncompletedTask(int index) {
 		Task temp = null;
 		for(int i = 0; i<uncompletedTasks.size(); i++) {
@@ -67,7 +57,7 @@ public class localStorage {
 		}
 		return temp;
 	}
-	
+
 	public static Task getFloatingTask(int index) {
 		Task temp = null;
 		for(int i = 0; i<floatingTasks.size(); i++) {
@@ -77,6 +67,20 @@ public class localStorage {
 		}
 		return temp;
 	}
+
+	//setter methods
+	public static void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+		uncompletedTasks = changedDetails;
+	}
+
+	public static void setFloatingTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+		floatingTasks = changedDetails;
+	}
+
+	public static void setCompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+		completedTasks = changedDetails;
+	}
+
 
 	/**
 	 * Function to set a task to a particular index
@@ -92,20 +96,11 @@ public class localStorage {
 	public static void setCompletedTask(int index, Task temp) {
 		completedTasks.set(index, temp);
 	}
-	
+
 	public static void setFloatingTask(int index, Task temp) {
 		floatingTasks.set(index, temp);
 	}
 
-	/**
-	 * Function to assign details array list to given array list
-	 * @param changedDetails the arraylist to be assigned to details
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 */
-	public static void setArrayList(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
-		uncompletedTasks = changedDetails;
-	}
 
 	/**
 	 * Function to add a task to the uncompleted task list
@@ -128,7 +123,7 @@ public class localStorage {
 	public static void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
 		completedTasks.add(task);
 	}
-	
+
 	public static void addToFloatingTasks(Task task) {
 		floatingTasks.add(task);
 	}
@@ -156,7 +151,7 @@ public class localStorage {
 		Task temp = completedTasks.remove(index);
 		return temp;
 	}
-	
+
 	public static Task delFromFloatingTasks(int index) {
 		Task temp = floatingTasks.remove(index);
 		return temp;
@@ -175,8 +170,8 @@ public class localStorage {
 
 	// replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
 	public static void revertToPreviousState(ArrayList<Task> previousCompleted, 
-											 ArrayList<Task> previousUncompleted,
-											 ArrayList<Task> previousFloating) {
+			ArrayList<Task> previousUncompleted,
+			ArrayList<Task> previousFloating) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
 		floatingTasks = previousFloating;

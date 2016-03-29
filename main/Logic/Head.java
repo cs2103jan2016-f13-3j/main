@@ -68,9 +68,9 @@ public class Head {
 
 			 Parser.Parser.run(cmd, description);
 			 lastCommand = cmd;
-			 /*if(lastCommand.equals("sortp") || lastCommand.equals("sp") != true) {
-				 Logic.sort.sortTasksChronologically();
-			 }*/
+			 if(lastCommand.equals("sortp") || lastCommand.equals("sp") != true) {
+				 Logic.Sort.sortTasksChronologically();
+			 }
 			 // save all tasks into the actual file after command is done
 			 saveToFile();		
 		 }
