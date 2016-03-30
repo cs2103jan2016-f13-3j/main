@@ -16,6 +16,7 @@ public class Save {
 		 saveUncompletedTasksToFile(Logic.ImportTasks.getUncompletedTasksStorageFileName());
 		 saveCompletedTasksToFile(Logic.ImportTasks.getCompletedTasksStorageFileName());
 		 saveFloatingTasksToFile(Logic.ImportTasks.getFloatingTasksStorageFileName());
+		 saveRecurringTasksToFile(Logic.ImportTasks.getRecurringTasksStorageFileName());
 	 }
 
 	/**
@@ -41,7 +42,9 @@ public class Save {
 	private static void saveFloatingTasksToFile(String fileName) throws IOException {
 		saveArrayToFile(Storage.localStorage.getFloatingTasks(), fileName);
 	}
-
+    private static void saveRecurringTasksToFile(String fileName) throws IOException {
+    	saveArrayToFile(Storage.localStorage.getRecurringTasks(),fileName);
+    }
 	private static void saveArrayToFile(ArrayList<Task> sourceArray, String destinationFileName) throws IOException {
 		Writer writer = new FileWriter(destinationFileName);
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();

@@ -21,6 +21,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
+	 private static final String FLAG_RECURRING = "recurring";
 	 private static boolean noDuplicate;
 
 	 //@@author Kowshik
@@ -148,6 +149,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getFloatingTasks());
 			 if (noDuplicate) {
 				 Storage.localStorage.addToFloatingTasks(task);
+			 }
+		 } else if (flag.equals(FLAG_RECURRING)) {
+			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getRecurringTasks());
+			 if (noDuplicate) {
+				 Storage.localStorage.addToRecurringTasks(task);
 			 }
 		 }
 	 }
@@ -467,4 +473,20 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void exit(){
 		 System.exit(0);
 	 }
+	 public static boolean addTaskToRecurring(String line, String date, String msg) {
+			Task task = new Task(line, date, msg, false);
+
+			System.out.println("end date of task : "+task.getEndDateString());
+
+			Storage.localStorage.addToRecurringTasks(task);
+			return true;
+			}
+			
+		
+
+		public static boolean addByTask(Task task) {
+			localStorage.addToUncompletedTasks(task);
+			return true;
+		}
+
  }

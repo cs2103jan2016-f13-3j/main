@@ -26,12 +26,14 @@ public class ImportTasks {
 	private static String storageFileNameCompletedTasks = "TasksCompleted.txt";
 	private static String storageFileNameUncompletedTasks = "TasksUncompleted.txt";
 	private static String storageFileNameFloatingTasks = "TasksFloating.txt";
+	private static String storageFileNameRecurringTasks = "TasksRecurring.txt";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_DEFAULT = "The default folder is now in use as the storage fodler directory";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_ERROR = "The target directory is invalid. The default folder is now in use";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_SUCCESS = "The storage folder directory has been changed to ";
 	private static final String FLAG_UNCOMPLETED = "uncompleted";
 	private static final String FLAG_COMPLETED = "completed";
 	private static final String FLAG_FLOATING = "floating";
+	private static final String FLAG_RECURRING = "recurring";
 	private static String storageFolderDirectory;
 
 	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
@@ -59,10 +61,12 @@ public class ImportTasks {
 		checkIfFileExists(storageFolderDirectory, storageFileNameUncompletedTasks);
 		checkIfFileExists(storageFolderDirectory, storageFileNameCompletedTasks);
 		checkIfFileExists(storageFolderDirectory, storageFileNameFloatingTasks);
+		checkIfFileExists(storageFolderDirectory, storageFileNameRecurringTasks);
 		
 		importTasksFromStorage(storageFolderDirectory + storageFileNameUncompletedTasks, FLAG_UNCOMPLETED);
 		importTasksFromStorage(storageFolderDirectory + storageFileNameCompletedTasks, FLAG_COMPLETED);
 		importTasksFromStorage(storageFolderDirectory + storageFileNameFloatingTasks, FLAG_FLOATING);
+		importTasksFromStorage(storageFolderDirectory + storageFileNameRecurringTasks,FLAG_RECURRING);
 	}
 
 	public static void checkIfFileExists(String folderDirectory, String fileName) throws IOException, FileNotFoundException {
@@ -117,6 +121,9 @@ public class ImportTasks {
 	public static String getFloatingTasksStorageFileName() {
 		return storageFolderDirectory + storageFileNameFloatingTasks;
 	}
+	public static String getRecurringTasksStorageFileName() {
+		return storageFolderDirectory + storageFileNameRecurringTasks;
+	}
 	
 	public static String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
 		File StorageFolderPathFile = new File("StorageFolderPath.txt");
@@ -131,12 +138,14 @@ public class ImportTasks {
 		checkIfFileExists(storageFolderDirectory, storageFileNameUncompletedTasks);
 		checkIfFileExists(storageFolderDirectory, storageFileNameCompletedTasks);
 		checkIfFileExists(storageFolderDirectory, storageFileNameFloatingTasks);
+		checkIfFileExists(storageFolderDirectory, storageFileNameRecurringTasks);
 		
 		// if the new storage directory already contains the storage files,
 		//all tasks (unless duplicate) in these files will be imported into the current program instance
 		importTasksFromStorage(storageFolderDirectory + storageFileNameUncompletedTasks, FLAG_UNCOMPLETED);
 		importTasksFromStorage(storageFolderDirectory + storageFileNameCompletedTasks, FLAG_COMPLETED);
 		importTasksFromStorage(storageFolderDirectory + storageFileNameFloatingTasks, FLAG_FLOATING);
+		importTasksFromStorage(storageFolderDirectory + storageFileNameRecurringTasks,FLAG_RECURRING);
 		
 		if (destination.equals("default")) { // default directory was chosen
 			return FEEDBACK_CHANGE_DIRECTORY_DEFAULT;

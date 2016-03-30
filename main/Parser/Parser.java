@@ -1,7 +1,10 @@
 //@@author Jung Kai
 package Parser;
-import java.util.*;
 
+import java.util.*;
+import java.time.YearMonth;
+
+import Logic.Head;
 import Logic.Undo;
 import Logic.crud;
 
@@ -83,117 +86,147 @@ public class Parser {
 			// has no start date
 			int end = getIndexOfKey(temp); // end has value of -1 if it has no
 			// end date
-			boolean isAdded;
-			if (start == -1 && end != -1) {// no start date but has end date
-				startDate = "-";
-				startTime = "-";
-				// read date & time
-
-				date = temp[end + 1];
-				dateIn = date;
-				if (hasEndTime(temp)) {// check if contain end time
-					time = temp[end + 2];
-					time = time.replaceAll(":", "/");
-					dateIn = dateIn + "/" + time;
-				} else {
-					time = "-";
-				}
-
-				if (!Logic.checkDate.checkDateformat(date)) {
-					UI.ui.print(WRONG_DATE_MSG);
-				} else {
-					// get issue
-					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					// isAdded
-					// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
-					// (to be implemented)
-					isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
-					if (isAdded) {
-						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
-						arraylistsHaveBeenModified = true;
-					} else {
-						UI.ui.print(DUPLICATE_ADD_MSG);
-					}
-				}
-
-			} else if (start == -1 && end == -1) {// no end date and no start
-				// date
-				isAdded = Logic.crud.addTask(s);
-				if (isAdded) {
-					UI.ui.print("\"" + s + "\" " + ADD_MSG);
-					arraylistsHaveBeenModified = true;
-				} else {
-					UI.ui.print(DUPLICATE_ADD_MSG);
-				}
-
-			} else if (start != -1 && end == -1) {// has start date but no end
-				// date
-				date = "-";
-				time = "-";
-				startDate = temp[start + 1];
-				dateIn2 = startDate;
-
-				if (hasStartTime(temp)) {
-					startTime = temp[start + 2];
-					startTime = startTime.replaceAll(":", "/");
-					dateIn2 = dateIn2 + "/" + startTime;
-				} else {
-					startTime = "-";
-				}
-				if (!Logic.checkDate.checkDateformat(startDate)) {
-					UI.ui.print(WRONG_DATE_MSG);
-				} else {
-					// get issue
-					issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-					// isAdded =
-					// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
-					if (isAdded) {
-						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
-						arraylistsHaveBeenModified = true;
-					} else {
-						UI.ui.print(DUPLICATE_ADD_MSG);
-					}
-				}
-			} else { // has both start date and end date
-				startDate = temp[start + 1];
-				date = temp[end + 1];
-				dateIn = date;
-				dateIn2 = startDate;
-				if (hasStartTime(temp)) {
-					startTime = temp[start + 2];
-					startTime = startTime.replaceAll(":", "/");
-					dateIn2 = dateIn2 + "/" + startTime;
-				} else {
-					startTime = "-";
-				}
-				if (hasEndTime(temp)) {
-					time = temp[end + 2];
-					time = time.replaceAll(":", "/");
-					dateIn = dateIn + "/" + time;
-
-				} else {
-					time = "-";
-				}
-				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-					UI.ui.print(WRONG_DATE_MSG);
-				} else {
-					// get issue
-					issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
-
-					// isAdded =
-					// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-					isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
-					if (isAdded) {
-						UI.ui.print("\"" + issue + "\" " + ADD_MSG);
-						arraylistsHaveBeenModified = true;
-					} else {
-						UI.ui.print(DUPLICATE_ADD_MSG);
-					}
-				}
+			boolean isAdded, toRecurred = false;
+			UI.ui.print("Do you wan to set it as recurring tasks? Enter Y/N.");
+			String reply = sc.nextLine();
+			if (reply.equals("Y")) {
+				toRecurred = true;
 			}
-		} 
-		//@@author Kowshik
+			if (!toRecurred) {
+				if (start == -1 && end != -1) {// no start date but has end date
+					startDate = "-";
+					startTime = "-";
+					// read date & time
+
+					date = temp[end + 1];
+					dateIn = date;
+					if (hasEndTime(temp)) {// check if contain end time
+						time = temp[end + 2];
+						time = time.replaceAll(":", "/");
+						dateIn = dateIn + "/" + time;
+					} else {
+						time = "-";
+					}
+
+					if (!Logic.checkDate.checkDateformat(date)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						// isAdded
+						// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
+						// (to be implemented)
+						isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
+						if (isAdded) {
+							UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+							arraylistsHaveBeenModified = true;
+						} else {
+							UI.ui.print(DUPLICATE_ADD_MSG);
+						}
+					}
+
+				} else if (start == -1 && end == -1) {// no end date and no
+														// start
+					// date
+					isAdded = Logic.crud.addTask(s);
+					if (isAdded) {
+						UI.ui.print("\"" + s + "\" " + ADD_MSG);
+						arraylistsHaveBeenModified = true;
+					} else {
+						UI.ui.print(DUPLICATE_ADD_MSG);
+					}
+
+				} else if (start != -1 && end == -1) {// has start date but no
+														// end
+					// date
+					date = "-";
+					time = "-";
+					startDate = temp[start + 1];
+					dateIn2 = startDate;
+
+					if (hasStartTime(temp)) {
+						startTime = temp[start + 2];
+						startTime = startTime.replaceAll(":", "/");
+						dateIn2 = dateIn2 + "/" + startTime;
+					} else {
+						startTime = "-";
+					}
+					if (!Logic.checkDate.checkDateformat(startDate)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+						// isAdded =
+						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+						isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
+						if (isAdded) {
+							UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+							arraylistsHaveBeenModified = true;
+						} else {
+							UI.ui.print(DUPLICATE_ADD_MSG);
+						}
+					}
+				} else { // has both start date and end date
+					startDate = temp[start + 1];
+					date = temp[end + 1];
+					dateIn = date;
+					dateIn2 = startDate;
+					if (hasStartTime(temp)) {
+						startTime = temp[start + 2];
+						startTime = startTime.replaceAll(":", "/");
+						dateIn2 = dateIn2 + "/" + startTime;
+					} else {
+						startTime = "-";
+					}
+					if (hasEndTime(temp)) {
+						time = temp[end + 2];
+						time = time.replaceAll(":", "/");
+						dateIn = dateIn + "/" + time;
+
+					} else {
+						time = "-";
+					}
+					if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+						UI.ui.print(WRONG_DATE_MSG);
+					} else {
+						// get issue
+						issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
+
+						// isAdded =
+						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+						isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
+						if (isAdded) {
+							UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+							arraylistsHaveBeenModified = true;
+						} else {
+							UI.ui.print(DUPLICATE_ADD_MSG);
+						}
+					}
+				}
+			} else {
+				issue = getIssue(temp, start, end, false, false);
+				date = temp[end + 1];// assume only has end date for recurring
+										// task
+				UI.ui.print(
+						"Enter recurred for every <num1> days until <num2> days later\n" + "in <num1>|<num2> format");
+				String in = sc.nextLine();
+				String[] tmp = in.split("\\|");
+				String freq = tmp[0];
+				String last = tmp[1];
+
+				int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
+
+				Logic.crud.addTaskToRecurring(issue, date, s);
+				for (int i = 1; i < numRec; i++) {
+					date = processDate(date, Integer.parseInt(freq));
+					display(date);
+					Logic.crud.addTaskToRecurring(issue, date, s);
+
+				}
+				
+			}  Head.checkDateAndAdd();
+		}
+		// @@author Kowshik
 		else if (option.equals("delete") || option.equals("-")) {
 			if ((Logic.Head.getLastCommand().equals("d") || Logic.Head.getLastCommand().equals("display")) == true) {
 				// delete from uncompleted tasks
@@ -299,7 +332,7 @@ public class Parser {
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
 			Logic.crud.displayCompletedTasks();
 		}
-		
+
 		else if (option.equals("displaydate")) {
 			String inputDate = s;
 			Logic.crud.displayScheduleForADay(inputDate);
@@ -368,8 +401,8 @@ public class Parser {
 			} catch (Exception e) {
 
 			}
-		} 
-		//@@author Jung Kai
+		}
+		// @@author Jung Kai
 		else if (option.equals("edit") || option.equals("e")) {
 			try {
 				int num = Integer.parseInt(s);
@@ -481,8 +514,8 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
-		} 
-		//@@author Kowshik
+		}
+		// @@author Kowshik
 		else if (option.equals("p")) {
 			try {
 				int num = Integer.parseInt(s);
@@ -525,21 +558,21 @@ public class Parser {
 		else if (option.equals("help")) {
 			Logic.Help.printHelpMenu();
 		}
-		
-		//@@author Jie Wei
+
+		// @@author Jie Wei
 		else if (option.equals("dir")) {
 			String feedback = Logic.ImportTasks.changeStorageDestination(s);
 			UI.ui.print(feedback);
 		}
 
-		//@@author Jung Kai
+		// @@author Jung Kai
 		else {
 			UI.ui.print(INVALID_MSG);
 		}
 		return arraylistsHaveBeenModified;
 	}
 
-	//@@author Jung Kai
+	// @@author Jung Kai
 	/**
 	 * method that convert String[] to String
 	 * 
@@ -786,5 +819,40 @@ public class Parser {
 
 	public static void display(String s) {
 		System.out.println(s);
+	}
+
+	/**
+	 * method that process Date for recurring tasks based on the date and number
+	 * of recurring tasks calculated
+	 * 
+	 * @param s
+	 * @param n
+	 * @return
+	 */
+	public static String processDate(String s, int n) {
+		String[] temp = s.split("/");
+		temp[0] = String.valueOf(Integer.parseInt(temp[0]) + n);
+		YearMonth yearMonthObject;
+		yearMonthObject = YearMonth.of(Integer.parseInt(temp[2]), Integer.parseInt(temp[1]));
+		int daysInMonth = yearMonthObject.lengthOfMonth();
+		if (Integer.parseInt(temp[0]) > daysInMonth) {
+			temp[0] = String.valueOf(Integer.parseInt(temp[0]) - daysInMonth);
+			temp[1] = String.valueOf(Integer.parseInt(temp[1]) + 1);
+		}
+		if (temp[0].length() == 1) {
+			temp[0] = "0" + temp[0];
+
+		}
+
+		if (temp[1].length() == 1) {
+			temp[1] = "0" + temp[1];
+
+		}
+
+		String tmp = arrayToString(temp);
+		tmp = tmp.replaceAll(" ", "/");
+
+		return tmp;
+
 	}
 }

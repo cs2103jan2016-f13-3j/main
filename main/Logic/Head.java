@@ -9,6 +9,12 @@ import java.io.IOException;
 import java.util.Scanner;
 import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
+import java.time.YearMonth;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import Storage.localStorage;
+import Task.Task;
 
 public class Head {
 
@@ -28,6 +34,7 @@ public class Head {
 	 public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		 Logic.ImportTasks.prepareAndImportFiles();
 //		 System.out.print(ansi().eraseScreen().fgBright(RED));
+		 checkDateAndAdd();
 		 UI.ui.print(logo1);
 		 UI.ui.print(logo2);
 		 UI.ui.print(logo3);
@@ -70,6 +77,62 @@ public class Head {
 			 Logic.Save.saveToFile();		
 		 }
 	 }
+	 public static void checkDateAndAdd() {
+			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+			Date date = new Date();
+			String today = dateFormat.format(date);
+			
+			
+			try {
+
+				if (localStorage.getRecurringTasks().size() != 0) {
+					for (int i = 0; i < localStorage.getRecurringTasks().size(); i++) {
+						Task tmp = localStorage.getRecurringTasks().get(i);
+						String dl = tmp.getEndDateString();
+						 dl = dl.substring(0, dl.length()-1);
+						 int diff = compareTwoDate(today,dl);
+						if (diff <= 7) {
+							Task temp = localStorage.delFromRecurringTasks(i);
+							Logic.crud.addByTask(temp);
+							
+							i = 0;//loop again
+						}
+					}
+					Logic.Sort.sortTasksChronologically();
+					System.out.println("number of recurring task in storage: " + localStorage.getRecurringTasks().size());
+				}
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+		}
+
+		public static int compareTwoDate(String date1, String date2) {
+			int ans;
+			String[] temp = date1.split("/");
+			String[] temp2 = date2.split("/");
+			if (Integer.parseInt(temp[2]) == Integer.parseInt(temp2[2])) {// same year
+				if (Integer.parseInt(temp[1])==Integer.parseInt(temp2[1])) {// same month
+					ans = Integer.parseInt(temp2[0]) - Integer.parseInt(temp[0]);
+				} else { // different month
+					if (Integer.parseInt(temp2[1]) - Integer.parseInt(temp[1]) > 1) { // differ
+																						// by
+																						// >=2
+																						// month
+						ans = 30;
+					} else { // differ by 1 month
+						// check day in month.
+						YearMonth yearMonthObject;
+						yearMonthObject = YearMonth.of(Integer.parseInt(temp[2]), Integer.parseInt(temp[1]));
+						int daysInMonth = yearMonthObject.lengthOfMonth();
+						int diff = daysInMonth - Integer.parseInt(temp[0]);
+						ans = diff + Integer.parseInt(temp2[0]);
+					}
+				}
+			} else {
+				ans = 365;
+			}
+			return ans;
+		}
 
 	 //getter method
 	 public static String getLastCommand() {
