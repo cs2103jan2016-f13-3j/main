@@ -27,7 +27,7 @@ public class ImportTasks {
 	private static String storageFileNameUncompletedTasks = "TasksUncompleted.txt";
 	private static String storageFileNameFloatingTasks = "TasksFloating.txt";
 	private static String storageFileNameRecurringTasks = "TasksRecurring.txt";
-	private static final String FEEDBACK_CHANGE_DIRECTORY_DEFAULT = "The default folder is now in use as the storage fodler directory";
+	private static final String FEEDBACK_CHANGE_DIRECTORY_DEFAULT = "The default folder is now in use as the storage folder directory";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_ERROR = "The target directory is invalid. The default folder is now in use";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_SUCCESS = "The storage folder directory has been changed to ";
 	private static final String FLAG_UNCOMPLETED = "uncompleted";
