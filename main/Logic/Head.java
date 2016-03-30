@@ -95,7 +95,7 @@ public class Head {
 							Task temp = localStorage.delFromRecurringTasks(i);
 							Logic.crud.addByTask(temp);
 							
-							i = 0;//loop again
+							i = -1;//loop again
 						}
 					}
 					Logic.Sort.sortTasksChronologically();
