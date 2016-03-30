@@ -378,7 +378,25 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 //System.out.print(ansi().reset());
 	 }
-
+	 /**
+	  * function to display all floating task in storage
+	  * 
+	  */
+	 public static void displayFloatingTasks() {
+		 UI.ui.print("FLOATING TASKS");
+		 UI.ui.print("Index\tTask");
+		 boolean isEmptyF = false;
+		 temp = Storage.localStorage.getFloatingTasks();
+		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+		 for(int i=0; i<temp.size(); i++) {
+			 UI.ui.print((getSize.size() + i+1) + ".\t" + temp.get(i).getIssue());
+		 }
+		 if (temp.isEmpty()) {
+			 isEmptyF = true;
+		 }  if(isEmptyF) {
+		 	 UI.ui.print("There are no floating tasks to show.");
+		 }
+	 }
 	 /**
 	  * Function to display the details of an individual task
 	  * 
@@ -475,9 +493,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 	 public static boolean addTaskToRecurring(String line, String date, String msg) {
 			Task task = new Task(line, date, msg, false);
-
-			System.out.println("end date of task : "+task.getEndDateString());
-
 			Storage.localStorage.addToRecurringTasks(task);
 			return true;
 			}

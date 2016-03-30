@@ -3,13 +3,10 @@ package Parser;
 
 import java.util.*;
 import java.time.YearMonth;
-
 import Logic.Head;
 import Logic.Undo;
-import Logic.crud;
-
 import java.io.*;
-import java.security.Timestamp;
+import java.text.SimpleDateFormat;
 
 import Task.Task;
 
@@ -17,6 +14,7 @@ public class Parser {
 	private static boolean arraylistsHaveBeenModified;
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
+	private static final String[] week = {"monday","tuesday","wednesday","thursday","friday","saturday","sunday"};
 	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
@@ -85,13 +83,15 @@ public class Parser {
 			int start = getStartingIndex(temp); // start has value of -1 if it
 			// has no start date
 			int end = getIndexOfKey(temp); // end has value of -1 if it has no
+			boolean toRecurred = (temp[temp.length-1].equals("r")); // return true
+																	// if user
+																	// want to
+																	// set task
+																	// as
+																	// returning
 			// end date
-			boolean isAdded, toRecurred = false;
-			UI.ui.print("Do you wan to set it as recurring tasks? Enter Y/N.");
-			String reply = sc.nextLine();
-			if (reply.equals("Y")) {
-				toRecurred = true;
-			}
+			boolean isAdded;
+
 			if (!toRecurred) {
 				if (start == -1 && end != -1) {// no start date but has end date
 					startDate = "-";
@@ -99,6 +99,10 @@ public class Parser {
 					// read date & time
 
 					date = temp[end + 1];
+					int idx = getIndexOfWeek(date);
+					if (idx!=-1) {
+					 date = matchDate(idx);
+					}
 					dateIn = date;
 					if (hasEndTime(temp)) {// check if contain end time
 						time = temp[end + 2];
@@ -142,6 +146,10 @@ public class Parser {
 					date = "-";
 					time = "-";
 					startDate = temp[start + 1];
+					int idx = getIndexOfWeek(startDate);
+					if (idx!=-1) {
+					 startDate =	matchDate(idx);
+					}
 					dateIn2 = startDate;
 
 					if (hasStartTime(temp)) {
@@ -169,6 +177,14 @@ public class Parser {
 				} else { // has both start date and end date
 					startDate = temp[start + 1];
 					date = temp[end + 1];
+					int idx = getIndexOfWeek(startDate);
+					int idx2 = getIndexOfWeek(date);
+					if (idx!=-1) {
+						startDate =  matchDate(idx);
+					}
+					if (idx2!=-1) {
+						date = matchDate(idx2);
+					}
 					dateIn = date;
 					dateIn2 = startDate;
 					if (hasStartTime(temp)) {
@@ -203,12 +219,17 @@ public class Parser {
 						}
 					}
 				}
-			} else {
+			} else { // so far recurring task only support add task by end date
 				issue = getIssue(temp, start, end, false, false);
+				issue = issue.substring(0,issue.length()-2);
 				date = temp[end + 1];// assume only has end date for recurring
 										// task
-				UI.ui.print(
-						"Enter recurred for every <num1> days until <num2> days later\n" + "in <num1>|<num2> format");
+				int idx = getIndexOfWeek(date);
+				if (idx!=-1) {
+					date = matchDate(idx);
+				}
+				UI.ui.print("Enter recurred for every <num1> days until <num2> days later\n"
+						+ "in \"<num1>|<num2>\" format");
 				String in = sc.nextLine();
 				String[] tmp = in.split("\\|");
 				String freq = tmp[0];
@@ -219,12 +240,12 @@ public class Parser {
 				Logic.crud.addTaskToRecurring(issue, date, s);
 				for (int i = 1; i < numRec; i++) {
 					date = processDate(date, Integer.parseInt(freq));
-					display(date);
 					Logic.crud.addTaskToRecurring(issue, date, s);
 
 				}
-				
-			}  Head.checkDateAndAdd();
+
+			}
+			Head.checkDateAndAdd();
 		}
 		// @@author Kowshik
 		else if (option.equals("delete") || option.equals("-")) {
@@ -326,7 +347,13 @@ public class Parser {
 				}
 			}
 		} else if (option.equals("display") || option.equals("d")) {
-			Logic.crud.displayUncompletedAndFloatingTasks();
+			if (s.equals("completed") || s.equals("c")) {
+				Logic.crud.displayCompletedTasks();
+			} else if (s.equals("floating") || s.equals("f")) {
+				Logic.crud.displayFloatingTasks();
+			} else {
+				Logic.crud.displayUncompletedAndFloatingTasks();
+			}
 		}
 
 		else if (option.equals("displaycompleted") || option.equals("dc")) {
@@ -352,13 +379,16 @@ public class Parser {
 			arraylistsHaveBeenModified = true;
 		}
 
-		else if (option.equals("sort")) { // by alphabetical order
-			Logic.Sort.sortTasksAlphabetically();
-			UI.ui.print(SORT_MSG);
-			arraylistsHaveBeenModified = true;
-		}
-
-		else if (option.equals("search") || option.equals("s")) {
+		else if (option.equals("sort")) {
+			if (s.equals("p")||s.equals("priority")) {
+				Logic.Sort.sortTasksPriority();
+				Logic.crud.displayUncompletedAndFloatingTasks();
+			} else {
+				Logic.Sort.sortTasksAlphabetically();
+				UI.ui.print(SORT_MSG);
+				arraylistsHaveBeenModified = true;
+			}
+		} else if (option.equals("search") || option.equals("s")) {
 			Logic.Search.searchTasksByKeyword(s);
 		}
 
@@ -536,12 +566,7 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
-		} else if (option.equals("sortp") || option.equals("sp")) {
-			Logic.Sort.sortTasksPriority();
-			Logic.crud.displayUncompletedAndFloatingTasks();
-		}
-
-		else if (option.equals("history")) {
+		} else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
 			UI.ui.print(pastCommands);
 		}
@@ -820,7 +845,44 @@ public class Parser {
 	public static void display(String s) {
 		System.out.println(s);
 	}
+	/** method that return index of week, if it is not a week day, -1 will be returned
+	 *  
+	 * @param s
+	 * @return int
+	 */
+	public static int getIndexOfWeek(String s) {
+		int idx = -1;
+		for (int i = 0;i<7;i++){
+			if (s.equals(week[i])) {
+				idx =i;
+				break;				
+			}
+		} return idx;
+	}
+	/** method that match a weekday to its date using the index
+	 * 
+	 * @param n
+	 * @return String
+	 */
+	public static String matchDate(int n) {
+		String output;
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		String today = dateFormat.format(date);
+		int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
+		int diff;
+		if (n == day) {
+			output = today;			
+		} else if (n>day){
 
+			 diff = day-(n-1);
+			output = processDate(today,diff);
+		} else {
+			 diff = 7+n-day;
+			 output = processDate(today,diff);
+		} return output;
+		
+	}
 	/**
 	 * method that process Date for recurring tasks based on the date and number
 	 * of recurring tasks calculated
