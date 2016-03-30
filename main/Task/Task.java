@@ -39,7 +39,7 @@ public class Task implements java.io.Serializable {
 		label = new ArrayList<String>();
 		String[] splitDates = date.split("/");
 		int year = Integer.parseInt(splitDates[2]);
-		int month = Integer.parseInt(splitDates[1]);
+		int month = Integer.parseInt(splitDates[1])-1;
 		int day = Integer.parseInt(splitDates[0]);
 		int hour = 0;
 		int minute = 0;
@@ -77,7 +77,7 @@ public class Task implements java.io.Serializable {
 		label = new ArrayList<String>();
 		String[] splitStartDate = startDate.split("/");
 		int year = Integer.parseInt(splitStartDate[2]);
-		int month = Integer.parseInt(splitStartDate[1]);
+		int month = Integer.parseInt(splitStartDate[1])-1;
 		int day = Integer.parseInt(splitStartDate[0]);
 		int hour = 0;
 		int minute = 0;
@@ -92,7 +92,7 @@ public class Task implements java.io.Serializable {
 
 		String[] splitEndDate = endDate.split("/");
 		year = Integer.parseInt(splitEndDate[2]);
-		month = Integer.parseInt(splitEndDate[1]);
+		month = Integer.parseInt(splitEndDate[1])-1;
 		day = Integer.parseInt(splitEndDate[0]);
 		if (splitEndDate.length > 3) { // given end date includes time
 			hasTime = true;
@@ -135,7 +135,7 @@ public class Task implements java.io.Serializable {
 		} else {
 			String[] splitStartDate = startDate.split("/");
 			int year = Integer.parseInt(splitStartDate[2]);
-			int month = Integer.parseInt(splitStartDate[1]);
+			int month = Integer.parseInt(splitStartDate[1])-1;
 			int day = Integer.parseInt(splitStartDate[0]);
 			int hour = 0;
 			int minute = 0;
@@ -158,7 +158,7 @@ public class Task implements java.io.Serializable {
 		} else {
 			String[] splitEndDate = endDate.split("/");
 			int year = Integer.parseInt(splitEndDate[2]);
-			int month = Integer.parseInt(splitEndDate[1]);
+			int month = Integer.parseInt(splitEndDate[1])-1;
 			int day = Integer.parseInt(splitEndDate[0]);
 			int hour = 0;
 			int minute = 0;
@@ -200,16 +200,13 @@ public class Task implements java.io.Serializable {
 
 	public String getStartDateString() {
 		if (startDate != null) {
+			
 			String result = startDate.get(Calendar.DAY_OF_MONTH) + "/";
 			int month = startDate.get(Calendar.MONTH);
-			if (month == 0) {
-				month = 12;
-			}
+			month++;
 			result += month + "/";
 			int year = startDate.get(Calendar.YEAR);
-			if (month == 12) {
-				year -= 1;
-			}
+			
 			result += year;
 			if (hasTime) {
 				String hour = Integer.toString(startDate.get(Calendar.HOUR_OF_DAY));
@@ -236,14 +233,10 @@ public class Task implements java.io.Serializable {
 		if (endDate != null) {
 			String result = endDate.get(Calendar.DAY_OF_MONTH) + "/";
 			int month = endDate.get(Calendar.MONTH);
-			if (month == 0) {
-				month = 12;
-			}
+			month++;
 			result += month + "/";
 			int year = endDate.get(Calendar.YEAR);
-			if (month == 12) {
-				year -= 1;
-			}
+			
 			result += year;
 			if (hasTime) {
 				String hour = Integer.toString(endDate.get(Calendar.HOUR_OF_DAY));
