@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
-// modify all get date string methods to work with time!!
-// get startdateString() (also enddatestring) return as "01/01/2000 12:00"
-
 public class Task implements java.io.Serializable {
 	private String issue;
 	private String msg;
