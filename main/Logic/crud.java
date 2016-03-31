@@ -596,7 +596,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	 public static void displayWelcomeView() {
+	 public static void displayTasksForThisWeek() {
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 

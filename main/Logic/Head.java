@@ -49,7 +49,7 @@ public class Head {
 
 		 UI.ui.print("\n");
 		 UI.ui.printYellow("Enter \"help\" for instructions.");
-		 Logic.crud.displayWelcomeView();
+		 Logic.Notification.welcomeReminder();
 		 runProgram();
 	 }
 
