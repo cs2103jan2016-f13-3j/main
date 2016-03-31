@@ -106,7 +106,9 @@ public class Task implements java.io.Serializable {
 		assert issue != null;
 		this.issue = issue;
 	}
-
+	public void setDescription(String msg){
+		this.msg = msg;
+	}
 	public void setLabel(String label) {
 		assert label != null;
 		if (!this.label.contains(label)) { // prevent duplicate tag from being added

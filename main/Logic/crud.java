@@ -225,14 +225,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 deleteTask(index,1);
-			 temp.setStartDate(null);
-			 temp.setEndDate(null);
-			 temp.setIssue(line);
+
 			 addTask(msg);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 temp.setStartDate(null);
 			 temp.setEndDate(null);
+			 temp.setDescription(msg);
 			 temp.setIssue(line);
 			 Storage.localStorage.setFloatingTask(index - uncompleteList, temp);
 		 }
@@ -253,12 +252,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 temp.setIssue(line);
+			 temp.setDescription(msg);
 			 temp.setEndDate(null);
 			 temp.setStartDate(date);
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
 			 temp.setIssue(line);
+			 temp.setDescription(msg);
 			 temp.setEndDate(null);
 			 temp.setStartDate(date);
 			 Storage.localStorage.setUncompletedTask(index, temp);
@@ -280,10 +281,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setIssue(line);
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
+			 temp.setDescription(msg);
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 deleteTask(index, 1);
+			 temp.setDescription(msg);
 			 temp.setIssue(line);
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
@@ -302,6 +305,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void editTaskWithBothDates(String line, String startDate, String endDate, String msg, int index) throws IOException, ClassNotFoundException {
 		 Task temp = Storage.localStorage.getUncompletedTask(index);
 		 temp.setIssue(line);
+		 temp.setDescription(msg);
 		 temp.setStartDate(startDate);
 		 temp.setEndDate(endDate);
 		 Storage.localStorage.setUncompletedTask(index, temp);
