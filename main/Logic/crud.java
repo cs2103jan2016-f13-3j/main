@@ -573,4 +573,47 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 Storage.localStorage.setFloatingTask(index, temp);
 		 }
 	 }
+
+	 public static void displayWelcomeView() {
+		 UI.ui.print("Upcoming tasks this week - ");
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		
+		 //getting the current week of year
+		 Date d = Calendar.getInstance().getTime();
+		 Calendar cal = Calendar.getInstance();
+		 cal.setTime(d);
+		 int thisWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+
+		 //checking if week of year of uncompleted tasks match current week of year
+		 for(Task temp : tempTasks) {
+			 if(temp.getEndDate() != null) {
+				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+			 else if(temp.getStartDate() != null) {
+				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+		 }
+
+
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.print("UNCOMPLETED TASKS");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tasksToBeDisplayed.get(i).getTaskString());
+			 }
+		 }
+
+		 /*tasksToBeDisplayed = Storage.localStorage.getFloatingTasks();
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.print("FLOATING TASKS");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tasksToBeDisplayed.get(i).getTaskString());
+			 }
+		 }*/
+	 }
  }

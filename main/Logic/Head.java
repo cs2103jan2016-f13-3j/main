@@ -48,7 +48,7 @@ public class Head {
 //		 System.out.print(ansi().reset());
 		 UI.ui.print("\n");
 		 UI.ui.print("Enter \"help\" for instructions.");
-		 Logic.crud.displayUncompletedAndFloatingTasks();
+		 Logic.crud.displayWelcomeView();
 		 runProgram();
 	 }
 
