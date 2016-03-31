@@ -805,8 +805,8 @@ public class Parser {
 	 */
 	public static int getIndexOfKey(String[] arr) {
 		int idx = -1;
-		for (int i = 0; i < key.length; i++) {
-			for (int j = 1; j < arr.length; j++) {
+			for (int j = 0; j < arr.length; j++) {
+				for (int i =0;i<key.length;i++) {
 				if (arr[j].equals(key[i])) {
 					idx = j;
 				}
