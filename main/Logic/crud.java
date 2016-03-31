@@ -16,8 +16,8 @@ import java.util.GregorianCalendar;
 import static org.fusesource.jansi.Ansi.Color.*;
  */public class crud {
 
-	 private static ArrayList<Task> temp = new ArrayList<Task>();
-	 private static Task temp1;
+	 private static ArrayList<Task> tempTasks = new ArrayList<Task>();
+	 private static Task tempTask;
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
@@ -49,7 +49,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static ArrayList<Task> getTemp(){
-		 return temp;
+		 return tempTasks;
 	 }
 
 	 /**
@@ -153,7 +153,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 } else if (flag.equals(FLAG_RECURRING)) {
 			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getRecurringTasks());
 			 if (noDuplicate) {
-				 Storage.localStorage.addToRecurringTasks(task);
+				 Storage.localStorage.addToRecurringTasks(task);;
 			 }
 		 }
 	 }
@@ -348,31 +348,36 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  */
 	 public static void displayUncompletedAndFloatingTasks() {
 		 //System.out.print(ansi().eraseScreen().fgBright(YELLOW));
-		 
-		 UI.ui.print("UNCOMPLETED TASKS");
-		 UI.ui.print("Index\tTask");
+
 		 boolean isEmptyUn = false;
-		 temp = Storage.localStorage.getUncompletedTasks();
+		 tempTasks = Storage.localStorage.getUncompletedTasks();
 		 String dt="";
-		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((i+1) + ".\t" + temp.get(i).getTaskString());
-		 }
-		 if (temp.isEmpty()) {
+
+		 if (tempTasks.isEmpty()) {
 			 isEmptyUn = true;
-		 }
-		 UI.ui.print("________________________________________________________________");
-		 UI.ui.print("FLOATING TASKS");
-		 UI.ui.print("Index\tTask");
-		 boolean isEmptyF = false;
-		 temp = Storage.localStorage.getFloatingTasks();
-		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((getSize.size() + i+1) + ".\t" + temp.get(i).getIssue());
-		 }
-		 if (temp.isEmpty()) {
-			 isEmptyF = true;
+		 } else {
+			 UI.ui.print("UNCOMPLETED TASKS");
+			 UI.ui.print("Index\tTask");
+			 for(int i=0; i<tempTasks.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+			 }
+			 UI.ui.print("________________________________________________________________");
 		 }
 
+
+		 boolean isEmptyF = false;
+		 tempTasks = Storage.localStorage.getFloatingTasks();
+		 if (tempTasks.isEmpty()) {
+			 isEmptyF = true;
+		 }
+		 else {
+			 UI.ui.print("FLOATING TASKS");
+			 UI.ui.print("Index\tTask");
+			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+			 for(int i=0; i<tempTasks.size(); i++) {
+				 UI.ui.print((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
+			 }
+		 }
 		 if(isEmptyUn && isEmptyF) {
 			 UI.ui.print("There are no tasks to show.");
 		 }
@@ -386,15 +391,15 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 UI.ui.print("FLOATING TASKS");
 		 UI.ui.print("Index\tTask");
 		 boolean isEmptyF = false;
-		 temp = Storage.localStorage.getFloatingTasks();
+		 tempTasks = Storage.localStorage.getFloatingTasks();
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((getSize.size() + i+1) + ".\t" + temp.get(i).getIssue());
+		 for(int i=0; i<tempTasks.size(); i++) {
+			 UI.ui.print((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
 		 }
-		 if (temp.isEmpty()) {
+		 if (tempTasks.isEmpty()) {
 			 isEmptyF = true;
 		 }  if(isEmptyF) {
-		 	 UI.ui.print("There are no floating tasks to show.");
+			 UI.ui.print("There are no floating tasks to show.");
 		 }
 	 }
 	 /**
@@ -405,22 +410,22 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void viewIndividualTask(int index) {
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 if(index < getSize.size()) {
-			 temp1 = Storage.localStorage.getUncompletedTask(index);
+			 tempTask = Storage.localStorage.getUncompletedTask(index);
 		 }
 		 else {
-			 temp1 = Storage.localStorage.getFloatingTask(index - getSize.size());
+			 tempTask = Storage.localStorage.getFloatingTask(index - getSize.size());
 		 }
-		 boolean isCompleted = temp1.getCompletedStatus();
+		 boolean isCompleted = tempTask.getCompletedStatus();
 		 String completed = "Not completed";
 		 if(isCompleted) {
 			 completed = "Completed";
 		 }
 
-		 UI.ui.print(temp1.getTaskString());
+		 UI.ui.print(tempTask.getTaskString());
 		 UI.ui.print("Status: " + completed);
-		 UI.ui.print("Priority: " + temp1.getPriority());
+		 UI.ui.print("Priority: " + tempTask.getPriority());
 		 UI.ui.print("Labels:");
-		 for(String label : temp1.getLabel()) {
+		 for(String label : tempTask.getLabel()) {
 			 UI.ui.print(label);
 		 }
 	 }
@@ -430,11 +435,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void displayCompletedTasks() {
-		 temp = Storage.localStorage.getCompletedTasks();
-		 for(int i=0; i<temp.size(); i++) {
-			 UI.ui.print((i+1) + ".\t" + temp.get(i).getStartDateString() + "\t" + temp.get(i).getEndDateString() + "\t" + temp.get(i).getIssue());
+		 tempTasks = Storage.localStorage.getCompletedTasks();
+		 for(int i=0; i<tempTasks.size(); i++) {
+			 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
 		 }
-		 if (temp.isEmpty()) {
+		 if (tempTasks.isEmpty()) {
 			 UI.ui.print("There is no stored task to display");
 		 }
 	 }
@@ -475,6 +480,59 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
+	 public static void displayByLabel(String s) {
+		 tempTasks = new ArrayList<Task>();
+		 ArrayList<Task> displayResults = Storage.localStorage.getUncompletedTasks();
+
+		 for(Task temp : displayResults) {
+			 if(temp.getLabel().contains(s)) {
+				 tempTasks.add(temp);
+			 }
+		 }
+
+		 if(tempTasks.size() > 0) {
+			 UI.ui.print("UNCOMPLETED TASKS");
+			 UI.ui.print("Index \t Task");
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+			 }
+			 UI.ui.print("________________________________");
+		 }
+
+		 tempTasks = new ArrayList<Task>();
+		 displayResults = Storage.localStorage.getFloatingTasks();
+		 for(Task temp : displayResults) {
+			 if(temp.getLabel().contains(s)) {
+				 tempTasks.add(temp);
+			 }
+		 }
+
+		 if(tempTasks.size() > 0) {
+			 UI.ui.print("FLOATING TASKS");
+			 UI.ui.print("Index \t Task");
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+			 }
+			 UI.ui.print("________________________________");
+		 }
+
+		 tempTasks = new ArrayList<Task>();
+		 displayResults = Storage.localStorage.getCompletedTasks();
+		 for(Task temp : displayResults) {
+			 if(temp.getLabel().contains(s)) {
+				 tempTasks.add(temp);
+			 }
+		 }
+		 if(tempTasks.size() > 0) {
+			 UI.ui.print("COMPLETED TASKS");
+			 UI.ui.print("Index \t Task");
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+			 }
+		 }
+	 }
+
+
 	 /**
 	  * Function to clear storage
 	  * @throws IOException 
@@ -491,17 +549,28 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void exit(){
 		 System.exit(0);
 	 }
+
 	 public static boolean addTaskToRecurring(String line, String date, String msg) {
-			Task task = new Task(line, date, msg, false);
-			Storage.localStorage.addToRecurringTasks(task);
-			return true;
-			}
-			
-		
+		 Task task = new Task(line, date, msg, false);
+		 Storage.localStorage.addToRecurringTasks(task);
+		 return true;
+	 }
 
-		public static boolean addByTask(Task task) {
-			localStorage.addToUncompletedTasks(task);
-			return true;
-		}
+	 public static boolean addByTask(Task task) {
+		 localStorage.addToUncompletedTasks(task);
+		 return true;
+	 }
 
+	 public static void addLabelToTask(int index, String label) {
+		 int sizeOfUncompletedTasks = Storage.localStorage.getUncompletedTasks().size();
+		 if(index < sizeOfUncompletedTasks) {
+			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 temp.setLabel(label);
+			 Storage.localStorage.setUncompletedTask(index, temp);
+		 } else {
+			 Task temp = Storage.localStorage.getFloatingTask(index);
+			 temp.setLabel(label);
+			 Storage.localStorage.setFloatingTask(index, temp);
+		 }
+	 }
  }

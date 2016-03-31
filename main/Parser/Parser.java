@@ -83,13 +83,7 @@ public class Parser {
 			int start = getStartingIndex(temp); // start has value of -1 if it
 			// has no start date
 			int end = getIndexOfKey(temp); // end has value of -1 if it has no
-			boolean toRecurred = (temp[temp.length-1].equals("r")); // return true
-																	// if user
-																	// want to
-																	// set task
-																	// as
-																	// returning
-			// end date
+			boolean toRecurred = (temp[temp.length-1].equals("r")); // return true if user wants to set task as returning end date
 			boolean isAdded;
 
 			if (!toRecurred) {
@@ -97,11 +91,10 @@ public class Parser {
 					startDate = "-";
 					startTime = "-";
 					// read date & time
-
 					date = temp[end + 1];
 					int idx = getIndexOfWeek(date);
 					if (idx!=-1) {
-					 date = matchDate(idx);
+						date = matchDate(idx);
 					}
 					dateIn = date;
 					if (hasEndTime(temp)) {// check if contain end time
@@ -130,7 +123,7 @@ public class Parser {
 					}
 
 				} else if (start == -1 && end == -1) {// no end date and no
-														// start
+					// start
 					// date
 					isAdded = Logic.crud.addTask(s);
 					if (isAdded) {
@@ -140,15 +133,13 @@ public class Parser {
 						UI.ui.print(DUPLICATE_ADD_MSG);
 					}
 
-				} else if (start != -1 && end == -1) {// has start date but no
-														// end
-					// date
+				} else if (start != -1 && end == -1) {// has start date but no end date
 					date = "-";
 					time = "-";
 					startDate = temp[start + 1];
 					int idx = getIndexOfWeek(startDate);
 					if (idx!=-1) {
-					 startDate =	matchDate(idx);
+						startDate = matchDate(idx);
 					}
 					dateIn2 = startDate;
 
@@ -223,7 +214,7 @@ public class Parser {
 				issue = getIssue(temp, start, end, false, false);
 				issue = issue.substring(0,issue.length()-2);
 				date = temp[end + 1];// assume only has end date for recurring
-										// task
+				// task
 				int idx = getIndexOfWeek(date);
 				if (idx!=-1) {
 					date = matchDate(idx);
@@ -351,8 +342,10 @@ public class Parser {
 				Logic.crud.displayCompletedTasks();
 			} else if (s.equals("floating") || s.equals("f")) {
 				Logic.crud.displayFloatingTasks();
-			} else {
+			} else if (s.equals("")){
 				Logic.crud.displayUncompletedAndFloatingTasks();
+			} else {
+				Logic.crud.displayByLabel(s);
 			}
 		}
 
@@ -588,6 +581,29 @@ public class Parser {
 		else if (option.equals("dir")) {
 			String feedback = Logic.ImportTasks.changeStorageDestination(s);
 			UI.ui.print(feedback);
+		}
+
+		//@@Kowshik
+		else if(option.equals("label")) {
+			try {
+				int num = Integer.parseInt(s);
+
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+
+				if (list.size() + list2.size() == 0) {
+					UI.ui.print(EMPTY_MSG);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.print(PRIORITY_FAIL_MSG);
+				} else {
+					UI.ui.print("Enter label");
+					String label = sc.nextLine();
+					Logic.crud.addLabelToTask(num - 1, label);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+			
+			}
 		}
 
 		// @@author Jung Kai
@@ -875,13 +891,13 @@ public class Parser {
 			output = today;			
 		} else if (n>day){
 
-			 diff = day-(n-1);
+			diff = day-(n-1);
 			output = processDate(today,diff);
 		} else {
-			 diff = 7+n-day;
-			 output = processDate(today,diff);
+			diff = 7+n-day;
+			output = processDate(today,diff);
 		} return output;
-		
+
 	}
 	/**
 	 * method that process Date for recurring tasks based on the date and number
