@@ -112,19 +112,19 @@ public class Sort {
 		
 		for(int i = 0; i<tempUncompletedTasks.size(); i++) {
 			for(int j = i+1; j<tempUncompletedTasks.size(); j++) {
-				if(tempUncompletedTasks.get(i).getPriority().equals("high") && tempUncompletedTasks.get(j).getPriority().equals("low")) {
+				if(tempUncompletedTasks.get(i).getPriority().equals("low") && tempUncompletedTasks.get(j).getPriority().equals("high")) {
 					Task temp = tempUncompletedTasks.get(i);
 					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
 					tempUncompletedTasks.set(j, temp);
 				}
 				
-				else if(tempUncompletedTasks.get(i).getPriority().equals("high") && tempUncompletedTasks.get(j).getPriority().equals("medium")) {
+				else if(tempUncompletedTasks.get(i).getPriority().equals("medium") && tempUncompletedTasks.get(j).getPriority().equals("high")) {
 					Task temp = tempUncompletedTasks.get(i);
 					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
 					tempUncompletedTasks.set(j, temp);
 				}
 				
-				else if(tempUncompletedTasks.get(i).getPriority().equals("medium") && tempUncompletedTasks.get(j).getPriority().equals("low")) {
+				else if(tempUncompletedTasks.get(i).getPriority().equals("low") && tempUncompletedTasks.get(j).getPriority().equals("medium")) {
 					Task temp = tempUncompletedTasks.get(i);
 					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
 					tempUncompletedTasks.set(j, temp);

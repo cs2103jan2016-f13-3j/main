@@ -307,7 +307,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @throws ClassNotFoundException
 	  */
 	 public static void editTaskWithBothDates(String line, String startDate, String endDate, String msg, int index) throws IOException, ClassNotFoundException {
-		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
+		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 temp.setIssue(line);
