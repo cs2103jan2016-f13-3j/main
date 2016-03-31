@@ -306,12 +306,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void editTaskWithBothDates(String line, String startDate, String endDate, String msg, int index) throws IOException, ClassNotFoundException {
 		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
 		 if(index < uncompleteList){
-		 Task temp = Storage.localStorage.getUncompletedTask(index);
-		 temp.setIssue(line);
-		 temp.setDescription(msg);
-		 temp.setStartDate(startDate);
-		 temp.setEndDate(endDate);
-		 Storage.localStorage.setUncompletedTask(index, temp);
+			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 temp.setIssue(line);
+			 temp.setDescription(msg);
+			 temp.setStartDate(startDate);
+			 temp.setEndDate(endDate);
+			 Storage.localStorage.setUncompletedTask(index, temp);
 		 }else{
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 deleteTask(index, 1);
@@ -363,7 +363,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void displayUncompletedAndFloatingTasks() {
-		
+
 		 UI.ui.eraseScreen();
 		 boolean isEmptyUn = false;
 		 tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -594,32 +594,39 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayWelcomeView() {
-		 
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-		
-		 //getting the current week of year
-		 Date d = Calendar.getInstance().getTime();
-		 Calendar cal = Calendar.getInstance();
-		 cal.setTime(d);
-		 int thisWeek = cal.get(Calendar.WEEK_OF_YEAR);
+
+		 //getting today and seven days later
+		 Calendar d1 = Calendar.getInstance();
+		 int todayDay = d1.get(Calendar.DAY_OF_MONTH);
+		 int todayMonth = d1.get(Calendar.MONTH);
+		 int todayYear = d1.get(Calendar.YEAR);
+		 Date today = new Date(todayYear, todayMonth, todayDay);
+
+		 Calendar d2 = Calendar.getInstance();
+		 d2.add(Calendar.DAY_OF_MONTH, 7);
+		 int futureDay = d2.get(Calendar.DAY_OF_MONTH);
+		 int futureMonth = d2.get(Calendar.MONTH);
+		 int futureYear = d2.get(Calendar.YEAR);
+		 Date future = new Date(futureYear, futureMonth, futureDay);
 
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
-		 //checking if week of year of uncompleted tasks match current week of year
+		 //finding tasks which has dates in the next week
 		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
+				 if(!(temp.getEndDate().before(today)) && !(temp.getEndDate().after(future))) {
 					 tasksToBeDisplayed.add(temp);
+					 continue;
 				 }
 			 }
 			 else if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
+				 if(!(temp.getStartDate().before(today)) && !(temp.getStartDate().after(future))) {
 					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
 		 }
-
 
 		 if(tasksToBeDisplayed.size() > 0) {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
@@ -628,13 +635,5 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 			 }
 		 }
-
-		 /*tasksToBeDisplayed = Storage.localStorage.getFloatingTasks();
-		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.print("FLOATING TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tasksToBeDisplayed.get(i).getTaskString());
-			 }
-		 }*/
 	 }
  }
