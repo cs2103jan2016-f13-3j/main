@@ -109,7 +109,9 @@ public class Task implements java.io.Serializable {
 
 	public void setLabel(String label) {
 		assert label != null;
-		this.label.add(label);
+		if (!this.label.contains(label)) { // prevent duplicate tag from being added
+			this.label.add(label);
+		}
 	}
 
 	public void removeLabel(String label) {
@@ -197,13 +199,13 @@ public class Task implements java.io.Serializable {
 
 	public String getStartDateString() {
 		if (startDate != null) {
-			
+
 			String result = startDate.get(Calendar.DAY_OF_MONTH) + "/";
 			int month = startDate.get(Calendar.MONTH);
 			month++;
 			result += month + "/";
 			int year = startDate.get(Calendar.YEAR);
-			
+
 			result += year;
 			if (hasTime) {
 				String hour = Integer.toString(startDate.get(Calendar.HOUR_OF_DAY));
@@ -220,7 +222,7 @@ public class Task implements java.io.Serializable {
 				result += "\t";
 			}
 			return result;
-			
+
 		} else { // return empty string if the task has no start date
 			return "\t\t";
 		}
@@ -233,7 +235,7 @@ public class Task implements java.io.Serializable {
 			month++;
 			result += month + "/";
 			int year = endDate.get(Calendar.YEAR);
-			
+
 			result += year;
 			if (hasTime) {
 				String hour = Integer.toString(endDate.get(Calendar.HOUR_OF_DAY));
