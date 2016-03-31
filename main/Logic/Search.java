@@ -21,6 +21,7 @@ public class Search {
 	 * @param keyword the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByKeyword(String keyword){
+		
 		UI.ui.eraseScreen();
 		searchedTasks = new ArrayList<Task>();
 		int counter = 0;
