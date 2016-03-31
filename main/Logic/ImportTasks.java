@@ -125,6 +125,10 @@ public class ImportTasks {
 		return storageFolderDirectory + storageFileNameRecurringTasks;
 	}
 	
+	public static String getFolderDirectory() {
+		return storageFolderDirectory;
+	}
+	
 	public static String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
 		File StorageFolderPathFile = new File("StorageFolderPath.txt");
 		FileWriter writer = new FileWriter(StorageFolderPathFile);

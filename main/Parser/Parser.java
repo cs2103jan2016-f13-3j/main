@@ -39,6 +39,8 @@ public class Parser {
 	private static final String WRONG_DATE_MSG = "Please enter date in dd/mm/yyyy format";
 	private static final String DNE_MSG = "Task does not exists";
 	private static final String PRIORITY_FAIL_MSG = "Fail to set priority. Please insert a valid task number.";
+	private static final String MSG_DIRECTORY_USED = "The storage directory currently in use is ";
+	private static final String MSG_DEFAULT_DIRECTORY = "the default source folder";
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -579,8 +581,17 @@ public class Parser {
 
 		// @@author Jie Wei
 		else if (option.equals("dir")) {
-			String feedback = Logic.ImportTasks.changeStorageDestination(s);
-			UI.ui.print(feedback);
+			if (s.isEmpty()) { // only "dir" was typed, this will display the current storage folder directory in use
+				String currentStorageDirectory = Logic.ImportTasks.getFolderDirectory();
+				if (currentStorageDirectory.isEmpty()) { // indicates source folder is in use
+					UI.ui.print(MSG_DIRECTORY_USED + MSG_DEFAULT_DIRECTORY);
+				} else {
+					UI.ui.print(MSG_DIRECTORY_USED + currentStorageDirectory);
+				}
+			} else { // "dir <path>" was entered
+				String feedback = Logic.ImportTasks.changeStorageDestination(s);
+				UI.ui.print(feedback);
+			}
 		}
 
 		//@@Kowshik
@@ -602,7 +613,7 @@ public class Parser {
 					arraylistsHaveBeenModified = true;
 				}
 			} catch (Exception e) {
-			
+
 			}
 		}
 
