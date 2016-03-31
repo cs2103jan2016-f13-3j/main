@@ -21,6 +21,7 @@ public class Search {
 	 * @param keyword the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByKeyword(String keyword){
+		UI.ui.eraseScreen();
 		searchedTasks = new ArrayList<Task>();
 		int counter = 0;
 		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
@@ -30,15 +31,19 @@ public class Search {
 			}
 		}
 		
-		UI.ui.print("UNCOMPLETED TASKS");
+		UI.ui.printGreen("UNCOMPLETED TASKS");
+		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for(int i=0; i<searchedTasks.size(); i++) {
-			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
+			Task temp1=searchedTasks.get(i);
+			UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+			
 			counter++;
 		}
 		temp = Storage.localStorage.getFloatingTasks();
-		UI.ui.print("________________________________________");
+		UI.ui.print("________________________________________________________________");
 		UI.ui.print("\n");
-		UI.ui.print("FLOATING TASKS");
+		UI.ui.printGreen("FLOATING TASKS");
+		UI.ui.printGreen("Index\tTask");
 		for(int i=0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
@@ -46,14 +51,16 @@ public class Search {
 		}
 
 		for(int i = counter; i<searchedTasks.size(); i++) {
-			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
+			Task temp1=searchedTasks.get(i);
+			UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
 			counter++;
 		}
 		
 		temp = Storage.localStorage.getCompletedTasks();
-		UI.ui.print("________________________________________");
+		UI.ui.print("________________________________________________________________");
 		UI.ui.print("\n");
-		UI.ui.print("COMPLETED TASKS");
+		UI.ui.printGreen("COMPLETED TASKS");
+		UI.ui.printGreen("Index\tTask");
 		for(int i=0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
@@ -61,7 +68,8 @@ public class Search {
 		}
 
 		for(int i = counter; i<searchedTasks.size(); i++) {
-			UI.ui.print((i+1) + ". " + searchedTasks.get(i).getTaskString());
+			Task temp1=searchedTasks.get(i);
+			UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
 			
 		}
 	}
