@@ -283,7 +283,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
 			 temp.setDescription(msg);
-			 Storage.localStorage.setUncompletedTask(index, temp);
+			 deleteTask(index,1);
+			 addTaskWithEndDate(line, date, msg);
+			 //Storage.localStorage.addToUncompletedTasks(temp);
+			 //Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 deleteTask(index, 1);

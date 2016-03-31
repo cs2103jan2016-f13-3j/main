@@ -473,8 +473,12 @@ public class Parser {
 						dateIn = date;
 
 						if (hasEndTime(temp)) {// check if contain end time
+							//something is wrong here
 							time = temp[end + 2];
-							time.replaceAll(":", "/");
+							String[] t2=time.split(":");
+							String t=t2[0]+"/"+t2[1];
+							//time.replaceFirst(":", "/");
+							time=t;
 							dateIn = dateIn + "/" + time;
 						} else {
 							time = "-";
