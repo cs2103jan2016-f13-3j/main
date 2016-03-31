@@ -64,7 +64,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 for(Task temp : tempTasks) {
 			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 System.out.println(temp.getTaskString());
+				 UI.ui.printRed(temp.getTaskString());
 				 noDuplicate = false;
 			 }
 		 }
@@ -89,7 +89,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 for(Task temp : tempTasks) {
 			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 System.out.println(temp.getTaskString());
+				 UI.ui.printRed(temp.getTaskString());
 				 noDuplicate = false;
 			 }
 		 }
@@ -114,7 +114,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 for(Task temp : tempTasks) {
 			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 System.out.println(temp.getTaskString());
+				 UI.ui.printRed(temp.getTaskString());
 				 noDuplicate = false;
 			 }
 		 }
@@ -347,8 +347,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void displayUncompletedAndFloatingTasks() {
-		 //System.out.print(ansi().eraseScreen().fgBright(YELLOW));
-
+		
+		 UI.ui.eraseScreen();
 		 boolean isEmptyUn = false;
 		 tempTasks = Storage.localStorage.getUncompletedTasks();
 		 String dt="";
@@ -356,10 +356,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if (tempTasks.isEmpty()) {
 			 isEmptyUn = true;
 		 } else {
-			 UI.ui.print("UNCOMPLETED TASKS");
-			 UI.ui.print("Index\tTask");
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			 for(int i=0; i<tempTasks.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 Task temp=tempTasks.get(i);
+				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 			 }
 			 UI.ui.print("________________________________________________________________");
 		 }
@@ -371,35 +372,35 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 isEmptyF = true;
 		 }
 		 else {
-			 UI.ui.print("FLOATING TASKS");
-			 UI.ui.print("Index\tTask");
+			 UI.ui.printGreen("FLOATING TASKS");
+			 UI.ui.printGreen("Index\tTask");
 			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 			 for(int i=0; i<tempTasks.size(); i++) {
-				 UI.ui.print((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
+				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
 			 }
 		 }
 		 if(isEmptyUn && isEmptyF) {
-			 UI.ui.print("There are no tasks to show.");
+			 UI.ui.printGreen("There are no tasks to show.");
 		 }
-		 //System.out.print(ansi().reset());
 	 }
 	 /**
 	  * function to display all floating task in storage
 	  * 
 	  */
 	 public static void displayFloatingTasks() {
-		 UI.ui.print("FLOATING TASKS");
-		 UI.ui.print("Index\tTask");
+		 UI.ui.eraseScreen();
+		 UI.ui.printGreen("FLOATING TASKS");
+		 UI.ui.printGreen("Index\tTask");
 		 boolean isEmptyF = false;
 		 tempTasks = Storage.localStorage.getFloatingTasks();
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.print((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
+			 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
 		 }
 		 if (tempTasks.isEmpty()) {
 			 isEmptyF = true;
 		 }  if(isEmptyF) {
-			 UI.ui.print("There are no floating tasks to show.");
+			 UI.ui.printGreen("There are no floating tasks to show.");
 		 }
 	 }
 	 /**
@@ -408,6 +409,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @param index the index of the task to be displayed
 	  */
 	 public static void viewIndividualTask(int index) {
+		 UI.ui.eraseScreen();
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 if(index < getSize.size()) {
 			 tempTask = Storage.localStorage.getUncompletedTask(index);
@@ -421,7 +423,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 completed = "Completed";
 		 }
 
-		 UI.ui.print(tempTask.getTaskString());
+		 UI.ui.printYellow(tempTask.getTaskString());
 		 UI.ui.print("Status: " + completed);
 		 UI.ui.print("Priority: " + tempTask.getPriority());
 		 UI.ui.print("Labels:");
@@ -435,12 +437,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void displayCompletedTasks() {
+		 UI.ui.eraseScreen();
 		 tempTasks = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
+			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
 		 }
 		 if (tempTasks.isEmpty()) {
-			 UI.ui.print("There is no stored task to display");
+			 UI.ui.printGreen("There is no stored task to display");
 		 }
 	 }
 
@@ -470,12 +473,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if (tempTasks.isEmpty()) {
-			 UI.ui.print("There is no stored task to display");
+			 UI.ui.printGreen("There is no stored task to display");
 		 }
 		 else {
 			 UI.ui.print("Index\tTask");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
 			 }
 		 }
 	 }
@@ -491,10 +494,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tempTasks.size() > 0) {
-			 UI.ui.print("UNCOMPLETED TASKS");
-			 UI.ui.print("Index \t Task");
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 UI.ui.printGreen("Index \t Task");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
 			 }
 			 UI.ui.print("________________________________");
 		 }
@@ -508,10 +511,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tempTasks.size() > 0) {
-			 UI.ui.print("FLOATING TASKS");
-			 UI.ui.print("Index \t Task");
+			 UI.ui.printGreen("FLOATING TASKS");
+			 UI.ui.printGreen("Index \t Task");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
 			 }
 			 UI.ui.print("________________________________");
 		 }
@@ -524,10 +527,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 		 if(tempTasks.size() > 0) {
-			 UI.ui.print("COMPLETED TASKS");
-			 UI.ui.print("Index \t Task");
+			 UI.ui.printGreen("COMPLETED TASKS");
+			 UI.ui.printYellow("Index \t Task");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
 			 }
 		 }
 	 }
@@ -575,7 +578,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayWelcomeView() {
-		 UI.ui.print("Upcoming tasks this week - ");
+		 
+		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		
 		 //getting the current week of year
@@ -602,9 +606,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 
 		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.print("UNCOMPLETED TASKS");
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 UI.ui.print((i+1) + ".\t" + tasksToBeDisplayed.get(i).getTaskString());
+				 Task temp=tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 			 }
 		 }
 

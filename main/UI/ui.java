@@ -22,6 +22,9 @@ public class ui {
 	public static void eraseScreen(){
 		System.out.print(ansi().eraseScreen());
 	}
+	public static void printTask(int i,String sdate,String edate,String msg){
+		System.out.println(ansi().fgBright(YELLOW).a((i+1)+".\t").fgBright(CYAN).a(sdate+edate).fgBright(YELLOW).a(msg).reset());
+	}
 	public static void printRed(String temp){
 		
 		System.out.print(ansi().fgBright(RED).a(temp).reset());
