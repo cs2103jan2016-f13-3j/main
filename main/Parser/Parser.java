@@ -887,14 +887,15 @@ public class Parser {
 		String today = dateFormat.format(date);
 		int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
 		int diff;
-		if (n == day) {
+		if (n+1 == day) {
 			output = today;			
-		} else if (n>day){
+		} else if (n+1>day){
 
-			diff = day-(n-1);
+			diff = n+1-day;
 			output = processDate(today,diff);
 		} else {
-			diff = 7+n-day;
+			int remaining = 7-day;
+			diff = remaining + 1+(n+1);
 			output = processDate(today,diff);
 		} return output;
 
