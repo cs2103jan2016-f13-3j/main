@@ -16,7 +16,7 @@ public class Parser {
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
 	"sunday" };
-	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
+	private static final String[] key = { "by", "at", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
