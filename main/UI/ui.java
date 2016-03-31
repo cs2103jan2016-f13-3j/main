@@ -19,8 +19,15 @@ public class ui {
 			System.out.println();
 		}
 	}
+	public static void eraseScreen(){
+		System.out.print(ansi().eraseScreen());
+	}
 	public static void printRed(String temp){
-		System.out.println(ansi().fgBright(RED).a(temp).reset());
+		
+		System.out.print(ansi().fgBright(RED).a(temp).reset());
+		if(temp.equals("command: ") != true) {
+			System.out.println();
+		}
 	}
 	public static void printBlue(String temp){
 		System.out.println(ansi().fgBright(BLUE).a(temp).reset());

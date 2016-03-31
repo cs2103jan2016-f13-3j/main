@@ -35,26 +35,27 @@ public class Head {
 		 Logic.ImportTasks.prepareAndImportFiles();
 //		 System.out.print(ansi().eraseScreen().fgBright(RED));
 		 checkDateAndAdd();
-		 UI.ui.print(logo1);
-		 UI.ui.print(logo2);
-		 UI.ui.print(logo3);
-		 UI.ui.print(logo4);
-		 UI.ui.print(logo5);
-		 UI.ui.print(logo6);
-		 UI.ui.print(logo7);
-		 UI.ui.print(logo8);
+		 UI.ui.eraseScreen();
+		 UI.ui.printGreen(logo1);
+		 UI.ui.printGreen(logo2);
+		 UI.ui.printGreen(logo3);
+		 UI.ui.printGreen(logo4);
+		 UI.ui.printGreen(logo5);
+		 UI.ui.printGreen(logo6);
+		 UI.ui.printGreen(logo7);
+		 UI.ui.printGreen(logo8);
 
-		 UI.ui.print(WELCOME_MSG_1 + WELCOME_MSG_2);
-//		 System.out.print(ansi().reset());
+		 UI.ui.printYellow(WELCOME_MSG_1 + WELCOME_MSG_2);
+
 		 UI.ui.print("\n");
-		 UI.ui.print("Enter \"help\" for instructions.");
+		 UI.ui.printYellow("Enter \"help\" for instructions.");
 		 Logic.crud.displayWelcomeView();
 		 runProgram();
 	 }
 
 	 public static void runProgram() throws IOException, ClassNotFoundException {
 		 while (true) {
-			 UI.ui.print(USER_PROMPT);
+			 UI.ui.printRed(USER_PROMPT);
 			 String input = UI.ui.acceptCommand();
 			 String[] arr = input.split(" ");
 			 // get command
@@ -101,7 +102,7 @@ public class Head {
 						}
 					}
 					Logic.Sort.sortTasksChronologically();
-					System.out.println("number of recurring task in storage: " + localStorage.getRecurringTasks().size());
+					UI.ui.printGreen("number of recurring task in storage: " + localStorage.getRecurringTasks().size());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
