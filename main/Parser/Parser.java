@@ -15,7 +15,7 @@ public class Parser {
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-			"sunday" };
+	"sunday" };
 	private static final String[] key = { "by", "at", "in", "on", "during", "before", "to" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
@@ -86,27 +86,27 @@ public class Parser {
 				// get index of key
 				String[] temp = s.split(" ");
 				int start = getStartingIndex(temp); // start has value of -1 if
-													// it
+				// it
 				// has no start date
 				int end = getIndexOfKey(temp); // end has value of -1 if it has
-												// no
+				// no
 				boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
-																			// true
-																			// if
-																			// user
-																			// wants
-																			// to
-																			// set
-																			// task
-																			// as
-																			// returning
-																			// end
-																			// date
+				// true
+				// if
+				// user
+				// wants
+				// to
+				// set
+				// task
+				// as
+				// returning
+				// end
+				// date
 				boolean isAdded;
 
 				if (!toRecurred) {
 					if (start == -1 && end != -1) {// no start date but has end
-													// date
+						// date
 						startDate = "-";
 						startTime = "-";
 						// read date & time
@@ -153,7 +153,7 @@ public class Parser {
 						}
 
 					} else if (start != -1 && end == -1) {// has start date but
-															// no end date
+						// no end date
 						date = "-";
 						time = "-";
 						startDate = temp[start + 1];
@@ -231,11 +231,11 @@ public class Parser {
 						}
 					}
 				} else { // so far recurring task only support add task by end
-							// date
+					// date
 					issue = getIssue(temp, start, end, false, false);
 					issue = issue.substring(0, issue.length() - 2);
 					date = temp[end + 1];// assume only has end date for
-											// recurring
+					// recurring
 					// task
 					int idx = getIndexOfWeek(date);
 					if (idx != -1) {
@@ -370,8 +370,10 @@ public class Parser {
 				Logic.crud.displayScheduleForADay(inputDate);
 			} else if (s.equals("")) {
 				Logic.crud.displayUncompletedAndFloatingTasks();
-			} else {
-
+			} else if(s.equals("week")) {
+				Logic.crud.displayTasksForThisWeek();
+			}
+			else {
 				Logic.crud.displayByLabel(s);
 			}
 		} else if (option.equals("view") || option.equals("v")) {
@@ -601,10 +603,10 @@ public class Parser {
 		// @@author Jie Wei
 		else if (option.equals("dir")) {
 			if (s.isEmpty()) { // only "dir" was typed, this will display the
-								// current storage folder directory in use
+				// current storage folder directory in use
 				String currentStorageDirectory = Logic.ImportTasks.getFolderDirectory();
 				if (currentStorageDirectory.isEmpty()) { // indicates source
-															// folder is in use
+					// folder is in use
 					UI.ui.printGreen(MSG_DIRECTORY_USED + MSG_DEFAULT_DIRECTORY);
 				} else {
 					UI.ui.printGreen(MSG_DIRECTORY_USED + currentStorageDirectory);
@@ -809,8 +811,8 @@ public class Parser {
 	 */
 	public static int getIndexOfKey(String[] arr) {
 		int idx = -1;
-			for (int j = 0; j < arr.length; j++) {
-				for (int i =0;i<key.length;i++) {
+		for (int j = 0; j < arr.length; j++) {
+			for (int i =0;i<key.length;i++) {
 				if (arr[j].equals(key[i])) {
 					idx = j;
 				}

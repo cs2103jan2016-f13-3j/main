@@ -599,9 +599,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayTasksForThisWeek() {
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		 //getting today and seven days later
-		 Calendar d1 = Calendar.getInstance();
+		 /*Calendar d1 = Calendar.getInstance();
 		 int todayDay = d1.get(Calendar.DAY_OF_MONTH);
 		 int todayMonth = d1.get(Calendar.MONTH);
 		 int todayYear = d1.get(Calendar.YEAR);
@@ -612,20 +613,21 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 int futureDay = d2.get(Calendar.DAY_OF_MONTH);
 		 int futureMonth = d2.get(Calendar.MONTH);
 		 int futureYear = d2.get(Calendar.YEAR);
-		 Date future = new Date(futureYear, futureMonth, futureDay);
+		 Date future = new Date(futureYear, futureMonth, futureDay);*/
 
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 Calendar date = Calendar.getInstance();
+		 int thisWeek = date.get(Calendar.WEEK_OF_YEAR);
 
 		 //finding tasks which has dates in the next week
 		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
-				 if(!(temp.getEndDate().before(today)) && !(temp.getEndDate().after(future))) {
+				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
 					 tasksToBeDisplayed.add(temp);
 					 continue;
 				 }
 			 }
-			 else if(temp.getStartDate() != null) {
-				 if(!(temp.getStartDate().before(today)) && !(temp.getStartDate().after(future))) {
+			 if(temp.getStartDate() != null) {
+				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
 					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
@@ -634,9 +636,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(tasksToBeDisplayed.size() > 0) {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp=tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
 			 }
+		 }
+		 else {
+			 UI.ui.printRed("No tasks this week");
 		 }
 	 }
  }

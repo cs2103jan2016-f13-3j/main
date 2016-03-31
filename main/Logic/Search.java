@@ -25,7 +25,7 @@ public class Search {
 		searchedTasks = new ArrayList<Task>();
 		int counter = 0;
 		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
-		for(int i=0; i<temp.size(); i++) {
+		for(int i = 0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
 			}
@@ -33,8 +33,8 @@ public class Search {
 		
 		UI.ui.printGreen("UNCOMPLETED TASKS");
 		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-		for(int i=0; i<searchedTasks.size(); i++) {
-			Task temp1=searchedTasks.get(i);
+		for(int i = 0; i<searchedTasks.size(); i++) {
+			Task temp1 = searchedTasks.get(i);
 			UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
 			
 			counter++;
@@ -44,7 +44,7 @@ public class Search {
 		UI.ui.print("\n");
 		UI.ui.printGreen("FLOATING TASKS");
 		UI.ui.printGreen("Index\tTask");
-		for(int i=0; i<temp.size(); i++) {
+		for(int i = 0; i<temp.size(); i++) {
 			if(temp.get(i).getIssue().contains(keyword) || temp.get(i).getTaskString().contains(keyword)) {
 				searchedTasks.add(temp.get(i));
 			}
