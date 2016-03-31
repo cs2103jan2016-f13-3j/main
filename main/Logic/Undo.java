@@ -13,6 +13,7 @@ import Task.Task;
 
 public class Undo {
 	private static final String NO_PAST_COMMAND = "There are no remaining commands that can be undone";
+	private static final String UNDO_CONFIRMATION = " has been undone";
 	private static Undo undo;
 	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack;
 	private ArrayList<String> pastCommands;
@@ -68,7 +69,7 @@ public class Undo {
 			return NO_PAST_COMMAND;
 		}
 		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
-		return getLastCommand() + " has been undone";
+		return "\"" + getLastCommand() + "\"" + UNDO_CONFIRMATION;
 	}
 
 	// copy all 3 task arraylists as "snapshots" of the current program state
