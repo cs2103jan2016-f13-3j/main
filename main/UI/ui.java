@@ -2,8 +2,8 @@
 package UI;
 
 import java.util.Scanner;
-//import static org.fusesource.jansi.Ansi.*;
-//import static org.fusesource.jansi.Ansi.Color.*;
+import static org.fusesource.jansi.Ansi.*;
+import static org.fusesource.jansi.Ansi.Color.*;
 public class ui {
 
 	private static Scanner sc = new Scanner(System.in);
@@ -18,6 +18,21 @@ public class ui {
 		if(temp.equals("command: ") != true) {
 			System.out.println();
 		}
+	}
+	public static void printRed(String temp){
+		System.out.println(ansi().fgBright(RED).a(temp).reset());
+	}
+	public static void printBlue(String temp){
+		System.out.println(ansi().fgBright(BLUE).a(temp).reset());
+	}
+	public static void printGreen(String temp){
+		System.out.println(ansi().fgBright(GREEN).a(temp).reset());
+	}
+	public static void printYellow(String temp){
+		System.out.println(ansi().fgBright(YELLOW).a(temp).reset());
+	}
+	public static void printCyan(String temp){
+		System.out.println(ansi().fgBright(CYAN).a(temp).reset());
 	}
 	
 	/**
