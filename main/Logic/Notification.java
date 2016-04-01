@@ -7,7 +7,7 @@ import Storage.localStorage;
 import Task.Task;
 
 public class Notification {
-
+	private static int daysInAdvance = 3;
 	/**
 	 * Function that prints the upcoming uncompleted tasks in the next three days
 	 */
@@ -22,7 +22,7 @@ public class Notification {
 		
 		//Three days later
 		Calendar d2 = Calendar.getInstance();
-		d2.add(Calendar.DAY_OF_MONTH, 3);
+		d2.add(Calendar.DAY_OF_MONTH, daysInAdvance);
 		int futureDay = d2.get(Calendar.DAY_OF_MONTH);
 		int futureMonth = d2.get(Calendar.MONTH);
 		int futureYear = d2.get(Calendar.YEAR);
@@ -52,5 +52,9 @@ public class Notification {
 				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
 			 }
 		 }
+	}
+	
+	public static void changeDaysInAdvance(int change) {
+		daysInAdvance = change;
 	}
 }

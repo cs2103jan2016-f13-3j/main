@@ -117,6 +117,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 UI.ui.printRed(temp.getTaskString());
 				 noDuplicate = false;
 			 }
+
+			 if(temp.getStartDate() != null && temp.getEndDate() != null) {
+				 if(temp.getStartDateString().equals(task.getStartDateString()) && temp.getEndDateString().equals(task.getEndDateString())) {
+					 UI.ui.printRed("CLASH IN TIMING DETECTED WITH - ");
+					 UI.ui.printRed(temp.getTaskString());
+				 }
+			 }
 		 }
 		 if(noDuplicate) {
 			 Storage.localStorage.addToUncompletedTasks(task);
