@@ -618,7 +618,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 Calendar date = Calendar.getInstance();
 		 int thisWeek = date.get(Calendar.WEEK_OF_YEAR);
 
-		 //finding tasks which has dates in the next week
+		 //finding tasks which has dates in current week
 		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
 				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
@@ -644,4 +644,115 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printRed("No tasks this week");
 		 }
 	 }
+
+	public static void displayTasksForNextWeek() {
+		 UI.ui.printGreen("Upcoming tasks next week - ");
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+
+		 Calendar date = Calendar.getInstance();
+		 date.add(Calendar.WEEK_OF_YEAR, 1);
+		 int nextWeek = date.get(Calendar.WEEK_OF_YEAR);
+
+		 //finding tasks which has dates in the next week
+		 for(Task temp : tempTasks) {
+			 if(temp.getEndDate() != null) {
+				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
+					 tasksToBeDisplayed.add(temp);
+					 continue;
+				 }
+			 }
+			 if(temp.getStartDate() != null) {
+				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+		 }
+
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+			 }
+		 }
+		 else {
+			 UI.ui.printRed("No tasks next week");
+		 }
+		
+	}
+
+	public static void displayTaksForTwoWeeksLater() {
+		UI.ui.printGreen("Upcoming tasks for two weeks later - ");
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+
+		 Calendar date = Calendar.getInstance();
+		 date.add(Calendar.WEEK_OF_YEAR, 2);
+		 int twoWeeksLater = date.get(Calendar.WEEK_OF_YEAR);
+
+		 //finding tasks which has dates in two weeks time
+		 for(Task temp : tempTasks) {
+			 if(temp.getEndDate() != null) {
+				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
+					 tasksToBeDisplayed.add(temp);
+					 continue;
+				 }
+			 }
+			 if(temp.getStartDate() != null) {
+				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+		 }
+
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+			 }
+		 }
+		 else {
+			 UI.ui.printRed("No tasks for two weeks later");
+		 }
+		
+	}
+
+	public static void displayTasksForLastWeek() {
+		UI.ui.printGreen("Tasks uncompleted from last week - ");
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+
+		 Calendar date = Calendar.getInstance();
+		 date.add(Calendar.WEEK_OF_YEAR, -1);
+		 int lastWeek = date.get(Calendar.WEEK_OF_YEAR);
+
+		 //finding tasks which has dates in two weeks time
+		 for(Task temp : tempTasks) {
+			 if(temp.getEndDate() != null) {
+				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
+					 tasksToBeDisplayed.add(temp);
+					 continue;
+				 }
+			 }
+			 if(temp.getStartDate() != null) {
+				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+		 }
+
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+			 }
+		 }
+		 else {
+			 UI.ui.printRed("No tasks left from last week");
+		 }
+		
+	}
  }

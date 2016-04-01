@@ -88,77 +88,46 @@ public class Parser {
 		arraylistsHaveBeenModified = false;
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			addCommand(s);
-		}
-		// @@author Kowshik
-		else if (option.equals("delete") || option.equals("-")) {
+		} else if (option.equals("delete") || option.equals("-")) {
 			deleteCommand(s);
 		} else if (option.equals("display") || option.equals("d")) {
 			displayCommand(s);
 		} else if (option.equals("view") || option.equals("v")) {
 			viewCommand(s);
-		}
-
-		else if (option.equals("clear") || option.equals("c")) {
+		} else if (option.equals("clear") || option.equals("c")) {
 			clearCommand();
-		}
-
-		else if (option.equals("sort")) {
+		} else if (option.equals("sort")) {
 			sortCommand(s);
 		} else if (option.equals("search") || option.equals("s")) {
 			Logic.Search.searchTasksByKeyword(s);
-		}
-
-		else if (option.equals("mark") || option.equals("m")) {
+		} else if (option.equals("mark") || option.equals("m")) {
 			markCommand(s);
 		} else if (option.equals("unmark") || option.equals("um")) {
 			unmarkCommand(s);
-		}
-		// @@author Jung Kai
-		else if (option.equals("edit") || option.equals("e")) {
+		} else if (option.equals("edit") || option.equals("e")) {
 			editCommand(s);
-		}
-		// @@author Kowshik
-		else if (option.equals("p")) {
+		} else if (option.equals("priority") || option.equals("p")) {
 			setPriorityCommand(s);
-			
-		// @@author Jie Wei
 		} else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
 			UI.ui.printYellow(pastCommands);
-		}
-		else if (option.equals("future")) {
+		} else if (option.equals("future")) {
 			String possibleRedoCommands = Undo.getInstance().viewRedoCommands();
 			UI.ui.printYellow(possibleRedoCommands);
-		}
-		else if (option.equals("undo")) {
+		} else if (option.equals("undo")) {
 			undoCommand(s);
-		}
-		else if (option.equals("redo")) {
+		} else if (option.equals("redo")) {
 			redoCommand(s);
-		}
-
-		// @@author Jung Kai
-		else if (option.equals("exit")) {
-			UI.ui.printGreen("Bye");
+		} else if (option.equals("exit")) {
+			UI.ui.printGreen("Bye!");
 			Logic.crud.exit();
-		}
-
-		else if (option.equals("help")) {
+		} else if (option.equals("help")) {
 			Logic.Help.printHelpMenu();
-		}
-
-		// @@author Jie Wei
-		else if (option.equals("dir")) {
+		} else if (option.equals("dir")) {
 			changeDirectoryCommand(s);
-		}
-
-		// @@Kowshik
-		else if (option.equals("label")) {
+		} else if (option.equals("label")) {
 			setLabelCommand(s);
-		}
-
-		// @@author Jung Kai
-		else {
+		} else {
 			UI.ui.printRed(INVALID_MSG);
 		}
 		return arraylistsHaveBeenModified;
@@ -347,7 +316,8 @@ public class Parser {
 			Head.checkDateAndAdd();
 		}
 	}
-
+	
+	//@@author Kowshik
 	public static void setLabelCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -369,7 +339,8 @@ public class Parser {
 
 		}
 	}
-
+	
+	//@@author Jie Wei
 	public static void changeDirectoryCommand(String s) throws IOException, ClassNotFoundException {
 		if (s.isEmpty()) { // only "dir" was typed, this will display the
 			// current storage folder directory in use
@@ -458,6 +429,7 @@ public class Parser {
 		}
 	}
 
+	//@@author Kowshik
 	public static void setPriorityCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -480,6 +452,7 @@ public class Parser {
 		}
 	}
 
+	//@@author Jung Kai
 	public static void editCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -594,6 +567,7 @@ public class Parser {
 		}
 	}
 
+	//@@author Kowshik
 	public static void unmarkCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -672,8 +646,14 @@ public class Parser {
 			Logic.crud.displayScheduleForADay(inputDate);
 		} else if (s.equals("")) {
 			Logic.crud.displayUncompletedAndFloatingTasks();
-		} else if(s.equals("week")) {
+		} else if(s.equals("week") || s.equals("this week")) {
 			Logic.crud.displayTasksForThisWeek();
+		} else if(s.equals("next week") || s.equals("w+1")) {
+			Logic.crud.displayTasksForNextWeek();
+		} else if(s.equals("two weeks later") || s.equals("w+2")) {
+			Logic.crud.displayTaksForTwoWeeksLater();
+		} else if(s.equals("last week") || s.equals("w -1")) {
+			Logic.crud.displayTasksForLastWeek();
 		}
 		else {
 			Logic.crud.displayByLabel(s);

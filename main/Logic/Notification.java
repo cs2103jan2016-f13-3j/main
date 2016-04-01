@@ -8,9 +8,12 @@ import Task.Task;
 
 public class Notification {
 
+	/**
+	 * Function that prints the upcoming uncompleted tasks in the next three days
+	 */
 	public static void welcomeReminder() {
 		//Today
-		UI.ui.printRed("Deadlines approaching - ");
+		UI.ui.printRed("DEADLINES APPROACHING - ");
 		Calendar d1 = Calendar.getInstance();
 		int todayDay = d1.get(Calendar.DAY_OF_MONTH);
 		int todayMonth = d1.get(Calendar.MONTH);
@@ -32,6 +35,7 @@ public class Notification {
 			 if(temp.getEndDate() != null) {
 				 if(!(temp.getEndDate().before(today)) && !(temp.getEndDate().after(future))) {
 					 tasksToBeDisplayed.add(temp);
+					 System.out.println("Yes");
 					 continue;
 				 }
 			 }
@@ -44,8 +48,8 @@ public class Notification {
 		if(tasksToBeDisplayed.size() > 0) {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp=tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
 			 }
 		 }
 	}
