@@ -16,7 +16,7 @@ public class Parser {
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
 	"sunday" };
-	private static final String[] key = { "by", "at", "on", "during", "before", "to" };
+	private static final String[] key = { "by", "at", "on", "during", "before", "to","in"};
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
@@ -89,7 +89,10 @@ public class Parser {
 				// it
 				// has no start date
 				int end = getIndexOfKey(temp); // end has value of -1 if it has
-				// no
+				// no end date
+				if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+				  end = -1;// no end date
+				} 
 				boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 				// true
 				// if
@@ -99,9 +102,7 @@ public class Parser {
 				// set
 				// task
 				// as
-				// returning
-				// end
-				// date
+				// recurring
 				boolean isAdded;
 
 				if (!toRecurred) {
@@ -477,11 +478,9 @@ public class Parser {
 						if (hasEndTime(temp)) {// check if contain end time
 							//something is wrong here
 							time = temp[end + 2];
-							String[] t2=time.split(":");
-							String t=t2[0]+"/"+t2[1];
-							//time.replaceFirst(":", "/");
-							time=t;
+							time = time.replaceAll(":", "/");
 							dateIn = dateIn + "/" + time;
+							
 						} else {
 							time = "-";
 						}
@@ -530,21 +529,19 @@ public class Parser {
 						date = temp[end + 1];
 						dateIn = date;
 						dateIn2 = startDate;
+										
 						if (hasStartTime(temp)) {
 							startTime = temp[start + 2];
-							startTime.replaceAll(":", "/");
+							startTime = startTime.replaceAll(":", "/");
 							dateIn2 = dateIn2 + "/" + startTime;
-						} else {
-							startTime = "-";
-						}
+						} 
 						if (hasEndTime(temp)) {
 							time = temp[end + 2];
 							time = time.replaceAll(":", "/");
 							dateIn = dateIn + "/" + time;
+					
 
-						} else {
-							time = "-";
-						}
+						} 
 						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 							UI.ui.printRed(WRONG_DATE_MSG);
 						} else {
@@ -556,8 +553,9 @@ public class Parser {
 							arraylistsHaveBeenModified = true;
 						}
 					}
-				}
+				} 
 			} catch (Exception e) {
+				
 			}
 		}
 		// @@author Kowshik
