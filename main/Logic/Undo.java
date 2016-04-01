@@ -13,10 +13,12 @@ import Task.Task;
 
 public class Undo {
 	private static final String NO_PAST_COMMAND = "There are no remaining commands that can be undone";
+	private static final String NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 	private static final String UNDO_CONFIRMATION = " has been undone";
+	private static final String REDO_CONFIRMATION = " has been redone";
 	private static Undo undo;
-	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack;
-	private ArrayList<String> pastCommands;
+	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack, completedRedoStack, uncompletedRedoStack, floatingRedoStack, recurringRedoStack;
+	private ArrayList<String> undoCommands, redoCommands;
 	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot, recurringTasksSnapshot;
 
 	private Undo() { //constructor
@@ -24,7 +26,13 @@ public class Undo {
 		uncompletedStack = new Stack<ArrayList<Task>>();
 		floatingStack = new Stack<ArrayList<Task>>();
 		recurringStack = new Stack<ArrayList<Task>>();
-		pastCommands = new ArrayList<String>();
+		undoCommands = new ArrayList<String>();
+		
+		completedRedoStack = new Stack<ArrayList<Task>>();
+		uncompletedRedoStack = new Stack<ArrayList<Task>>();
+		floatingRedoStack = new Stack<ArrayList<Task>>();
+		recurringRedoStack = new Stack<ArrayList<Task>>();
+		redoCommands = new ArrayList<String>();
 	}
 
 	public static Undo getInstance() { //singleton
@@ -37,16 +45,30 @@ public class Undo {
 	// returns string containing a list of undo-able commands, if any
 	public String viewPastCommands() {
 		String result = "";
-		if (pastCommands.isEmpty()) {
+		if (undoCommands.isEmpty()) {
 			return NO_PAST_COMMAND;
 		}
 		int count = 0;
-		for (String s : pastCommands) {
+		for (String s : undoCommands) {
 			count++;
 			result += count + ". " + s + "\n";
 		}
 		return result.substring(0, result.length() - 1);
 	}
+	
+	// returns string containing a list of redo-able commands, if any
+		public String viewRedoCommands() {
+			String result = "";
+			if (redoCommands.isEmpty()) {
+				return NO_REDO_COMMAND;
+			}
+			int count = 0;
+			for (String s : redoCommands) {
+				count++;
+				result += count + ". " + s + "\n";
+			}
+			return result.substring(0, result.length() - 1);
+		}
 
 	public ArrayList<Task> getLastCompletedState() {
 		return completedStack.pop();
@@ -63,23 +85,66 @@ public class Undo {
 	public ArrayList<Task> getLastRecurringState() {
 		return recurringStack.pop();
 	}
+	
+	public ArrayList<Task> getLastRedoCompletedState() {
+		return completedRedoStack.pop();
+	}
+
+	public ArrayList<Task> getLastRedoUnompletedState() {
+		return uncompletedRedoStack.pop();
+	}
+	
+	public ArrayList<Task> getLastRedoFloatingState() {
+		return floatingRedoStack.pop();
+	}
+	
+	public ArrayList<Task> getLastRedoRecurringState() {
+		return recurringRedoStack.pop();
+	}
 
 	public String getLastCommand() {
-		return pastCommands.remove(pastCommands.size() - 1);
+		return undoCommands.remove(undoCommands.size() - 1);
+	}
+	
+	public String getRedoneCommand() {
+		return redoCommands.remove(redoCommands.size() - 1);
 	}
 	
 	public int getHistoryCount() {
-		return pastCommands.size();
+		return undoCommands.size();
+	}
+	
+	public int getRedoCount() {
+		return redoCommands.size();
 	}
 
 	// replaces current state in localStorage to a "snapshot" taken previously
-	public String undo() {
-		if (pastCommands.isEmpty()) {
+	public String undo() throws ClassNotFoundException, IOException {
+		if (undoCommands.isEmpty()) {
 			return NO_PAST_COMMAND;
 		}
+		String lastCommand = getLastCommand();
+		
+		copyCurrentTasksState();
+		storeCurrentStateForRedo(lastCommand); // store current snapshots for redo purposes
+		
 		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState(), getLastRecurringState());
-		return "\"" + getLastCommand() + "\"" + UNDO_CONFIRMATION;
+		return "\"" + lastCommand + "\"" + UNDO_CONFIRMATION;
 	}
+	
+	// replaces current state in localStorage to a "snapshot" taken previously
+		public String redo() throws ClassNotFoundException, IOException {
+			if (redoCommands.isEmpty()) {
+				return NO_REDO_COMMAND;
+			}
+			String redoneCommand = getRedoneCommand();
+			
+			copyCurrentTasksState();
+			storePreviousState(redoneCommand); // store current snapshots for undo purposes
+			
+			localStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState(), getLastRedoRecurringState());
+			return "\"" + redoneCommand + "\"" + REDO_CONFIRMATION;
+		}
 
 	// copy all 3 task arraylists as "snapshots" of the current program state
 	public void copyCurrentTasksState() throws ClassNotFoundException, IOException {
@@ -118,8 +183,14 @@ public class Undo {
 		uncompletedStack.push(uncompletedTasksSnapshot);
 		floatingStack.push(floatingTasksSnapshot);
 		recurringStack.push(recurringTasksSnapshot);
-		pastCommands.add(command);
+		undoCommands.add(command);
 	}
 	
-	
+	public void storeCurrentStateForRedo(String command) {
+		completedRedoStack.push(completedTasksSnapshot);
+		uncompletedRedoStack.push(uncompletedTasksSnapshot);
+		floatingRedoStack.push(floatingTasksSnapshot);
+		recurringRedoStack.push(recurringTasksSnapshot);
+		redoCommands.add(command);
+	}
 }

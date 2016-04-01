@@ -43,8 +43,11 @@ public class Parser {
 	private static final String MSG_DIRECTORY_USED = "The storage directory currently in use is ";
 	private static final String MSG_DEFAULT_DIRECTORY = "the default source folder";
 	private static final String MSG_ALL_COMMANDS_UNDONE = "All commands have been undone";
+	private static final String MSG_ALL_COMMANDS_REDONE = "All commands have been redone";
 	private static final String MSG_NO_PAST_COMMAND = "There are no remaining commands that can be undone";
+	private static final String MSG_NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 	private static final String MSG_INVALID_UNDO_COUNT = "Please enter a valid number of commands you wish to undo";
+	private static final String MSG_INVALID_REDO_COUNT = "Please enter a valid number of commands you wish to redo";
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -582,11 +585,16 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
+			
+		// @@author Jie Wei
 		} else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
 			UI.ui.printYellow(pastCommands);
 		}
-
+		else if (option.equals("future")) {
+			String possibleRedoCommands = Undo.getInstance().viewRedoCommands();
+			UI.ui.printYellow(possibleRedoCommands);
+		}
 		else if (option.equals("undo")) {
 			if (s.isEmpty()) { // only "undo" was typed
 				String outcome = Undo.getInstance().undo();
@@ -602,7 +610,7 @@ public class Parser {
 					}
 					UI.ui.printGreen(MSG_ALL_COMMANDS_UNDONE);
 				}
-			} else { // e.g. "undo 2" will undone the latest 2 commands
+			} else { // e.g. "undo 2" will undo the latest 2 commands
 				try {
 					int count = Integer.parseInt(s);
 					if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if entered count is outside valid bounds
@@ -622,7 +630,43 @@ public class Parser {
 				}
 			}
 		}
+		else if (option.equals("redo")) {
+			if (s.isEmpty()) { // only "redo" was typed
+				String outcome = Undo.getInstance().redo();
+				UI.ui.printGreen(outcome);
+			} else if (s.equals("all")) {
+				int redoCount = Undo.getInstance().getRedoCount();
+				if (redoCount == 0) { // if no commands to redo
+					UI.ui.printRed(MSG_NO_REDO_COMMAND);
+				} else {
+					for (int i = 0; i < redoCount; i++) { // do redo for all stored commands
+						String outcome = Undo.getInstance().redo();
+						UI.ui.printGreen(outcome);
+					}
+					UI.ui.printGreen(MSG_ALL_COMMANDS_REDONE);
+				}
+			} else { // e.g. "redo 2" will redo the latest 2 commands
+				try {
+					int count = Integer.parseInt(s);
+					if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if entered count is outside valid bounds
+						UI.ui.printRed(MSG_INVALID_REDO_COUNT);
+					} else {
+						for (int i = 0; i < count; i++) { // redo the number of commands specified
+							if (i == Undo.getInstance().getRedoCount()) { // all commands have been redone but user used a higher int
+								UI.ui.printRed(MSG_NO_REDO_COMMAND);
+								break;
+							}
+							String outcome = Undo.getInstance().redo();
+							UI.ui.printGreen(outcome);
+						}
+					}
+				} catch (NumberFormatException e) { // if non-number was entered, e.g. "redo hello"
+					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
+				}
+			}
+		}
 
+		// @@author Jung Kai
 		else if (option.equals("exit")) {
 			UI.ui.printGreen("Bye");
 			Logic.crud.exit();
