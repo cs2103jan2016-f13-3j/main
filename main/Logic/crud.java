@@ -459,7 +459,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 UI.ui.eraseScreen();
 		 tempTasks = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
+			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 
+					 tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
 		 }
 		 if (tempTasks.isEmpty()) {
 			 UI.ui.printGreen("There is no stored task to display");
@@ -467,27 +468,33 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayScheduleForADay(String inputDate) {
-		 /* String[] splitEndDate = inputDate.split("/");
-		 Calendar date;
-		 int year = Integer.parseInt(splitEndDate[2]);
-		 int month = Integer.parseInt(splitEndDate[1]);
-		 int day = Integer.parseInt(splitEndDate[0]);
-
-		 if (splitEndDate.length > 3) { // given end date includes time
-			 int hour = Integer.parseInt(splitEndDate[3]);
-			 int minute = Integer.parseInt(splitEndDate[4]);
-			 date = new GregorianCalendar(year, month, day, hour, minute);
-		 } else { // given end date has not time
-			 date = new GregorianCalendar(year, month, day);
-		 }*/
-
+		 inputDate = inputDate.replace("/0", "/");
+		 if(inputDate.startsWith("0")) {
+			 inputDate = inputDate.replaceFirst("0", "");
+		 }
+		 String[] splitDate = inputDate.split("/");
 		 //run through all the tasks and find which have same date
 		 ArrayList<Task> tempTasks = new ArrayList<Task>();
 		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 
 		 for(Task temp : tempUncompletedTasks) {
-			 if(temp.getEndDateString().contains(inputDate) || temp.getStartDateString().contains(inputDate)) {
-				 tempTasks.add(temp);
+			 if(temp.getStartDate() != null) {
+				 String startDay = "" + temp.getStartDate().get(Calendar.DAY_OF_MONTH);
+				 String startMonth = "" + temp.getStartDate().get(Calendar.MONTH);
+				 String startYear = "" + temp.getStartDate().get(Calendar.YEAR);
+
+				 if(checkIfDateIsContained(splitDate, startDay, startMonth, startYear)) {
+					 tempTasks.add(temp);
+					 continue;
+				 }
+			 } else {
+				 String endDay = "" + temp.getEndDate().get(Calendar.DAY_OF_MONTH);
+				 String endMonth = "" + (temp.getEndDate().get(Calendar.MONTH) + 1);
+				 String endYear = "" + temp.getEndDate().get(Calendar.YEAR);
+				 if(checkIfDateIsContained(splitDate, endDay, endMonth, endYear)) {
+					 tempTasks.add(temp);
+				 }
+
 			 }
 		 }
 
@@ -500,6 +507,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
 			 }
 		 }
+	 }
+
+	 public static boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
+		 if(day.contains(splitDate[0]) && month.contains(splitDate[1]) && year.contains(splitDate[2])) {
+			 return true;
+		 }
+		 return false;
 	 }
 
 	 public static void displayByLabel(String s) {
@@ -645,7 +659,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	public static void displayTasksForNextWeek() {
+	 public static void displayTasksForNextWeek() {
 		 UI.ui.printGreen("Upcoming tasks next week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -679,11 +693,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 else {
 			 UI.ui.printRed("No tasks next week");
 		 }
-		
-	}
 
-	public static void displayTaksForTwoWeeksLater() {
-		UI.ui.printGreen("Upcoming tasks for two weeks later - ");
+	 }
+
+	 public static void displayTaksForTwoWeeksLater() {
+		 UI.ui.printGreen("Upcoming tasks for two weeks later - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
@@ -716,11 +730,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 else {
 			 UI.ui.printRed("No tasks for two weeks later");
 		 }
-		
-	}
 
-	public static void displayTasksForLastWeek() {
-		UI.ui.printGreen("Tasks uncompleted from last week - ");
+	 }
+
+	 public static void displayTasksForLastWeek() {
+		 UI.ui.printGreen("Tasks uncompleted from last week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
@@ -753,6 +767,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 else {
 			 UI.ui.printRed("No tasks left from last week");
 		 }
-		
-	}
+
+	 }
  }

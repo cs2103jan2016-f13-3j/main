@@ -6,6 +6,7 @@ import java.time.YearMonth;
 import Logic.Head;
 import Logic.Undo;
 import java.io.*;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 
 import Task.Task;
@@ -642,10 +643,22 @@ public class Parser {
 		} else if (s.equals("floating") || s.equals("f")) {
 			Logic.crud.displayFloatingTasks();
 		} else if (Logic.checkDate.checkDateformat(s)) {
-			String inputDate = s;
-			Logic.crud.displayScheduleForADay(inputDate);
+			Logic.crud.displayScheduleForADay(s);
 		} else if (s.equals("")) {
 			Logic.crud.displayUncompletedAndFloatingTasks();
+		} else if(s.equals("today")) {
+			Calendar today = Calendar.getInstance();
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			String todayString = df.format(today.getTime());
+			
+			Logic.crud.displayScheduleForADay(todayString);
+		} else if(s.equals("tomorrow")) {
+			Calendar tomorrow = Calendar.getInstance();
+			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			String tomorrowString = df.format(tomorrow.getTime());
+			
+			Logic.crud.displayScheduleForADay(tomorrowString);
 		} else if(s.equals("week") || s.equals("this week")) {
 			Logic.crud.displayTasksForThisWeek();
 		} else if(s.equals("next week") || s.equals("w+1")) {
