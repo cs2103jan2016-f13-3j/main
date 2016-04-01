@@ -263,6 +263,7 @@ public class Parser {
 						Logic.crud.addTaskToRecurring(issue, date, s);
 
 					}
+					arraylistsHaveBeenModified = true;
 
 				}
 				Head.checkDateAndAdd();
