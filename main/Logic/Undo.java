@@ -15,14 +15,15 @@ public class Undo {
 	private static final String NO_PAST_COMMAND = "There are no remaining commands that can be undone";
 	private static final String UNDO_CONFIRMATION = " has been undone";
 	private static Undo undo;
-	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack;
+	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack;
 	private ArrayList<String> pastCommands;
-	private ArrayList<Task> UncompletedTasksSnapshot, CompletedTasksSnapshot, FloatingTasksSnapshot;
+	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot, recurringTasksSnapshot;
 
 	private Undo() { //constructor
 		completedStack = new Stack<ArrayList<Task>>();
 		uncompletedStack = new Stack<ArrayList<Task>>();
 		floatingStack = new Stack<ArrayList<Task>>();
+		recurringStack = new Stack<ArrayList<Task>>();
 		pastCommands = new ArrayList<String>();
 	}
 
@@ -58,6 +59,10 @@ public class Undo {
 	public ArrayList<Task> getLastFloatingState() {
 		return floatingStack.pop();
 	}
+	
+	public ArrayList<Task> getLastRecurringState() {
+		return recurringStack.pop();
+	}
 
 	public String getLastCommand() {
 		return pastCommands.remove(pastCommands.size() - 1);
@@ -68,15 +73,16 @@ public class Undo {
 		if (pastCommands.isEmpty()) {
 			return NO_PAST_COMMAND;
 		}
-		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
+		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState(), getLastRecurringState());
 		return "\"" + getLastCommand() + "\"" + UNDO_CONFIRMATION;
 	}
 
 	// copy all 3 task arraylists as "snapshots" of the current program state
 	public void copyCurrentTasksState() throws ClassNotFoundException, IOException {
-		UncompletedTasksSnapshot = copyArrayList(Storage.localStorage.getUncompletedTasks());
-		CompletedTasksSnapshot = copyArrayList(Storage.localStorage.getCompletedTasks());
-		FloatingTasksSnapshot = copyArrayList(Storage.localStorage.getFloatingTasks());
+		uncompletedTasksSnapshot = copyArrayList(Storage.localStorage.getUncompletedTasks());
+		completedTasksSnapshot = copyArrayList(Storage.localStorage.getCompletedTasks());
+		floatingTasksSnapshot = copyArrayList(Storage.localStorage.getFloatingTasks());
+		recurringTasksSnapshot = copyArrayList(Storage.localStorage.getRecurringTasks());
 	}
 	
 	// make a copy of an arraylist
@@ -104,9 +110,10 @@ public class Undo {
 
 	// adds the "snapshots" of the arraylists into stacks for undo purposes. The command executed is also stored.
 	public void storePreviousState(String command) {
-		completedStack.push(CompletedTasksSnapshot);
-		uncompletedStack.push(UncompletedTasksSnapshot);
-		floatingStack.push(FloatingTasksSnapshot);
+		completedStack.push(completedTasksSnapshot);
+		uncompletedStack.push(uncompletedTasksSnapshot);
+		floatingStack.push(floatingTasksSnapshot);
+		recurringStack.push(recurringTasksSnapshot);
 		pastCommands.add(command);
 	}
 	

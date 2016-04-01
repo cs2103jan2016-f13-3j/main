@@ -30,6 +30,7 @@ public class localStorage {
 	public static ArrayList<Task> getFloatingTasks() {
 		return floatingTasks;
 	}
+	
 	public static ArrayList<Task> getRecurringTasks() {
 		return recurringTasks;
 	}
@@ -182,9 +183,11 @@ public class localStorage {
 	// replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
 	public static void revertToPreviousState(ArrayList<Task> previousCompleted, 
 			ArrayList<Task> previousUncompleted,
-			ArrayList<Task> previousFloating) {
+			ArrayList<Task> previousFloating,
+			ArrayList<Task> previousRecurring) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
 		floatingTasks = previousFloating;
+		recurringTasks = previousRecurring;
 	}
 }
