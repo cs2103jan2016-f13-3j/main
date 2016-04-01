@@ -67,6 +67,10 @@ public class Undo {
 	public String getLastCommand() {
 		return pastCommands.remove(pastCommands.size() - 1);
 	}
+	
+	public int getHistoryCount() {
+		return pastCommands.size();
+	}
 
 	// replaces current state in localStorage to a "snapshot" taken previously
 	public String undo() {

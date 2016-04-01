@@ -42,6 +42,9 @@ public class Parser {
 	private static final String PRIORITY_FAIL_MSG = "Fail to set priority. Please insert a valid task number.";
 	private static final String MSG_DIRECTORY_USED = "The storage directory currently in use is ";
 	private static final String MSG_DEFAULT_DIRECTORY = "the default source folder";
+	private static final String MSG_ALL_COMMANDS_UNDONE = "All commands have been undone";
+	private static final String MSG_NO_PAST_COMMAND = "There are no remaining commands that can be undone";
+	private static final String MSG_INVALID_UNDO_COUNT = "Please enter a valid number of commands you wish to undo";
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -91,7 +94,7 @@ public class Parser {
 				int end = getIndexOfKey(temp); // end has value of -1 if it has
 				// no end date
 				if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
-				  end = -1;// no end date
+					end = -1;// no end date
 				} 
 				boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 				// true
@@ -480,7 +483,7 @@ public class Parser {
 							time = temp[end + 2];
 							time = time.replaceAll(":", "/");
 							dateIn = dateIn + "/" + time;
-							
+
 						} else {
 							time = "-";
 						}
@@ -529,7 +532,7 @@ public class Parser {
 						date = temp[end + 1];
 						dateIn = date;
 						dateIn2 = startDate;
-										
+
 						if (hasStartTime(temp)) {
 							startTime = temp[start + 2];
 							startTime = startTime.replaceAll(":", "/");
@@ -539,7 +542,7 @@ public class Parser {
 							time = temp[end + 2];
 							time = time.replaceAll(":", "/");
 							dateIn = dateIn + "/" + time;
-					
+
 
 						} 
 						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
@@ -555,7 +558,7 @@ public class Parser {
 					}
 				} 
 			} catch (Exception e) {
-				
+
 			}
 		}
 		// @@author Kowshik
@@ -585,8 +588,39 @@ public class Parser {
 		}
 
 		else if (option.equals("undo")) {
-			String outcome = Undo.getInstance().undo();
-			UI.ui.printGreen(outcome);
+			if (s.isEmpty()) { // only "undo" was typed
+				String outcome = Undo.getInstance().undo();
+				UI.ui.printGreen(outcome);
+			} else if (s.equals("all")) {
+				int historyCount = Undo.getInstance().getHistoryCount();
+				if (historyCount == 0) { // if no commands to undo
+					UI.ui.printRed(MSG_NO_PAST_COMMAND);
+				} else {
+					for (int i = 0; i < historyCount; i++) { // do undo for all stored commands
+						String outcome = Undo.getInstance().undo();
+						UI.ui.printGreen(outcome);
+					}
+					UI.ui.printGreen(MSG_ALL_COMMANDS_UNDONE);
+				}
+			} else { // e.g. "undo 2" will undone the latest 2 commands
+				try {
+					int count = Integer.parseInt(s);
+					if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if entered count is outside valid bounds
+						UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
+					} else {
+						for (int i = 0; i < count; i++) { // undo the number of commands specified
+							if (i == Undo.getInstance().getHistoryCount()) { // all commands have been undone but user used a higher int
+								UI.ui.printRed(MSG_NO_PAST_COMMAND);
+								break;
+							}
+							String outcome = Undo.getInstance().undo();
+							UI.ui.printGreen(outcome);
+						}
+					}
+				} catch (NumberFormatException e) { // if non-number was entered, e.g. "undo hello"
+					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
+				}
+			}
 		}
 
 		else if (option.equals("exit")) {
