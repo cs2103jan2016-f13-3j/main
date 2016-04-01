@@ -33,14 +33,13 @@ public class Notification {
 		
 		for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
-				 if(!(temp.getEndDate().before(today)) && !(temp.getEndDate().after(future))) {
+				 if((temp.getEndDate().compareTo(d1) > 0) && (temp.getEndDate().compareTo(d2) < 0)) {
 					 tasksToBeDisplayed.add(temp);
-					 System.out.println("Yes");
 					 continue;
 				 }
 			 }
 			 else if(temp.getStartDate() != null) {
-				 if(!(temp.getStartDate().before(today)) && !(temp.getStartDate().after(future))) {
+				 if((temp.getStartDate().compareTo(d1) > 0) && (temp.getStartDate().compareTo(d2) < 0)) {
 					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
