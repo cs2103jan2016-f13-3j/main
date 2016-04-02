@@ -278,7 +278,7 @@ public class Parser {
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
 						if (isAdded) {
-							UI.ui.print("\"" + issue + "\" " + ADD_MSG);
+							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
 							arraylistsHaveBeenModified = true;
 						} else {
 							UI.ui.printRed(DUPLICATE_ADD_MSG);
