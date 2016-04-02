@@ -385,7 +385,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			 for(int i=0; i<tempTasks.size(); i++) {
-				 Task temp=tempTasks.get(i);
+				 Task temp = tempTasks.get(i);
 				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 			 }
 			 UI.ui.print("________________________________________________________________");
