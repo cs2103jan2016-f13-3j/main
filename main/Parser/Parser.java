@@ -514,13 +514,18 @@ public class Parser {
 						// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 						// (to be implemented)
 						Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
+						Logic.Sort.sortTasksChronologically();
+						int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
 						UI.ui.printGreen("Task number " + num + EDIT_MSG);
+						Logic.crud.displayNearestFiveUncompleted(index);
 						arraylistsHaveBeenModified = true;
 					}
 				} else if (start == -1 && end == -1) {// no end date and no
 					// start date
 					Logic.crud.editTaskWithNoDate(input, input, num - 1);
+					int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
 					UI.ui.printGreen("Task number " + num + EDIT_MSG);
+					Logic.crud.displayNearestFiveFloating(index);
 					arraylistsHaveBeenModified = true;
 				} else if (start != -1 && end == -1) {// has start date but
 					// no end date
@@ -542,7 +547,12 @@ public class Parser {
 						issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
 						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
 						Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
+						Logic.Sort.sortTasksChronologically();
+						int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,input);
+						
+						
 						UI.ui.printGreen("Task number " + num + EDIT_MSG);
+						Logic.crud.displayNearestFiveUncompleted(index);
 						arraylistsHaveBeenModified = true;
 					}
 				} else { // has both start date and end date
@@ -571,6 +581,9 @@ public class Parser {
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
 						UI.ui.printGreen("Task number " + num + EDIT_MSG);
+						Logic.Sort.sortTasksChronologically();
+						int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, input);
+						Logic.crud.displayNearestFiveUncompleted(index);
 						arraylistsHaveBeenModified = true;
 					}
 				}
