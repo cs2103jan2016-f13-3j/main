@@ -19,6 +19,7 @@ public class ui {
 			System.out.println();
 		}
 	}
+	//@@author Cheng Gee
 	public static void eraseScreen(){
 		System.out.print(ansi().eraseScreen());
 	}
@@ -26,7 +27,7 @@ public class ui {
 		System.out.println(ansi().fgBright(YELLOW).a((i+1)+".\t").fgBright(CYAN).a(sdate+edate).fgBright(YELLOW).a(msg).reset());
 	}
 	public static void printTaskAdded(int i,String sdate,String edate,String msg){
-		System.out.println(ansi().fgBright(GREEN).a((i+1)+".\t").a(sdate+edate).a(msg).reset());
+		System.out.println(ansi().bg(BLUE).fgBright(YELLOW).a((i+1)+".\t").fgBright(CYAN).a(sdate+edate).fgBright(YELLOW).a(msg).reset());
 	}
 	public static void printRed(String temp){
 		
