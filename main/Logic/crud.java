@@ -184,6 +184,87 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @param index the index of the task to be edited
 	  * @throws IOException
 	  */
+	 public static int uncompletedTaskIndexWithStartDate(String line,String date, String msg){
+		 Task task = new Task(line, date, msg, true);
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 for(int i=0;i<tempTasks.size();i++){
+			 if(tempTasks.get(i).getTaskString().equals(task.getTaskString())) {
+				 return i;
+			 }
+		 }return -1;
+	 }
+	 public static int uncompletedTaskIndexWithEndDate(String line,String date, String msg){
+		 Task task = new Task(line, date, msg, false);
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 for(int i=0;i<tempTasks.size();i++){
+			 if(tempTasks.get(i).getTaskString().equals(task.getTaskString())) {
+				 return i;
+			 }
+		 }return -1;
+	 }
+	 public static int uncompletedTaskIndexWithBothDates(String line,String startDate, String endDate, String msg){
+		 Task task = new Task(line, startDate, endDate, msg);
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 for(int i=0;i<tempTasks.size();i++){
+			 if(tempTasks.get(i).getTaskString().equals(task.getTaskString())) {
+				 return i;
+			 }
+		 }return -1;
+	 }
+	 public static int uncompletedTaskIndexWithNoDate(String line){
+		 Task task = new Task(line);
+		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
+		 for(int i=0;i<tempTasks.size();i++){
+			 if(tempTasks.get(i).getTaskString().equals(task.getTaskString())) {
+				 return i;
+			 }
+		 }return -1;
+	 }
+	 public static void displayNearestFiveUncompleted(int index){
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 int size = tempTasks.size();
+		 int head = index-2;
+		 int tail = index+3;
+		 if(head<0){
+			 head=0;
+		 }
+		 if(tail>=size){
+			 tail=size;
+		 }
+
+		 for(int i=head;i<tail;i++){
+				 Task temp=tempTasks.get(i);
+				 if(i==index){
+					 UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 }else{
+					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 }
+			}
+		 
+	 }
+	 public static void displayNearestFiveFloating(int index){
+		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
+		 int unSize = Storage.localStorage.getUncompletedTasks().size();
+		 int size = tempTasks.size();
+		 int head = index-2;
+		 int tail = index+3;
+		 if(head<0){
+			 head=0;
+		 }
+		 if(tail>=size){
+			 tail=size;
+		 }
+
+		 for(int i=head;i<tail;i++){
+				 Task temp=tempTasks.get(i);
+				 if(i==index){
+					 UI.ui.printTaskAdded(unSize+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 }else{
+					 UI.ui.printTask(unSize+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 }
+			}
+		 
+	 }
 	 public static void copyTask(int index){
 		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		 if(edit != null){

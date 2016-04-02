@@ -189,8 +189,11 @@ public class Parser {
 						// (to be implemented)
 						isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
 						if (isAdded) {
+							Logic.Sort.sortTasksChronologically();
+							int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, s);
 							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
 							arraylistsHaveBeenModified = true;
+							Logic.crud.displayNearestFiveUncompleted(index);
 						} else {
 							UI.ui.printRed(DUPLICATE_ADD_MSG);
 						}
@@ -201,7 +204,10 @@ public class Parser {
 					// date
 					isAdded = Logic.crud.addTask(s);
 					if (isAdded) {
+						Logic.Sort.sortTasksChronologically();
+						int index= Logic.crud.uncompletedTaskIndexWithNoDate(s);
 						UI.ui.printGreen("\"" + s + "\" " + ADD_MSG);
+						Logic.crud.displayNearestFiveFloating(index);
 						arraylistsHaveBeenModified = true;
 					} else {
 						UI.ui.printRed(DUPLICATE_ADD_MSG);
@@ -234,7 +240,10 @@ public class Parser {
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
 						if (isAdded) {
+							Logic.Sort.sortTasksChronologically();
+							int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,s);
 							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
+							Logic.crud.displayNearestFiveUncompleted(index);
 							arraylistsHaveBeenModified = true;
 						} else {
 							UI.ui.printRed(DUPLICATE_ADD_MSG);
@@ -278,7 +287,10 @@ public class Parser {
 						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 						isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
 						if (isAdded) {
+							Logic.Sort.sortTasksChronologically();
+							int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, s);
 							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
+							Logic.crud.displayNearestFiveUncompleted(index);
 							arraylistsHaveBeenModified = true;
 						} else {
 							UI.ui.printRed(DUPLICATE_ADD_MSG);
