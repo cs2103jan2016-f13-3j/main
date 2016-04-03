@@ -73,6 +73,7 @@ public class Parser {
 			// store the "snapshots" into Undo class if arraylists have been
 			// modified
 			Undo.getInstance().storePreviousState(cmd);
+			Undo.getInstance().clearRedoCommands(); // if valid command executed and arraylists modified, remove all stored redo commands
 		}
 		return modificationsWereMade;
 	}
