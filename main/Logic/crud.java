@@ -674,8 +674,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 System.exit(0);
 	 }
 
-	 public static boolean addTaskToRecurring(String line, String date, String msg) {
-		 Task task = new Task(line, date, msg, false);
+	 public static boolean addTaskToRecurring(String line, String date, String msg, int f, int d,String s) {
+		 Task task = new Task(line, date, msg, false,f,d,s);
+		 System.out.println("frequency: every " + task.getFrequency() + " day"); 
+		 System.out.println("day before: "+ task.getDayBefore());
+		 System.out.println("last date:" + task.getLastDate());
 		 Storage.localStorage.addToRecurringTasks(task);
 		 return true;
 	 }
@@ -856,5 +859,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printRed("No tasks left from last week");
 		 }
 
+	 }
+	 public static void displayRecurringTasks() {
+		 UI.ui.eraseScreen();
+		 tempTasks = Storage.localStorage.getRecurringTasks();
+		 for(int i=0; i<tempTasks.size(); i++) {
+			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 
+					 tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
+		 }
+		 if (tempTasks.isEmpty()) {
+			 UI.ui.printGreen("There is no stored task to display");
+		 }
 	 }
  }

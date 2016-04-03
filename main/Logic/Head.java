@@ -11,6 +11,7 @@ import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
 import java.time.YearMonth;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import Storage.localStorage;
@@ -84,25 +85,57 @@ public class Head {
 			SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 			Date date = new Date();
 			String today = dateFormat.format(date);
-			
-			
+
 			try {
 
 				if (localStorage.getRecurringTasks().size() != 0) {
-					for (int i = 0; i < localStorage.getRecurringTasks().size(); i++) {
+
+					for (int i = 0; i < localStorage.getRecurringTasks().size(); i++) {// for
+																						// loop
+																						// to
+																						// search
+																						// storage
+																						// for
 						Task tmp = localStorage.getRecurringTasks().get(i);
-						String dl = tmp.getEndDateString();
-						 dl = dl.substring(0, dl.length()-1);
-						 int diff = compareTwoDate(today,dl);
-						if (diff <= 7) {
-							Task temp = localStorage.delFromRecurringTasks(i);
-							Logic.crud.addByTask(temp);
-							
-							i = -1;//loop again
+						String ed = tmp.getEndDateString();
+						
+						ed = ed.substring(0, ed.length() - 1);
+						int diff = compareTwoDate(today, ed);
+						boolean expired = isExpired(ed, tmp.getLastDate());
+
+						if (expired) { // if task has expired
+							localStorage.delFromRecurringTasks(i);
+							i = -1;// loop again
+						} else {
+
+							while (true) {
+								if (diff > tmp.getDayBefore() || expired) {// if
+																			// task
+																			// is
+																			// after
+																			// the
+																			// days
+																			// before
+																			// when
+									// want to display the recurring tasks or when
+									// the tasks had expired
+									break;
+								}
+								Logic.crud.addByTask(tmp);
+								String newED = processDate(ed, tmp.getFrequency());
+								tmp = new Task(tmp.getIssue(), newED, tmp.getMsg(), false, tmp.getFrequency(),
+										tmp.getDayBefore(), tmp.getLastDate());
+								ed = tmp.getEndDateString();
+								ed = ed.substring(0, ed.length() - 1);
+								diff = compareTwoDate(today, ed);
+								expired = (isExpired(ed, tmp.getLastDate()));
+
+							}
+							localStorage.setRecurringTask(i, tmp); // update storage
 						}
+
+						Logic.Sort.sortTasksChronologically();
 					}
-					Logic.Sort.sortTasksChronologically();
-					UI.ui.printGreen("number of recurring task in storage: " + localStorage.getRecurringTasks().size());
 				}
 			} catch (Exception e) {
 				e.printStackTrace();
@@ -135,6 +168,62 @@ public class Head {
 				ans = 365;
 			}
 			return ans;
+		}
+		/**
+		 * method that process Date for recurring tasks based on the date and number
+		 * of recurring tasks calculated
+		 * 
+		 * @param s
+		 * @param n
+		 * @return
+		 */
+		public static String processDate(String s, int n) {
+			String[] temp = s.split("/");
+			temp[0] = String.valueOf(Integer.parseInt(temp[0]) + n);
+			YearMonth yearMonthObject;
+			yearMonthObject = YearMonth.of(Integer.parseInt(temp[2]), Integer.parseInt(temp[1]));
+			int daysInMonth = yearMonthObject.lengthOfMonth();
+			if (Integer.parseInt(temp[0]) > daysInMonth) {
+				temp[0] = String.valueOf(Integer.parseInt(temp[0]) - daysInMonth);
+				temp[1] = String.valueOf(Integer.parseInt(temp[1]) + 1);
+			}
+			if (temp[0].length() == 1) {
+				temp[0] = "0" + temp[0];
+
+			}
+
+			if (temp[1].length() == 1) {
+				temp[1] = "0" + temp[1];
+
+			}
+
+			String tmp = arrayToString(temp);
+			tmp = tmp.replaceAll(" ", "/");
+
+			return tmp;
+
+		}
+
+		public static String arrayToString(String[] arr) {
+			String temp = Arrays.toString(arr);
+			temp = temp.substring(1, temp.length() - 1).replaceAll(", ", " ");
+			return temp;
+		}
+
+		public static boolean isExpired(String date1, String date2) {
+			boolean expired = true;
+			String[] temp = date1.split("/");
+			String[] temp2 = date2.split("/");
+			if (Integer.parseInt(temp2[2]) > Integer.parseInt(temp[2])) {// year
+				expired = false;
+			} else if (Integer.parseInt(temp2[1]) > Integer.parseInt(temp[1])) {// month
+				expired = false;
+			} else {
+				if (Integer.parseInt(temp2[0]) >= Integer.parseInt(temp[0])) {// day
+					expired = false;
+				}
+			}
+			return expired;
 		}
 
 	 //getter method

@@ -11,6 +11,9 @@ public class Task implements java.io.Serializable {
 	private boolean isCompleted, hasTime;
 	private Calendar startDate, endDate;
 	private int priority = 0;
+	private  String lastDate = "-";
+	private  int frequency = -1;
+	private  int dayBefore = -1;
 
 	// Constructors
 
@@ -100,6 +103,85 @@ public class Task implements java.io.Serializable {
 			this.endDate = new GregorianCalendar(year, month, day);
 		}
 	}
+	// Constructor for recurring tasks with only one date given
+		public Task(String issue, String date, String msg, boolean isStartDate,int f,int d,String last) { // assuming String date provided is of the format DD/MM/YYYY
+			assert issue != null;
+			assert date.contains("/");
+			this.msg=msg;
+			this.issue = issue;
+			isCompleted = false;
+			frequency = f;
+			dayBefore = d;
+			lastDate = last;
+			label = new ArrayList<String>();
+			String[] splitDates = date.split("/");
+			int year = Integer.parseInt(splitDates[2]);
+			int month = Integer.parseInt(splitDates[1])-1;
+			int day = Integer.parseInt(splitDates[0]);
+			int hour = 0;
+			int minute = 0;
+			if (splitDates.length > 3) { // given date includes time
+				hour = Integer.parseInt(splitDates[3]);
+				minute = Integer.parseInt(splitDates[4]);
+			}
+			if (isStartDate) { // the date provided is a start date
+				if (splitDates.length > 3) { // has time
+					hasTime = true;
+					startDate = new GregorianCalendar(year, month, day, hour, minute);
+				} else { // does not have time
+					startDate = new GregorianCalendar(year, month, day);
+				}
+				endDate = null;
+			} else { // the date provided is an end date
+				startDate = null;
+				if (splitDates.length > 3) { // has time
+					hasTime = true;
+					endDate = new GregorianCalendar(year, month, day, hour, minute);
+				} else { // no time given
+					endDate = new GregorianCalendar(year, month, day);
+				}
+			}
+		}
+		// Constructor for recurring tasks with start and end dates given
+		public Task(String issue, String startDate, String endDate, String msg,int f, int d, String last) { // assuming String date provided is of the format DD/MM/YYYY
+			assert issue != null;
+			assert startDate.contains("/");
+			assert endDate.contains("/");
+			this.msg=msg;
+			this.issue = issue;
+			isCompleted = false;
+			frequency = f;
+			dayBefore = d;
+			lastDate = last;
+			label = new ArrayList<String>();
+			String[] splitStartDate = startDate.split("/");
+			int year = Integer.parseInt(splitStartDate[2]);
+			int month = Integer.parseInt(splitStartDate[1])-1;
+			int day = Integer.parseInt(splitStartDate[0]);
+			int hour = 0;
+			int minute = 0;
+			if (splitStartDate.length > 3) { // given start date includes time
+				hasTime = true;
+				hour = Integer.parseInt(splitStartDate[3]);
+				minute = Integer.parseInt(splitStartDate[4]);
+				this.startDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else { // given start date does not have time
+				this.startDate = new GregorianCalendar(year, month, day);
+			}
+
+			String[] splitEndDate = endDate.split("/");
+			year = Integer.parseInt(splitEndDate[2]);
+			month = Integer.parseInt(splitEndDate[1])-1;
+			day = Integer.parseInt(splitEndDate[0]);
+			if (splitEndDate.length > 3) { // given end date includes time
+				hasTime = true;
+				hour = Integer.parseInt(splitEndDate[3]);
+				minute = Integer.parseInt(splitEndDate[4]);
+				this.endDate = new GregorianCalendar(year, month, day, hour, minute);
+			} else { // given end date has not time
+				this.endDate = new GregorianCalendar(year, month, day);
+			}
+		}
 
 	// Setter Methods
 	public void setIssue(String issue) {
@@ -127,6 +209,15 @@ public class Task implements java.io.Serializable {
 
 	public void setUncomplete() {
 		isCompleted = false;
+	}
+	public void setLastDate(String s) {
+		lastDate = s;
+	}
+	public void setFrequency(int n) {
+		frequency = n;
+	}
+	public void setdayBefore(int n) {
+		dayBefore = n;
 	}
 
 	public void setStartDate(String startDate) {
@@ -198,7 +289,18 @@ public class Task implements java.io.Serializable {
 	public Calendar getEndDate() {
 		return endDate;
 	}
-
+	public String getLastDate() {
+		return lastDate;
+	}
+	public int getFrequency() {
+		return frequency;
+	}
+	public int getDayBefore() {
+		return dayBefore;
+	}
+	public String getMsg() {
+		return msg;
+	}
 	public String getStartDateString() {
 		if (startDate != null) {
 
@@ -232,10 +334,14 @@ public class Task implements java.io.Serializable {
 
 	public String getEndDateString() {
 		if (endDate != null) {
-			String result = endDate.get(Calendar.DAY_OF_MONTH) + "/";
+			String day = Integer.toString(endDate.get(Calendar.DAY_OF_MONTH));
+			
+			String result = day + "/";
 			int month = endDate.get(Calendar.MONTH);
 			month++;
-			result += month + "/";
+			String mth = Integer.toString(month);
+			
+			result += mth + "/";
 			int year = endDate.get(Calendar.YEAR);
 
 			result += year;

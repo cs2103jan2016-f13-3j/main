@@ -5,6 +5,8 @@ import java.util.*;
 import java.time.YearMonth;
 import Logic.Head;
 import Logic.Undo;
+import Storage.localStorage;
+
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -128,6 +130,8 @@ public class Parser {
 			changeDirectoryCommand(s);
 		} else if (option.equals("label")) {
 			setLabelCommand(s);
+		} else if (option.equals("set")) {
+			   setRecurringTask(s); 
 		} else {
 			UI.ui.printRed(INVALID_MSG);
 		}
@@ -300,6 +304,7 @@ public class Parser {
 			} else { // so far recurring task only support add task by end
 				// date
 				issue = getIssue(temp, start, end, false, false);
+			
 				issue = issue.substring(0, issue.length() - 2);
 				date = temp[end + 1];// assume only has end date for
 				// recurring
@@ -308,21 +313,29 @@ public class Parser {
 				if (idx != -1) {
 					date = matchDate(idx);
 				}
-				UI.ui.printRed("Enter recurred for every <num1> days until <num2> days later\n"
-						+ "in \"<num1>|<num2>\" format");
+				UI.ui.printRed("Enter \"every <number> days until <date>\"");
 				String in = sc.nextLine();
-				String[] tmp = in.split("\\|");
-				String freq = tmp[0];
-				String last = tmp[1];
-
-				int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
-
-				Logic.crud.addTaskToRecurring(issue, date, s);
-				for (int i = 1; i < numRec; i++) {
-					date = processDate(date, Integer.parseInt(freq));
-					Logic.crud.addTaskToRecurring(issue, date, s);
-
+				String freq = "0";
+				int before = 7;
+				String[] tmp = in.split(" ");
+				String last = tmp[tmp.length-1];
+				for (int i = 0;i<tmp.length;i++) {
+					if (tmp[i].equals("every")) {
+						freq = tmp[i+1];
+						break;
+					}
 				}
+				
+				int frequency = Integer.parseInt(freq);
+			//	int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
+		
+
+				Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
+		/*		for (int i = 1; i < numRec; i++) {
+					date = processDate(date, Integer.parseInt(freq));
+					Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
+
+				} */
 				arraylistsHaveBeenModified = true;
 
 			}
@@ -692,11 +705,13 @@ public class Parser {
 			Logic.crud.displayTaksForTwoWeeksLater();
 		} else if(s.equals("last week") || s.equals("w -1")) {
 			Logic.crud.displayTasksForLastWeek();
-		}
-		else {
+		}	else if (s.equals("r") ||s.equals("recurring")) {
+			Logic.crud.displayRecurringTasks();
+		} else {
 			Logic.crud.displayByLabel(s);
 		}
 	}
+		
 
 	public static void deleteCommand(String s) {
 		if ((Logic.Head.getLastCommand().equals("d") || Logic.Head.getLastCommand().equals("display")) == true) {
@@ -1127,4 +1142,47 @@ public class Parser {
 		return tmp;
 
 	}
+	public static void delRecurringTasks(String s){
+		int num = Integer.parseInt(s);
+		localStorage.delFromRecurringTasks(num-1);
+		}
+		//set recurring tasks command	
+		public static void setRecurringTask(String s) {
+			int num = Integer.parseInt(s);		
+			UI.ui.printRed("Enter new description and deadline of recurring tasks");
+			String in = sc.nextLine();
+			String [] tmp = in.split(" ");
+			int end = getIndexOfKey(tmp);
+			issue = getIssue(tmp, -1, end, false, false);
+			date = tmp[end+1];
+			UI.ui.printRed("Enter \"every <number> days until <date>\"");
+			in = sc.nextLine();
+			String freq = "0";
+			tmp = in.split(" ");
+			String last = tmp[tmp.length-1];
+			for (int i = 0;i<tmp.length;i++) {
+				if (tmp[i].equals("every")) {
+					freq = tmp[i+1];
+					break;
+				}
+			}
+			UI.ui.printRed("Enter \"display <number> days before deadline\"");
+		    in = sc.nextLine();
+		    tmp = in.split(" ");
+			String before = "";
+			for (int i = 0;i<tmp.length;i++) {
+				if (tmp[i].equals("display")) {
+					before = tmp[i+1];
+					break;
+				}
+			}
+		
+			int frequency = Integer.parseInt(freq);
+			int be4 = Integer.parseInt(before);
+		//	int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
+			Task task = new Task(issue,date,s,false,frequency,be4,last);
+			localStorage.setRecurringTask(num-1,task);
+			Head.checkDateAndAdd();
+		}
+	
 }

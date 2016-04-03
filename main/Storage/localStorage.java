@@ -71,6 +71,14 @@ public class localStorage {
 		}
 		return temp;
 	}
+	public static Task getRecurringTask(int index) {
+		Task temp = null;
+		for (int i =0;i<recurringTasks.size();i++) {
+			if (i ==index) {
+				temp = recurringTasks.get(i);
+			}
+		} return temp;
+	}
 
 	//setter methods
 	public static void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
@@ -104,7 +112,9 @@ public class localStorage {
 	public static void setFloatingTask(int index, Task temp) {
 		floatingTasks.set(index, temp);
 	}
-
+	public static void setRecurringTask(int index, Task temp) {
+		recurringTasks.set(index,temp);
+	}
 
 	/**
 	 * Function to add a task to the uncompleted task list
