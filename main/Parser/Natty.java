@@ -98,7 +98,7 @@ public class Natty {
 		String time;
 		if (hasTime) { // if input contained time, convert to our format
 			time = splitDates[3];
-			time = "/" + time.substring(0, 2) + "/" + time.substring(3, 5); // converts 18:10:00 -> 18/10 for Task class to read
+			time = " " + time.substring(0, 2) + ":" + time.substring(3, 5); // converts 18:10:00 -> 18:10 for Task class to read
 		} else { // if input had no time, make sure nothing is added to the result string
 			time = "";
 		}
