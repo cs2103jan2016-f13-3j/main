@@ -398,7 +398,7 @@ public class Parser {
 					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // redo the number of commands specified
-						if (i == Undo.getInstance().getRedoCount()) { // all commands have been redone but user used a higher int
+						if (Undo.getInstance().getRedoCount() == 0) { // all commands have been redone but user used a higher int
 							UI.ui.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
@@ -434,7 +434,7 @@ public class Parser {
 					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of commands specified
-						if (i == Undo.getInstance().getHistoryCount()) { // all commands have been undone but user used a higher int
+						if (Undo.getInstance().getHistoryCount() == 0) { // all commands have been undone but user used a higher int
 							UI.ui.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
