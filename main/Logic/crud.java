@@ -592,7 +592,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 else {
 			 UI.ui.print("Index\tTask");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 Task temp=tempTasks.get(i);
+				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 			 }
 		 }
 	 }
