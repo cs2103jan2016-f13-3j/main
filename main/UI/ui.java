@@ -2,6 +2,9 @@
 package UI;
 
 import java.util.Scanner;
+
+import Parser.Natty;
+
 import static org.fusesource.jansi.Ansi.*;
 import static org.fusesource.jansi.Ansi.Color.*;
 public class ui {
@@ -30,7 +33,7 @@ public class ui {
 		System.out.println(ansi().bg(BLUE).fgBright(YELLOW).a((i+1)+".\t").fgBright(CYAN).a(sdate+edate).fgBright(YELLOW).a(msg).reset());
 	}
 	public static void printRed(String temp){
-		
+
 		System.out.print(ansi().fgBright(RED).a(temp).reset());
 		if(temp.equals("command: ") != true) {
 			System.out.println();
@@ -48,14 +51,17 @@ public class ui {
 	public static void printCyan(String temp){
 		System.out.println(ansi().fgBright(CYAN).a(temp).reset());
 	}
-	
+
 	/**
 	 * Function to accept the command from the user
 	 * @return returns the string entered by the user
 	 */
 	public static String acceptCommand() {
 		String command = sc.nextLine();
+		String[] splitCommand = command.split(" ");
+		if (splitCommand[0].equals("add")) { // only use natty if add command is detected
+			command = Natty.getInstance().parseString(command);
+		}
 		return command;
 	}
-
 }
