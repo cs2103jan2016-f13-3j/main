@@ -313,24 +313,17 @@ public class Parser {
 				if (idx != -1) {
 					date = matchDate(idx);
 				}
-				UI.ui.printRed("Enter \"every <number> days until <date>\"");
-				String in = sc.nextLine();
-				String freq = "0";
-				int before = 7;
+				UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+			    String	in = sc.nextLine();
 				String[] tmp = in.split(" ");
-				String last = tmp[tmp.length-1];
-				for (int i = 0;i<tmp.length;i++) {
-					if (tmp[i].equals("every")) {
-						freq = tmp[i+1];
-						break;
-					}
-				}
+				String freq = tmp[0];
+				String last = tmp[1];
+				String before = tmp[2];			
 				
 				int frequency = Integer.parseInt(freq);
-			//	int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
-		
+				int be4 = Integer.parseInt(before);			
 
-				Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
+				Logic.crud.addTaskToRecurring(issue, date, s,frequency,be4,last);
 		/*		for (int i = 1; i < numRec; i++) {
 					date = processDate(date, Integer.parseInt(freq));
 					Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
@@ -1155,27 +1148,12 @@ public class Parser {
 			int end = getIndexOfKey(tmp);
 			issue = getIssue(tmp, -1, end, false, false);
 			date = tmp[end+1];
-			UI.ui.printRed("Enter \"every <number> days until <date>\"");
+			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
 			in = sc.nextLine();
-			String freq = "0";
 			tmp = in.split(" ");
-			String last = tmp[tmp.length-1];
-			for (int i = 0;i<tmp.length;i++) {
-				if (tmp[i].equals("every")) {
-					freq = tmp[i+1];
-					break;
-				}
-			}
-			UI.ui.printRed("Enter \"display <number> days before deadline\"");
-		    in = sc.nextLine();
-		    tmp = in.split(" ");
-			String before = "";
-			for (int i = 0;i<tmp.length;i++) {
-				if (tmp[i].equals("display")) {
-					before = tmp[i+1];
-					break;
-				}
-			}
+			String freq = tmp[0];
+			String last = tmp[1];
+			String before = tmp[2];			
 		
 			int frequency = Integer.parseInt(freq);
 			int be4 = Integer.parseInt(before);
