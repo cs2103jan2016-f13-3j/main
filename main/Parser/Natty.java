@@ -12,6 +12,8 @@ import com.joestelmach.natty.Parser;
 public class Natty {
 	private static Natty natty;
 	private static Parser parser;
+	private static final String MSG_TODAY = "Today";
+	private static final String MSG_TOMORROW = "Tomorrow";
 	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	private static final String[] END_DATE_KEYWORDS = {"by", "on", "before"};
 	private static ArrayList<String> monthNamesList, endDateKeywordsList;
@@ -32,6 +34,27 @@ public class Natty {
 		return natty;
 	}
 
+	// Method that checks whether input date string matches today's or tomorrow's date
+	// Returns "Today" if matches today, "Tomorrow" if matches tomorrow
+	// Otherwise return original string
+	public String tryChangeTodayOrTomorrow(String source) {
+		String[] split = source.split(" ");
+		String convertedString = (monthNamesList.indexOf(split[1]) + 1) + "/" + split[0] + "/" + split[2]; //04 Apr 2016 to 04/04/2016
+		convertedString = convertToAmericanFormat(convertedString);
+
+		String convertedSource = parseString(convertedString);
+		String convertedToday = parseString(MSG_TODAY);
+		String convertedTomorrow = parseString(MSG_TOMORROW);
+
+		if (convertedSource.equals(convertedToday)) { // input date matches today's date
+			return MSG_TODAY;
+		} else if (convertedSource.equals(convertedTomorrow)) { // input date matches tomorrow's date
+			return MSG_TOMORROW;
+		} else {
+			return source; // not today or tomorrow, return original date string
+		}
+	}
+
 	public String parseString(String source) {
 		String input = convertToAmericanFormat(source);
 		List<DateGroup> dateGroups = parser.parse(input);
@@ -48,6 +71,10 @@ public class Natty {
 		int indexOfDate = getIndexOfDetectedDate(dateGroups.get(0)); // gets index of where the issue description ends
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY/HrHr/MinMin representation of the string
 
+		if (input.split(" ").length == 1) { // if input was only 04/05/2016, terminate early
+			return result;
+		}
+		
 		String[] splitArray = input.split(" ");
 		if (splitArray[splitArray.length - 1].equalsIgnoreCase("r")) { // if input command ends with "r" by itself, indicates recurring
 			result += " r"; // add "r" to the result string for Parser recognition
@@ -209,5 +236,13 @@ public class Natty {
 			}			
 		}
 		return splitArray[count - 1]; // count is where detectedKeyword is, return the word before it
+	}
+	
+	public String getDayName(String source) {
+//		System.out.println("source is " + source);
+		List<DateGroup> dateGroups = parser.parse(source);
+		List<Date> dates = dateGroups.get(0).getDates();
+		String originalString = dates.toString(); // At this point, String is "[Mon Apr 03......"
+		return originalString.substring(1,4);
 	}
 }

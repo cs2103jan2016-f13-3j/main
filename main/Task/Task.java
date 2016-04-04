@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 
+import Parser.Natty;
+
 public class Task implements java.io.Serializable {
 	private String issue;
 	private String msg;
@@ -14,6 +16,7 @@ public class Task implements java.io.Serializable {
 	private  String lastDate = "-";
 	private  int frequency = -1;
 	private  int dayBefore = -1;
+	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 
 	// Constructors
 
@@ -304,24 +307,42 @@ public class Task implements java.io.Serializable {
 	public String getStartDateString() {
 		if (startDate != null) {
 
-			String result = startDate.get(Calendar.DAY_OF_MONTH) + "/";
+			String result = startDate.get(Calendar.DAY_OF_MONTH) + " ";
+			if (result.length() == 2) { // adds 0 to single digit dates
+				result = "0" + result;
+			}
 			int month = startDate.get(Calendar.MONTH);
-			month++;
-			result += month + "/";
-			int year = startDate.get(Calendar.YEAR);
+			result += NAMES_OF_MONTHS[month] + " ";
 
-			result += year;
+			int year = startDate.get(Calendar.YEAR);
+			result += year;			
+			
+			String dayName = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
+			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
+			
+			result += " " + dayName;
+			
 			if (hasTime) {
-				String hour = Integer.toString(startDate.get(Calendar.HOUR_OF_DAY));
-				if (hour.length() == 1) {
-					hour = "0" + hour;
+				int hour =startDate.get(Calendar.HOUR_OF_DAY);
+				if (hour > 12) {
+					hour -= 12; // 24hr to 12hr format
 				}
-				result += " " + hour;
+				
+				if (hour < 10) {
+					result += " " + "0" + hour;
+				} else {
+					result += " " + hour;
+				}
+				
 				String minute = Integer.toString(startDate.get(Calendar.MINUTE));
 				if (minute.length() == 1) {
 					minute = "0" + minute;
 				}
-				result += ":" + minute + "\t";
+				if (startDate.get(Calendar.HOUR_OF_DAY) < 12) {
+					result += ":" + minute + "AM" + "\t";
+				} else {
+					result += ":" + minute + "PM" + "\t";
+				}
 			}else{
 				result += "\t";
 			}
@@ -336,26 +357,43 @@ public class Task implements java.io.Serializable {
 		if (endDate != null) {
 			String day = Integer.toString(endDate.get(Calendar.DAY_OF_MONTH));
 			
-			String result = day + "/";
+			String result = day + " ";
+			if (result.length() == 2) { // adds 0 to single digit dates
+				result = "0" + result;
+			}
 			int month = endDate.get(Calendar.MONTH);
-			month++;
-			String mth = Integer.toString(month);
-			
-			result += mth + "/";
-			int year = endDate.get(Calendar.YEAR);
+			result += NAMES_OF_MONTHS[month] + " ";
 
+			int year = endDate.get(Calendar.YEAR);
 			result += year;
+			
+			String dayName = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
+			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
+			
+			result += " " + dayName;
+			
 			if (hasTime) {
-				String hour = Integer.toString(endDate.get(Calendar.HOUR_OF_DAY));
-				if (hour.length() == 1) {
-					hour = "0" + hour;
+				int hour = endDate.get(Calendar.HOUR_OF_DAY);
+				if (hour > 12) {
+					hour -= 12; // 24hr to 12hr format
 				}
-				result += " " + hour;
+				
+				if (hour < 10) {
+					result += " " + "0" + hour;
+				} else {
+					result += " " + hour;
+				}
+
 				String minute = Integer.toString(endDate.get(Calendar.MINUTE));
 				if (minute.length() == 1) {
 					minute = "0" + minute;
 				}
-				result += ":" + minute + "\t";
+				if (endDate.get(Calendar.HOUR_OF_DAY) < 12) {
+					result += ":" + minute + "AM" + "\t";
+				} else {
+					result += ":" + minute + "PM" + "\t";
+				}
+//				result += ":" + minute + "\t";
 			}else{
 				result += "\t";
 			}
