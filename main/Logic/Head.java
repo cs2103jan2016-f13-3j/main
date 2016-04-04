@@ -1,6 +1,7 @@
 package Logic;
 
 import static org.fusesource.jansi.Ansi.ansi;
+
 import static org.fusesource.jansi.Ansi.Color.YELLOW;
 
 import java.io.File;
@@ -16,9 +17,9 @@ import java.util.Calendar;
 import java.util.Date;
 import Storage.localStorage;
 import Task.Task;
-
+import org.fusesource.jansi.AnsiConsole;
 public class Head {
-
+	//@@author Cheng Gee
 	 private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	 private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	 private static final String USER_PROMPT = "command: ";
@@ -32,8 +33,11 @@ public class Head {
 	 private static String logo6="********   **    **   **        ***   ** **   **     **   ********   **    **";
 	 private static String logo7="**    **   ********   ********  ***    ****   **    **    **    **   **    **";
 	 private static String logo8="**    **   ********   ********  ***     ***   *******     **    **   **    **";
+
 	 public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
 		 Logic.ImportTasks.prepareAndImportFiles();
+		 AnsiConsole.systemInstall();
+
 //		 System.out.print(ansi().eraseScreen().fgBright(RED));
 		 checkDateAndAdd();
 		 UI.ui.eraseScreen();

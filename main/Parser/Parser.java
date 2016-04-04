@@ -10,7 +10,7 @@ import Storage.localStorage;
 import java.io.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
+import org.fusesource.jansi.AnsiConsole;
 import Task.Task;
 
 public class Parser {
@@ -124,6 +124,7 @@ public class Parser {
 			redoCommand(s);
 		} else if (option.equals("exit")) {
 			UI.ui.printGreen("Bye!");
+			AnsiConsole.systemUninstall();
 			Logic.crud.exit();
 		} else if (option.equals("help")) {
 			Logic.Help.printHelpMenu();
