@@ -62,7 +62,12 @@ public class ui {
 	}
 
 	public static void eraseScreen(){
-		System.out.print(ANSI_CLS);
+		AnsiConsole.systemUninstall();
+		System.out.print(ansi().eraseScreen());
+		AnsiConsole.systemInstall();
+		System.out.println(ANSI_CLS);
+		System.out.println(ANSI_CLS);
+		System.out.println(ANSI_CLS);
 	}
 	public static void printTask(int i,String sdate,String edate,String msg){
 		i=i+1;
