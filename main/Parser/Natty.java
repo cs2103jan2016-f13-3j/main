@@ -94,7 +94,6 @@ public class Natty {
 		}
 
 		String matchingValue = dateGroups.get(0).getText();
-		System.out.println("matchingvalue is " + matchingValue);
 
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
