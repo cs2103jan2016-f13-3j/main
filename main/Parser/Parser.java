@@ -147,7 +147,7 @@ public class Parser {
 			// get index of key
 			if(s.contains("`")){
 				int ind=s.indexOf("`");
-				String[] s2=s.split("`");
+				String[] s2=s.split(" ` ");
 				if(s2.length==2){
 					String[] temp=s2[1].split(" ");
 					String r=s.substring(0, ind)+s.substring(ind+2);
@@ -185,7 +185,7 @@ public class Parser {
 								UI.ui.printRed(WRONG_DATE_MSG);
 							} else {
 								// get issue
-								issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+								issue = s2[0];
 								// isAdded
 								// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
 								// (to be implemented)
@@ -273,6 +273,7 @@ public class Parser {
 
 								// isAdded =
 								// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+								System.out.println(dateIn);
 								isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
 								if (isAdded) {
 									Logic.Sort.sortTasksChronologically();
@@ -493,7 +494,7 @@ public class Parser {
 				input = sc.nextLine();
 				if(input.contains("`")){
 					int ind=input.indexOf("`");
-					String[] s2=input.split("`");
+					String[] s2=input.split(" ` ");
 					
 					if(s2.length==2){
 						String[] temp=s2[1].split(" ");
@@ -1178,5 +1179,4 @@ public class Parser {
 			Head.checkDateAndAdd();
 		}
 	
-		
 }
