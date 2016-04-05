@@ -1349,9 +1349,9 @@ public class Parser {
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
 		// get index of key
-		if(in.contains("`")){
-			int ind= in.indexOf("`");
-			String[] s2= in.split("`");
+		int ind= in.indexOf("`");
+		String[] s2= in.split("`");
+
 		if(s2.length==2){			
 			String[] temp=s2[1].split(" ");
 		
@@ -1436,10 +1436,11 @@ public class Parser {
 			replaced.setFrequency(frequency);
 			replaced.setdayBefore(be4);
 			replaced.setLastDate(last);
-		}
+		
 		}	
 		delAllRecurringTask(n);
 		localStorage.addToRecurringTasks(replaced);
+		UI.ui.printGreen("Task " + n+1 +" has been edited and saved");
 		Head.checkDateAndAdd();
 }
 }
