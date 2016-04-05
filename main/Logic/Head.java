@@ -94,16 +94,10 @@ public class Head {
 
 				if (localStorage.getRecurringTasks().size() != 0) {
 
-					for (int i = 0; i < localStorage.getRecurringTasks().size(); i++) {// for
-																						// loop
-																						// to
-																						// search
-																						// storage
-																						// for
+					for (int i = 0; i < localStorage.getRecurringTasks().size(); i++) {
 						Task tmp = localStorage.getRecurringTasks().get(i);
-						String ed = tmp.getEndDateString();
+						String ed = tmp.getDateCompare();
 						
-						ed = ed.substring(0, ed.length() - 1);
 						int diff = compareTwoDate(today, ed);
 						boolean expired = isExpired(ed, tmp.getLastDate());
 
@@ -113,24 +107,29 @@ public class Head {
 						} else {
 
 							while (true) {
-								if (diff > tmp.getDayBefore() || expired) {// if
-																			// task
-																			// is
-																			// after
-																			// the
-																			// days
-																			// before
-																			// when
-									// want to display the recurring tasks or when
-									// the tasks had expired
+								if (diff > tmp.getDayBefore() || expired) {//If task is not within display time frame or when task 
+																			//expired
 									break;
 								}
 								Logic.crud.addByTask(tmp);
 								String newED = processDate(ed, tmp.getFrequency());
+								if (tmp.getStartDate() == null) {//no start date
 								tmp = new Task(tmp.getIssue(), newED, tmp.getMsg(), false, tmp.getFrequency(),
-										tmp.getDayBefore(), tmp.getLastDate());
-								ed = tmp.getEndDateString();
-								ed = ed.substring(0, ed.length() - 1);
+										tmp.getDayBefore(), tmp.getLastDate(),tmp.getId());
+								//	System.out.println("new ed:"+newED); //got bug with set method :(
+								//	tmp.setEndDate(newED); 
+								} else if (tmp.getEndDate() == null) {
+									tmp = new Task(tmp.getIssue(), newED, tmp.getMsg(), true, tmp.getFrequency(),
+											tmp.getDayBefore(), tmp.getLastDate(),tmp.getId());
+								}
+								 else {// has start date and end date
+								tmp = new Task(tmp.getIssue(),tmp.getFixedStartDateString(),newED,tmp.getMsg(),tmp.getFrequency()
+										,tmp.getDayBefore(),tmp.getLastDate(),tmp.getId());
+								/*		System.out.println("new ed:"+newED); //got bug with set method :(
+										tmp.setEndDate(newED); */
+								}
+						
+								ed = tmp.getDateCompare();
 								diff = compareTwoDate(today, ed);
 								expired = (isExpired(ed, tmp.getLastDate()));
 
