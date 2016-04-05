@@ -77,10 +77,10 @@ public class Head {
 			 Parser.Parser.run(cmd, description);
 			 lastCommand = cmd;
 			 String lastArg = description;
-			 if((lastCommand.equals("sort") && lastArg.equals("p"))!=true ||
-					 (lastCommand.equals("sort")&& lastArg.equals("priority")) != true) {
-				 Logic.Sort.sortTasksChronologically();
-			 }
+			 /*if((lastCommand.equals("sort") && (lastArg.equals("c") || lastArg.equals("chrono")))!= true) {
+				 
+			 }*/
+			 Logic.Sort.sortTasksPriority();
 			 // save all tasks into the actual file after command is done
 			 Logic.Save.saveToFile();		
 		 }

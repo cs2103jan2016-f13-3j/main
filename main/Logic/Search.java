@@ -39,7 +39,6 @@ public class Search {
 
 	public static void searchSingleLetter(String[] searchKeywords, int counter, ArrayList<Task> temp) {
 		String search = searchKeywords[0];
-		System.out.println(search.trim());
 		if(temp.size() > 0) {
 			for(int i = 0; i<temp.size(); i++) {
 				String[] taskParts = temp.get(i).getIssue().split(" ");
@@ -72,7 +71,6 @@ public class Search {
 				String[] taskParts = temp.get(i).getIssue().split(" ");
 				for(int j = 0; j<taskParts.length; j++) {
 					if(taskParts[j].trim().equals(search)) {
-						System.out.println(taskParts[j]);
 						searchedTasks.add(temp.get(i));
 						break;
 					}
@@ -114,13 +112,16 @@ public class Search {
 
 				}
 			}
+		}
+		
+		if(searchedTasks.size() == 0) {
+			UI.ui.printRed("NO TASKS FOUND");
 		}
 	}
 
 	public static void searchPhrase(String[] searchKeywords, int counter, ArrayList<Task> temp) {
 		
 		if(temp.size() > 0) {
-
 			for(int i = 0; i<temp.size(); i++) {
 				boolean isSuccess = true;
 				for(int j = 0; j<searchKeywords.length; j++) {
@@ -211,6 +212,10 @@ public class Search {
 
 				}
 			}
+		}
+		
+		if(searchedTasks.size() == 0) {
+			UI.ui.printRed("NO TASKS FOUND");
 		}
 	}
 

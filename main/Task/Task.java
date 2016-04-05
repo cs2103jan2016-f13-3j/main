@@ -12,7 +12,7 @@ public class Task implements java.io.Serializable {
 	private ArrayList<String> label;
 	private boolean isCompleted, hasTime;
 	private Calendar startDate, endDate;
-	private int priority = 0;
+	private String priority;
 	private  String lastDate = "-";
 	private  int frequency = -1;
 	private  int dayBefore = -1;
@@ -30,6 +30,7 @@ public class Task implements java.io.Serializable {
 		label = new ArrayList<String>();
 		startDate = null;
 		endDate = null;
+		priority = "low";
 	}
 
 	// Constructor for tasks with only one date given
@@ -40,6 +41,7 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitDates = date.split("/");
 		int year = Integer.parseInt(splitDates[2]);
 		int month = Integer.parseInt(splitDates[1])-1;
@@ -78,6 +80,7 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitStartDate = startDate.split("/");
 		int year = Integer.parseInt(splitStartDate[2]);
 		int month = Integer.parseInt(splitStartDate[1])-1;
@@ -123,6 +126,7 @@ public class Task implements java.io.Serializable {
 			int day = Integer.parseInt(splitDates[0]);
 			int hour = 0;
 			int minute = 0;
+			priority = "low";
 			if (splitDates.length > 3) { // given date includes time
 				hour = Integer.parseInt(splitDates[3]);
 				minute = Integer.parseInt(splitDates[4]);
@@ -157,6 +161,7 @@ public class Task implements java.io.Serializable {
 			dayBefore = d;
 			lastDate = last;
 			label = new ArrayList<String>();
+			priority = "low";
 			String[] splitStartDate = startDate.split("/");
 			int year = Integer.parseInt(splitStartDate[2]);
 			int month = Integer.parseInt(splitStartDate[1])-1;
@@ -404,18 +409,11 @@ public class Task implements java.io.Serializable {
 	}
 
 	public String getPriority(){
-		if(priority == 1){
-			return "high";
-
-		} else {
-			return "low";
-		}
+		return priority;
 	}
 
-	public void setPriority(String pri){
-		if(pri.equalsIgnoreCase("high")){
-			priority = 1;
-		}
+	public void setPriority(String priority){
+		this.priority = priority;
 	}
 	// Returns date in string format of DD/MM/YYYY
 	public String getTaskString() {
