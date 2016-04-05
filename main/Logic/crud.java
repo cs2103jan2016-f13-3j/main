@@ -202,6 +202,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 
 	 public static int uncompletedTaskIndexWithBothDates(String line,String startDate, String endDate, String msg){
 		 Task task = new Task(line, startDate, endDate, msg);
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -219,6 +220,33 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 return i;
 			 }
 		 }return -1;
+	 }
+	 public static void displayNearestFiveCompletedTaskList(Task t){
+		 int index=-1;
+		 ArrayList<Task> tempTasks = Storage.localStorage.getCompletedTasks();
+		 int size=tempTasks.size();
+		 for(int i=0;i<size;i++){
+			 Task temp=tempTasks.get(i);
+			 if(t.getMsg().equals(temp.getMsg())){
+				 index=i;
+				 break;
+			 }
+		 }
+		 int head=index-2;
+		 int tail = index+3;
+		 if(head<0){
+			 head=0;
+		 }
+		 if(tail>=size){
+			 tail=size;
+		 }
+		 for(int i=head;i<tail;i++){
+			 Task temp=tempTasks.get(i);
+			
+				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+			 
+		}
+		 
 	 }
 	 public static void displayNearestFiveDeleteUncompleteTaskList(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -461,7 +489,17 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 addTaskWithBothDates(line,startDate,endDate,msg);
 		 }
 	 }
-
+	 /**
+	  * Function to get a task from the list in Uncompleted Task List
+	  * @param index
+	  * @return
+	  */
+	 public static Task getUncompletedTask(int index){
+		 return Storage.localStorage.getUncompletedTask(index);
+	 }
+	 public static Task getCompletedTask(int index){
+		 return Storage.localStorage.getCompletedTask(index);
+	 }
 	 /**
 	  * Function to delete task according to index in storage
 	  * @throws IOException 
@@ -593,6 +631,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  */
 	 public static void displayCompletedTasks() {
 		 UI.ui.eraseScreen();
+		 UI.ui.printGreen("COMPLETED TASKS");
+		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		 tempTasks = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
 			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 

@@ -2,6 +2,9 @@
 package Parser;
 
 import java.util.*;
+
+import javax.xml.ws.handler.LogicalHandler;
+
 import java.time.YearMonth;
 import Logic.Head;
 import Logic.Undo;
@@ -628,6 +631,7 @@ public class Parser {
 			} else if (list.size() < num || num - 1 < 0) {
 				UI.ui.printRed(UNMARK_FAIL_MSG);
 			} else {
+				Task temp = Logic.crud.getCompletedTask(num-1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
 				UI.ui.printGreen(s + UNMARK_MSG);
 				arraylistsHaveBeenModified = true;
@@ -650,8 +654,10 @@ public class Parser {
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 				UI.ui.printRed(MARK_FAIL_MSG);
 			} else {
+				Task temp=Logic.crud.getUncompletedTask(num-1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
 				UI.ui.printGreen(s + MARK_MSG);
+				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
