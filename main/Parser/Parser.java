@@ -538,14 +538,6 @@ public class Parser {
 								Logic.crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
 							}
-						} else if (start == -1 && end == -1) {// no end date and no
-							// start date
-							
-							Logic.crud.editTaskWithNoDate(input, input, num - 1);
-							int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
-							UI.ui.printGreen("Task number " + num + EDIT_MSG);
-							Logic.crud.displayNearestFiveFloating(index);
-							arraylistsHaveBeenModified = true;
 						} else if (start != -1 && end == -1) {// has start date but
 							// no end date
 							date = "-";
@@ -607,7 +599,15 @@ public class Parser {
 							}
 						}
 					} 
-					}
+					}else {// no end date and no
+						// start date
+						
+						Logic.crud.editTaskWithNoDate(input, input, num - 1);
+						int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
+						UI.ui.printGreen("Task number " + num + EDIT_MSG);
+						Logic.crud.displayNearestFiveFloating(index);
+						arraylistsHaveBeenModified = true;
+					} 
 				}
 				
 		} catch (Exception e) {
