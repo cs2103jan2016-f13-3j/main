@@ -242,12 +242,51 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 for(int i=head;i<tail;i++){
 			 Task temp=tempTasks.get(i);
-			
+			if(index==i){
+				UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+			}else{
 				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+			}
 			 
 		}
 		 
 	 }
+	 public static void displayNearestFiveUnmarkCompleteTaskList(Task t){
+		 ArrayList<Task> tempTasks;
+		 if(t.getEndDate() != null || t.getStartDate() != null){
+			 
+			 tempTasks = Storage.localStorage.getUncompletedTasks();
+		 }else{
+			 tempTasks = Storage.localStorage.getFloatingTasks();
+		 }
+			 int size = tempTasks.size();
+			 int index=-1;
+			 for(int i=0;i<size;i++){
+				 Task temp=tempTasks.get(i);
+				 if(t.getMsg().equals(temp.getMsg())){
+					 index=i;
+					 break;
+				 }
+			 }
+			 int head=index-2;
+			 int tail = index+3;
+			 if(head<0){
+				 head=0;
+			 }
+			 if(tail>=size){
+				 tail=size;
+			 }
+			 for(int i=head;i<tail;i++){
+				 Task temp=tempTasks.get(i);
+				if(index==i){
+					UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				}else{
+					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				}
+				 
+			}
+		 }
+	 
 	 public static void displayNearestFiveDeleteUncompleteTaskList(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 int size = tempTasks.size();
@@ -552,7 +591,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 isEmptyUn = true;
 		 } else {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			 UI.ui.printGreen("Index\tStart Date\t End Date\t\t Task");
 			 for(int i=0; i<tempTasks.size(); i++) {
 				 Task temp = tempTasks.get(i);
 				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
@@ -634,7 +673,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayCompletedTasks() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("COMPLETED TASKS");
-		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		 UI.ui.printGreen("Index\tStart Date\t End Date\t\t Task");
 		 tempTasks = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
 			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 

@@ -634,6 +634,7 @@ public class Parser {
 				Task temp = Logic.crud.getCompletedTask(num-1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
 				UI.ui.printGreen(s + UNMARK_MSG);
+				Logic.crud.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
