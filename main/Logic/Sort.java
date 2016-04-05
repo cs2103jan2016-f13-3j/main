@@ -108,6 +108,7 @@ public class Sort {
 	 * Function to sort tasks according to priority
 	 */
 	public static void sortTasksPriority() {
+		sortTasksChronologically();
 		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 		
 		for(int i = 0; i<tempUncompletedTasks.size(); i++) {
