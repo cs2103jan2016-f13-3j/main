@@ -21,8 +21,8 @@ public class Parser {
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-	"sunday" };
-	private static final String[] key = { "by", "at", "on", "during", "before", "to","in"};
+			"sunday" };
+	private static final String[] key = { "by", "at", "on", "during", "before", "to", "in" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
@@ -76,7 +76,10 @@ public class Parser {
 			// store the "snapshots" into Undo class if arraylists have been
 			// modified
 			Undo.getInstance().storePreviousState(cmd);
-			Undo.getInstance().clearRedoCommands(); // if valid command executed and arraylists modified, remove all stored redo commands
+			Undo.getInstance().clearRedoCommands(); // if valid command executed
+													// and arraylists modified,
+													// remove all stored redo
+													// commands
 		}
 		return modificationsWereMade;
 	}
@@ -135,8 +138,6 @@ public class Parser {
 			changeDirectoryCommand(s);
 		} else if (option.equals("label")) {
 			setLabelCommand(s);
-		} else if (option.equals("set")) {
-			   setRecurringTask(s); 
 		} else {
 			UI.ui.printRed(INVALID_MSG);
 		}
@@ -148,24 +149,28 @@ public class Parser {
 		if (s.equals("")) {
 		} else {
 			// get index of key
-			if(s.contains("`")){
-				int ind=s.indexOf("`");
-				String[] s2=s.split(" ` ");
-				if(s2.length==2){
-					String[] temp=s2[1].split(" ");
-					String r=s.substring(0, ind)+s.substring(ind+2);
-					int start = getStartingIndex(temp); // start has value of -1 if
+			if (s.contains("`")) {
+				int ind = s.indexOf("`");
+				String[] s2 = s.split(" ` ");
+				if (s2.length == 2) {
+					String[] temp = s2[1].split(" ");
+					String r = s.substring(0, ind) + s.substring(ind + 2);
+					int start = getStartingIndex(temp); // start has value of -1
+														// if
 					// it
 					// has no start date
-					int end = getIndexOfKey(temp); // end has value of -1 if it has
+					int end = getIndexOfKey(temp); // end has value of -1 if it
+													// has
 					// no end date
-					if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+					if (end < start) {// { "by", "at", "on", "during", "before",
+										// "to" } is before "from"
 						end = -1;// no end date
-					} 
-					
+					}
+
 					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 					if (!toRecurred) {
-						if (start == -1 && end != -1) {// no start date but has end
+						if (start == -1 && end != -1) {// no start date but has
+														// end
 							// date
 							startDate = "-";
 							startTime = "-";
@@ -204,7 +209,8 @@ public class Parser {
 								}
 							}
 
-						} else if (start != -1 && end == -1) {// has start date but
+						} else if (start != -1 && end == -1) {// has start date
+																// but
 							// no end date
 							date = "-";
 							time = "-";
@@ -232,7 +238,7 @@ public class Parser {
 								isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
 								if (isAdded) {
 									Logic.Sort.sortTasksChronologically();
-									int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,s);
+									int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, dateIn2, s);
 									UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
 									Logic.crud.displayNearestFiveUncompleted(index);
 									arraylistsHaveBeenModified = true;
@@ -280,7 +286,7 @@ public class Parser {
 								isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
 								if (isAdded) {
 									Logic.Sort.sortTasksChronologically();
-									int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, s);
+									int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, s);
 									UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
 									Logic.crud.displayNearestFiveUncompleted(index);
 									arraylistsHaveBeenModified = true;
@@ -289,61 +295,146 @@ public class Parser {
 								}
 							}
 						}
-					} else { // so far recurring task only support add task by end
-						// date
+					} else { // for recurring tasks
 						issue = s2[0];
-					
-						issue = issue.substring(0, issue.length() - 2);
-						date = temp[end + 1];// assume only has end date for
-						// recurring
-						// task
-						int idx = getIndexOfWeek(date);
-						if (idx != -1) {
-							date = matchDate(idx);
+						if (start == -1 && end != -1) {// no start date but has
+														// end
+							// date
+							startDate = "-";
+							startTime = "-";
+							// read date & time
+							date = temp[end + 1];
+							dateIn = date;
+							if (hasEndTime(temp)) {// check if contain end time
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
+							} else {
+								time = "-";
+							}
+
+							if (!Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								String in = sc.nextLine();
+								String[] tmp = in.split(" ");
+								String freq = tmp[0];
+								String last = tmp[1];
+								String before = tmp[2];
+
+								int frequency = Integer.parseInt(freq);
+								int be4 = Integer.parseInt(before);
+
+								Logic.crud.addTaskToRecurring(issue, dateIn, s, false, frequency, be4, last);
+								arraylistsHaveBeenModified = true;
+
+							}
+						} else if (start != -1 && end == -1) {// has start date
+																// but
+							// no end date
+							date = "-";
+							time = "-";
+							startDate = temp[start + 1];
+							int idx = getIndexOfWeek(startDate);
+							if (idx != -1) {
+								startDate = matchDate(idx);
+							}
+							dateIn2 = startDate;
+
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} else {
+								startTime = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(startDate)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								String in = sc.nextLine();
+								String[] tmp = in.split(" ");
+								String freq = tmp[0];
+								String last = tmp[1];
+								String before = tmp[2];
+
+								int frequency = Integer.parseInt(freq);
+								int be4 = Integer.parseInt(before);
+
+								Logic.crud.addTaskToRecurring(issue, dateIn2, s, true, frequency, be4, last);
+								arraylistsHaveBeenModified = true;
+
+							}
+						} else { // has both start date and end date
+							startDate = temp[start + 1];
+							date = temp[end + 1];
+							int idx = getIndexOfWeek(startDate);
+							int idx2 = getIndexOfWeek(date);
+							if (idx != -1) {
+								startDate = matchDate(idx);
+							}
+							if (idx2 != -1) {
+								date = matchDate(idx2);
+							}
+							dateIn = date;
+							dateIn2 = startDate;
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} else {
+								startTime = "-";
+							}
+							if (hasEndTime(temp)) {
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
+
+							} else {
+								time = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								String in = sc.nextLine();
+								String[] tmp = in.split(" ");
+								String freq = tmp[0];
+								String last = tmp[1];
+								String before = tmp[2];
+
+								int frequency = Integer.parseInt(freq);
+								int be4 = Integer.parseInt(before);
+
+								Logic.crud.addTaskToRecurringWithBothDate(issue, dateIn2, dateIn, s, frequency, be4,
+										last);
+								arraylistsHaveBeenModified = true;
+
+							}
 						}
-						UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
-					    String	in = sc.nextLine();
-						String[] tmp = in.split(" ");
-						String freq = tmp[0];
-						String last = tmp[1];
-						String before = tmp[2];			
-						
-						int frequency = Integer.parseInt(freq);
-						int be4 = Integer.parseInt(before);			
-
-						Logic.crud.addTaskToRecurring(issue, date, s,frequency,be4,last);
-				/*		for (int i = 1; i < numRec; i++) {
-							date = processDate(date, Integer.parseInt(freq));
-							Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
-
-						} */
-						arraylistsHaveBeenModified = true;
-
 					}
+					Head.checkDateAndAdd();
 				}
 
-				
-			}else{
+			} else {
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
 					Logic.Sort.sortTasksChronologically();
-					int index= Logic.crud.uncompletedTaskIndexWithNoDate(s);
+					int index = Logic.crud.uncompletedTaskIndexWithNoDate(s);
 					UI.ui.printGreen("\"" + s + "\" " + ADD_MSG);
 					Logic.crud.displayNearestFiveFloating(index);
 					arraylistsHaveBeenModified = true;
 				} else {
 					UI.ui.printRed(DUPLICATE_ADD_MSG);
 				}
-				
+
 			}
 
-
-			
-			Head.checkDateAndAdd();
 		}
 	}
-	
-	//@@author Kowshik
+
+	// @@author Kowshik
 	public static void setLabelCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -365,8 +456,8 @@ public class Parser {
 
 		}
 	}
-	
-	//@@author Jie Wei
+
+	// @@author Jie Wei
 	public static void changeDirectoryCommand(String s) throws IOException, ClassNotFoundException {
 		if (s.isEmpty()) { // only "dir" was typed, this will display the
 			// current storage folder directory in use
@@ -392,7 +483,8 @@ public class Parser {
 			if (redoCount == 0) { // if no commands to redo
 				UI.ui.printRed(MSG_NO_REDO_COMMAND);
 			} else {
-				for (int i = 0; i < redoCount; i++) { // do redo for all stored commands
+				for (int i = 0; i < redoCount; i++) { // do redo for all stored
+														// commands
 					String outcome = Undo.getInstance().redo();
 					UI.ui.printGreen(outcome);
 				}
@@ -401,11 +493,28 @@ public class Parser {
 		} else { // e.g. "redo 2" will redo the latest 2 commands
 			try {
 				int count = Integer.parseInt(s);
-				if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if entered count is outside valid bounds
+				if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if
+																				// entered
+																				// count
+																				// is
+																				// outside
+																				// valid
+																				// bounds
 					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 				} else {
-					for (int i = 0; i < count; i++) { // redo the number of commands specified
-						if (Undo.getInstance().getRedoCount() == 0) { // all commands have been redone but user used a higher int
+					for (int i = 0; i < count; i++) { // redo the number of
+														// commands specified
+						if (Undo.getInstance().getRedoCount() == 0) { // all
+																		// commands
+																		// have
+																		// been
+																		// redone
+																		// but
+																		// user
+																		// used
+																		// a
+																		// higher
+																		// int
 							UI.ui.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
@@ -413,7 +522,8 @@ public class Parser {
 						UI.ui.printGreen(outcome);
 					}
 				}
-			} catch (NumberFormatException e) { // if non-number was entered, e.g. "redo hello"
+			} catch (NumberFormatException e) { // if non-number was entered,
+												// e.g. "redo hello"
 				UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 			}
 		}
@@ -428,7 +538,8 @@ public class Parser {
 			if (historyCount == 0) { // if no commands to undo
 				UI.ui.printRed(MSG_NO_PAST_COMMAND);
 			} else {
-				for (int i = 0; i < historyCount; i++) { // do undo for all stored commands
+				for (int i = 0; i < historyCount; i++) { // do undo for all
+															// stored commands
 					String outcome = Undo.getInstance().undo();
 					UI.ui.printGreen(outcome);
 				}
@@ -437,11 +548,28 @@ public class Parser {
 		} else { // e.g. "undo 2" will undo the latest 2 commands
 			try {
 				int count = Integer.parseInt(s);
-				if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if entered count is outside valid bounds
+				if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if
+																					// entered
+																					// count
+																					// is
+																					// outside
+																					// valid
+																					// bounds
 					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 				} else {
-					for (int i = 0; i < count; i++) { // undo the number of commands specified
-						if (Undo.getInstance().getHistoryCount() == 0) { // all commands have been undone but user used a higher int
+					for (int i = 0; i < count; i++) { // undo the number of
+														// commands specified
+						if (Undo.getInstance().getHistoryCount() == 0) { // all
+																			// commands
+																			// have
+																			// been
+																			// undone
+																			// but
+																			// user
+																			// used
+																			// a
+																			// higher
+																			// int
 							UI.ui.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
@@ -449,13 +577,14 @@ public class Parser {
 						UI.ui.printGreen(outcome);
 					}
 				}
-			} catch (NumberFormatException e) { // if non-number was entered, e.g. "undo hello"
+			} catch (NumberFormatException e) { // if non-number was entered,
+												// e.g. "undo hello"
 				UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 			}
 		}
 	}
 
-	//@@author Kowshik
+	// @@author Kowshik
 	public static void setPriorityCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -478,148 +607,160 @@ public class Parser {
 		}
 	}
 
-	//@@author Jung Kai
+	// @@author Jung Kai
 	public static void editCommand(String s) {
 		try {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, edit
-			// should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(EMPTY_MSG);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(EDIT_FAIL_MSG);
+			String[] tmp = s.split(" ");
+			if (s.contains("all")) {
+				int num = Integer.parseInt(tmp[1]);
+				setRecurringTask(num - 1);
+				arraylistsHaveBeenModified = true;
 			} else {
-				UI.ui.printGreen(EDIT_PROMPT);
-				Logic.crud.copyEditingTask(num);
-				input = sc.nextLine();
-				input = Natty.getInstance().parseEditString(input);
-				if(input.contains("`")){
-					int ind=input.indexOf("`");
-					String[] s2=input.split(" ` ");
-					
-					if(s2.length==2){
-						String[] temp=s2[1].split(" ");
-						String r=input.substring(0, ind)+input.substring(ind+2);
-						int start = getStartingIndex(temp);
-						int end = getIndexOfKey(temp); // end has value of -1 if it has
-						// no end date
-						if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
-							end = -1;// no end date
-						} 
-						if (start == -1 && end != -1) {// no start date but has end
-							// date
-							startDate = "-";
-							startTime = "-";
-							// read date & time
-							date = temp[end + 1];
-							dateIn = date;
+				int num = Integer.parseInt(s);
+				// check if user input integer is valid. If it is valid, edit
+				// should
+				// work
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(EMPTY_MSG);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(EDIT_FAIL_MSG);
+				} else {
+					UI.ui.printGreen(EDIT_PROMPT);
+					Logic.crud.copyEditingTask(num);
+					input = sc.nextLine();
+					input = Natty.getInstance().parseEditString(input);
+					if (input.contains("`")) {
+						int ind = input.indexOf("`");
+						String[] s2 = input.split(" ` ");
 
-							if (hasEndTime(temp)) {// check if contain end time
-								//something is wrong here
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
-
-							} else {
-								time = "-";
-							}
-							if (!Logic.checkDate.checkDateformat(date)) {
-								UI.ui.printRed(WRONG_DATE_MSG);
-							} else {
-								// get issue
-
-								issue = s2[0];
-								System.out.println(issue);
-								// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
-								// (to be implemented)
-								Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
-								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
-								UI.ui.printGreen("Task number " + num + EDIT_MSG);
-								Logic.crud.displayNearestFiveUncompleted(index);
-								arraylistsHaveBeenModified = true;
-							}
-						} else if (start != -1 && end == -1) {// has start date but
+						if (s2.length == 2) {
+							String[] temp = s2[1].split(" ");
+							String r = input.substring(0, ind) + input.substring(ind + 2);
+							int start = getStartingIndex(temp);
+							int end = getIndexOfKey(temp); // end has value of
+															// -1 if it has
 							// no end date
-							date = "-";
-							time = "-";
-							startDate = temp[start + 1];
-							dateIn2 = startDate;
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} else {
+							if (end < start) {// { "by", "at", "on", "during",
+												// "before", "to" } is before
+												// "from"
+								end = -1;// no end date
+							}
+							if (start == -1 && end != -1) {// no start date but
+															// has end
+								// date
+								startDate = "-";
 								startTime = "-";
-							}
-							if (!Logic.checkDate.checkDateformat(startDate)) {
-								UI.ui.printRed(WRONG_DATE_MSG);
-							} else {
-								// get issue
-								issue = s2[0];
-								// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-								Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
-								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,input);
-								
-								
-								UI.ui.printGreen("Task number " + num + EDIT_MSG);
-								Logic.crud.displayNearestFiveUncompleted(index);
-								arraylistsHaveBeenModified = true;
-							}
-						} else { // has both start date and end date
-							startDate = temp[start + 1];
-							date = temp[end + 1];
-							dateIn = date;
-							dateIn2 = startDate;
+								// read date & time
+								date = temp[end + 1];
+								dateIn = date;
 
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} 
-							if (hasEndTime(temp)) {
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
+								if (hasEndTime(temp)) {// check if contain end
+														// time
+									// something is wrong here
+									time = temp[end + 2];
+									time = time.replaceAll(":", "/");
+									dateIn = dateIn + "/" + time;
 
+								} else {
+									time = "-";
+								}
+								if (!Logic.checkDate.checkDateformat(date)) {
+									UI.ui.printRed(WRONG_DATE_MSG);
+								} else {
+									// get issue
 
-							} 
-							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-								UI.ui.printRed(WRONG_DATE_MSG);
-							} else {
-								// get issue
-								issue = s2[0];
-								// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-								Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
-								UI.ui.printGreen("Task number " + num + EDIT_MSG);
-								Logic.Sort.sortTasksChronologically();
-								int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, input);
-								Logic.crud.displayNearestFiveUncompleted(index);
-								arraylistsHaveBeenModified = true;
+									issue = s2[0];
+									System.out.println(issue);
+									// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
+									// (to be implemented)
+									Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
+									Logic.Sort.sortTasksChronologically();
+									int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
+									UI.ui.printGreen("Task number " + num + EDIT_MSG);
+									Logic.crud.displayNearestFiveUncompleted(index);
+									arraylistsHaveBeenModified = true;
+								}
+							} else if (start != -1 && end == -1) {// has start
+																	// date but
+								// no end date
+								date = "-";
+								time = "-";
+								startDate = temp[start + 1];
+								dateIn2 = startDate;
+								if (hasStartTime(temp)) {
+									startTime = temp[start + 2];
+									startTime = startTime.replaceAll(":", "/");
+									dateIn2 = dateIn2 + "/" + startTime;
+								} else {
+									startTime = "-";
+								}
+								if (!Logic.checkDate.checkDateformat(startDate)) {
+									UI.ui.printRed(WRONG_DATE_MSG);
+								} else {
+									// get issue
+									issue = s2[0];
+									// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
+									Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
+									Logic.Sort.sortTasksChronologically();
+									int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, dateIn2, input);
+
+									UI.ui.printGreen("Task number " + num + EDIT_MSG);
+									Logic.crud.displayNearestFiveUncompleted(index);
+									arraylistsHaveBeenModified = true;
+								}
+							} else { // has both start date and end date
+								startDate = temp[start + 1];
+								date = temp[end + 1];
+								dateIn = date;
+								dateIn2 = startDate;
+
+								if (hasStartTime(temp)) {
+									startTime = temp[start + 2];
+									startTime = startTime.replaceAll(":", "/");
+									dateIn2 = dateIn2 + "/" + startTime;
+								}
+								if (hasEndTime(temp)) {
+									time = temp[end + 2];
+									time = time.replaceAll(":", "/");
+									dateIn = dateIn + "/" + time;
+
+								}
+								if (!Logic.checkDate.checkDateformat(startDate)
+										&& !Logic.checkDate.checkDateformat(date)) {
+									UI.ui.printRed(WRONG_DATE_MSG);
+								} else {
+									// get issue
+									issue = s2[0];
+									// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+									Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
+									UI.ui.printGreen("Task number " + num + EDIT_MSG);
+									Logic.Sort.sortTasksChronologically();
+									int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn,
+											input);
+									Logic.crud.displayNearestFiveUncompleted(index);
+									arraylistsHaveBeenModified = true;
+								}
 							}
 						}
-					} 
-					}else {// no end date and no
-						// start date
-						
+					} else {// no end date and no
+							// start date
+
 						Logic.crud.editTaskWithNoDate(input, input, num - 1);
-						int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
+						int index = Logic.crud.uncompletedTaskIndexWithNoDate(input);
 						UI.ui.printGreen("Task number " + num + EDIT_MSG);
 						Logic.crud.displayNearestFiveFloating(index);
 						arraylistsHaveBeenModified = true;
-					} 
+					}
 				}
-				
+			}
 		} catch (Exception e) {
 
 		}
 	}
 
-	//@@author Kowshik
+	// @@author Kowshik
 	public static void unmarkCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -632,7 +773,7 @@ public class Parser {
 			} else if (list.size() < num || num - 1 < 0) {
 				UI.ui.printRed(UNMARK_FAIL_MSG);
 			} else {
-				Task temp = Logic.crud.getCompletedTask(num-1);
+				Task temp = Logic.crud.getCompletedTask(num - 1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
 				UI.ui.printGreen(s + UNMARK_MSG);
 				Logic.crud.displayNearestFiveUnmarkCompleteTaskList(temp);
@@ -656,7 +797,7 @@ public class Parser {
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 				UI.ui.printRed(MARK_FAIL_MSG);
 			} else {
-				Task temp=Logic.crud.getUncompletedTask(num-1);
+				Task temp = Logic.crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
 				UI.ui.printGreen(s + MARK_MSG);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
@@ -701,62 +842,69 @@ public class Parser {
 			Logic.crud.displayScheduleForADay(s);
 		} else if (s.equals("")) {
 			Logic.crud.displayUncompletedAndFloatingTasks();
-		} else if(s.equals("today")) {
+		} else if (s.equals("today")) {
 			Calendar today = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String todayString = df.format(today.getTime());
-			
+
 			Logic.crud.displayScheduleForADay(todayString);
-		} else if(s.equals("tomorrow")) {
+		} else if (s.equals("tomorrow")) {
 			Calendar tomorrow = Calendar.getInstance();
 			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String tomorrowString = df.format(tomorrow.getTime());
-			
+
 			Logic.crud.displayScheduleForADay(tomorrowString);
-		} else if(s.equals("week") || s.equals("this week")) {
+		} else if (s.equals("week") || s.equals("this week")) {
 			Logic.crud.displayTasksForThisWeek();
-		} else if(s.equals("next week") || s.equals("w+1")) {
+		} else if (s.equals("next week") || s.equals("w+1")) {
 			Logic.crud.displayTasksForNextWeek();
-		} else if(s.equals("two weeks later") || s.equals("w+2")) {
+		} else if (s.equals("two weeks later") || s.equals("w+2")) {
 			Logic.crud.displayTaksForTwoWeeksLater();
-		} else if(s.equals("last week") || s.equals("w -1")) {
+		} else if (s.equals("last week") || s.equals("w -1")) {
 			Logic.crud.displayTasksForLastWeek();
-		}	else if (s.equals("r") ||s.equals("recurring")) {
+		} else if (s.equals("r") || s.equals("recurring")) {
 			Logic.crud.displayRecurringTasks();
 		} else {
 			Logic.crud.displayByLabel(s);
 		}
 	}
-		
 
 	public static void deleteCommand(String s) {
 		if ((Logic.Head.getLastCommand().equals("d") || Logic.Head.getLastCommand().equals("display")) == true) {
 			// delete from uncompleted tasks
 			try {
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(EMPTY_MSG);
-				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.printRed(DNE_MSG);
+				String[] tmp = s.split(" ");
+				if (s.contains("all")) {
+					int num = Integer.parseInt(tmp[1]);
+					Task t = delAllRecurringTask(num - 1);
+					UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+					arraylistsHaveBeenModified = true;
 				} else {
-					if ((num - 1) < list.size()) {
-						Task deleted = list.get(num - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
-						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num-1);
-						arraylistsHaveBeenModified = true;
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(EMPTY_MSG);
+					} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.printRed(DNE_MSG);
 					} else {
-						Task deleted = list2.get(num - list.size() - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
-						Logic.crud.displayNearestFiveDeleteFloatingTask(num-1);
-						arraylistsHaveBeenModified = true;
+						if ((num - 1) < list.size()) {
+							Task deleted = list.get(num - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+							Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+							arraylistsHaveBeenModified = true;
+						} else {
+							Task deleted = list2.get(num - list.size() - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+							Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+							arraylistsHaveBeenModified = true;
+						}
 					}
 				}
 			} catch (Exception e) {
@@ -818,14 +966,14 @@ public class Parser {
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
-						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num-1);
+						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 						arraylistsHaveBeenModified = true;
 					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
-						Logic.crud.displayNearestFiveDeleteFloatingTask(num-1);
+						Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
 						arraylistsHaveBeenModified = true;
 					}
 				}
@@ -999,7 +1147,7 @@ public class Parser {
 	public static int getIndexOfKey(String[] arr) {
 		int idx = -1;
 		for (int j = 0; j < arr.length; j++) {
-			for (int i =0;i<key.length;i++) {
+			for (int i = 0; i < key.length; i++) {
 				if (arr[j].equals(key[i])) {
 					idx = j;
 				}
@@ -1163,32 +1311,135 @@ public class Parser {
 		return tmp;
 
 	}
-	public static void delRecurringTasks(String s){
-		int num = Integer.parseInt(s);
-		localStorage.delFromRecurringTasks(num-1);
+
+	/**
+	 * method that delete all recurring task at index n from recurring tasks and
+	 * uncompleted tasks in storage
+	 * 
+	 * @param n
+	 * @return
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public static Task delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
+		ArrayList<Task> list = localStorage.getRecurringTasks();
+		ArrayList<Task> list2 = localStorage.getUncompletedTasks();
+		Task deleted = list.get(n);
+		String id = deleted.getId();
+		for (int i = 0; i < list2.size(); i++) {// delete from uncompleted tasks
+			Task task = list2.get(i);
+			if (id.equals(task.getId())) {
+				Logic.crud.deleteTask(i, 1);
+				i = -1;// loop again
+			}
 		}
-		//set recurring tasks command	
-		public static void setRecurringTask(String s) {
-			int num = Integer.parseInt(s);		
-			UI.ui.printRed("Enter new description and deadline of recurring tasks");
-			String in = sc.nextLine();
-			String [] tmp = in.split(" ");
-			int end = getIndexOfKey(tmp);
-			issue = getIssue(tmp, -1, end, false, false);
-			date = tmp[end+1];
+		localStorage.delFromRecurringTasks(n);
+		return deleted;
+	}
+
+	/** 
+	 * methods that support the editing of recurring task at index n
+	 *  
+	 * @param n
+	 * @throws IOException 
+	 * @throws ClassNotFoundException 
+	 */
+	public static void setRecurringTask(int n) throws ClassNotFoundException, IOException {
+		Task replaced = localStorage.getRecurringTask(n);
+		UI.ui.printRed("Enter new description and deadline of recurring tasks");
+		String in = sc.nextLine();
+		// get index of key
+		if(in.contains("`")){
+			int ind= in.indexOf("`");
+			String[] s2= in.split(" ` ");
+		if(s2.length==2){			
+			String[] temp=s2[1].split(" ");
+		
+	
+		issue = s2[0];
+		int start = getStartingIndex(temp); // start has value of -1 if
+		// it
+		// has no start date
+		int end = getIndexOfKey(temp); // end has value of -1 if it has
+		// no end date
+		if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+			end = -1;// no end date
+		} 
+		UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+		String in2 = sc.nextLine();
+		String[] tmp = in2.split(" ");
+		String freq = tmp[0];
+		String last = tmp[1];
+		String before = tmp[2];
+		
+		int frequency = Integer.parseInt(freq);
+		int be4 = Integer.parseInt(before);
+		// int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
+	
+		if (start == -1 && end != -1) {// only got end date			
+			String	ed = temp[end+1];
+			if (hasEndTime(temp)) {			
+				String t = temp[end+2];
+				t = t.replaceAll(":","/");
+				ed = ed+"/"+ t;
+			}
+			if (replaced.getStartDate() != null) { //has start date in task
+				replaced = new Task(issue,replaced.getFixedStartDateString(),ed,in,frequency,be4,last);
+			}	else {
+				replaced = new Task(issue,ed,in,false,frequency,be4,last);
+			}
+		} else if (start ==1 && end == -1) { //only got start date
+			String sd = temp[start+1];
+		
+			if (hasStartTime(temp)) {
+				String t = temp[start+2];
+				t = t.replaceAll(":","/");
+				sd = sd+"/"+t;
+			}
+			if (replaced.getEndDate() != null) {//has end date in task
+				replaced = new Task(issue,sd,replaced.getDateCompare(),in,frequency,be4,last);
+			} else {
+				replaced = new Task(issue,sd,in,true,frequency,be4,last);
+				
+			}
+		} else { //have both start date and end date
+			String sd = temp[start+1];
+			String ed = temp[end+1];
+			if (hasEndTime(temp)) {
+			
+				String t = temp[end+2];
+				t = t.replaceAll(":","/");
+				ed = ed+"/"+ t;
+			}
+			if (hasStartTime(temp)) {
+				
+					String t = temp[start+2];
+					t = t.replaceAll(":","/");
+					sd = sd+"/"+t;
+				}
+			
+			replaced = new Task(issue,sd,ed,in,frequency,be4,last);
+
+		}
+		} else {
+			issue = in;
 			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
 			in = sc.nextLine();
-			tmp = in.split(" ");
+			String[] tmp = in.split(" ");
 			String freq = tmp[0];
 			String last = tmp[1];
-			String before = tmp[2];			
-		
+			String before = tmp[2];
+			
 			int frequency = Integer.parseInt(freq);
 			int be4 = Integer.parseInt(before);
-		//	int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
-			Task task = new Task(issue,date,s,false,frequency,be4,last);
-			localStorage.setRecurringTask(num-1,task);
-			Head.checkDateAndAdd();
+			replaced.setIssue(issue);
+			replaced.setFrequency(frequency);
+			replaced.setdayBefore(be4);
+			replaced.setLastDate(last);
 		}
-	
+		}	
+		delAllRecurringTask(n);
+		localStorage.addToRecurringTasks(replaced);
+		Head.checkDateAndAdd();
+}
 }
