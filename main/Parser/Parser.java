@@ -740,12 +740,14 @@ public class Parser {
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num-1);
 						arraylistsHaveBeenModified = true;
 					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+						Logic.crud.displayNearestFiveDeleteFloatingTask(num-1);
 						arraylistsHaveBeenModified = true;
 					}
 				}
@@ -808,12 +810,14 @@ public class Parser {
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num-1);
 						arraylistsHaveBeenModified = true;
 					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
+						Logic.crud.displayNearestFiveDeleteFloatingTask(num-1);
 						arraylistsHaveBeenModified = true;
 					}
 				}

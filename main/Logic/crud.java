@@ -220,6 +220,54 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 public static void displayNearestFiveDeleteUncompleteTaskList(int index){
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 int size = tempTasks.size();
+		 if(size==0){
+			 UI.ui.printGreen("Uncompleted Task List is empty");
+		 }else if(index<=tempTasks.size()){
+			 
+			 int head = index-2;
+			 int tail = index+3;
+			 if(head<0){
+				 head=0;
+			 }
+			 if(tail>=size){
+				 tail=size;
+			 }
+
+			 for(int i=head;i<tail;i++){
+					 Task temp=tempTasks.get(i);
+					
+						 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 
+				}
+		 }
+	 }
+	 public static void displayNearestFiveDeleteFloatingTask(int index){
+		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
+		 int size = Storage.localStorage.getUncompletedTasks().size();
+		 int size2=tempTasks.size();
+		 index-=size;
+		 if(size2==0){
+			 UI.ui.printGreen("Floating Task List is Empty");
+		 }else if(index<size2){
+			 int head = index-2;
+			 int tail = index+3;
+			 if(head<0){
+				 head=0;
+			 }
+			 if(tail>size2){
+				 tail=size2;
+			 }
+			 for(int i=head;i<tail;i++){
+					 Task temp=tempTasks.get(i);
+					
+						 UI.ui.printTask(size+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 
+				}
+		 }
+	 }
 	 public static void displayNearestFiveUncompleted(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 int size = tempTasks.size();
