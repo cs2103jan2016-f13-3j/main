@@ -4,7 +4,9 @@ package Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.List;
 
 import com.joestelmach.natty.DateGroup;
@@ -41,28 +43,39 @@ public class Natty {
 	// Returns "Today" if matches today, "Tomorrow" if matches tomorrow
 	// Otherwise return original string
 	public String tryChangeTodayOrTomorrow(String source) {
-		String[] split = source.split(" ");
-		String convertedString = (monthNamesList.indexOf(split[1]) + 1) + "/" + split[0] + "/" + split[2]; //04 Apr 2016 to 04/04/2016
-		convertedString = convertToAmericanFormat(convertedString);
+		String result = parseDay(source);
+		return result;
+	}
 
-		String convertedSource = parseString(convertedString);
-		String convertedToday = parseString(MSG_TODAY);
-		String convertedTomorrow = parseString(MSG_TOMORROW);
-
-		if (convertedSource.equals(convertedToday)) { // input date matches today's date
+	private String parseDay(String sourceDay) {
+		Calendar today = GregorianCalendar.getInstance(); // create today's Calendar and then its string form
+		String todayString = today.get(Calendar.DAY_OF_MONTH) + "/" + today.get(Calendar.MONTH) + "/" + today.get(Calendar.YEAR);
+		
+		String[] splitDates = sourceDay.split(" "); // split the input date to create a string
+		int year = Integer.parseInt(splitDates[2]);
+		int month = monthNamesList.indexOf(splitDates[1]);
+		int day = Integer.parseInt(splitDates[0]);
+		Calendar input = new GregorianCalendar(year, month, day);
+		String inputString = input.get(Calendar.DAY_OF_MONTH) + "/" + input.get(Calendar.MONTH) + "/" + input.get(Calendar.YEAR);
+		
+		if (inputString.equals(todayString)) { // input string matches today's string
 			return MSG_TODAY;
-		} else if (convertedSource.equals(convertedTomorrow)) { // input date matches tomorrow's date
-			return MSG_TOMORROW;
-		} else {
-			return source; // not today or tomorrow, return original date string
 		}
+
+		today.add(Calendar.DAY_OF_MONTH, 1); // add 1 day to get tomorrow's Calendar and then its string form
+		String tomorrowString = today.get(Calendar.DAY_OF_MONTH) + "/" + today.get(Calendar.MONTH) + "/" + today.get(Calendar.YEAR);
+		
+		if (inputString.equals(tomorrowString)) { // input string matches tomorrow's string
+			return MSG_TOMORROW;
+		}
+		return sourceDay; // input is neither today nor tomorrow
 	}
 
 	public String parseString(String source) {
 		if (!source.contains(" ` ")) { // no date indicator was given, thus no date to parse, return as is
 			return source;
 		}
-		
+
 		int indexOfIndicator = source.lastIndexOf(" ` "); // last index in case user uses same sequence earlier as issue
 		String stringBeforeIndicator = source.substring(0, indexOfIndicator);
 		String stringAfterIndicator = source.substring(indexOfIndicator + 3); // e.g. add buy egg ` <by tomorrow>
@@ -79,40 +92,26 @@ public class Natty {
 		} else {
 			hasTime = false;
 		}
-		
+
 		String matchingValue = dateGroups.get(0).getText();
 		System.out.println("matchingvalue is " + matchingValue);
-		
-//		int indexOfDate = getIndexOfDetectedDate(dateGroups.get(0)); // gets index of where the issue description ends
+
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
 		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 04/05/2016, terminate early. treat it as start date
 			return stringBeforeIndicator + DATE_INDICATOR + MSG_START_DATE_INDICATOR + " " + result;
 		}
-		
+
 		String[] splitArray = stringAfterIndicator.split(" ");
 		if (splitArray[splitArray.length - 1].equalsIgnoreCase("r")) { // if input command ends with "r" by itself, indicates recurring
 			result += " r"; // add "r" to the result string for Parser recognition
 		}
 
-		// gets "room" from "clean room tomorrow", "on" from "buy book on Friday" etc...
+		// gets "on" from "buy book on Friday" etc.
 		String keyword = getLastWordOfIssue(dateGroups.get(0), splitArray);
-		System.out.println("keyword is " + keyword);
 
-//		if (hasTwoDates) { // if task has 2 dates detected
-//			if (!keyword.equalsIgnoreCase("from")) { // if user did not type "from", we append it for Parser to recognise
-//				result = "from " + result;
-//			}
-//		} else { // task has only 1 date detected
-//			if (!endDateKeywordsList.contains(keyword) && !keyword.equals("from")) {
-				// if user did not enter a end date keyword such as "by" or "before" nor "from"
-//				result = "from " + result; // we append "from" to inform Parser this is a start date
-			result = keyword + " " + result;
-//			}
-		
-
-//		result = source.substring(0, indexOfDate) + result; // adds the issue description to the converted date string
-		return stringBeforeIndicator + DATE_INDICATOR + result;
+		result = keyword + " " + result;
+		return stringBeforeIndicator + DATE_INDICATOR + result; // adds the issue description, date indicator, and parsed date together
 	}
 
 	private String convertDateGroupToString(List<DateGroup> group) {
@@ -237,9 +236,9 @@ public class Natty {
 	}
 
 	// Returns index where the detected date keyword(s) begin
-	private static int getIndexOfDetectedDate(DateGroup dateGroup) {
-		return dateGroup.getPosition();
-	}
+//	private static int getIndexOfDetectedDate(DateGroup dateGroup) {
+//		return dateGroup.getPosition();
+//	}
 
 	// Returns the last word before the detected date keyword(s) begin
 	private static String getLastWordOfIssue(DateGroup dateGroup, String[] splitArray) {
@@ -257,9 +256,8 @@ public class Natty {
 		}
 		return splitArray[count - 1]; // count is where detectedKeyword is, return the word before it
 	}
-	
+
 	public String getDayName(String source) {
-//		System.out.println("source is " + source);
 		List<DateGroup> dateGroups = parser.parse(source);
 		List<Date> dates = dateGroups.get(0).getDates();
 		String originalString = dates.toString(); // At this point, String is "[Mon Apr 03......"
