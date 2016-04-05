@@ -40,19 +40,14 @@ public class Mark {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
-		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-
-		if(index < getSize.size()) {
-			Task temp = Storage.localStorage.getCompletedTask(index);
-			temp.setUncomplete();
-			Storage.localStorage.delFromCompletedTasks(index);
+		Task temp = Storage.localStorage.getCompletedTask(index);
+		
+		if(temp.getEndDate() != null || temp.getStartDate() != null) {
 			Storage.localStorage.addToUncompletedTasks(temp);
-		}
-		else {
-			Task temp = Storage.localStorage.getCompletedTask(index);
-			temp.setUncomplete();
 			Storage.localStorage.delFromCompletedTasks(index);
+		} else {
 			Storage.localStorage.addToFloatingTasks(temp);
+			Storage.localStorage.delFromCompletedTasks(index);
 		}
 	}
 
