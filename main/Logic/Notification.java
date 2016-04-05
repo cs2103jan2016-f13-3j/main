@@ -58,19 +58,21 @@ public class Notification {
 			UI.ui.printGreen("Index\tStart Date\t\t End Date\t\t\t Task");
 			for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				Task temp = tasksToBeDisplayed.get(i);
-				if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) < d3.get(Calendar.DAY_OF_YEAR)) {
-					int overdue = d3.get(Calendar.DAY_OF_MONTH) - temp.getEndDate().get(Calendar.DAY_OF_MONTH);
-					String message = "";
-					if(overdue != 1) {
-						message = " - overdue by " + overdue + " days.";
-					} else {
-						message = " - overdue by " + overdue + " day.";
-					}
-					UI.ui.printTaskWithMessage(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue(), message);
-				} else if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) == d3.get(Calendar.DAY_OF_YEAR)) {
-					String message = " - deadline today!";
-					UI.ui.printTaskWithMessage(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue(), message);
-				} else {
+				if(temp.getEndDate() != null) {
+					if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) < d3.get(Calendar.DAY_OF_YEAR)) {
+						int overdue = d3.get(Calendar.DAY_OF_MONTH) - temp.getEndDate().get(Calendar.DAY_OF_MONTH);
+						String message = "";
+						if(overdue != 1) {
+							message = " - overdue by " + overdue + " days.";
+						} else {
+							message = " - overdue by " + overdue + " day.";
+						}
+						UI.ui.printTaskWithMessage(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue(), message);
+					} else if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) == d3.get(Calendar.DAY_OF_YEAR)) {
+						String message = " - deadline today!";
+						UI.ui.printTaskWithMessage(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue(), message);
+					} 
+				}else {
 					UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
 				}
 			}
