@@ -71,7 +71,7 @@ public class ui {
 	}
 	public static void printTask(int i,String sdate,String edate,String msg){
 		i=i+1;
-		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+edate+YELLOW+msg+ansi().reset());
+		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate + " " +edate+ " " +YELLOW+msg+ansi().reset());
 	}
 	public static void printTaskAdded(int i,String sdate,String edate,String msg){
 		i=i+1;
@@ -109,5 +109,11 @@ public class ui {
 			command = Natty.getInstance().parseString(command);
 		}
 		return command;
+	}
+
+	public static void printTaskWithMessage(int i,String sdate,String edate,String issue, String message) {
+		i=i+1;
+		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate + " " +edate+ " " +YELLOW+issue+ " " + RED + message +
+				ansi().reset());	
 	}
 }

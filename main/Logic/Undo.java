@@ -193,7 +193,7 @@ public class Undo {
 		recurringRedoStack.push(recurringTasksSnapshot);
 		redoCommands.add(command);
 	}
-	
+
 	public void clearRedoCommands() {
 		redoCommands.clear();
 	}
