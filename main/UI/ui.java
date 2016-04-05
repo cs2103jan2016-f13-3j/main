@@ -104,7 +104,8 @@ public class ui {
 	public static String acceptCommand() {
 		String command = sc.nextLine();
 		String[] splitCommand = command.split(" ");
-		if (splitCommand[0].equals("add")) { // only use natty if add command is detected
+		String firstWord = splitCommand[0];
+		if (firstWord.equals("add") || firstWord.equals("+") || firstWord.equals("a")) { // only use natty if add command is detected
 			command = Natty.getInstance().parseString(command);
 		}
 		return command;
