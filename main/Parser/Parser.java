@@ -1348,6 +1348,7 @@ public class Parser {
 		Task replaced = localStorage.getRecurringTask(n);
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
+		in = Natty.getInstance().parseEditString(in);
 		// get index of key
 		int ind= in.indexOf("`");
 		String[] s2= in.split("`");
