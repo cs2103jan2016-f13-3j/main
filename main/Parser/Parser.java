@@ -1351,7 +1351,7 @@ public class Parser {
 		// get index of key
 		if(in.contains("`")){
 			int ind= in.indexOf("`");
-			String[] s2= in.split(" ` ");
+			String[] s2= in.split("`");
 		if(s2.length==2){			
 			String[] temp=s2[1].split(" ");
 		
