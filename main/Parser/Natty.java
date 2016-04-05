@@ -93,8 +93,6 @@ public class Natty {
 			hasTime = false;
 		}
 
-		String matchingValue = dateGroups.get(0).getText();
-
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
 		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 04/05/2016, terminate early. treat it as start date
@@ -111,6 +109,45 @@ public class Natty {
 
 		result = keyword + " " + result;
 		return stringBeforeIndicator + DATE_INDICATOR + result; // adds the issue description, date indicator, and parsed date together
+	}
+	
+	public String parseEditString(String input) {
+		if (!input.contains(" ` ")) { // no date indicator was given, thus no date to parse, return as is
+			return input;
+		}
+		int indexOfIndicator = input.lastIndexOf(" ` ");
+		String issueDescription =  input.substring(0, indexOfIndicator);
+		String stringAfterIndicator = input.substring(indexOfIndicator + 3); // e.g. add buy egg ` <by tomorrow>
+		stringAfterIndicator = convertToAmericanFormat(stringAfterIndicator); // if user enter DD/MM/YYYY, neede to convert for natty
+		List<DateGroup> dateGroups = parser.parse(stringAfterIndicator);
+
+		if (dateGroups.isEmpty()) { // if no date was found by natty
+			// return the string without the indicator, treat as floating task etc
+			return issueDescription + " " + stringAfterIndicator;
+		}
+
+		if (inputIncludesTime(dateGroups.get(0))) { // keep track of whether user entered date with time
+			hasTime = true;
+		} else {
+			hasTime = false;
+		}
+
+		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
+
+		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 1 date, terminate early. treat it as start date
+			return issueDescription + DATE_INDICATOR + MSG_START_DATE_INDICATOR + " " + result;
+		}
+
+		String[] splitArray = stringAfterIndicator.split(" ");
+		if (splitArray[splitArray.length - 1].equalsIgnoreCase("r")) { // if input command ends with "r" by itself, indicates recurring
+			result += " r"; // add "r" to the result string for Parser recognition
+		}
+
+		// gets "on" from "buy book on Friday" etc.
+		String keyword = getLastWordOfIssue(dateGroups.get(0), splitArray);
+
+		result = keyword + " " + result;
+		return issueDescription + DATE_INDICATOR + result; // adds the issue description, date indicator, and parsed date together
 	}
 
 	private String convertDateGroupToString(List<DateGroup> group) {

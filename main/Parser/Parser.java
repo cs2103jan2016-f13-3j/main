@@ -495,6 +495,7 @@ public class Parser {
 				UI.ui.printGreen(EDIT_PROMPT);
 				Logic.crud.copyEditingTask(num);
 				input = sc.nextLine();
+				input = Natty.getInstance().parseEditString(input);
 				if(input.contains("`")){
 					int ind=input.indexOf("`");
 					String[] s2=input.split(" ` ");
