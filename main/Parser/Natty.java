@@ -1,5 +1,3 @@
-package Parser;
-
 //@@author Jie Wei
 
 import java.util.ArrayList;
@@ -99,17 +97,17 @@ public class Natty {
 		String keyword = getLastWordOfIssue(dateGroups.get(0), splitArray);
 		System.out.println("keyword is " + keyword);
 
-		if (hasTwoDates) { // if task has 2 dates detected
-			if (!keyword.equalsIgnoreCase("from")) { // if user did not type "from", we append it for Parser to recognise
-				result = "from " + result;
-			}
-		} else { // task has only 1 date detected
+//		if (hasTwoDates) { // if task has 2 dates detected
+//			if (!keyword.equalsIgnoreCase("from")) { // if user did not type "from", we append it for Parser to recognise
+//				result = "from " + result;
+//			}
+//		} else { // task has only 1 date detected
 //			if (!endDateKeywordsList.contains(keyword) && !keyword.equals("from")) {
 				// if user did not enter a end date keyword such as "by" or "before" nor "from"
 //				result = "from " + result; // we append "from" to inform Parser this is a start date
 			result = keyword + " " + result;
 //			}
-		}
+		
 
 //		result = source.substring(0, indexOfDate) + result; // adds the issue description to the converted date string
 		return stringBeforeIndicator + DATE_INDICATOR + result;
