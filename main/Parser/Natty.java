@@ -1,5 +1,6 @@
-//@@author Jie Wei
 package Parser;
+
+//@@author Jie Wei
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -12,6 +13,8 @@ import com.joestelmach.natty.Parser;
 public class Natty {
 	private static Natty natty;
 	private static Parser parser;
+	private static final String DATE_INDICATOR = " ` ";
+	private static final String MSG_START_DATE_INDICATOR = "on";
 	private static final String MSG_TODAY = "Today";
 	private static final String MSG_TOMORROW = "Tomorrow";
 	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
@@ -56,46 +59,60 @@ public class Natty {
 	}
 
 	public String parseString(String source) {
-		String input = convertToAmericanFormat(source);
-		List<DateGroup> dateGroups = parser.parse(input);
+		if (!source.contains(" ` ")) { // no date indicator was given, thus no date to parse, return as is
+			return source;
+		}
+		
+		int indexOfIndicator = source.lastIndexOf(" ` "); // last index in case user uses same sequence earlier as issue
+		String stringBeforeIndicator = source.substring(0, indexOfIndicator);
+		String stringAfterIndicator = source.substring(indexOfIndicator + 3); // e.g. add buy egg ` <by tomorrow>
+		stringAfterIndicator = convertToAmericanFormat(stringAfterIndicator); // if user enter DD/MM/YYYY, neede to convert for natty
+		List<DateGroup> dateGroups = parser.parse(stringAfterIndicator);
 
 		if (dateGroups.isEmpty()) { // if no date was found by natty
-			return source; // return the string as it is, eg add floating task command, or clear command
+			// return the string without the indicator, treat as floating task etc
+			return source.substring(0, indexOfIndicator)+ " " + source.substring(indexOfIndicator + 3);
 		}
 
-		if (inputIncludesTime(dateGroups.get(0))) {
+		if (inputIncludesTime(dateGroups.get(0))) { // keep track of whether user entered date with time
 			hasTime = true;
 		} else {
 			hasTime = false;
 		}
-		int indexOfDate = getIndexOfDetectedDate(dateGroups.get(0)); // gets index of where the issue description ends
-		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY/HrHr/MinMin representation of the string
+		
+		String matchingValue = dateGroups.get(0).getText();
+		System.out.println("matchingvalue is " + matchingValue);
+		
+//		int indexOfDate = getIndexOfDetectedDate(dateGroups.get(0)); // gets index of where the issue description ends
+		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
-		if (input.split(" ").length == 1) { // if input was only 04/05/2016, terminate early
-			return result;
+		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 04/05/2016, terminate early. treat it as start date
+			return stringBeforeIndicator + DATE_INDICATOR + MSG_START_DATE_INDICATOR + " " + result;
 		}
 		
-		String[] splitArray = input.split(" ");
+		String[] splitArray = stringAfterIndicator.split(" ");
 		if (splitArray[splitArray.length - 1].equalsIgnoreCase("r")) { // if input command ends with "r" by itself, indicates recurring
 			result += " r"; // add "r" to the result string for Parser recognition
 		}
 
 		// gets "room" from "clean room tomorrow", "on" from "buy book on Friday" etc...
 		String keyword = getLastWordOfIssue(dateGroups.get(0), splitArray);
+		System.out.println("keyword is " + keyword);
 
 		if (hasTwoDates) { // if task has 2 dates detected
 			if (!keyword.equalsIgnoreCase("from")) { // if user did not type "from", we append it for Parser to recognise
 				result = "from " + result;
 			}
 		} else { // task has only 1 date detected
-			if (!endDateKeywordsList.contains(keyword) && !keyword.equals("from")) {
+//			if (!endDateKeywordsList.contains(keyword) && !keyword.equals("from")) {
 				// if user did not enter a end date keyword such as "by" or "before" nor "from"
-				result = "from " + result; // we append "from" to inform Parser this is a start date
-			}
+//				result = "from " + result; // we append "from" to inform Parser this is a start date
+			result = keyword + " " + result;
+//			}
 		}
 
-		result = source.substring(0, indexOfDate) + result; // adds the issue description to the converted date string
-		return result;
+//		result = source.substring(0, indexOfDate) + result; // adds the issue description to the converted date string
+		return stringBeforeIndicator + DATE_INDICATOR + result;
 	}
 
 	private String convertDateGroupToString(List<DateGroup> group) {
@@ -234,6 +251,9 @@ public class Natty {
 			if (s.equals(detectedKeyword)) {
 				break;
 			}			
+		}
+		if (count == 0) { // means user enter something like "add have lunch ` "today", without "from"/"on"/"by"/"to"
+			return MSG_START_DATE_INDICATOR;
 		}
 		return splitArray[count - 1]; // count is where detectedKeyword is, return the word before it
 	}
