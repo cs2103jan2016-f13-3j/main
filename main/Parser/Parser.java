@@ -141,199 +141,200 @@ public class Parser {
 	}
 
 	public static void addCommand(String s) throws IOException, ClassNotFoundException {
+		boolean isAdded;
 		if (s.equals("")) {
 		} else {
 			// get index of key
-			String[] temp = s.split(" ");
-			int start = getStartingIndex(temp); // start has value of -1 if
-			// it
-			// has no start date
-			int end = getIndexOfKey(temp); // end has value of -1 if it has
-			// no end date
-			if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
-				end = -1;// no end date
-			} 
-			boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
-			// true
-			// if
-			// user
-			// wants
-			// to
-			// set
-			// task
-			// as
-			// recurring
-			boolean isAdded;
-
-			if (!toRecurred) {
-				if (start == -1 && end != -1) {// no start date but has end
-					// date
-					startDate = "-";
-					startTime = "-";
-					// read date & time
-					date = temp[end + 1];
-					int idx = getIndexOfWeek(date);
-					if (idx != -1) {
-						date = matchDate(idx);
-					}
-					dateIn = date;
-					if (hasEndTime(temp)) {// check if contain end time
-						time = temp[end + 2];
-						time = time.replaceAll(":", "/");
-						dateIn = dateIn + "/" + time;
-					} else {
-						time = "-";
-					}
-
-					if (!Logic.checkDate.checkDateformat(date)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						// isAdded
-						// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
-						// (to be implemented)
-						isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
-						if (isAdded) {
-							Logic.Sort.sortTasksChronologically();
-							int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, s);
-							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
-							arraylistsHaveBeenModified = true;
-							Logic.crud.displayNearestFiveUncompleted(index);
-						} else {
-							UI.ui.printRed(DUPLICATE_ADD_MSG);
-						}
-					}
-
-				} else if (start == -1 && end == -1) {// no end date and no
-					// start
-					// date
-					isAdded = Logic.crud.addTask(s);
-					if (isAdded) {
-						Logic.Sort.sortTasksChronologically();
-						int index= Logic.crud.uncompletedTaskIndexWithNoDate(s);
-						UI.ui.printGreen("\"" + s + "\" " + ADD_MSG);
-						Logic.crud.displayNearestFiveFloating(index);
-						arraylistsHaveBeenModified = true;
-					} else {
-						UI.ui.printRed(DUPLICATE_ADD_MSG);
-					}
-
-				} else if (start != -1 && end == -1) {// has start date but
+			if(s.contains("`")){
+				int ind=s.indexOf("`");
+				String[] s2=s.split("`");
+				if(s2.length==2){
+					String[] temp=s2[1].split(" ");
+					String r=s.substring(0, ind)+s.substring(ind+2);
+					int start = getStartingIndex(temp); // start has value of -1 if
+					// it
+					// has no start date
+					int end = getIndexOfKey(temp); // end has value of -1 if it has
 					// no end date
-					date = "-";
-					time = "-";
-					startDate = temp[start + 1];
-					int idx = getIndexOfWeek(startDate);
-					if (idx != -1) {
-						startDate = matchDate(idx);
-					}
-					dateIn2 = startDate;
+					if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+						end = -1;// no end date
+					} 
+					
+					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
+					if (!toRecurred) {
+						if (start == -1 && end != -1) {// no start date but has end
+							// date
+							startDate = "-";
+							startTime = "-";
+							// read date & time
+							date = temp[end + 1];
+							int idx = getIndexOfWeek(date);
+							if (idx != -1) {
+								date = matchDate(idx);
+							}
+							dateIn = date;
+							if (hasEndTime(temp)) {// check if contain end time
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
+							} else {
+								time = "-";
+							}
 
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime = startTime.replaceAll(":", "/");
-						dateIn2 = dateIn2 + "/" + startTime;
-					} else {
-						startTime = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(startDate)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						// isAdded =
-						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
-						if (isAdded) {
-							Logic.Sort.sortTasksChronologically();
-							int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,s);
-							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
-							Logic.crud.displayNearestFiveUncompleted(index);
-							arraylistsHaveBeenModified = true;
-						} else {
-							UI.ui.printRed(DUPLICATE_ADD_MSG);
+							if (!Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
+								issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
+								// isAdded
+								// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
+								// (to be implemented)
+								isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
+								if (isAdded) {
+									Logic.Sort.sortTasksChronologically();
+									int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, s);
+									UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
+									arraylistsHaveBeenModified = true;
+									Logic.crud.displayNearestFiveUncompleted(index);
+								} else {
+									UI.ui.printRed(DUPLICATE_ADD_MSG);
+								}
+							}
+
+						} else if (start != -1 && end == -1) {// has start date but
+							// no end date
+							date = "-";
+							time = "-";
+							startDate = temp[start + 1];
+							int idx = getIndexOfWeek(startDate);
+							if (idx != -1) {
+								startDate = matchDate(idx);
+							}
+							dateIn2 = startDate;
+
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} else {
+								startTime = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(startDate)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
+								issue = s2[0];
+								// isAdded =
+								// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+								isAdded = Logic.crud.addTaskWithStartDate(issue, dateIn2, s);
+								if (isAdded) {
+									Logic.Sort.sortTasksChronologically();
+									int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,s);
+									UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
+									Logic.crud.displayNearestFiveUncompleted(index);
+									arraylistsHaveBeenModified = true;
+								} else {
+									UI.ui.printRed(DUPLICATE_ADD_MSG);
+								}
+							}
+						} else { // has both start date and end date
+							startDate = temp[start + 1];
+							date = temp[end + 1];
+							int idx = getIndexOfWeek(startDate);
+							int idx2 = getIndexOfWeek(date);
+							if (idx != -1) {
+								startDate = matchDate(idx);
+							}
+							if (idx2 != -1) {
+								date = matchDate(idx2);
+							}
+							dateIn = date;
+							dateIn2 = startDate;
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} else {
+								startTime = "-";
+							}
+							if (hasEndTime(temp)) {
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
+
+							} else {
+								time = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
+								issue = s2[0];
+
+								// isAdded =
+								// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+								isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
+								if (isAdded) {
+									Logic.Sort.sortTasksChronologically();
+									int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, s);
+									UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
+									Logic.crud.displayNearestFiveUncompleted(index);
+									arraylistsHaveBeenModified = true;
+								} else {
+									UI.ui.printRed(DUPLICATE_ADD_MSG);
+								}
+							}
 						}
-					}
-				} else { // has both start date and end date
-					startDate = temp[start + 1];
-					date = temp[end + 1];
-					int idx = getIndexOfWeek(startDate);
-					int idx2 = getIndexOfWeek(date);
-					if (idx != -1) {
-						startDate = matchDate(idx);
-					}
-					if (idx2 != -1) {
-						date = matchDate(idx2);
-					}
-					dateIn = date;
-					dateIn2 = startDate;
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime = startTime.replaceAll(":", "/");
-						dateIn2 = dateIn2 + "/" + startTime;
-					} else {
-						startTime = "-";
-					}
-					if (hasEndTime(temp)) {
-						time = temp[end + 2];
-						time = time.replaceAll(":", "/");
-						dateIn = dateIn + "/" + time;
-
-					} else {
-						time = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasEndTime(temp), hasEndTime(temp));
-
-						// isAdded =
-						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						isAdded = Logic.crud.addTaskWithBothDates(issue, dateIn2, dateIn, s);
-						if (isAdded) {
-							Logic.Sort.sortTasksChronologically();
-							int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, s);
-							UI.ui.printGreen("\"" + issue + "\" " + ADD_MSG);
-							Logic.crud.displayNearestFiveUncompleted(index);
-							arraylistsHaveBeenModified = true;
-						} else {
-							UI.ui.printRed(DUPLICATE_ADD_MSG);
+					} else { // so far recurring task only support add task by end
+						// date
+						issue = s2[0];
+					
+						issue = issue.substring(0, issue.length() - 2);
+						date = temp[end + 1];// assume only has end date for
+						// recurring
+						// task
+						int idx = getIndexOfWeek(date);
+						if (idx != -1) {
+							date = matchDate(idx);
 						}
+						UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+					    String	in = sc.nextLine();
+						String[] tmp = in.split(" ");
+						String freq = tmp[0];
+						String last = tmp[1];
+						String before = tmp[2];			
+						
+						int frequency = Integer.parseInt(freq);
+						int be4 = Integer.parseInt(before);			
+
+						Logic.crud.addTaskToRecurring(issue, date, s,frequency,be4,last);
+				/*		for (int i = 1; i < numRec; i++) {
+							date = processDate(date, Integer.parseInt(freq));
+							Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
+
+						} */
+						arraylistsHaveBeenModified = true;
+
 					}
 				}
-			} else { // so far recurring task only support add task by end
-				// date
-				issue = getIssue(temp, start, end, false, false);
-			
-				issue = issue.substring(0, issue.length() - 2);
-				date = temp[end + 1];// assume only has end date for
-				// recurring
-				// task
-				int idx = getIndexOfWeek(date);
-				if (idx != -1) {
-					date = matchDate(idx);
-				}
-				UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
-			    String	in = sc.nextLine();
-				String[] tmp = in.split(" ");
-				String freq = tmp[0];
-				String last = tmp[1];
-				String before = tmp[2];			
+
 				
-				int frequency = Integer.parseInt(freq);
-				int be4 = Integer.parseInt(before);			
-
-				Logic.crud.addTaskToRecurring(issue, date, s,frequency,be4,last);
-		/*		for (int i = 1; i < numRec; i++) {
-					date = processDate(date, Integer.parseInt(freq));
-					Logic.crud.addTaskToRecurring(issue, date, s,frequency,before,last);
-
-				} */
-				arraylistsHaveBeenModified = true;
-
+			}else{
+				isAdded = Logic.crud.addTask(s);
+				if (isAdded) {
+					Logic.Sort.sortTasksChronologically();
+					int index= Logic.crud.uncompletedTaskIndexWithNoDate(s);
+					UI.ui.printGreen("\"" + s + "\" " + ADD_MSG);
+					Logic.crud.displayNearestFiveFloating(index);
+					arraylistsHaveBeenModified = true;
+				} else {
+					UI.ui.printRed(DUPLICATE_ADD_MSG);
+				}
+				
 			}
+
+
+			
 			Head.checkDateAndAdd();
 		}
 	}
@@ -490,112 +491,124 @@ public class Parser {
 				UI.ui.printGreen(EDIT_PROMPT);
 				Logic.crud.copyEditingTask(num);
 				input = sc.nextLine();
-				String[] temp = input.split(" ");
-				int start = getStartingIndex(temp); // start has value of -1
-				// if it has no start
-				// date
-				int end = getIndexOfKey(temp); // end has value of -1 if it
-				// has no end date
-				if (start == -1 && end != -1) {// no start date but has end
-					// date
-					startDate = "-";
-					startTime = "-";
-					// read date & time
-					date = temp[end + 1];
-					dateIn = date;
+				if(input.contains("`")){
+					int ind=input.indexOf("`");
+					String[] s2=input.split("`");
+					
+					if(s2.length==2){
+						String[] temp=s2[1].split(" ");
+						String r=input.substring(0, ind)+input.substring(ind+2);
+						int start = getStartingIndex(temp);
+						int end = getIndexOfKey(temp); // end has value of -1 if it has
+						// no end date
+						if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+							end = -1;// no end date
+						} 
+						if (start == -1 && end != -1) {// no start date but has end
+							// date
+							startDate = "-";
+							startTime = "-";
+							// read date & time
+							date = temp[end + 1];
+							dateIn = date;
 
-					if (hasEndTime(temp)) {// check if contain end time
-						//something is wrong here
-						time = temp[end + 2];
-						time = time.replaceAll(":", "/");
-						dateIn = dateIn + "/" + time;
+							if (hasEndTime(temp)) {// check if contain end time
+								//something is wrong here
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
 
-					} else {
-						time = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(date)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
+							} else {
+								time = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
 
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
-						// (to be implemented)
-						Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
-						Logic.Sort.sortTasksChronologically();
-						int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
-						UI.ui.printGreen("Task number " + num + EDIT_MSG);
-						Logic.crud.displayNearestFiveUncompleted(index);
-						arraylistsHaveBeenModified = true;
-					}
-				} else if (start == -1 && end == -1) {// no end date and no
-					// start date
-					Logic.crud.editTaskWithNoDate(input, input, num - 1);
-					int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
-					UI.ui.printGreen("Task number " + num + EDIT_MSG);
-					Logic.crud.displayNearestFiveFloating(index);
-					arraylistsHaveBeenModified = true;
-				} else if (start != -1 && end == -1) {// has start date but
-					// no end date
-					date = "-";
-					time = "-";
-					startDate = temp[start + 1];
-					dateIn2 = startDate;
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime = startTime.replaceAll(":", "/");
-						dateIn2 = dateIn2 + "/" + startTime;
-					} else {
-						startTime = "-";
-					}
-					if (!Logic.checkDate.checkDateformat(startDate)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasStartTime(temp));
-						// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-						Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
-						Logic.Sort.sortTasksChronologically();
-						int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,input);
-						
-						
-						UI.ui.printGreen("Task number " + num + EDIT_MSG);
-						Logic.crud.displayNearestFiveUncompleted(index);
-						arraylistsHaveBeenModified = true;
-					}
-				} else { // has both start date and end date
-					startDate = temp[start + 1];
-					date = temp[end + 1];
-					dateIn = date;
-					dateIn2 = startDate;
+								issue = s2[0];
+								System.out.println(issue);
+								// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
+								// (to be implemented)
+								Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
+								Logic.Sort.sortTasksChronologically();
+								int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
+								UI.ui.printGreen("Task number " + num + EDIT_MSG);
+								Logic.crud.displayNearestFiveUncompleted(index);
+								arraylistsHaveBeenModified = true;
+							}
+						} else if (start == -1 && end == -1) {// no end date and no
+							// start date
+							
+							Logic.crud.editTaskWithNoDate(input, input, num - 1);
+							int index= Logic.crud.uncompletedTaskIndexWithNoDate(input);
+							UI.ui.printGreen("Task number " + num + EDIT_MSG);
+							Logic.crud.displayNearestFiveFloating(index);
+							arraylistsHaveBeenModified = true;
+						} else if (start != -1 && end == -1) {// has start date but
+							// no end date
+							date = "-";
+							time = "-";
+							startDate = temp[start + 1];
+							dateIn2 = startDate;
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} else {
+								startTime = "-";
+							}
+							if (!Logic.checkDate.checkDateformat(startDate)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
+								issue = s2[0];
+								// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
+								Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
+								Logic.Sort.sortTasksChronologically();
+								int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue,dateIn2,input);
+								
+								
+								UI.ui.printGreen("Task number " + num + EDIT_MSG);
+								Logic.crud.displayNearestFiveUncompleted(index);
+								arraylistsHaveBeenModified = true;
+							}
+						} else { // has both start date and end date
+							startDate = temp[start + 1];
+							date = temp[end + 1];
+							dateIn = date;
+							dateIn2 = startDate;
 
-					if (hasStartTime(temp)) {
-						startTime = temp[start + 2];
-						startTime = startTime.replaceAll(":", "/");
-						dateIn2 = dateIn2 + "/" + startTime;
+							if (hasStartTime(temp)) {
+								startTime = temp[start + 2];
+								startTime = startTime.replaceAll(":", "/");
+								dateIn2 = dateIn2 + "/" + startTime;
+							} 
+							if (hasEndTime(temp)) {
+								time = temp[end + 2];
+								time = time.replaceAll(":", "/");
+								dateIn = dateIn + "/" + time;
+
+
+							} 
+							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+								UI.ui.printRed(WRONG_DATE_MSG);
+							} else {
+								// get issue
+								issue = s2[0];
+								// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
+								Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
+								UI.ui.printGreen("Task number " + num + EDIT_MSG);
+								Logic.Sort.sortTasksChronologically();
+								int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, input);
+								Logic.crud.displayNearestFiveUncompleted(index);
+								arraylistsHaveBeenModified = true;
+							}
+						}
 					} 
-					if (hasEndTime(temp)) {
-						time = temp[end + 2];
-						time = time.replaceAll(":", "/");
-						dateIn = dateIn + "/" + time;
-
-
-					} 
-					if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-						UI.ui.printRed(WRONG_DATE_MSG);
-					} else {
-						// get issue
-						issue = getIssue(temp, start, end, hasStartTime(temp), hasEndTime(temp));
-						// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-						Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
-						UI.ui.printGreen("Task number " + num + EDIT_MSG);
-						Logic.Sort.sortTasksChronologically();
-						int index=Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn, input);
-						Logic.crud.displayNearestFiveUncompleted(index);
-						arraylistsHaveBeenModified = true;
 					}
 				}
-			} 
+				
 		} catch (Exception e) {
 
 		}
