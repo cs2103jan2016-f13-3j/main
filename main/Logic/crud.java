@@ -1038,6 +1038,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayUpcomingTasks() {
+		 UI.ui.eraseScreen();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 //today
 		 Calendar d1 = Calendar.getInstance();
