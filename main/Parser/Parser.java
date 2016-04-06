@@ -640,7 +640,7 @@ public class Parser {
 			String[] tmp = s.split(" ");
 			if (s.contains("all")) {
 				int num = Integer.parseInt(tmp[1]);
-				setRecurringTask(num - 1);
+				editRecurringTask(num - 1);
 				arraylistsHaveBeenModified = true;
 			} else {
 				int num = Integer.parseInt(s);
@@ -1349,18 +1349,16 @@ public class Parser {
 	 * @throws IOException
 	 */
 	public static Task delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
-		ArrayList<Task> list = localStorage.getRecurringTasks();
-		ArrayList<Task> list2 = localStorage.getUncompletedTasks();
+		ArrayList<Task> list = localStorage.getUncompletedTasks();
 		Task deleted = list.get(n);
 		String id = deleted.getId();
-		for (int i = 0; i < list2.size(); i++) {// delete from uncompleted tasks
-			Task task = list2.get(i);
+		for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
+			Task task = list.get(i);
 			if (id.equals(task.getId())) {
 				Logic.crud.deleteTask(i, 1);
 				i = -1;// loop again
 			}
 		}
-		localStorage.delFromRecurringTasks(n);
 		return deleted;
 	}
 
@@ -1372,7 +1370,7 @@ public class Parser {
 	 * @throws ClassNotFoundException 
 	 */
 	public static void setRecurringTask(int n) throws ClassNotFoundException, IOException {
-		Task replaced = localStorage.getRecurringTask(n);
+		Task replaced = localStorage.getUncompletedTask(n);
 		Logic.crud.copyRecurringTask(replaced);
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
@@ -1429,6 +1427,7 @@ public class Parser {
 				if (replaced.getEndDate() != null) {//has end date in task
 					replaced = new Task(issue,sd,replaced.getDateCompare(),in,frequency,be4,last);
 				} else {
+					display("while true");
 					replaced = new Task(issue,sd,in,true,frequency,be4,last);
 
 				}
@@ -1473,4 +1472,150 @@ public class Parser {
 		UI.ui.printGreen("Task " + n+1 +" has been edited and saved");
 		Head.checkDateAndAdd();
 	}
+	
+	
+	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
+		Task replaced = localStorage.getUncompletedTask(n);
+		Logic.crud.copyRecurringTask(replaced);
+		UI.ui.printRed("Enter new description and deadline of recurring tasks");
+		String in = sc.nextLine();
+		in = Natty.getInstance().parseEditString(in);
+		// get index of key
+		int ind= in.indexOf("`");
+		String[] s2= in.split("`");
+
+		if(s2.length==2){			
+			String[] temp=s2[1].split(" ");
+			int start = getStartingIndex(temp); // start has value of -1
+			// if
+			// it
+			// has no start date
+			int end = getIndexOfKey(temp);
+
+			issue = s2[0];
+			if (start == -1 && end != -1) {// no start date but has
+				// end
+				// date
+				startDate = "-";
+				startTime = "-";
+				// read date & time
+				date = temp[end + 1];
+				dateIn = date;
+				if (hasEndTime(temp)) {// check if contain end time
+					time = temp[end + 2];
+					time = time.replaceAll(":", "/");
+					dateIn = dateIn + "/" + time;
+				} else {
+					time = "-";
+				}
+
+				if (!Logic.checkDate.checkDateformat(date)) {
+					UI.ui.printRed(WRONG_DATE_MSG);
+				} else {
+					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+					String in2 = sc.nextLine();
+					String[] tmp = in2.split(" ");
+					String freq = tmp[0];
+					String last = tmp[1];
+				//	String before = tmp[2];
+
+					int frequency = Integer.parseInt(freq);
+					//int be4 = Integer.parseInt(before);
+					int be4 = 0;
+
+					Logic.crud.addTaskToRecurring(issue, dateIn, in, false, frequency, be4, last);
+					arraylistsHaveBeenModified = true;
+
+				}
+			} else if (start != -1 && end == -1) {// has start date
+				// but
+				// no end date
+				date = "-";
+				time = "-";
+				startDate = temp[start + 1];
+				int idx = getIndexOfWeek(startDate);
+				if (idx != -1) {
+					startDate = matchDate(idx);
+				}
+				dateIn2 = startDate;
+
+				if (hasStartTime(temp)) {
+					startTime = temp[start + 2];
+					startTime = startTime.replaceAll(":", "/");
+					dateIn2 = dateIn2 + "/" + startTime;
+				} else {
+					startTime = "-";
+				}
+				if (!Logic.checkDate.checkDateformat(startDate)) {
+					UI.ui.printRed(WRONG_DATE_MSG);
+				} else {
+					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+					String in2 = sc.nextLine();
+					String[] tmp = in2.split(" ");
+					String freq = tmp[0];
+					String last = tmp[1];
+				//	String before = tmp[2];
+
+					int frequency = Integer.parseInt(freq);
+				//	int be4 = Integer.parseInt(before);
+					int be4 =0;
+
+					Logic.crud.addTaskToRecurring(issue, dateIn2, in, true, frequency, be4, last);
+					arraylistsHaveBeenModified = true;
+
+				}
+			} else { // has both start date and end date
+				startDate = temp[start + 1];
+				date = temp[end + 1];
+				int idx = getIndexOfWeek(startDate);
+				int idx2 = getIndexOfWeek(date);
+				if (idx != -1) {
+					startDate = matchDate(idx);
+				}
+				if (idx2 != -1) {
+					date = matchDate(idx2);
+				}
+				dateIn = date;
+				dateIn2 = startDate;
+				if (hasStartTime(temp)) {
+					startTime = temp[start + 2];
+					startTime = startTime.replaceAll(":", "/");
+					dateIn2 = dateIn2 + "/" + startTime;
+				} else {
+					startTime = "-";
+				}
+				if (hasEndTime(temp)) {
+					time = temp[end + 2];
+					time = time.replaceAll(":", "/");
+					dateIn = dateIn + "/" + time;
+
+				} else {
+					time = "-";
+				}
+				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
+					UI.ui.printRed(WRONG_DATE_MSG);
+				} else {
+					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+					String in2 = sc.nextLine();
+					String[] tmp = in2.split(" ");
+					String freq = tmp[0];
+					String last = tmp[1];
+				//	String before = tmp[2];
+
+					int frequency = Integer.parseInt(freq);
+				//	int be4 = Integer.parseInt(before);
+					int be4 = 0;
+
+					Logic.crud.addTaskToRecurringWithBothDate(issue, dateIn2, dateIn, in, frequency, be4,
+							last);
+					arraylistsHaveBeenModified = true;
+
+				}
+			}
+		} 
+		delAllRecurringTask(n);
+	UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+		Head.checkDateAndAdd();
+		
+	} 
 }
