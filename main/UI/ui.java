@@ -104,7 +104,7 @@ public class ui {
 		i=i+1;
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+edate+YELLOW+msg+ansi().reset());
 	}
-	public static void printTaskAdded1(int i,String sdate,String stime,String etime,String edate, String msg){
+	public static void printTaskAdded1(int i,String sdate,String stime,String etime,String edate, String msg,String rec){
 		i=i+1;
 		if(sdate==null){
 			sdate="\t";
