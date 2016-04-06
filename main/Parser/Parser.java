@@ -340,15 +340,16 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(WRONG_DATE_MSG);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								UI.ui.printRed("Enter \"<frequency> <last date>\"");
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								String before = tmp[2];
+							//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-								int be4 = Integer.parseInt(before);
+								//int be4 = Integer.parseInt(before);
+								int be4 = 0;
 
 								Logic.crud.addTaskToRecurring(issue, dateIn, s, false, frequency, be4, last);
 								arraylistsHaveBeenModified = true;
@@ -376,15 +377,16 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(startDate)) {
 								UI.ui.printRed(WRONG_DATE_MSG);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								UI.ui.printRed("Enter \"<frequency> <last date>\"");
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								String before = tmp[2];
+							//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-								int be4 = Integer.parseInt(before);
+							//	int be4 = Integer.parseInt(before);
+								int be4 =0;
 
 								Logic.crud.addTaskToRecurring(issue, dateIn2, s, true, frequency, be4, last);
 								arraylistsHaveBeenModified = true;
@@ -421,15 +423,16 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(WRONG_DATE_MSG);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+								UI.ui.printRed("Enter \"<frequency> <last date>\"");
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								String before = tmp[2];
+							//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-								int be4 = Integer.parseInt(before);
+							//	int be4 = Integer.parseInt(before);
+								int be4 = 0;
 
 								Logic.crud.addTaskToRecurringWithBothDate(issue, dateIn2, dateIn, s, frequency, be4,
 										last);
@@ -1391,15 +1394,16 @@ public class Parser {
 			if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
 				end = -1;// no end date
 			} 
-			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+			UI.ui.printRed("Enter \"<frequency> <last date>\"");
 			String in2 = sc.nextLine();
 			String[] tmp = in2.split(" ");
 			String freq = tmp[0];
 			String last = tmp[1];
-			String before = tmp[2];
+		//	String before = tmp[2];
 
 			int frequency = Integer.parseInt(freq);
-			int be4 = Integer.parseInt(before);
+		//	int be4 = Integer.parseInt(before);
+			int be4 = 0;
 			// int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
 
 			if (start == -1 && end != -1) {// only got end date			
@@ -1449,18 +1453,18 @@ public class Parser {
 			}
 		} else {
 			issue = in;
-			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+			UI.ui.printRed("Enter \"<frequency> <last date>\"");
 			in = sc.nextLine();
 			String[] tmp = in.split(" ");
 			String freq = tmp[0];
 			String last = tmp[1];
-			String before = tmp[2];
+		//	String before = tmp[2];
 
 			int frequency = Integer.parseInt(freq);
-			int be4 = Integer.parseInt(before);
+		//	int be4 = Integer.parseInt(before);
 			replaced.setIssue(issue);
 			replaced.setFrequency(frequency);
-			replaced.setdayBefore(be4);
+		//	replaced.setdayBefore(be4);
 			replaced.setLastDate(last);
 
 		}	
