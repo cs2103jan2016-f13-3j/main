@@ -846,6 +846,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayTasksForThisWeek() {
+		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -895,6 +896,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayTasksForNextWeek() {
+		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks next week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -932,6 +934,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayTaksForTwoWeeksLater() {
+		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks for two weeks later - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -969,6 +972,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayTasksForLastWeek() {
+		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Tasks uncompleted from last week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
