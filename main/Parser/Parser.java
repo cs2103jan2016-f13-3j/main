@@ -20,9 +20,8 @@ public class Parser {
 	private static boolean arraylistsHaveBeenModified;
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
-	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-	"sunday" };
-	private static final String[] key = { "by", "at", "on", "during", "before", "to", "in" };
+	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
+	private static final String[] key = { "by", "at", "during", "before", "to", "in" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
 	private static final String ADD_MSG = "is added to the task list.";
@@ -1191,7 +1190,7 @@ public class Parser {
 	public static int getStartingIndex(String[] arr) {
 		int idx = -1;
 		for (int i = 0; i < arr.length; i++) {
-			if (arr[i].equals("from")) {
+			if (arr[i].equals("from") || arr[i].equals("on")) {
 				idx = i;
 			}
 
