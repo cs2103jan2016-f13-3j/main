@@ -73,9 +73,64 @@ public class ui {
 		i=i+1;
 		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate + " " +edate+ " " +YELLOW+msg+ansi().reset());
 	}
+	public static void printTask1(int i,String sdate,String stime,String edate,String etime,String msg,String rec){
+		i=i+1;
+		if(sdate==null){
+			sdate="\t";
+		}else if(sdate.length()<8){
+			sdate+="\t";
+		}
+		if(stime==null){
+			stime="\t\t";
+		}else if(stime.length()<8){
+			stime+="\t";
+		}
+		if(edate==null){
+			edate="\t\t";
+		}else if(edate.length()<8){
+			edate+="\t\t";
+		}else if(edate.length()<12){
+			edate+="\t";
+		}
+		if(etime==null){
+			etime="\t\t";
+		}else if(etime.length()<8){
+			etime+="\t";
+		}
+		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
+		System.out.println(HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
+	}
 	public static void printTaskAdded(int i,String sdate,String edate,String msg){
 		i=i+1;
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+edate+YELLOW+msg+ansi().reset());
+	}
+	public static void printTaskAdded1(int i,String sdate,String stime,String etime,String edate, String msg){
+		i=i+1;
+		if(sdate==null){
+			sdate="\t";
+		}else if(sdate.length()<8){
+			sdate+="\t";
+		}
+		if(stime==null){
+			stime="\t\t";
+		}else if(stime.length()<8){
+			stime+="\t";
+		}
+		if(edate==null){
+			edate="\t\t";
+		}else if(edate.length()<8){
+			edate+="\t\t";
+		}else if(edate.length()<12){
+			edate+="\t";
+		}
+		if(etime==null){
+			etime="\t";
+		}else if(etime.length()<8){
+			etime+="\t";
+		}
+		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
+		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
+		
 	}
 	public static void printRed(String temp){
 

@@ -243,9 +243,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(int i=head;i<tail;i++){
 			 Task temp=tempTasks.get(i);
 			if(index==i){
-				UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue());
+				
 			}else{
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			}
 			 
 		}
@@ -279,9 +280,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
 				if(index==i){
-					UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue());
+					
 				}else{
-					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
 				}
 				 
 			}
@@ -305,8 +308,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 			 for(int i=head;i<tail;i++){
 					 Task temp=tempTasks.get(i);
-					
-						 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
 					 
 				}
 		 }
@@ -330,7 +333,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 for(int i=head;i<tail;i++){
 					 Task temp=tempTasks.get(i);
 					
-						 UI.ui.printTask(size+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 					 
 				}
 		 }
@@ -350,9 +353,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
 				 if(i==index){
-					 UI.ui.printTaskAdded(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue());
+					 
 				 }else{
-					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
 				 }
 			}
 		 
@@ -373,9 +378,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
 				 if(i==index){
-					 UI.ui.printTaskAdded(unSize+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 UI.ui.printTaskAdded1(unSize+i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue());
+					
 				 }else{
-					 UI.ui.printTask(unSize+i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+					 
+					 UI.ui.printTask1(unSize+i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 				 }
 			}
 		 
@@ -599,10 +606,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 isEmptyUn = true;
 		 } else {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\t End Date\t\t Task");
+			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+
 			 for(int i=0; i<tempTasks.size(); i++) {
 				 Task temp = tempTasks.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			 }
 			 UI.ui.print("________________________________________________________________");
 		 }
@@ -895,7 +904,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			 }
 		 }
 		 else {
@@ -932,7 +941,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			 }
 		 }
 		 else {
@@ -970,7 +979,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			 }
 		 }
 		 else {
@@ -1008,7 +1017,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask(i, temp.getStartDateString(), temp.getEndDateString(), temp.getIssue());
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 			 }
 		 }
 		 else {
