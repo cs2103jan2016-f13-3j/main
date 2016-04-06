@@ -127,6 +127,11 @@ public class ui {
 		}else if(etime.length()<8){
 			etime+="\t";
 		}
+
+		for(int j=rec.length();j<msg.length();j++){
+			rec+=" ";
+		}
+
 		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
 		System.out.println(HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+RED+rec+ansi().reset());
 	}
@@ -154,12 +159,13 @@ public class ui {
 			edate+="\t";
 		}
 		if(etime==null){
-			etime="\t";
+			etime="\t\t";
 		}else if(etime.length()<8){
 			etime+="\t";
 		}
 		for(int j=rec.length();j<msg.length();j++){
 			rec+=" ";
+			
 		}
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
