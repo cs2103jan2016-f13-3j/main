@@ -21,7 +21,7 @@ public class Parser {
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-			"sunday" };
+	"sunday" };
 	private static final String[] key = { "by", "at", "on", "during", "before", "to", "in" };
 	private static final String EMPTY_MSG = "Storage is empty. Press \"add\" to add task.";
 	private static final String CLEAR_MSG = "All content deleted";
@@ -77,9 +77,9 @@ public class Parser {
 			// modified
 			Undo.getInstance().storePreviousState(cmd);
 			Undo.getInstance().clearRedoCommands(); // if valid command executed
-													// and arraylists modified,
-													// remove all stored redo
-													// commands
+			// and arraylists modified,
+			// remove all stored redo
+			// commands
 		}
 		return modificationsWereMade;
 	}
@@ -117,7 +117,11 @@ public class Parser {
 		} else if (option.equals("edit") || option.equals("e")) {
 			editCommand(s);
 		} else if (option.equals("priority") || option.equals("p")) {
-			setPriorityCommand(s);
+			if(s.contains("all")) {
+				setAllRecurringTasksPriorityCommand(s);
+			} else {
+				setPriorityCommand(s);
+			}
 		} else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
 			UI.ui.printYellow(pastCommands);
@@ -144,6 +148,27 @@ public class Parser {
 		return arraylistsHaveBeenModified;
 	}
 
+	private static void setAllRecurringTasksPriorityCommand(String s) {
+		s = s.substring(0, s.indexOf(' '));
+		int num = Integer.parseInt(s);
+		
+		ArrayList<Task> list = Storage.localStorage.getRecurringTasks();
+		ArrayList<Task> list2 = Storage.localStorage.getUncompletedTasks();
+		
+		if (list.size() == 0) {
+			UI.ui.printRed(EMPTY_MSG);
+		} else if (list2.size()  < num || num - 1 < 0) {
+			UI.ui.printRed(PRIORITY_FAIL_MSG);
+		} else {
+			UI.ui.printYellow("Enter priority");
+			String priority = sc.nextLine();
+			Logic.Mark.setRecurringTasksPriority(num - 1, priority);
+			arraylistsHaveBeenModified = true;
+		}
+		
+	}
+
+
 	public static void addCommand(String s) throws IOException, ClassNotFoundException {
 		boolean isAdded;
 		if (s.equals("")) {
@@ -156,21 +181,21 @@ public class Parser {
 					String[] temp = s2[1].split(" ");
 					String r = s.substring(0, ind) + s.substring(ind + 2);
 					int start = getStartingIndex(temp); // start has value of -1
-														// if
+					// if
 					// it
 					// has no start date
 					int end = getIndexOfKey(temp); // end has value of -1 if it
-													// has
+					// has
 					// no end date
 					if (end < start) {// { "by", "at", "on", "during", "before",
-										// "to" } is before "from"
+						// "to" } is before "from"
 						end = -1;// no end date
 					}
 
 					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 					if (!toRecurred) {
 						if (start == -1 && end != -1) {// no start date but has
-														// end
+							// end
 							// date
 							startDate = "-";
 							startTime = "-";
@@ -210,7 +235,7 @@ public class Parser {
 							}
 
 						} else if (start != -1 && end == -1) {// has start date
-																// but
+							// but
 							// no end date
 							date = "-";
 							time = "-";
@@ -298,7 +323,7 @@ public class Parser {
 					} else { // for recurring tasks
 						issue = s2[0];
 						if (start == -1 && end != -1) {// no start date but has
-														// end
+							// end
 							// date
 							startDate = "-";
 							startTime = "-";
@@ -331,7 +356,7 @@ public class Parser {
 
 							}
 						} else if (start != -1 && end == -1) {// has start date
-																// but
+							// but
 							// no end date
 							date = "-";
 							time = "-";
@@ -484,7 +509,7 @@ public class Parser {
 				UI.ui.printRed(MSG_NO_REDO_COMMAND);
 			} else {
 				for (int i = 0; i < redoCount; i++) { // do redo for all stored
-														// commands
+					// commands
 					String outcome = Undo.getInstance().redo();
 					UI.ui.printGreen(outcome);
 				}
@@ -494,27 +519,27 @@ public class Parser {
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if
-																				// entered
-																				// count
-																				// is
-																				// outside
-																				// valid
-																				// bounds
+					// entered
+					// count
+					// is
+					// outside
+					// valid
+					// bounds
 					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // redo the number of
-														// commands specified
+						// commands specified
 						if (Undo.getInstance().getRedoCount() == 0) { // all
-																		// commands
-																		// have
-																		// been
-																		// redone
-																		// but
-																		// user
-																		// used
-																		// a
-																		// higher
-																		// int
+							// commands
+							// have
+							// been
+							// redone
+							// but
+							// user
+							// used
+							// a
+							// higher
+							// int
 							UI.ui.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
@@ -523,7 +548,7 @@ public class Parser {
 					}
 				}
 			} catch (NumberFormatException e) { // if non-number was entered,
-												// e.g. "redo hello"
+				// e.g. "redo hello"
 				UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 			}
 		}
@@ -539,7 +564,7 @@ public class Parser {
 				UI.ui.printRed(MSG_NO_PAST_COMMAND);
 			} else {
 				for (int i = 0; i < historyCount; i++) { // do undo for all
-															// stored commands
+					// stored commands
 					String outcome = Undo.getInstance().undo();
 					UI.ui.printGreen(outcome);
 				}
@@ -549,27 +574,27 @@ public class Parser {
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if
-																					// entered
-																					// count
-																					// is
-																					// outside
-																					// valid
-																					// bounds
+					// entered
+					// count
+					// is
+					// outside
+					// valid
+					// bounds
 					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of
-														// commands specified
+						// commands specified
 						if (Undo.getInstance().getHistoryCount() == 0) { // all
-																			// commands
-																			// have
-																			// been
-																			// undone
-																			// but
-																			// user
-																			// used
-																			// a
-																			// higher
-																			// int
+							// commands
+							// have
+							// been
+							// undone
+							// but
+							// user
+							// used
+							// a
+							// higher
+							// int
 							UI.ui.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
@@ -578,7 +603,7 @@ public class Parser {
 					}
 				}
 			} catch (NumberFormatException e) { // if non-number was entered,
-												// e.g. "undo hello"
+				// e.g. "undo hello"
 				UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 			}
 		}
@@ -640,15 +665,15 @@ public class Parser {
 							String r = input.substring(0, ind) + input.substring(ind + 2);
 							int start = getStartingIndex(temp);
 							int end = getIndexOfKey(temp); // end has value of
-															// -1 if it has
+							// -1 if it has
 							// no end date
 							if (end < start) {// { "by", "at", "on", "during",
-												// "before", "to" } is before
-												// "from"
+								// "before", "to" } is before
+								// "from"
 								end = -1;// no end date
 							}
 							if (start == -1 && end != -1) {// no start date but
-															// has end
+								// has end
 								// date
 								startDate = "-";
 								startTime = "-";
@@ -657,7 +682,7 @@ public class Parser {
 								dateIn = date;
 
 								if (hasEndTime(temp)) {// check if contain end
-														// time
+									// time
 									// something is wrong here
 									time = temp[end + 2];
 									time = time.replaceAll(":", "/");
@@ -683,7 +708,7 @@ public class Parser {
 									arraylistsHaveBeenModified = true;
 								}
 							} else if (start != -1 && end == -1) {// has start
-																	// date but
+								// date but
 								// no end date
 								date = "-";
 								time = "-";
@@ -745,7 +770,7 @@ public class Parser {
 							}
 						}
 					} else {// no end date and no
-							// start date
+						// start date
 
 						Logic.crud.editTaskWithNoDate(input, input, num - 1);
 						int index = Logic.crud.uncompletedTaskIndexWithNoDate(input);
@@ -1355,73 +1380,73 @@ public class Parser {
 
 		if(s2.length==2){			
 			String[] temp=s2[1].split(" ");
-		
-	
-		issue = s2[0];
-		int start = getStartingIndex(temp); // start has value of -1 if
-		// it
-		// has no start date
-		int end = getIndexOfKey(temp); // end has value of -1 if it has
-		// no end date
-		if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
-			end = -1;// no end date
-		} 
-		UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
-		String in2 = sc.nextLine();
-		String[] tmp = in2.split(" ");
-		String freq = tmp[0];
-		String last = tmp[1];
-		String before = tmp[2];
-		
-		int frequency = Integer.parseInt(freq);
-		int be4 = Integer.parseInt(before);
-		// int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
-	
-		if (start == -1 && end != -1) {// only got end date			
-			String	ed = temp[end+1];
-			if (hasEndTime(temp)) {			
-				String t = temp[end+2];
-				t = t.replaceAll(":","/");
-				ed = ed+"/"+ t;
-			}
-			if (replaced.getStartDate() != null) { //has start date in task
-				replaced = new Task(issue,replaced.getFixedStartDateString(),ed,in,frequency,be4,last);
-			}	else {
-				replaced = new Task(issue,ed,in,false,frequency,be4,last);
-			}
-		} else if (start ==1 && end == -1) { //only got start date
-			String sd = temp[start+1];
-		
-			if (hasStartTime(temp)) {
-				String t = temp[start+2];
-				t = t.replaceAll(":","/");
-				sd = sd+"/"+t;
-			}
-			if (replaced.getEndDate() != null) {//has end date in task
-				replaced = new Task(issue,sd,replaced.getDateCompare(),in,frequency,be4,last);
-			} else {
-				replaced = new Task(issue,sd,in,true,frequency,be4,last);
-				
-			}
-		} else { //have both start date and end date
-			String sd = temp[start+1];
-			String ed = temp[end+1];
-			if (hasEndTime(temp)) {
-			
-				String t = temp[end+2];
-				t = t.replaceAll(":","/");
-				ed = ed+"/"+ t;
-			}
-			if (hasStartTime(temp)) {
-				
+
+
+			issue = s2[0];
+			int start = getStartingIndex(temp); // start has value of -1 if
+			// it
+			// has no start date
+			int end = getIndexOfKey(temp); // end has value of -1 if it has
+			// no end date
+			if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
+				end = -1;// no end date
+			} 
+			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
+			String in2 = sc.nextLine();
+			String[] tmp = in2.split(" ");
+			String freq = tmp[0];
+			String last = tmp[1];
+			String before = tmp[2];
+
+			int frequency = Integer.parseInt(freq);
+			int be4 = Integer.parseInt(before);
+			// int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
+
+			if (start == -1 && end != -1) {// only got end date			
+				String	ed = temp[end+1];
+				if (hasEndTime(temp)) {			
+					String t = temp[end+2];
+					t = t.replaceAll(":","/");
+					ed = ed+"/"+ t;
+				}
+				if (replaced.getStartDate() != null) { //has start date in task
+					replaced = new Task(issue,replaced.getFixedStartDateString(),ed,in,frequency,be4,last);
+				}	else {
+					replaced = new Task(issue,ed,in,false,frequency,be4,last);
+				}
+			} else if (start ==1 && end == -1) { //only got start date
+				String sd = temp[start+1];
+
+				if (hasStartTime(temp)) {
 					String t = temp[start+2];
 					t = t.replaceAll(":","/");
 					sd = sd+"/"+t;
 				}
-			
-			replaced = new Task(issue,sd,ed,in,frequency,be4,last);
+				if (replaced.getEndDate() != null) {//has end date in task
+					replaced = new Task(issue,sd,replaced.getDateCompare(),in,frequency,be4,last);
+				} else {
+					replaced = new Task(issue,sd,in,true,frequency,be4,last);
 
-		}
+				}
+			} else { //have both start date and end date
+				String sd = temp[start+1];
+				String ed = temp[end+1];
+				if (hasEndTime(temp)) {
+
+					String t = temp[end+2];
+					t = t.replaceAll(":","/");
+					ed = ed+"/"+ t;
+				}
+				if (hasStartTime(temp)) {
+
+					String t = temp[start+2];
+					t = t.replaceAll(":","/");
+					sd = sd+"/"+t;
+				}
+
+				replaced = new Task(issue,sd,ed,in,frequency,be4,last);
+
+			}
 		} else {
 			issue = in;
 			UI.ui.printRed("Enter \"<frequency> <last date> <days to show before deadline>\"");
@@ -1430,18 +1455,18 @@ public class Parser {
 			String freq = tmp[0];
 			String last = tmp[1];
 			String before = tmp[2];
-			
+
 			int frequency = Integer.parseInt(freq);
 			int be4 = Integer.parseInt(before);
 			replaced.setIssue(issue);
 			replaced.setFrequency(frequency);
 			replaced.setdayBefore(be4);
 			replaced.setLastDate(last);
-		
+
 		}	
 		delAllRecurringTask(n);
 		localStorage.addToRecurringTasks(replaced);
 		UI.ui.printGreen("Task " + n+1 +" has been edited and saved");
 		Head.checkDateAndAdd();
-}
+	}
 }

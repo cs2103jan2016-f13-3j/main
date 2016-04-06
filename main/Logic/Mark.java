@@ -41,7 +41,7 @@ public class Mark {
 	 */
 	public static void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
 		Task temp = Storage.localStorage.getCompletedTask(index);
-		
+
 		if(temp.getEndDate() != null || temp.getStartDate() != null) {
 			Storage.localStorage.addToUncompletedTasks(temp);
 			Storage.localStorage.delFromCompletedTasks(index);
@@ -72,6 +72,38 @@ public class Mark {
 			Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
 			temp.setPriority(priority);
 			Storage.localStorage.setFloatingTask(index - getSize.size(), temp);
+		}
+	}
+
+	public static void setRecurringTasksPriority(int index, String priority) {
+		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempRecurringTasks = Storage.localStorage.getRecurringTasks();
+
+		Task temp = Storage.localStorage.getUncompletedTask(index);
+		String idOfTask = temp.getId();
+
+		if(idOfTask != null) {
+			for(int i = 0; i<tempTasks.size(); i++) {
+				if(tempTasks.get(i).getId() != null) {
+					if(tempTasks.get(i).getId().equals(idOfTask)) {
+						tempTasks.get(i).setPriority(priority);
+					}
+				}
+			}
+
+			for(int i = 0; i<tempRecurringTasks.size(); i++) {
+				if(tempRecurringTasks.get(i).getId().equals(idOfTask)) {
+					tempRecurringTasks.get(i).setPriority(priority);
+					Storage.localStorage.setRecurringTask(i, tempRecurringTasks.get(i));
+				}
+			}
+
+			try {
+				Storage.localStorage.setUncompletedTasks(tempTasks);
+			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 		}
 	}
 }
