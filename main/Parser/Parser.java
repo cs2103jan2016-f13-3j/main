@@ -1371,6 +1371,7 @@ public class Parser {
 	 */
 	public static void setRecurringTask(int n) throws ClassNotFoundException, IOException {
 		Task replaced = localStorage.getRecurringTask(n);
+		Logic.crud.copyRecurringTask(replaced);
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
 		in = Natty.getInstance().parseEditString(in);

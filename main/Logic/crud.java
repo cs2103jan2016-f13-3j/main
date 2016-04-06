@@ -380,6 +380,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			}
 		 
 	 }
+	 public static void copyRecurringTask(Task t){
+		 if(t!=null){
+			 String copy = t.getDescription();
+			 StringSelection selec = new StringSelection(copy);
+			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			 clipboard.setContents(selec, selec);
+		 }
+	 }
 	 public static void copyTask(int index){
 		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		 if(edit != null){
