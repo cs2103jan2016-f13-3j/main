@@ -166,12 +166,14 @@ public class ui {
 		
 	}
 	public static void printFloating(int i, String msg){
-		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset())
+		i=i+1;
+		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset());
 		
 		
 	}
 	public static void printFloatingBackground(int i, String msg){
-		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset())
+		i=i+1;
+		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset());
 		
 		
 	}
