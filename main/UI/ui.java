@@ -97,6 +97,9 @@ public class ui {
 		}else if(etime.length()<8){
 			etime+="\t";
 		}
+		for(int j=rec.length();j<msg.length();j++){
+			rec+=" ";
+		}
 		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
 		System.out.println(HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
 	}
@@ -155,8 +158,21 @@ public class ui {
 		}else if(etime.length()<8){
 			etime+="\t";
 		}
+		for(int j=rec.length();j<msg.length();j++){
+			rec+=" ";
+		}
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
+		
+	}
+	public static void printFloating(int i, String msg){
+		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset())
+		
+		
+	}
+	public static void printFloatingBackground(int i, String msg){
+		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset())
+		
 		
 	}
 	public static void printRed(String temp){

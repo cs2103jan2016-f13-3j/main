@@ -333,7 +333,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 for(int i=head;i<tail;i++){
 					 Task temp=tempTasks.get(i);
 					
-					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
 					 
 				}
 		 }
@@ -378,11 +378,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
 				 if(i==index){
-					
-					 UI.ui.printTaskAdded1(unSize+i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-				 }else{
+					 UI.ui.printFloatingBackground(unSize+i,temp.getIssue());
 					 
-					 UI.ui.printTask1(unSize+i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+					 
+				 }else{
+					 UI.ui.printFloating(unSize+i,temp.getIssue());
+					 
+					 
 				 }
 			}
 		 
