@@ -825,18 +825,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 	 public static boolean addTaskToRecurringWithBothDate(String line,String startDate, String endDate, String msg,int f,int d,String s)  {
 		 Task task = new Task(line,startDate,endDate,msg,f,d,s);
-		 System.out.println("frequency: every " + task.getFrequency() + " day"); 
-		 System.out.println("day before: "+ task.getDayBefore());
-		 System.out.println("last date:" + task.getLastDate());
 		 Storage.localStorage.addToRecurringTasks(task);
+		 int freq = task.getFrequency();
+		 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 		 return true;
 	 }
 	 public static boolean addTaskToRecurring(String line, String date, String msg,boolean type, int f, int d,String s) {
 		 Task task = new Task(line, date, msg, type,f,d,s);
-		 System.out.println("frequency: every " + task.getFrequency() + " day"); 
-		 System.out.println("day before: "+ task.getDayBefore());
-		 System.out.println("last date:" + task.getLastDate());
 		 Storage.localStorage.addToRecurringTasks(task);
+		 int freq = task.getFrequency();
+		 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 		 return true;
 	 }
 	 public static void editDescription(String s,int index) {
