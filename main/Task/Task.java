@@ -21,6 +21,8 @@ public class Task implements java.io.Serializable {
 	private String dateCompare;
 	private String fixedStartDate;
 	private String id;
+	private static final String MSG_RECURSE_FREQUENCY = "(Recurs every ";
+	private static final String MSG_DAYS = " day(s))";
 
 	// Constructors
 
@@ -617,7 +619,7 @@ public class Task implements java.io.Serializable {
 		if (endDate == null) {
 			return null;
 		} else {
-			String result = getStartDateLineOne();
+			String result = getEndDateLineOne();
 			result = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
 
 			if (hasTime) { // if start date has time
@@ -646,5 +648,12 @@ public class Task implements java.io.Serializable {
 			}
 			return result;
 		}
+	}
+	
+	public String getRecurFrequency() {
+		if (frequency < 1) { // if not recurring task
+			return "";
+		}
+		return MSG_RECURSE_FREQUENCY + frequency + MSG_DAYS;
 	}
 }
