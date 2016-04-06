@@ -127,6 +127,7 @@ public class Task implements java.io.Serializable {
 		lastDate = last;
 		dateCompare = date;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitDates = date.split("/");
 		int year = Integer.parseInt(splitDates[2]);
 		int month = Integer.parseInt(splitDates[1])-1;
@@ -169,6 +170,7 @@ public class Task implements java.io.Serializable {
 		lastDate = last;
 		dateCompare = date;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitDates = date.split("/");
 		int year = Integer.parseInt(splitDates[2]);
 		int month = Integer.parseInt(splitDates[1])-1;
@@ -215,6 +217,7 @@ public class Task implements java.io.Serializable {
 		dateCompare = endDate;
 		fixedStartDate  = startDate;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitStartDate = startDate.split("/");
 		int year = Integer.parseInt(splitStartDate[2]);
 		int month = Integer.parseInt(splitStartDate[1])-1;
@@ -258,6 +261,7 @@ public class Task implements java.io.Serializable {
 		dateCompare = endDate;
 		fixedStartDate  = startDate;
 		label = new ArrayList<String>();
+		priority = "low";
 		String[] splitStartDate = startDate.split("/");
 		int year = Integer.parseInt(splitStartDate[2]);
 		int month = Integer.parseInt(splitStartDate[1])-1;
