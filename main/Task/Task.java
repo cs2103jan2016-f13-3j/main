@@ -137,7 +137,7 @@ public class Task implements java.io.Serializable {
 		if (splitDates.length > 3) { // given date includes time
 			hour = Integer.parseInt(splitDates[3]);
 			minute = Integer.parseInt(splitDates[4]);
-			
+
 		}
 		if (isStartDate) { // the date provided is a start date
 			fixedStartDate  = date;
@@ -180,7 +180,7 @@ public class Task implements java.io.Serializable {
 		if (splitDates.length > 3) { // given date includes time
 			hour = Integer.parseInt(splitDates[3]);
 			minute = Integer.parseInt(splitDates[4]);
-			
+
 		}
 		if (isStartDate) { // the date provided is a start date
 			fixedStartDate  = date;
@@ -228,7 +228,7 @@ public class Task implements java.io.Serializable {
 			hasTime = true;
 			hour = Integer.parseInt(splitStartDate[3]);
 			minute = Integer.parseInt(splitStartDate[4]);
-			
+
 			this.startDate = new GregorianCalendar(year, month, day, hour, minute);
 		} else { // given start date does not have time
 			this.startDate = new GregorianCalendar(year, month, day);
@@ -272,7 +272,7 @@ public class Task implements java.io.Serializable {
 			hasTime = true;
 			hour = Integer.parseInt(splitStartDate[3]);
 			minute = Integer.parseInt(splitStartDate[4]);
-			
+
 			this.startDate = new GregorianCalendar(year, month, day, hour, minute);
 		} else { // given start date does not have time
 			this.startDate = new GregorianCalendar(year, month, day);
@@ -422,24 +422,24 @@ public class Task implements java.io.Serializable {
 
 			int year = startDate.get(Calendar.YEAR);
 			result += year;			
-			
+
 			String dayName = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
 			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
-			
+
 			result += " " + dayName;
-			
+
 			if (hasTime) {
 				int hour =startDate.get(Calendar.HOUR_OF_DAY);
 				if (hour > 12) {
 					hour -= 12; // 24hr to 12hr format
 				}
-				
+
 				if (hour < 10) {
 					result += " " + "0" + hour;
 				} else {
 					result += " " + hour;
 				}
-				
+
 				String minute = Integer.toString(startDate.get(Calendar.MINUTE));
 				if (minute.length() == 1) {
 					minute = "0" + minute;
@@ -462,7 +462,7 @@ public class Task implements java.io.Serializable {
 	public String getEndDateString() {
 		if (endDate != null) {
 			String day = Integer.toString(endDate.get(Calendar.DAY_OF_MONTH));
-			
+
 			String result = day + " ";
 			if (result.length() == 2) { // adds 0 to single digit dates
 				result = "0" + result;
@@ -472,18 +472,18 @@ public class Task implements java.io.Serializable {
 
 			int year = endDate.get(Calendar.YEAR);
 			result += year;
-			
+
 			String dayName = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
 			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
-			
+
 			result += " " + dayName;
-			
+
 			if (hasTime) {
 				int hour = endDate.get(Calendar.HOUR_OF_DAY);
 				if (hour > 12) {
 					hour -= 12; // 24hr to 12hr format
 				}
-				
+
 				if (hour < 10) {
 					result += " " + "0" + hour;
 				} else {
@@ -499,7 +499,7 @@ public class Task implements java.io.Serializable {
 				} else {
 					result += ":" + minute + "PM" + "\t";
 				}
-//				result += ":" + minute + "\t";
+				//				result += ":" + minute + "\t";
 			}else{
 				result += "\t";
 			}
@@ -508,7 +508,7 @@ public class Task implements java.io.Serializable {
 			return "\t\t";
 		}
 	}
-	
+
 	public String getDateCompare() {
 		return dateCompare;
 	}
@@ -521,7 +521,7 @@ public class Task implements java.io.Serializable {
 	public String getPriority(){
 		return priority;
 	}
-	
+
 
 	public void setPriority(String priority){
 		this.priority = priority;
@@ -540,5 +540,111 @@ public class Task implements java.io.Serializable {
 				return getStartDateString() + " " + getEndDateString() + " " + issue;
 			}
 		}*/
+	}
+
+	public String getStartDateLineOne() { // Method to return DD MTH YYYY
+		if (startDate == null) {
+			return null;
+		} else {
+			String result = startDate.get(Calendar.DAY_OF_MONTH) + " ";
+			if (result.length() == 2) { // adds 0 to single digit dates
+				result = "0" + result;
+			}
+			int month = startDate.get(Calendar.MONTH);
+			result += NAMES_OF_MONTHS[month] + " ";
+
+			int year = startDate.get(Calendar.YEAR);
+			result += year;	
+			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
+			return result;
+		}
+	}
+
+	public String getStartDateLineTwo() { // Method to return DAY or DAY HH:MMam
+		if (startDate == null) {
+			return null;
+		} else {
+			String result = getStartDateLineOne();
+			result = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
+
+			if (hasTime) { // if start date has time
+				int hour = startDate.get(Calendar.HOUR_OF_DAY);
+				if (hour > 12) {
+					hour -= 12; // 24hr to 12hr format
+				}
+
+				if (hour < 10) {
+					result += " " + "0" + hour;
+				} else {
+					result += " " + hour;
+				}
+
+				String minute = Integer.toString(startDate.get(Calendar.MINUTE));
+				if (minute.length() == 1) {
+					minute = "0" + minute;
+				}
+				if (startDate.get(Calendar.HOUR_OF_DAY) < 12) {
+					result += ":" + minute + "AM" + "\t";
+				} else {
+					result += ":" + minute + "PM" + "\t";
+				}
+			} else {
+				result += "\t";
+			}
+			return result;
+		}
+	}
+	
+	public String getEndDateLineOne() { // Method to return DD MTH YYYY
+		if (endDate == null) {
+			return null;
+		} else {
+			String result = endDate.get(Calendar.DAY_OF_MONTH) + " ";
+			if (result.length() == 2) { // adds 0 to single digit dates
+				result = "0" + result;
+			}
+			int month = endDate.get(Calendar.MONTH);
+			result += NAMES_OF_MONTHS[month] + " ";
+
+			int year = endDate.get(Calendar.YEAR);
+			result += year;	
+			result = Natty.getInstance().tryChangeTodayOrTomorrow(result); // check if is today or tomorrow and change accordingly
+			return result;
+		}
+	}
+
+	public String getEndDateLineTwo() { // Method to return DAY or DAY HH:MMam
+		if (endDate == null) {
+			return null;
+		} else {
+			String result = getStartDateLineOne();
+			result = Natty.getInstance().getDayName(result); // get the name of the day, eg Sun, Mon
+
+			if (hasTime) { // if start date has time
+				int hour = endDate.get(Calendar.HOUR_OF_DAY);
+				if (hour > 12) {
+					hour -= 12; // 24hr to 12hr format
+				}
+
+				if (hour < 10) {
+					result += " " + "0" + hour;
+				} else {
+					result += " " + hour;
+				}
+
+				String minute = Integer.toString(endDate.get(Calendar.MINUTE));
+				if (minute.length() == 1) {
+					minute = "0" + minute;
+				}
+				if (endDate.get(Calendar.HOUR_OF_DAY) < 12) {
+					result += ":" + minute + "AM" + "\t";
+				} else {
+					result += ":" + minute + "PM" + "\t";
+				}
+			} else {
+				result += "\t";
+			}
+			return result;
+		}
 	}
 }
