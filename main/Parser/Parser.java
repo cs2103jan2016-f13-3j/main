@@ -870,13 +870,14 @@ public class Parser {
 			Logic.crud.displayFloatingTasks();
 		} else if (Logic.checkDate.checkDateformat(s)) {
 			Logic.crud.displayScheduleForADay(s);
-		} else if (s.equals("")) {
+		} else if (s.equals("all")) {
 			Logic.crud.displayUncompletedAndFloatingTasks();
+		} else if (s.equals("")){
+			Logic.crud.displayUpcomingTasks();
 		} else if (s.equals("today")) {
 			Calendar today = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String todayString = df.format(today.getTime());
-
 			Logic.crud.displayScheduleForADay(todayString);
 		} else if (s.equals("tomorrow")) {
 			Calendar tomorrow = Calendar.getInstance();

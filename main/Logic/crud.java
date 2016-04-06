@@ -202,7 +202,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
-	 
+
 	 public static int uncompletedTaskIndexWithBothDates(String line,String startDate, String endDate, String msg){
 		 Task task = new Task(line, startDate, endDate, msg);
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -242,61 +242,61 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 for(int i=head;i<tail;i++){
 			 Task temp=tempTasks.get(i);
-			if(index==i){
-				UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-				
-			}else{
-				UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			}
-			 
-		}
-		 
+			 if(index==i){
+				 UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
+			 }else{
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+			 }
+
+		 }
+
 	 }
 	 public static void displayNearestFiveUnmarkCompleteTaskList(Task t){
 		 ArrayList<Task> tempTasks;
 		 if(t.getEndDate() != null || t.getStartDate() != null){
-			 
+
 			 tempTasks = Storage.localStorage.getUncompletedTasks();
 		 }else{
 			 tempTasks = Storage.localStorage.getFloatingTasks();
 		 }
-			 int size = tempTasks.size();
-			 int index=-1;
-			 for(int i=0;i<size;i++){
-				 Task temp=tempTasks.get(i);
-				 if(t.getMsg().equals(temp.getMsg())){
-					 index=i;
-					 break;
-				 }
+		 int size = tempTasks.size();
+		 int index=-1;
+		 for(int i=0;i<size;i++){
+			 Task temp=tempTasks.get(i);
+			 if(t.getMsg().equals(temp.getMsg())){
+				 index=i;
+				 break;
 			 }
-			 int head=index-2;
-			 int tail = index+3;
-			 if(head<0){
-				 head=0;
-			 }
-			 if(tail>=size){
-				 tail=size;
-			 }
-			 for(int i=head;i<tail;i++){
-				 Task temp=tempTasks.get(i);
-				if(index==i){
-					UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-					
-				}else{
-					UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-
-				}
-				 
-			}
 		 }
-	 
+		 int head=index-2;
+		 int tail = index+3;
+		 if(head<0){
+			 head=0;
+		 }
+		 if(tail>=size){
+			 tail=size;
+		 }
+		 for(int i=head;i<tail;i++){
+			 Task temp=tempTasks.get(i);
+			 if(index==i){
+				 UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
+			 }else{
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
+			 }
+
+		 }
+	 }
+
 	 public static void displayNearestFiveDeleteUncompleteTaskList(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 int size = tempTasks.size();
 		 if(size==0){
 			 UI.ui.printGreen("Uncompleted Task List is empty");
 		 }else if(index<=tempTasks.size()){
-			 
+
 			 int head = index-2;
 			 int tail = index+3;
 			 if(head<0){
@@ -307,11 +307,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 
 			 for(int i=head;i<tail;i++){
-					 Task temp=tempTasks.get(i);
-					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+				 Task temp=tempTasks.get(i);
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 
-					 
-				}
+
+			 }
 		 }
 	 }
 	 public static void displayNearestFiveDeleteFloatingTask(int index){
@@ -331,11 +331,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 tail=size2;
 			 }
 			 for(int i=head;i<tail;i++){
-					 Task temp=tempTasks.get(i);
-					
-					 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
-					 
-				}
+				 Task temp=tempTasks.get(i);
+
+				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+
+			 }
 		 }
 	 }
 	 public static void displayNearestFiveUncompleted(int index){
@@ -351,16 +351,16 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 for(int i=head;i<tail;i++){
-				 Task temp=tempTasks.get(i);
-				 if(i==index){
-					 UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-					 
-				 }else{
-					 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+			 Task temp=tempTasks.get(i);
+			 if(i==index){
+				 UI.ui.printTaskAdded1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 
-				 }
-			}
-		 
+			 }else{
+				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
+			 }
+		 }
+
 	 }
 	 public static void displayNearestFiveFloating(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
@@ -376,18 +376,18 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 for(int i=head;i<tail;i++){
-				 Task temp=tempTasks.get(i);
-				 if(i==index){
-					 UI.ui.printFloatingBackground(unSize+i,temp.getIssue());
-					 
-					 
-				 }else{
-					 UI.ui.printFloating(unSize+i,temp.getIssue());
-					 
-					 
-				 }
-			}
-		 
+			 Task temp=tempTasks.get(i);
+			 if(i==index){
+				 UI.ui.printFloatingBackground(unSize+i,temp.getIssue());
+
+
+			 }else{
+				 UI.ui.printFloating(unSize+i,temp.getIssue());
+
+
+			 }
+		 }
+
 	 }
 	 public static void copyRecurringTask(Task t){
 		 if(t!=null){
@@ -457,7 +457,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
-	 
+
 	 //@@author Cheng Gee
 	 /**
 	  * Function to edit task (edited task has only start date)
@@ -838,7 +838,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 return true;
 	 }
 	 public static void editDescription(String s,int index) {
-			
+
 		 Task temp = Storage.localStorage.getUncompletedTask(index);
 		 temp.setIssue(s);
 		 Storage.localStorage.setUncompletedTask(index, temp);			
@@ -1036,4 +1036,42 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
 	 }
+
+	 public static void displayUpcomingTasks() {
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 //today
+		 Calendar d1 = Calendar.getInstance();
+		 d1.add(Calendar.DAY_OF_MONTH, -1);
+
+		 //7 days in advance
+		 Calendar d2 = Calendar.getInstance();
+		 d2.add(Calendar.DAY_OF_MONTH, 7);
+
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+
+		 for(Task temp : tempTasks) {
+			 if(temp.getEndDate() != null) {
+				 if(temp.getEndDate().compareTo(d1) >= 0 && temp.getEndDate().compareTo(d2) <=0) {
+					 tasksToBeDisplayed.add(temp);
+					 continue;
+				 }
+			 }
+			 else if(temp.getStartDate() != null) {
+				 if((temp.getStartDate().compareTo(d1) >= 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
+					 tasksToBeDisplayed.add(temp);
+				 }
+			 }
+		 }
+		 
+		 if(tasksToBeDisplayed.size() > 0) {
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
+				 Task temp = tasksToBeDisplayed.get(i);
+				 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+
+			 }
+		 }
+	 }
  }
+
