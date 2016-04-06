@@ -704,6 +704,7 @@ public class Parser {
 									// (to be implemented)
 									Logic.crud.editTaskWithEndDate(issue, dateIn, input, num - 1);
 									Logic.Sort.sortTasksChronologically();
+									UI.ui.eraseScreen();
 									int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, dateIn, input);
 									UI.ui.printGreen("Task number " + num + EDIT_MSG);
 									Logic.crud.displayNearestFiveUncompleted(index);
@@ -732,7 +733,7 @@ public class Parser {
 									Logic.crud.editTaskWithStartDate(issue, dateIn2, input, num - 1);
 									Logic.Sort.sortTasksChronologically();
 									int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, dateIn2, input);
-
+								    UI.ui.eraseScreen();
 									UI.ui.printGreen("Task number " + num + EDIT_MSG);
 									Logic.crud.displayNearestFiveUncompleted(index);
 									arraylistsHaveBeenModified = true;
@@ -762,6 +763,7 @@ public class Parser {
 									issue = s2[0];
 									// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 									Logic.crud.editTaskWithBothDates(issue, dateIn2, dateIn, input, num - 1);
+									UI.ui.eraseScreen();
 									UI.ui.printGreen("Task number " + num + EDIT_MSG);
 									Logic.Sort.sortTasksChronologically();
 									int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, dateIn2, dateIn,
@@ -826,6 +828,7 @@ public class Parser {
 			} else {
 				Task temp = Logic.crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
+				UI.ui.eraseScreen();
 				UI.ui.printGreen(s + MARK_MSG);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -920,6 +923,7 @@ public class Parser {
 						if ((num - 1) < list.size()) {
 							Task deleted = list.get(num - 1);
 							issue = deleted.getIssue();
+							UI.ui.eraseScreen();
 							Logic.crud.deleteTask(num - 1, 1);
 							UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
 							Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
@@ -928,6 +932,7 @@ public class Parser {
 							Task deleted = list2.get(num - list.size() - 1);
 							issue = deleted.getIssue();
 							Logic.crud.deleteTask(num - 1, 1);
+							UI.ui.eraseScreen();
 							UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
 							Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
 							arraylistsHaveBeenModified = true;
@@ -950,6 +955,7 @@ public class Parser {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.crud.deleteTask(num - 1, 3);
+					UI.ui.eraseScreen();
 					UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
 					arraylistsHaveBeenModified = true;
 				}
@@ -992,6 +998,7 @@ public class Parser {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
+						UI.ui.eraseScreen();
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
 						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 						arraylistsHaveBeenModified = true;
@@ -999,6 +1006,7 @@ public class Parser {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.crud.deleteTask(num - 1, 1);
+						UI.ui.eraseScreen();
 						UI.ui.printGreen("\"" + issue + "\" " + DELETE_MSG);
 						Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
 						arraylistsHaveBeenModified = true;
