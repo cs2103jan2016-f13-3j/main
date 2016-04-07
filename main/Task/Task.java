@@ -17,7 +17,6 @@ public class Task implements java.io.Serializable {
 	private  int frequency = -1;
 	private  int dayBefore = -1;
 	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
-	private static int counter = 0;
 	private String dateCompare;
 	private String fixedStartDate;
 	private String id;
@@ -119,8 +118,8 @@ public class Task implements java.io.Serializable {
 	public Task(String issue, String date, String msg, boolean isStartDate,int f,int d,String last) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
-		id = "0000-0000-000" + counter;
-		counter++;
+		Calendar CalendarID = Calendar.getInstance();
+		id = String.valueOf(CalendarID.getTimeInMillis());
 		this.msg=msg;
 		this.issue = issue;
 		isCompleted = false;
@@ -208,8 +207,8 @@ public class Task implements java.io.Serializable {
 		assert issue != null;
 		assert startDate.contains("/");
 		assert endDate.contains("/");
-		id = "0000-0000-000" + counter;
-		counter++;
+		Calendar CalendarID = Calendar.getInstance();
+		id = String.valueOf(CalendarID.getTimeInMillis());
 		this.msg=msg;
 		this.issue = issue;
 		isCompleted = false;
