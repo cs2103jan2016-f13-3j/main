@@ -912,7 +912,8 @@ public class Parser {
 					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 						UI.ui.printRed(MSG_MARK_FAIL);
 					} else {
-						Task temp = Logic.crud.getUncompletedTask(num - 1);
+						int i = list.size();
+						Task temp = Logic.crud.getUncompletedTask(num -1);
 						Logic.Mark.markTaskAsCompleted(num - 1);
 						UI.ui.eraseScreen();
 						UI.ui.printGreen(s + MSG_MARK);

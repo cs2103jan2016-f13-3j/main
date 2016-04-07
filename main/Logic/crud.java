@@ -1,6 +1,7 @@
 package Logic;
 
 import Task.Task;
+import unitTest.StorageTest;
 import Storage.localStorage;
 
 import java.awt.Toolkit;
@@ -620,11 +621,19 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * @return
 	  */
 	 public static Task getUncompletedTask(int index){
+
+		 int size1=Storage.localStorage.getUncompletedTasks().size();
+		 if(index<size1){
 		 return Storage.localStorage.getUncompletedTask(index);
+		 }else{
+		 
+			 return Storage.localStorage.getFloatingTask(index-size1);
+		 }
 	 }
 	 public static Task getCompletedTask(int index){
 		 return Storage.localStorage.getCompletedTask(index);
 	 }
+
 	 /**
 	  * Function to delete task according to index in storage
 	  * @throws IOException 
