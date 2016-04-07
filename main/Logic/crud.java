@@ -708,6 +708,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(inputDate.startsWith("0")) {
 			 inputDate = inputDate.replaceFirst("0", "");
 		 }
+		 System.out.println(inputDate);
 		 String[] splitDate = inputDate.split("/");
 		 //run through all the tasks and find which have same date
 		 ArrayList<Task> tempTasks = new ArrayList<Task>();
@@ -716,9 +717,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(Task temp : tempUncompletedTasks) {
 			 if(temp.getStartDate() != null) {
 				 String startDay = "" + temp.getStartDate().get(Calendar.DAY_OF_MONTH);
-				 String startMonth = "" + temp.getStartDate().get(Calendar.MONTH);
+				 String startMonth = "" + (temp.getStartDate().get(Calendar.MONTH) + 1);
 				 String startYear = "" + temp.getStartDate().get(Calendar.YEAR);
-
 				 if(checkIfDateIsContained(splitDate, startDay, startMonth, startYear)) {
 					 tempTasks.add(temp);
 					 continue;
@@ -738,6 +738,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
 		 else {
+			 UI.ui.eraseScreen();
 			 UI.ui.print("Index\tTask");
 			 for(int i = 0; i<tempTasks.size(); i++) {
 				 Task temp=tempTasks.get(i);
@@ -754,6 +755,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayByLabel(String s) {
+		 UI.ui.eraseScreen();
 		 tempTasks = new ArrayList<Task>();
 		 ArrayList<Task> displayResults = Storage.localStorage.getUncompletedTasks();
 
