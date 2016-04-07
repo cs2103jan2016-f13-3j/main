@@ -882,7 +882,7 @@ public class Parser {
 				}
 			}
 			else if(Logic.Head.getLastArg().equals("all")) {
-				try { System.out.println("yes");
+				try { 
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
@@ -924,8 +924,9 @@ public class Parser {
 				}
 
 			}
-		/*	else {
-				try { System.out.println("yes");
+		}
+			else {
+				try { 
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
@@ -934,6 +935,7 @@ public class Parser {
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 					UI.ui.printRed(MSG_MARK_FAIL);
 				} else {
+					System.out.println("reached");
 					Task temp = Logic.crud.getUncompletedTask(num - 1);
 					Logic.Mark.markTaskAsCompleted(num - 1);
 					UI.ui.eraseScreen();
@@ -944,9 +946,9 @@ public class Parser {
 				} catch (Exception e) {
 
 				}
-			}*/
+			}
 		}
-	}
+	
 
 	public static void sortCommand(String s) {
 		if (s.equals("p") || s.equals("priority")) {
