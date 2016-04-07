@@ -77,26 +77,21 @@ public class Mark {
 
 	public static void setRecurringTasksPriority(int index, String priority) {
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempRecurringTasks = Storage.localStorage.getRecurringTasks();
+
 
 		Task temp = Storage.localStorage.getUncompletedTask(index);
 		String idOfTask = temp.getId();
 
-		if(idOfTask != null) {
+	if (!idOfTask.equals("")) {
 			for(int i = 0; i<tempTasks.size(); i++) {
-				if(tempTasks.get(i).getId() != null) {
+				if(!tempTasks.get(i).getId().equals("")) {
 					if(tempTasks.get(i).getId().equals(idOfTask)) {
 						tempTasks.get(i).setPriority(priority);
 					}
 				}
 			}
 
-			for(int i = 0; i<tempRecurringTasks.size(); i++) {
-				if(tempRecurringTasks.get(i).getId().equals(idOfTask)) {
-					tempRecurringTasks.get(i).setPriority(priority);
-					Storage.localStorage.setRecurringTask(i, tempRecurringTasks.get(i));
-				}
-			}
+	}		
 
 			try {
 				Storage.localStorage.setUncompletedTasks(tempTasks);
@@ -104,6 +99,6 @@ public class Mark {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-		}
-	}
+		
+	} 
 }

@@ -19,9 +19,9 @@ public class Undo {
 	private static final String REDO_HISTORY_HEADER = "Here are the commands you can redo, starting from the top: \n";
 	private static final String REDO_CONFIRMATION = " has been redone";
 	private static Undo undo;
-	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack, completedRedoStack, uncompletedRedoStack, floatingRedoStack, recurringRedoStack;
+	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack, completedRedoStack, uncompletedRedoStack, floatingRedoStack;
 	private ArrayList<String> undoCommands, redoCommands;
-	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot, recurringTasksSnapshot;
+	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot;
 
 	private Undo() { //constructor
 		completedStack = new Stack<ArrayList<Task>>();
@@ -33,7 +33,6 @@ public class Undo {
 		completedRedoStack = new Stack<ArrayList<Task>>();
 		uncompletedRedoStack = new Stack<ArrayList<Task>>();
 		floatingRedoStack = new Stack<ArrayList<Task>>();
-		recurringRedoStack = new Stack<ArrayList<Task>>();
 		redoCommands = new ArrayList<String>();
 	}
 
@@ -102,9 +101,6 @@ public class Undo {
 		return floatingRedoStack.pop();
 	}
 
-	public ArrayList<Task> getLastRedoRecurringState() {
-		return recurringRedoStack.pop();
-	}
 
 	public String getLastCommand() {
 		return undoCommands.remove(undoCommands.size() - 1);
@@ -132,7 +128,7 @@ public class Undo {
 		copyCurrentTasksState();
 		storeCurrentStateForRedo(lastCommand); // store current snapshots for redo purposes
 
-		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState(), getLastRecurringState());
+		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
 		return "\"" + lastCommand + "\"" + UNDO_CONFIRMATION;
 	}
 
@@ -146,7 +142,7 @@ public class Undo {
 		copyCurrentTasksState();
 		storePreviousState(redoneCommand); // store current snapshots for undo purposes
 
-		localStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState(), getLastRedoRecurringState());
+		localStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
 		return "\"" + redoneCommand + "\"" + REDO_CONFIRMATION;
 	}
 
@@ -155,7 +151,7 @@ public class Undo {
 		uncompletedTasksSnapshot = copyArrayList(Storage.localStorage.getUncompletedTasks());
 		completedTasksSnapshot = copyArrayList(Storage.localStorage.getCompletedTasks());
 		floatingTasksSnapshot = copyArrayList(Storage.localStorage.getFloatingTasks());
-		recurringTasksSnapshot = copyArrayList(Storage.localStorage.getRecurringTasks());
+		
 	}
 
 	// make a copy of an arraylist
@@ -186,7 +182,6 @@ public class Undo {
 		completedStack.push(completedTasksSnapshot);
 		uncompletedStack.push(uncompletedTasksSnapshot);
 		floatingStack.push(floatingTasksSnapshot);
-		recurringStack.push(recurringTasksSnapshot);
 		undoCommands.add(command);
 	}
 
@@ -194,7 +189,6 @@ public class Undo {
 		completedRedoStack.push(completedTasksSnapshot);
 		uncompletedRedoStack.push(uncompletedTasksSnapshot);
 		floatingRedoStack.push(floatingTasksSnapshot);
-		recurringRedoStack.push(recurringTasksSnapshot);
 		redoCommands.add(command);
 	}
 

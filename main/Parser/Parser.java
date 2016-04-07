@@ -151,15 +151,16 @@ public class Parser {
 	}
 
 	private static void setAllRecurringTasksPriorityCommand(String s) {
-		s = s.substring(0, s.indexOf(' '));
-		int num = Integer.parseInt(s);
+		String [] tmp = s.split(" ");
+		String idx = tmp[1];
+		int num = Integer.parseInt(idx);
 
-		ArrayList<Task> list = Storage.localStorage.getRecurringTasks();
-		ArrayList<Task> list2 = Storage.localStorage.getUncompletedTasks();
+
+		ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 
 		if (list.size() == 0) {
 			UI.ui.printRed(MSG_EMPTY);
-		} else if (list2.size()  < num || num - 1 < 0) {
+		} else if (list.size()  < num || num - 1 < 0) {
 			UI.ui.printRed(MSG_PRIORITY_FAIL);
 		} else {
 			UI.ui.printYellow("Enter priority");
@@ -171,7 +172,7 @@ public class Parser {
 	}
 
 
-	public static void addCommand(String s) throws IOException, ClassNotFoundException {
+	public static void 	addCommand(String s) throws IOException, ClassNotFoundException {
 		boolean isAdded;
 		if (s.equals("")) {
 		} else {
@@ -196,9 +197,7 @@ public class Parser {
 
 					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 					if (!toRecurred) {
-						if (start == -1 && end != -1) {// no start date but has
-							// end
-							// date
+						if (start == -1 && end != -1) {// no start date but has end date
 							startDate = "-";
 							startTime = "-";
 							// read date & time
@@ -221,9 +220,6 @@ public class Parser {
 							} else {
 								// get issue
 								issue = s2[0];
-								// isAdded
-								// =Logic.crud.addTask(issue,startDate,startTime,endDate,endTime)
-								// (to be implemented)
 								isAdded = Logic.crud.addTaskWithEndDate(issue, dateIn, s);
 								if (isAdded) {
 									Logic.Sort.sortTasksChronologically();
@@ -350,11 +346,11 @@ public class Parser {
 								String last = tmp[1];
 								//	String before = tmp[2];
 
-								int frequency = Integer.parseInt(freq);
-								//int be4 = Integer.parseInt(before);
-								int be4 = 0;
+								int frequency = Integer.parseInt(freq);						
 
-								Logic.crud.addTaskToRecurring(issue, dateIn, s, false, frequency, be4, last);
+								Task task = new Task(issue,dateIn,s,true,frequency,last);
+								checkDateAndAdd(task);
+								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 
 							}
@@ -388,10 +384,10 @@ public class Parser {
 								//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-								//	int be4 = Integer.parseInt(before);
-								int be4 =0;
 
-								Logic.crud.addTaskToRecurring(issue, dateIn2, s, true, frequency, be4, last);
+								Task task = new Task(issue,dateIn2,s,true,frequency,last);
+								checkDateAndAdd(task);
+								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 
 							}
@@ -434,17 +430,17 @@ public class Parser {
 								//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-								//	int be4 = Integer.parseInt(before);
-								int be4 = 0;
+			
 
-								Logic.crud.addTaskToRecurringWithBothDate(issue, dateIn2, dateIn, s, frequency, be4,
-										last);
+								Task task = new Task(issue,dateIn2,dateIn,s,frequency,last);
+								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
 
 							}
 						}
 					}
-					Head.checkDateAndAdd();
+
 				}
 
 			} else {
@@ -589,17 +585,7 @@ public class Parser {
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of
 						// commands specified
-						if (Undo.getInstance().getHistoryCount() == 0) { // all
-							// commands
-							// have
-							// been
-							// undone
-							// but
-							// user
-							// used
-							// a
-							// higher
-							// int
+						if (Undo.getInstance().getHistoryCount() == 0) { // all commands have been undone but user used a higher int
 							UI.ui.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
@@ -896,9 +882,7 @@ public class Parser {
 			Logic.crud.displayTaksForTwoWeeksLater();
 		} else if (s.equals("last week") || s.equals("w -1")) {
 			Logic.crud.displayTasksForLastWeek();
-		} else if (s.equals("r") || s.equals("recurring")) {
-			Logic.crud.displayRecurringTasks();
-		} else {
+		}  else {
 			Logic.crud.displayByLabel(s);
 		}
 	}
@@ -1380,115 +1364,11 @@ public class Parser {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void setRecurringTask(int n) throws ClassNotFoundException, IOException {
-		Task replaced = localStorage.getUncompletedTask(n);
-		Logic.crud.copyRecurringTask(replaced);
-		UI.ui.printRed("Enter new description and deadline of recurring tasks");
-		String in = sc.nextLine();
-		in = Natty.getInstance().parseEditString(in);
-		// get index of key
-		int ind= in.indexOf("`");
-		String[] s2= in.split("`");
-
-		if(s2.length==2){			
-			String[] temp=s2[1].split(" ");
-
-
-			issue = s2[0];
-			int start = getStartingIndex(temp); // start has value of -1 if
-			// it
-			// has no start date
-			int end = getIndexOfKey(temp); // end has value of -1 if it has
-			// no end date
-			if (end<start) {//{ "by", "at", "on", "during", "before", "to" } is before "from"
-				end = -1;// no end date
-			} 
-			UI.ui.printRed("Enter \"<frequency> <last date>\"");
-			String in2 = sc.nextLine();
-			String[] tmp = in2.split(" ");
-			String freq = tmp[0];
-			String last = tmp[1];
-			//	String before = tmp[2];
-
-			int frequency = Integer.parseInt(freq);
-			//	int be4 = Integer.parseInt(before);
-			int be4 = 0;
-			// int numRec = Integer.parseInt(last) / Integer.parseInt(freq);
-
-			if (start == -1 && end != -1) {// only got end date			
-				String	ed = temp[end+1];
-				if (hasEndTime(temp)) {			
-					String t = temp[end+2];
-					t = t.replaceAll(":","/");
-					ed = ed+"/"+ t;
-				}
-				if (replaced.getStartDate() != null) { //has start date in task
-					replaced = new Task(issue,replaced.getFixedStartDateString(),ed,in,frequency,be4,last);
-				}	else {
-					replaced = new Task(issue,ed,in,false,frequency,be4,last);
-				}
-			} else if (start ==1 && end == -1) { //only got start date
-				String sd = temp[start+1];
-
-				if (hasStartTime(temp)) {
-					String t = temp[start+2];
-					t = t.replaceAll(":","/");
-					sd = sd+"/"+t;
-				}
-				if (replaced.getEndDate() != null) {//has end date in task
-					replaced = new Task(issue,sd,replaced.getDateCompare(),in,frequency,be4,last);
-				} else {
-					display("while true");
-					replaced = new Task(issue,sd,in,true,frequency,be4,last);
-
-				}
-			} else { //have both start date and end date
-				String sd = temp[start+1];
-				String ed = temp[end+1];
-				if (hasEndTime(temp)) {
-
-					String t = temp[end+2];
-					t = t.replaceAll(":","/");
-					ed = ed+"/"+ t;
-				}
-				if (hasStartTime(temp)) {
-
-					String t = temp[start+2];
-					t = t.replaceAll(":","/");
-					sd = sd+"/"+t;
-				}
-
-				replaced = new Task(issue,sd,ed,in,frequency,be4,last);
-
-			}
-		} else {
-			issue = in;
-			UI.ui.printRed("Enter \"<frequency> <last date>\"");
-			in = sc.nextLine();
-			String[] tmp = in.split(" ");
-			String freq = tmp[0];
-			String last = tmp[1];
-			//	String before = tmp[2];
-
-			int frequency = Integer.parseInt(freq);
-			//	int be4 = Integer.parseInt(before);
-			replaced.setIssue(issue);
-			replaced.setFrequency(frequency);
-			//	replaced.setdayBefore(be4);
-			replaced.setLastDate(last);
-
-		}	
-		delAllRecurringTask(n);
-		localStorage.addToRecurringTasks(replaced);
-		UI.ui.printGreen("Task " + n+1 +" has been edited and saved");
-		Head.checkDateAndAdd();
-	}
-
 
 	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
 		Task replaced = localStorage.getUncompletedTask(n);
 		
-		if (replaced.getId() == null) { // if the task at the user-entered index is not a recurring task. stop & inform user
+		if (replaced.getId().equals("")) { // if the task at the user-entered index is not a recurring task. stop & inform user
 			UI.ui.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
 			return;
 		}
@@ -1540,7 +1420,8 @@ public class Parser {
 					//int be4 = Integer.parseInt(before);
 					int be4 = 0;
 
-					Logic.crud.addTaskToRecurring(issue, dateIn, in, false, frequency, be4, last);
+					Task task = new Task(issue,dateIn2,in,false,frequency,last);
+					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
 
 				}
@@ -1574,10 +1455,9 @@ public class Parser {
 					//	String before = tmp[2];
 
 					int frequency = Integer.parseInt(freq);
-					//	int be4 = Integer.parseInt(before);
-					int be4 =0;
 
-					Logic.crud.addTaskToRecurring(issue, dateIn2, in, true, frequency, be4, last);
+					Task task = new Task(issue,dateIn2,in,true,frequency,last);
+					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
 
 				}
@@ -1620,11 +1500,8 @@ public class Parser {
 					//	String before = tmp[2];
 
 					int frequency = Integer.parseInt(freq);
-					//	int be4 = Integer.parseInt(before);
-					int be4 = 0;
-
-					Logic.crud.addTaskToRecurringWithBothDate(issue, dateIn2, dateIn, in, frequency, be4,
-							last);
+					Task task = new Task(issue,dateIn2,dateIn,in,frequency,last);
+					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
 
 				}
@@ -1632,7 +1509,69 @@ public class Parser {
 		} 
 		delAllRecurringTask(n);
 		UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
-		Head.checkDateAndAdd();
+		
+	}
+	public static void checkDateAndAdd(Task task) {
+		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
+		Date date = new Date();
+		String today = dateFormat.format(date);
 
-	} 
+		try {
+
+					String ed = task.getDateCompare();
+
+					
+					boolean expired = isExpired(ed, task.getLastDate());
+
+						while (true) {
+							if (expired) {//If task is not within display time frame or when task expired									//expired
+								break;
+							}
+							localStorage.addToUncompletedTasks(task);
+							String newED = processDate(ed, task.getFrequency());
+							if (task.getStartDate() == null) {//no start date
+								task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),
+										task.getLastDate(),task.getId());
+
+							} else if (task.getEndDate() == null) {
+								task = new Task(task.getIssue(), newED, task.getMsg(), true, task.getFrequency(),
+										 task.getLastDate(),task.getId());
+							}
+							else {// has start date and end date
+								task = new Task(task.getIssue(),task.getFixedStartDateString(),newED,task.getMsg(),task.getFrequency()
+										,task.getLastDate(),task.getId());								
+							}
+
+							ed = task.getDateCompare();
+
+							expired = (isExpired(ed,task.getLastDate()));
+					
+
+						}
+				
+
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	public static boolean isExpired(String date1, String date2) {
+		String[] temp = date1.split("/");
+		String[] temp2 = date2.split("/");
+		if (Integer.parseInt(temp2[2]) < Integer.parseInt(temp[2])) {
+			return true;
+		}	else {	
+			if (Integer.parseInt(temp2[1]) > Integer.parseInt(temp[1]) ) {//year or month < today 
+				return false;
+			} 	if (Integer.parseInt(temp2[1]) < Integer.parseInt(temp[1]) ) {//year or month < today 
+				return true;
+			} else {
+				if (Integer.parseInt(temp2[0]) >= Integer.parseInt(temp[0])) {// day
+					return false;
+				} else {
+					return true;
+				}
+			}
+		}
+	}
 }

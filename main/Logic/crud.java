@@ -157,12 +157,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 if (noDuplicate) {
 				 Storage.localStorage.addToFloatingTasks(task);
 			 }
-		 } else if (flag.equals(FLAG_RECURRING)) {
-			 noDuplicate = checkForDuplicateTasks(task, Storage.localStorage.getRecurringTasks());
-			 if (noDuplicate) {
-				 Storage.localStorage.addToRecurringTasks(task);;
-			 }
-		 }
+		 } 
+		 
 	 }
 
 	 private static boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
@@ -477,6 +473,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setDescription(msg);
 			 temp.setEndDate(null);
 			 temp.setStartDate(date);
+			 temp.resetID();
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
@@ -536,6 +533,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setDescription(msg);
 			 temp.setStartDate(startDate);
 			 temp.setEndDate(endDate);
+			 temp.resetID();
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 }else{
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
@@ -825,31 +823,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 System.exit(0);
 	 }
 
-	 public static boolean addTaskToRecurringWithBothDate(String line,String startDate, String endDate, String msg,int f,int d,String s)  {
-		 Task task = new Task(line,startDate,endDate,msg,f,d,s);
-		 Storage.localStorage.addToRecurringTasks(task);
-		 int freq = task.getFrequency();
-		 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
-		 return true;
-	 }
-	 public static boolean addTaskToRecurring(String line, String date, String msg,boolean type, int f, int d,String s) {
-		 Task task = new Task(line, date, msg, type,f,d,s);
-		 Storage.localStorage.addToRecurringTasks(task);
-		 int freq = task.getFrequency();
-		 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
-		 return true;
-	 }
-	 public static void editDescription(String s,int index) {
 
-		 Task temp = Storage.localStorage.getUncompletedTask(index);
-		 temp.setIssue(s);
-		 Storage.localStorage.setUncompletedTask(index, temp);			
-	 }
-
-	 public static boolean addByTask(Task task) {
-		 localStorage.addToUncompletedTasks(task);
-		 return true;
-	 }
 
 	 public static void addLabelToTask(int index, String label) {
 		 int sizeOfUncompletedTasks = Storage.localStorage.getUncompletedTasks().size();
@@ -1027,17 +1001,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
-	 public static void displayRecurringTasks() {
-		 UI.ui.eraseScreen();
-		 tempTasks = Storage.localStorage.getRecurringTasks();
-		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 
-					 tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
-		 }
-		 if (tempTasks.isEmpty()) {
-			 UI.ui.printGreen("There is no stored task to display");
-		 }
-	 }
+
 
 	 public static void displayUpcomingTasks() {
 		 UI.ui.eraseScreen();

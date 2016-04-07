@@ -16,7 +16,7 @@ public class localStorage {
 	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
 	private static ArrayList<Task> floatingTasks = new ArrayList<Task>();
-	private static ArrayList<Task> recurringTasks = new ArrayList<Task>();
+
 
 	//getter methods
 	public static ArrayList<Task> getUncompletedTasks() {
@@ -31,9 +31,7 @@ public class localStorage {
 		return floatingTasks;
 	}
 	
-	public static ArrayList<Task> getRecurringTasks() {
-		return recurringTasks;
-	}
+
 	public static Task getUncompletedTask(int index) {
 		Task temp = null;
 		for(int i = 0; i<uncompletedTasks.size(); i++) {
@@ -71,14 +69,6 @@ public class localStorage {
 		}
 		return temp;
 	}
-	public static Task getRecurringTask(int index) {
-		Task temp = null;
-		for (int i =0;i<recurringTasks.size();i++) {
-			if (i ==index) {
-				temp = recurringTasks.get(i);
-			}
-		} return temp;
-	}
 
 	//setter methods
 	public static void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
@@ -112,9 +102,6 @@ public class localStorage {
 	public static void setFloatingTask(int index, Task temp) {
 		floatingTasks.set(index, temp);
 	}
-	public static void setRecurringTask(int index, Task temp) {
-		recurringTasks.set(index,temp);
-	}
 
 	/**
 	 * Function to add a task to the uncompleted task list
@@ -142,9 +129,6 @@ public class localStorage {
 		floatingTasks.add(task);
 	}
 	
-	public static void addToRecurringTasks(Task task) {
-		recurringTasks.add(task);
-	}
 	/**
 	 * Function to delete a task from the file
 	 * 
@@ -173,10 +157,6 @@ public class localStorage {
 		Task temp = floatingTasks.remove(index);
 		return temp;
 	}
-	public static Task delFromRecurringTasks(int index) {
-		Task temp = recurringTasks.remove(index);
-		return temp;
-	}
 	/**
 	 * Function to clear the contents of the file
 	 * @throws IOException 
@@ -186,18 +166,16 @@ public class localStorage {
 		uncompletedTasks.clear();
 		completedTasks.clear();
 		floatingTasks.clear();
-		recurringTasks.clear();
+
 	}
 
 	//@@author Jie Wei
 	// replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
 	public static void revertToPreviousState(ArrayList<Task> previousCompleted, 
-			ArrayList<Task> previousUncompleted,
-			ArrayList<Task> previousFloating,
-			ArrayList<Task> previousRecurring) {
+			ArrayList<Task> previousUncompleted,	ArrayList<Task> previousFloating) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
 		floatingTasks = previousFloating;
-		recurringTasks = previousRecurring;
+
 	}
 }

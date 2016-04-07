@@ -15,11 +15,10 @@ public class Task implements java.io.Serializable {
 	private String priority;
 	private  String lastDate = "-";
 	private  int frequency = -1;
-	private  int dayBefore = -1;
 	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	private String dateCompare;
 	private String fixedStartDate;
-	private String id;
+	private String id ="";
 	private static final String MSG_RECURSE_FREQUENCY = "(Recurs every ";
 	private static final String MSG_DAYS = " day(s))";
 
@@ -115,7 +114,7 @@ public class Task implements java.io.Serializable {
 		}
 	}
 	// Constructor for recurring tasks with only one date given
-	public Task(String issue, String date, String msg, boolean isStartDate,int f,int d,String last) { // assuming String date provided is of the format DD/MM/YYYY
+	public Task(String issue, String date, String msg, boolean isStartDate,int f,String last) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
 		Calendar CalendarID = Calendar.getInstance();
@@ -124,7 +123,6 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		frequency = f;
-		dayBefore = d;
 		lastDate = last;
 		dateCompare = date;
 		label = new ArrayList<String>();
@@ -159,7 +157,7 @@ public class Task implements java.io.Serializable {
 			}
 		}
 	}
-	public Task(String issue, String date, String msg, boolean isStartDate,int f,int d,String last,String identity) { // assuming String date provided is of the format DD/MM/YYYY
+	public Task(String issue, String date, String msg, boolean isStartDate,int f,String last,String identity) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert date.contains("/");
 		id = identity;
@@ -167,7 +165,6 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		frequency = f;
-		dayBefore = d;
 		lastDate = last;
 		dateCompare = date;
 		label = new ArrayList<String>();
@@ -203,7 +200,7 @@ public class Task implements java.io.Serializable {
 		}
 	}
 	// Constructor for recurring tasks with start and end dates given
-	public Task(String issue, String startDate, String endDate, String msg,int f, int d, String last) { // assuming String date provided is of the format DD/MM/YYYY
+	public Task(String issue, String startDate, String endDate, String msg,int f, String last) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert startDate.contains("/");
 		assert endDate.contains("/");
@@ -213,7 +210,6 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		frequency = f;
-		dayBefore = d;
 		lastDate = last;
 		dateCompare = endDate;
 		fixedStartDate  = startDate;
@@ -248,7 +244,7 @@ public class Task implements java.io.Serializable {
 			this.endDate = new GregorianCalendar(year, month, day);
 		}
 	}
-	public Task(String issue, String startDate, String endDate, String msg,int f, int d, String last,String identity) { // assuming String date provided is of the format DD/MM/YYYY
+	public Task(String issue, String startDate, String endDate, String msg,int f, String last,String identity) { // assuming String date provided is of the format DD/MM/YYYY
 		assert issue != null;
 		assert startDate.contains("/");
 		assert endDate.contains("/");
@@ -257,7 +253,6 @@ public class Task implements java.io.Serializable {
 		this.issue = issue;
 		isCompleted = false;
 		frequency = f;
-		dayBefore = d;
 		lastDate = last;
 		dateCompare = endDate;
 		fixedStartDate  = startDate;
@@ -326,8 +321,9 @@ public class Task implements java.io.Serializable {
 	public void setFrequency(int n) {
 		frequency = n;
 	}
-	public void setdayBefore(int n) {
-		dayBefore = n;
+
+	public void resetID() {
+		id = "";
 	}
 
 	public void setStartDate(String startDate) {
@@ -405,9 +401,7 @@ public class Task implements java.io.Serializable {
 	public int getFrequency() {
 		return frequency;
 	}
-	public int getDayBefore() {
-		return dayBefore;
-	}
+
 	public String getMsg() {
 		return msg;
 	}
