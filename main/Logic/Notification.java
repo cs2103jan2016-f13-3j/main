@@ -23,7 +23,7 @@ public class Notification {
 
 		//after daysInAdvance
 		Calendar d2 = Calendar.getInstance();
-		d2.add(Calendar.DAY_OF_MONTH, daysInAdvance);
+		d2.add(Calendar.DAY_OF_MONTH, 3);
 		int futureDay = d2.get(Calendar.DAY_OF_MONTH);
 		int futureMonth = d2.get(Calendar.MONTH);
 		int futureYear = d2.get(Calendar.YEAR);
@@ -53,6 +53,7 @@ public class Notification {
 				}
 			}
 		}
+
 		if(tasksToBeDisplayed.size() > 0) {
 			UI.ui.printGreen("UNCOMPLETED TASKS");
 			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
@@ -74,9 +75,10 @@ public class Notification {
 						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),message);
 
 					} 
-				}else {
-					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+					else {
+						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 
+					}
 				}
 			}
 		}
