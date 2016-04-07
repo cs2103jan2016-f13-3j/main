@@ -180,7 +180,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 	 //@@author Cheng Gee
 	 /**
-	  * Function to edit task without editing date according to index in storage
+	  * Function to find the index of Task with Start Date
 	  * 
 	  * @param line the updated task description
 	  * @param index the index of the task to be edited
@@ -195,6 +195,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 /**
+	  * Function to find the index of Task with End Date
+	  * @param line
+	  * @param date
+	  * @param msg
+	  * @return
+	  */
 	 public static int uncompletedTaskIndexWithEndDate(String line,String date, String msg){
 		 Task task = new Task(line, date, msg, false);
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
@@ -204,6 +211,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 /**
+	  * Function to find the index of Task with Both Dates
+	  * @param line
+	  * @param startDate
+	  * @param endDate
+	  * @param msg
+	  * @return
+	  */
 
 	 public static int uncompletedTaskIndexWithBothDates(String line,String startDate, String endDate, String msg){
 		 Task task = new Task(line, startDate, endDate, msg);
@@ -214,6 +229,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 
+	 /**
+	  * Function to find the index of Task with No Date
+	  * @param line
+	  * @return
+	  */
 	 public static int uncompletedTaskIndexWithNoDate(String line){
 		 Task task = new Task(line);
 		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
@@ -223,6 +244,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
+	 /**
+	  * Function to display the Nearest 5 Completed Task with the newly 
+	  * mark Completed Task
+	  * @param t
+	  */
 	 public static void displayNearestFiveCompletedTaskList(Task t){
 		 int index=-1;
 		 ArrayList<Task> tempTasks = Storage.localStorage.getCompletedTasks();
@@ -254,6 +280,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
+	 /**
+	  * Function to display the nearest 5 task from uncompleted task list 
+	  * or floating task list including the unmark task
+	  * @param t
+	  */
 	 public static void displayNearestFiveUnmarkCompleteTaskList(Task t){
 		 ArrayList<Task> tempTasks;
 		 if(t.getEndDate() != null || t.getStartDate() != null){
@@ -292,6 +323,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
+	 /**
+	  * Function to Display the surrounding uncomplete task list of 
+	  * the deleted task
+	  * @param index
+	  */
 	 public static void displayNearestFiveDeleteUncompleteTaskList(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 int size = tempTasks.size();
@@ -316,6 +352,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 	 }
+	 /**
+	  * Function to display the surrounding floating task list of
+	  * delete task 
+	  * @param index
+	  */
 	 public static void displayNearestFiveDeleteFloatingTask(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
 		 int size = Storage.localStorage.getUncompletedTasks().size();
@@ -340,6 +381,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 	 }
+	 /**
+	  * Function to display the nearest 5 uncompleted task including the new
+	  * added task
+	  * @param index
+	  */
 	 public static void displayNearestFiveUncompleted(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 		 int size = tempTasks.size();
@@ -364,6 +410,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
+	 /**
+	  * Function to display the nearest 5 floating tasks including the 
+	  * newly added floating task
+	  * @param index
+	  */
 	 public static void displayNearestFiveFloating(int index){
 		 ArrayList<Task> tempTasks = Storage.localStorage.getFloatingTasks();
 		 int unSize = Storage.localStorage.getUncompletedTasks().size();
@@ -391,6 +442,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
+	 /**
+	  * Function to copy the Recurring Task Description
+	  * @param t
+	  */
 	 public static void copyRecurringTask(Task t){
 		 if(t!=null){
 			 String copy = t.getDescription();
@@ -399,6 +454,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 clipboard.setContents(selec, selec);
 		 }
 	 }
+	 /**
+	  * Function to copy the uncompleted Task Description
+	  * @param index
+	  */
 	 public static void copyTask(int index){
 		 Task edit = Storage.localStorage.getUncompletedTask(index-1);
 		 if(edit != null){
@@ -408,6 +467,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 clipboard.setContents(selec, selec);
 		 }
 	 }
+	 /**
+	  * Function to copy the editing Task Description
+	  * @param index
+	  */
 	 public static void copyEditingTask(int index){
 		 ArrayList<Task> task1=Storage.localStorage.getUncompletedTasks();
 
