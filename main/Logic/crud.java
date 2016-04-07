@@ -692,11 +692,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayCompletedTasks() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("COMPLETED TASKS");
-		 UI.ui.printGreen("Index\tStart Date\t End Date\t\t Task");
+		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		 tempTasks = Storage.localStorage.getCompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.printGreen((i+1) + ".\t" + tempTasks.get(i).getStartDateString() + "\t" + 
-					 tempTasks.get(i).getEndDateString() + "\t" + tempTasks.get(i).getIssue());
+			 Task temp=tempTasks.get(i);
+			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 		 }
 		 if (tempTasks.isEmpty()) {
 			 UI.ui.printGreen("There is no stored task to display");
