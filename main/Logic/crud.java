@@ -25,6 +25,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static boolean noDuplicate;
 
 	 //@@author Kowshik
+	 public static ArrayList<Task> getTemp(){
+		 return tempTasks;
+	 }
+	 
+	 public static Task getTempTask(int index) {
+		 return tempTasks.get(index);
+	 }
+	 
 	 /**
 	  * Function to add task without time into storage
 	  * @throws ClassNotFoundException 
@@ -48,9 +56,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	 public static ArrayList<Task> getTemp(){
-		 return tempTasks;
-	 }
+	 
 
 	 /**
 	  * Function to add task with only start date into storage
@@ -563,7 +569,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException{
-		 if(listOfTasks == 1) { //delete from uncompleted tasks
+		 if(listOfTasks == 1) { //delete from "display all" view
 			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 			 if(index < getSize.size()) {
 				 Storage.localStorage.delFromUncompletedTasks(index);
@@ -588,6 +594,17 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 else if(listOfTasks == 4) { //delete from floating tasks view
 			 Storage.localStorage.delFromFloatingTasks(index);
+		 }
+		 else if(listOfTasks == 5) { //delete from "display" view
+			 Task temp = tempTasks.get(index);
+			 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+			 for(int i = 0; i<tempUncompletedTasks.size(); i++) {
+				 if(tempUncompletedTasks.get(i).getTaskString().equals(temp.getTaskString())) {
+					 tempUncompletedTasks.remove(i);
+					 break;
+				 }
+			 }
+			 Storage.localStorage.setUncompletedTasks(tempUncompletedTasks);
 		 }
 	 }
 
@@ -709,7 +726,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 System.out.println(inputDate);
 		 String[] splitDate = inputDate.split("/");
 		 //run through all the tasks and find which have same date
-		 ArrayList<Task> tempTasks = new ArrayList<Task>();
+		 tempTasks = new ArrayList<Task>();
 		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 
 		 for(Task temp : tempUncompletedTasks) {
@@ -1005,7 +1022,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 	 public static void displayUpcomingTasks() {
 		 UI.ui.eraseScreen();
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 		 //today
 		 Calendar d1 = Calendar.getInstance();
 		 d1.add(Calendar.DAY_OF_MONTH, -1);
@@ -1014,27 +1031,27 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 Calendar d2 = Calendar.getInstance();
 		 d2.add(Calendar.DAY_OF_MONTH, 7);
 
-		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 tempTasks = new ArrayList<Task>();
 
-		 for(Task temp : tempTasks) {
+		 for(Task temp : tempUncompletedTasks) {
 			 if(temp.getEndDate() != null) {
 				 if(temp.getEndDate().compareTo(d1) >= 0 && temp.getEndDate().compareTo(d2) <=0) {
-					 tasksToBeDisplayed.add(temp);
+					 tempTasks.add(temp);
 					 continue;
 				 }
 			 }
 			 else if(temp.getStartDate() != null) {
 				 if((temp.getStartDate().compareTo(d1) >= 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
-					 tasksToBeDisplayed.add(temp);
+					 tempTasks.add(temp);
 				 }
 			 }
 		 }
 		 
-		 if(tasksToBeDisplayed.size() > 0) {
+		 if(tempTasks.size() > 0) {
 			 UI.ui.printGreen("UNCOMPLETED TASKS");
 			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 Task temp = tempTasks.get(i);
 				 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
 
 			 }

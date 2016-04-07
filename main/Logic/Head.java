@@ -25,6 +25,7 @@ public class Head {
 	private static final String USER_PROMPT = "command: ";
 	private static Scanner sc = new Scanner(System.in);
 	private static String lastCommand = "";
+	private static String lastArg = "";
 	private static String logo1="********   ********   ********  **       **   *****       ********   **    **";
 	private static String logo2="********   ********   ********  ***      **   **   **     ********   **    **";
 	private static String logo3="**    **   **         **        ****     **   **    **    **    **   **    **";
@@ -76,7 +77,7 @@ public class Head {
 
 			Parser.Parser.run(cmd, description);
 			lastCommand = cmd;
-			String lastArg = description;
+			lastArg = description;
 			/*if((lastCommand.equals("sort") && (lastArg.equals("c") || lastArg.equals("chrono")))!= true) {
 
 			 }*/
@@ -90,5 +91,9 @@ public class Head {
 	//getter method
 	public static String getLastCommand() {
 		return lastCommand;
+	}
+	
+	public static String getLastArg() {
+		return lastArg;
 	}
 }

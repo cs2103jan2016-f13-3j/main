@@ -50,7 +50,7 @@ public class Parser {
 	private static final String MSG_NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 	private static final String MSG_INVALID_UNDO_COUNT = "Please enter a valid number of commands you wish to undo";
 	private static final String MSG_INVALID_REDO_COUNT = "Please enter a valid number of commands you wish to redo";
-	
+
 	private static final String PROMPT_DATE = "Enter date in dd/mm/yyyy";
 	private static final String PROMPT_DEADLINE = "Enter deadline in dd/mm/yyyy or enter - for no deadline";
 	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";	
@@ -350,7 +350,7 @@ public class Parser {
 
 								Task task = new Task(issue,dateIn,s,true,frequency,last);
 								checkDateAndAdd(task);
-								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 
 							}
@@ -387,7 +387,7 @@ public class Parser {
 
 								Task task = new Task(issue,dateIn2,s,true,frequency,last);
 								checkDateAndAdd(task);
-								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 
 							}
@@ -430,10 +430,10 @@ public class Parser {
 								//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
-			
+
 
 								Task task = new Task(issue,dateIn2,dateIn,s,frequency,last);
-								 UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
 
@@ -600,28 +600,7 @@ public class Parser {
 		}
 	}
 
-	// @@author Kowshik
-	public static void setPriorityCommand(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, edit
-			// should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
-			} else {
-				UI.ui.printYellow("Enter priority");
-				String priority = sc.nextLine();
-				Logic.Mark.setPriority(num - 1, priority);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-		}
-	}
+
 
 	// @@author Jung Kai
 	public static void editCommand(String s) {
@@ -778,6 +757,76 @@ public class Parser {
 	}
 
 	// @@author Kowshik
+	public static void setPriorityCommand(String s) {
+		if(Logic.Head.getLastCommand().equals("display") || Logic.Head.getLastCommand().equals("d")) {
+			if(Logic.Head.getLastArg().equals("")) { //set priority from "display" view
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					if (list.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if (list.size() < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_PRIORITY_FAIL);
+					} else {
+						UI.ui.printYellow("Enter priority");
+						String priority = sc.nextLine();
+
+						Task temp = list.get(num - 1);
+						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+						int counter = 1;
+						for(Task t : tempUncompletedTasks) {
+							if(t.getTaskString().equals(temp.getTaskString())) {
+								num = counter;
+								System.out.println(num);
+								break;
+							}
+							counter++;
+						}
+						Logic.Mark.setPriority(num - 1, priority);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
+			}
+			else if(Logic.Head.getLastArg().equals("all")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_PRIORITY_FAIL);
+					} else {
+						UI.ui.printYellow("Enter priority");
+						String priority = sc.nextLine();
+						Logic.Mark.setPriority(num - 1, priority);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
+			}
+		} else {
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_PRIORITY_FAIL);
+				} else {
+					UI.ui.printYellow("Enter priority");
+					String priority = sc.nextLine();
+					Logic.Mark.setPriority(num - 1, priority);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+			}
+		}
+	}
+
+	// @@author Kowshik
 	public static void unmarkCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -802,27 +851,101 @@ public class Parser {
 	}
 
 	public static void markCommand(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, mark
-			// should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
-			} else {
-				Task temp = Logic.crud.getUncompletedTask(num - 1);
-				Logic.Mark.markTaskAsCompleted(num - 1);
-				UI.ui.eraseScreen();
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
+		if(Logic.Head.getLastCommand().equals("display") || Logic.Head.getLastCommand().equals("d")) {
+			if(Logic.Head.getLastArg().equals("")) { // marking from "display" view
 
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					if (list.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if (list.size() < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+
+						Task temp = Logic.crud.getTempTask(num - 1);
+						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+						int counter = 0;
+						for(Task t : tempUncompletedTasks) {
+							if(t.getTaskString().equals(temp.getTaskString())) {
+								Logic.Mark.markTaskAsCompleted(counter);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen(s + MSG_MARK);
+								Logic.crud.displayNearestFiveCompletedTaskList(temp);
+								arraylistsHaveBeenModified = true;
+								break;
+							}
+							counter++;
+						}
+					}
+				} catch (Exception e) {
+
+				}
+			}
+			else if(Logic.Head.getLastArg().equals("all")) {
+				try { System.out.println("yes");
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_MARK_FAIL);
+				} else {
+					Task temp = Logic.crud.getUncompletedTask(num - 1);
+					Logic.Mark.markTaskAsCompleted(num - 1);
+					UI.ui.eraseScreen();
+					UI.ui.printGreen(s + MSG_MARK);
+					Logic.crud.displayNearestFiveCompletedTaskList(temp);
+					arraylistsHaveBeenModified = true;
+				}
+				} catch (Exception e) {
+
+				}
+			}
+			else if(Logic.Head.getLastArg().equals("floating") || Logic.Head.getLastArg().equals("f")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+						Task temp = Logic.crud.getUncompletedTask(num - 1);
+						Logic.Mark.markTaskAsCompleted(num - 1);
+						UI.ui.eraseScreen();
+						UI.ui.printGreen(s + MSG_MARK);
+						Logic.crud.displayNearestFiveCompletedTaskList(temp);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+
+				}
+
+			}
+		/*	else {
+				try { System.out.println("yes");
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_MARK_FAIL);
+				} else {
+					Task temp = Logic.crud.getUncompletedTask(num - 1);
+					Logic.Mark.markTaskAsCompleted(num - 1);
+					UI.ui.eraseScreen();
+					UI.ui.printGreen(s + MSG_MARK);
+					Logic.crud.displayNearestFiveCompletedTaskList(temp);
+					arraylistsHaveBeenModified = true;
+				}
+				} catch (Exception e) {
+
+				}
+			}*/
 		}
 	}
 
@@ -889,45 +1012,64 @@ public class Parser {
 
 	public static void deleteCommand(String s) {
 		if ((Logic.Head.getLastCommand().equals("d") || Logic.Head.getLastCommand().equals("display")) == true) {
-			// delete from uncompleted tasks
-			try {
-				String[] tmp = s.split(" ");
-				if (s.contains("all")) {
-					int num = Integer.parseInt(tmp[1]);
-					Task t = delAllRecurringTask(num - 1);
-					UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-					arraylistsHaveBeenModified = true;
-				} else {
+			if(Logic.Head.getLastArg().equals("")) {
+				System.out.println("yes");
+				if(s.contains("all")!= true) {
 					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-					if (list.size() + list2.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-						// handle indexOutofBoundException
-						UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					Task deleted = list.get(num - 1);
+					issue = deleted.getIssue();
+					UI.ui.eraseScreen();
+					try {
+						Logic.crud.deleteTask(num - 1, 5);
+					} catch (ClassNotFoundException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+					arraylistsHaveBeenModified = true;
+				}
+			} else {
+				try {
+					String[] tmp = s.split(" ");
+					if (s.contains("all")) {
+						int num = Integer.parseInt(tmp[1]);
+						Task t = delAllRecurringTask(num - 1);
+						UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+						arraylistsHaveBeenModified = true;
 					} else {
-						if ((num - 1) < list.size()) {
-							Task deleted = list.get(num - 1);
-							issue = deleted.getIssue();
-							UI.ui.eraseScreen();
-							Logic.crud.deleteTask(num - 1, 1);
-							UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-							Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-							arraylistsHaveBeenModified = true;
+						int num = Integer.parseInt(s);
+						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+						ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+						if (list.size() + list2.size() == 0) {
+							UI.ui.printRed(MSG_EMPTY);
+						} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+							// handle indexOutofBoundException
+							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
 						} else {
-							Task deleted = list2.get(num - list.size() - 1);
-							issue = deleted.getIssue();
-							Logic.crud.deleteTask(num - 1, 1);
-							UI.ui.eraseScreen();
-							UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-							Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-							arraylistsHaveBeenModified = true;
+							if ((num - 1) < list.size()) {
+								Task deleted = list.get(num - 1);
+								issue = deleted.getIssue();
+								UI.ui.eraseScreen();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+								arraylistsHaveBeenModified = true;
+							} else {
+								Task deleted = list2.get(num - list.size() - 1);
+								issue = deleted.getIssue();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+								arraylistsHaveBeenModified = true;
+							}
 						}
 					}
+				} catch (Exception e) {
 				}
-			} catch (Exception e) {
-			}
+			} 
 		} else if ((Logic.Head.getLastCommand().equals("search") || Logic.Head.getLastCommand().equals("s"))) {
 			// delete from search results
 			try {
@@ -970,7 +1112,7 @@ public class Parser {
 			}
 		}
 
-		else {
+		/*else {
 			try {
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1001,7 +1143,7 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
-		}
+		}*/
 	}
 
 	// @@author Jung Kai
@@ -1367,12 +1509,12 @@ public class Parser {
 
 	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
 		Task replaced = localStorage.getUncompletedTask(n);
-		
+
 		if (replaced.getId().equals("")) { // if the task at the user-entered index is not a recurring task. stop & inform user
 			UI.ui.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
 			return;
 		}
-		
+
 		Logic.crud.copyRecurringTask(replaced);
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
@@ -1509,7 +1651,7 @@ public class Parser {
 		} 
 		delAllRecurringTask(n);
 		UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
-		
+
 	}
 	public static void checkDateAndAdd(Task task) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
@@ -1518,37 +1660,37 @@ public class Parser {
 
 		try {
 
-					String ed = task.getDateCompare();
+			String ed = task.getDateCompare();
 
-					
-					boolean expired = isExpired(ed, task.getLastDate());
 
-						while (true) {
-							if (expired) {//If task is not within display time frame or when task expired									//expired
-								break;
-							}
-							localStorage.addToUncompletedTasks(task);
-							String newED = processDate(ed, task.getFrequency());
-							if (task.getStartDate() == null) {//no start date
-								task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),
-										task.getLastDate(),task.getId());
+			boolean expired = isExpired(ed, task.getLastDate());
 
-							} else if (task.getEndDate() == null) {
-								task = new Task(task.getIssue(), newED, task.getMsg(), true, task.getFrequency(),
-										 task.getLastDate(),task.getId());
-							}
-							else {// has start date and end date
-								task = new Task(task.getIssue(),task.getFixedStartDateString(),newED,task.getMsg(),task.getFrequency()
-										,task.getLastDate(),task.getId());								
-							}
+			while (true) {
+				if (expired) {//If task is not within display time frame or when task expired									//expired
+					break;
+				}
+				localStorage.addToUncompletedTasks(task);
+				String newED = processDate(ed, task.getFrequency());
+				if (task.getStartDate() == null) {//no start date
+					task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),
+							task.getLastDate(),task.getId());
 
-							ed = task.getDateCompare();
+				} else if (task.getEndDate() == null) {
+					task = new Task(task.getIssue(), newED, task.getMsg(), true, task.getFrequency(),
+							task.getLastDate(),task.getId());
+				}
+				else {// has start date and end date
+					task = new Task(task.getIssue(),task.getFixedStartDateString(),newED,task.getMsg(),task.getFrequency()
+							,task.getLastDate(),task.getId());								
+				}
 
-							expired = (isExpired(ed,task.getLastDate()));
-					
+				ed = task.getDateCompare();
 
-						}
-				
+				expired = (isExpired(ed,task.getLastDate()));
+
+
+			}
+
 
 
 		} catch (Exception e) {
