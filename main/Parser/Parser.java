@@ -777,7 +777,6 @@ public class Parser {
 						for(Task t : tempUncompletedTasks) {
 							if(t.getTaskString().equals(temp.getTaskString())) {
 								num = counter;
-								System.out.println(num);
 								break;
 							}
 							counter++;
