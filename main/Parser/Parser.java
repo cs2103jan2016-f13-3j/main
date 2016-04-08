@@ -1126,12 +1126,12 @@ public class Parser {
 						counter++;
 					}
 				}
-				
+
 			}
 			catch(Exception e) {
 			}
 		}
-		
+
 		else {
 			try {
 				int num = Integer.parseInt(s);
@@ -1436,9 +1436,8 @@ public class Parser {
 
 			}
 		}
-	}
 
-	/*else {
+		else {
 			try {
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1469,7 +1468,8 @@ public class Parser {
 				}
 			} catch (Exception e) {
 			}
-		}*/
+		}
+	}
 
 
 	// @@author Jung Kai
