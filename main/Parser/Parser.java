@@ -175,6 +175,7 @@ public class Parser {
 	public static void 	addCommand(String s) throws IOException, ClassNotFoundException {
 		boolean isAdded;
 		if (s.equals("")) {
+			UI.ui.printRed(MSG_INVALID);
 		} else {
 			// get index of key
 			if (s.contains("`")) {
@@ -866,11 +867,12 @@ public class Parser {
 				num = getCorrectIndexFromDisplayAll(num);
 				UI.ui.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
 					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
+				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -889,11 +891,12 @@ public class Parser {
 			} else {
 				UI.ui.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
 					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
+				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 				Task temp = list.get(num - 1);
 				System.out.println(temp.getTaskString());
 				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
@@ -935,11 +938,12 @@ public class Parser {
 			} else {
 				UI.ui.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
 					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
+				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}

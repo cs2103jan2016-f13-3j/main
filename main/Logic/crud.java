@@ -443,6 +443,17 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
+	 
+	 
+	 public static void copyTask(Task t){
+		 if(t!=null){
+			 String copy = t.getDescription();
+			 StringSelection selec = new StringSelection(copy);
+			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			 clipboard.setContents(selec, selec);	 
+		 }
+	 }
+	 
 	 /**
 	  * Function to copy the Recurring Task Description
 	  * @param t
@@ -735,8 +746,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 
 	 }
 	 public static void printCompletedTask(ArrayList<Task> tempTask){
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("COMPLETED TASKS");
+		 ();
+		 UI.ui.printGreen("COMPLETEUI.ui.eraseScreenD TASKS");
 		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		 for(int i=0; i<tempTasks.size(); i++) {
 			 Task temp=tempTasks.get(i);
@@ -840,12 +851,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
 		 else {
-			 UI.ui.eraseScreen();
-			 UI.ui.print("Index\tTask");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 Task temp=tempTasks.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
-			 }
+			 printUncompletedTask(tempTasks);
 		 }
 	 }
 
