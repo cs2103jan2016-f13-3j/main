@@ -700,15 +700,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if (tempTasks.isEmpty()) {
 			 isEmptyUn = true;
 		 } else {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-
-			 for(int i=0; i<tempTasks.size(); i++) {
-				 Task temp = tempTasks.get(i);
-
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-			 UI.ui.print("________________________________________________________________");
+			 printUncompletedTask(tempTasks);
 		 }
 
 
@@ -728,6 +720,18 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(isEmptyUn && isEmptyF) {
 			 UI.ui.printGreen("There are no tasks to show.");
 		 }
+	 }
+	 public static void printUncompletedTask(ArrayList<Task> tempTask){
+		 UI.ui.printGreen("UNCOMPLETED TASKS");
+		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+
+		 for(int i=0; i<tempTask.size(); i++) {
+			 Task temp = tempTask.get(i);
+
+			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+		 }
+		 UI.ui.print("________________________________________________________________");
+		 
 	 }
 	 /**
 	  * function to display all floating task in storage
@@ -859,12 +863,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index \t Task");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
-			 }
-			 UI.ui.print("________________________________");
+			 printUncompletedTask(tempTasks);
 		 }
 
 		 tempTasks = new ArrayList<Task>();
@@ -972,11 +971,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
+			 printUncompletedTask(tasksToBeDisplayed);
+			 
 		 }
 		 else {
 			 UI.ui.printRed("No tasks this week");
@@ -1009,11 +1005,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
+			 printUncompletedTask(tasksToBeDisplayed);
+			 
 		 }
 		 else {
 			 UI.ui.printRed("No tasks next week");
@@ -1047,11 +1040,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
+			 printUncompletedTask(tasksToBeDisplayed);
+			 
 		 }
 		 else {
 			 UI.ui.printRed("No tasks for two weeks later");
@@ -1085,11 +1075,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
+			 printUncompletedTask(tasksToBeDisplayed);
+			 
 		 }
 		 else {
 			 UI.ui.printRed("No tasks left from last week");
@@ -1126,14 +1113,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 
 		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 Task temp = tempTasks.get(i);
-				 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-
+			 printUncompletedTask(tempTasks);
+			 
 			 }
 		 }
 	 }
- }
+ 
 
