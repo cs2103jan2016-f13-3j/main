@@ -19,7 +19,7 @@ public class Undo {
 	private static final String REDO_HISTORY_HEADER = "Here are the commands you can redo, starting from the top: \n";
 	private static final String REDO_CONFIRMATION = " has been redone";
 	private static Undo undo;
-	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, recurringStack, completedRedoStack, uncompletedRedoStack, floatingRedoStack;
+	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack, completedRedoStack, uncompletedRedoStack, floatingRedoStack;
 	private ArrayList<String> undoCommands, redoCommands;
 	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot;
 
@@ -27,7 +27,6 @@ public class Undo {
 		completedStack = new Stack<ArrayList<Task>>();
 		uncompletedStack = new Stack<ArrayList<Task>>();
 		floatingStack = new Stack<ArrayList<Task>>();
-		recurringStack = new Stack<ArrayList<Task>>();
 		undoCommands = new ArrayList<String>();
 
 		completedRedoStack = new Stack<ArrayList<Task>>();
@@ -42,14 +41,20 @@ public class Undo {
 		}
 		return undo;
 	}
-
-	// returns string containing a list of undo-able commands, if any
+///////////////////////////////////////////////////////////////// REFAC the 2 view methods below
+	/**
+	 * Show a list of commands that can be undone.
+	 * The first command displayed is the latest command that was done.
+	 * 
+	 * @return A list of all possible undo-able commands, if any. 
+	 */
 	public String viewPastCommands() {
-		String result = "";
 		if (undoCommands.isEmpty()) {
 			return NO_PAST_COMMAND;
 		}
+		
 		int count = 0;
+		String result = "";
 		result += UNDO_HISTORY_HEADER;
 		for (int i = undoCommands.size() - 1; i >= 0; i--) {
 			count++;		
@@ -57,14 +62,20 @@ public class Undo {
 		}
 		return result.substring(0, result.length() - 1);
 	}
-
-	// returns string containing a list of redo-able commands, if any
+///////////////////////////////////////////////////////////////////// REFAC
+	/**
+	 * Show a list of commands that can be redone.
+	 * The first command displayed is the latest command that was undone.
+	 * 
+	 * @return A list of all possible redo-able commands, if any. 
+	 */
 	public String viewRedoCommands() {
-		String result = "";
 		if (redoCommands.isEmpty()) {
 			return NO_REDO_COMMAND;
 		}
+		
 		int count = 0;
+		String result = "";
 		result += REDO_HISTORY_HEADER;
 		for (int i = redoCommands.size() - 1; i >= 0; i--) {
 			count++;
@@ -85,10 +96,6 @@ public class Undo {
 		return floatingStack.pop();
 	}
 
-	public ArrayList<Task> getLastRecurringState() {
-		return recurringStack.pop();
-	}
-
 	public ArrayList<Task> getLastRedoCompletedState() {
 		return completedRedoStack.pop();
 	}
@@ -100,7 +107,6 @@ public class Undo {
 	public ArrayList<Task> getLastRedoFloatingState() {
 		return floatingRedoStack.pop();
 	}
-
 
 	public String getLastCommand() {
 		return undoCommands.remove(undoCommands.size() - 1);
@@ -118,7 +124,15 @@ public class Undo {
 		return redoCommands.size();
 	}
 
-	// replaces current state in localStorage to a "snapshot" taken previously
+	/**
+	 * Undo a command by replacing the current storage arraylists with the arraylists copied from the previous program state.
+	 * It will first copy and store current program state and the command input into the redo stack before proceeding. 
+	 * Does not proceed if there are no commands to undo.
+	 * 
+	 * @return Feedback on method outcome.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public String undo() throws ClassNotFoundException, IOException {
 		if (undoCommands.isEmpty()) {
 			return NO_PAST_COMMAND;
@@ -132,7 +146,15 @@ public class Undo {
 		return "\"" + lastCommand + "\"" + UNDO_CONFIRMATION;
 	}
 
-	// replaces current state in localStorage to a "snapshot" taken previously
+	/**
+	 * Redo a command by replacing the current storage arraylists with the arraylists copied from the previous program state.
+	 * It will first copy and store current program state and the command input into the undo stack before proceeding. 
+	 * Does not proceed if there are no commands to redo.
+	 * 
+	 * @return Feedback on method outcome.
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public String redo() throws ClassNotFoundException, IOException {
 		if (redoCommands.isEmpty()) {
 			return NO_REDO_COMMAND;
@@ -140,13 +162,18 @@ public class Undo {
 		String redoneCommand = getRedoneCommand();
 
 		copyCurrentTasksState();
-		storePreviousState(redoneCommand); // store current snapshots for undo purposes
+		storePreviousState(redoneCommand); // store current "snapshots" for undo purposes
 
 		localStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
 		return "\"" + redoneCommand + "\"" + REDO_CONFIRMATION;
 	}
 
-	// copy all 3 task arraylists as "snapshots" of the current program state
+	/**
+	 * Create fresh copies of all the storage arraylists.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	public void copyCurrentTasksState() throws ClassNotFoundException, IOException {
 		uncompletedTasksSnapshot = copyArrayList(Storage.localStorage.getUncompletedTasks());
 		completedTasksSnapshot = copyArrayList(Storage.localStorage.getCompletedTasks());
@@ -154,13 +181,19 @@ public class Undo {
 		
 	}
 
-	// make a copy of an arraylist
-	// input & output streams are used to ensure no shared references
+	/**
+	 * Creates a fresh copy of an arraylist and its task contents such that both of them do not share any references.
+	 * 
+	 * @param sourceArray The arraylist to be copied from.
+	 * @return            The copied arraylist.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
 	private static ArrayList<Task> copyArrayList(ArrayList<Task> sourceArray) throws IOException, ClassNotFoundException {	
 		ArrayList<Task> CopyOfArraylist = new ArrayList<Task>(sourceArray.size());
+		
+		// convert each task to bytes
 		for (Task t : sourceArray) {
-
-			// convert tasks to bytes
 			ByteArrayOutputStream bos = new ByteArrayOutputStream();
 			ObjectOutputStream oos = new ObjectOutputStream(bos);
 			oos.writeObject(t);
@@ -169,7 +202,7 @@ public class Undo {
 			bos.close();
 			byte[] byteData = bos.toByteArray();
 
-			// restore task from bytes and add to the copied arraylist
+			// restore task from bytes and add to the new arraylist
 			ByteArrayInputStream bais = new ByteArrayInputStream(byteData);
 			Task tempTask = (Task) new ObjectInputStream(bais).readObject();
 			CopyOfArraylist.add(tempTask);
@@ -177,7 +210,12 @@ public class Undo {
 		return CopyOfArraylist;
 	}
 
-	// adds the "snapshots" of the arraylists into stacks for undo purposes. The command executed is also stored.
+	/**
+	 * Store all current copied storage arraylists into undo stack to be used for undoing the current command.
+	 * Also stores the current command string to be used as feedback when undo is performed.
+	 * 
+	 * @param command The entire command input entered by the user.
+	 */
 	public void storePreviousState(String command) {
 		completedStack.push(completedTasksSnapshot);
 		uncompletedStack.push(uncompletedTasksSnapshot);
@@ -185,6 +223,12 @@ public class Undo {
 		undoCommands.add(command);
 	}
 
+	/**
+	 * Store all current copied storage arraylists into redo stack to be used for redoing the current command.
+	 * Also stores the current command string to be used as feedback when redo is performed.
+	 * 
+	 * @param command The entire command input that is currently being undone.
+	 */
 	public void storeCurrentStateForRedo(String command) {
 		completedRedoStack.push(completedTasksSnapshot);
 		uncompletedRedoStack.push(uncompletedTasksSnapshot);
@@ -192,6 +236,9 @@ public class Undo {
 		redoCommands.add(command);
 	}
 
+	/**
+	 * Empties the redo command arraylist
+	 */
 	public void clearRedoCommands() {
 		redoCommands.clear();
 	}
