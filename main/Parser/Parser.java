@@ -18,6 +18,7 @@ import Task.Task;
 
 public class Parser {
 	private static boolean arraylistsHaveBeenModified;
+	private static int start, end;
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static Scanner sc = new Scanner(System.in);
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
@@ -184,37 +185,13 @@ public class Parser {
 				if (s2.length == 2) {
 					String[] temp = s2[1].split(" ");
 					String r = s.substring(0, ind) + s.substring(ind + 2);
-					int start = getStartingIndex(temp); // start has value of -1
-					// if
-					// it
-					// has no start date
-					int end = getIndexOfKey(temp); // end has value of -1 if it
-					// has
-					// no end date
-					if (end < start) {// { "by", "at", "on", "during", "before",
-						// "to" } is before "from"
-						end = -1;// no end date
-					}
+					checkStartEndDate(temp);
+					
 
 					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 					if (!toRecurred) {
 						if (start == -1 && end != -1) {// no start date but has end date
-							startDate = "-";
-							startTime = "-";
-							// read date & time
-							date = temp[end + 1];
-							int idx = getIndexOfWeek(date);
-							if (idx != -1) {
-								date = matchDate(idx);
-							}
-							dateIn = date;
-							if (hasEndTime(temp)) {// check if contain end time
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
-							} else {
-								time = "-";
-							}
+							setStartEndDate(temp);
 
 							if (!Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
@@ -234,24 +211,7 @@ public class Parser {
 							}
 
 						} else if (start != -1 && end == -1) {// has start date
-							// but
-							// no end date
-							date = "-";
-							time = "-";
-							startDate = temp[start + 1];
-							int idx = getIndexOfWeek(startDate);
-							if (idx != -1) {
-								startDate = matchDate(idx);
-							}
-							dateIn2 = startDate;
-
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} else {
-								startTime = "-";
-							}
+							setStartEndDate(temp);
 							if (!Logic.checkDate.checkDateformat(startDate)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -271,33 +231,7 @@ public class Parser {
 								}
 							}
 						} else { // has both start date and end date
-							startDate = temp[start + 1];
-							date = temp[end + 1];
-							int idx = getIndexOfWeek(startDate);
-							int idx2 = getIndexOfWeek(date);
-							if (idx != -1) {
-								startDate = matchDate(idx);
-							}
-							if (idx2 != -1) {
-								date = matchDate(idx2);
-							}
-							dateIn = date;
-							dateIn2 = startDate;
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} else {
-								startTime = "-";
-							}
-							if (hasEndTime(temp)) {
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
-
-							} else {
-								time = "-";
-							}
+							setStartEndDate(temp);
 							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -322,20 +256,7 @@ public class Parser {
 					} else { // for recurring tasks
 						issue = s2[0];
 						if (start == -1 && end != -1) {// no start date but has
-							// end
-							// date
-							startDate = "-";
-							startTime = "-";
-							// read date & time
-							date = temp[end + 1];
-							dateIn = date;
-							if (hasEndTime(temp)) {// check if contain end time
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
-							} else {
-								time = "-";
-							}
+							setStartEndDateRecurring(temp);
 
 							if (!Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
@@ -356,24 +277,7 @@ public class Parser {
 
 							}
 						} else if (start != -1 && end == -1) {// has start date
-							// but
-							// no end date
-							date = "-";
-							time = "-";
-							startDate = temp[start + 1];
-							int idx = getIndexOfWeek(startDate);
-							if (idx != -1) {
-								startDate = matchDate(idx);
-							}
-							dateIn2 = startDate;
-
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} else {
-								startTime = "-";
-							}
+							setStartEndDateRecurring(temp);
 							if (!Logic.checkDate.checkDateformat(startDate)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -393,33 +297,7 @@ public class Parser {
 
 							}
 						} else { // has both start date and end date
-							startDate = temp[start + 1];
-							date = temp[end + 1];
-							int idx = getIndexOfWeek(startDate);
-							int idx2 = getIndexOfWeek(date);
-							if (idx != -1) {
-								startDate = matchDate(idx);
-							}
-							if (idx2 != -1) {
-								date = matchDate(idx2);
-							}
-							dateIn = date;
-							dateIn2 = startDate;
-							if (hasStartTime(temp)) {
-								startTime = temp[start + 2];
-								startTime = startTime.replaceAll(":", "/");
-								dateIn2 = dateIn2 + "/" + startTime;
-							} else {
-								startTime = "-";
-							}
-							if (hasEndTime(temp)) {
-								time = temp[end + 2];
-								time = time.replaceAll(":", "/");
-								dateIn = dateIn + "/" + time;
-
-							} else {
-								time = "-";
-							}
+							setStartEndDateRecurring(temp);
 							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -460,7 +338,149 @@ public class Parser {
 
 		}
 	}
+	
+	// @@author Cheng Gee
+	public static void checkStartEndDate(String[] temp){
+		start = getStartingIndex(temp);// start has value of -1 if no start date
+		end = getIndexOfKey(temp);
+		if(start>end){
+			end=-1;
+		}
+	}
+	public static void setStartEndDate(String[] temp){
+		if (start == -1 && end != -1) {// no start date but has end date
+			startDate = "-";
+			startTime = "-";
+			// read date & time
+			date = temp[end + 1];
+			int idx = getIndexOfWeek(date);
+			if (idx != -1) {
+				date = matchDate(idx);
+			}
+			dateIn = date;
+			if (hasEndTime(temp)) {// check if contain end time
+				time = temp[end + 2];
+				time = time.replaceAll(":", "/");
+				dateIn = dateIn + "/" + time;
+			} else {
+				time = "-";
+			}
+		} else if (start != -1 && end == -1) {// has start date
+			// but
+			// no end date
+			date = "-";
+			time = "-";
+			startDate = temp[start + 1];
+			int idx = getIndexOfWeek(startDate);
+			if (idx != -1) {
+				startDate = matchDate(idx);
+			}
+			dateIn2 = startDate;
 
+			if (hasStartTime(temp)) {
+				startTime = temp[start + 2];
+				startTime = startTime.replaceAll(":", "/");
+				dateIn2 = dateIn2 + "/" + startTime;
+			} else {
+				startTime = "-";
+			}
+		}else { // has both start date and end date
+			startDate = temp[start + 1];
+			date = temp[end + 1];
+			int idx = getIndexOfWeek(startDate);
+			int idx2 = getIndexOfWeek(date);
+			if (idx != -1) {
+				startDate = matchDate(idx);
+			}
+			if (idx2 != -1) {
+				date = matchDate(idx2);
+			}
+			dateIn = date;
+			dateIn2 = startDate;
+			if (hasStartTime(temp)) {
+				startTime = temp[start + 2];
+				startTime = startTime.replaceAll(":", "/");
+				dateIn2 = dateIn2 + "/" + startTime;
+			} else {
+				startTime = "-";
+			}
+			if (hasEndTime(temp)) {
+				time = temp[end + 2];
+				time = time.replaceAll(":", "/");
+				dateIn = dateIn + "/" + time;
+
+			} else {
+				time = "-";
+			}
+		}
+	}
+
+	public static void setStartEndDateRecurring(String[] temp){
+		if (start == -1 && end != -1) {// no start date but has
+			// end
+			// date
+			startDate = "-";
+			startTime = "-";
+			// read date & time
+			date = temp[end + 1];
+			dateIn = date;
+			if (hasEndTime(temp)) {// check if contain end time
+				time = temp[end + 2];
+				time = time.replaceAll(":", "/");
+				dateIn = dateIn + "/" + time;
+			} else {
+				time = "-";
+			}
+		}else if (start != -1 && end == -1) {// has start date
+			// but
+			// no end date
+			date = "-";
+			time = "-";
+			startDate = temp[start + 1];
+			int idx = getIndexOfWeek(startDate);
+			if (idx != -1) {
+				startDate = matchDate(idx);
+			}
+			dateIn2 = startDate;
+
+			if (hasStartTime(temp)) {
+				startTime = temp[start + 2];
+				startTime = startTime.replaceAll(":", "/");
+				dateIn2 = dateIn2 + "/" + startTime;
+			} else {
+				startTime = "-";
+			}
+		}else { // has both start date and end date
+			startDate = temp[start + 1];
+			date = temp[end + 1];
+			int idx = getIndexOfWeek(startDate);
+			int idx2 = getIndexOfWeek(date);
+			if (idx != -1) {
+				startDate = matchDate(idx);
+			}
+			if (idx2 != -1) {
+				date = matchDate(idx2);
+			}
+			dateIn = date;
+			dateIn2 = startDate;
+			if (hasStartTime(temp)) {
+				startTime = temp[start + 2];
+				startTime = startTime.replaceAll(":", "/");
+				dateIn2 = dateIn2 + "/" + startTime;
+			} else {
+				startTime = "-";
+			}
+			if (hasEndTime(temp)) {
+				time = temp[end + 2];
+				time = time.replaceAll(":", "/");
+				dateIn = dateIn + "/" + time;
+
+			} else {
+				time = "-";
+			}
+		}
+	}
+	
 	// @@author Kowshik
 	public static void setLabelCommand(String s) {
 		try {
@@ -633,15 +653,7 @@ public class Parser {
 						if (s2.length == 2) {
 							String[] temp = s2[1].split(" ");
 							String r = input.substring(0, ind) + input.substring(ind + 2);
-							int start = getStartingIndex(temp);
-							int end = getIndexOfKey(temp); // end has value of
-							// -1 if it has
-							// no end date
-							if (end < start) {// { "by", "at", "on", "during",
-								// "before", "to" } is before
-								// "from"
-								end = -1;// no end date
-							}
+							checkStartEndDate(temp);
 							if (start == -1 && end != -1) {// no start date but
 								// has end
 								// date
@@ -1260,6 +1272,7 @@ public class Parser {
 	}
 
 	public static void deleteFromDisplayView(String s) {
+		try{
 		int num = Integer.parseInt(s);
 		ArrayList<Task> list = Logic.crud.getTemp();
 		Task deleted = list.get(num - 1);
@@ -1274,6 +1287,9 @@ public class Parser {
 		UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
 		Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 		arraylistsHaveBeenModified = true;
+		}catch(Exception e){
+			UI.ui.printRed(MSG_INVALID);
+		}
 	}
 
 	public static void deleteFromDisplayCompletedView(String s) {
@@ -1293,6 +1309,7 @@ public class Parser {
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
+			UI.ui.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1314,6 +1331,7 @@ public class Parser {
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
+			UI.ui.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1347,6 +1365,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
+			UI.ui.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1392,6 +1411,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
+			UI.ui.printRed(MSG_INVALID);
 		}
 	}
 
