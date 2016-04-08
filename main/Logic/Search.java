@@ -92,7 +92,7 @@ public class Search {
 			}
 		}
 		
-		temp = Storage.localStorage.getCompletedTasks();
+		/*temp = Storage.localStorage.getCompletedTasks();
 		if(temp.size() > 0) {
 			for(int i = 0; i<temp.size(); i++) {
 				String[] taskParts = temp.get(i).getIssue().split(" ");
@@ -115,7 +115,7 @@ public class Search {
 				}
 			}
 		}
-		
+		*/
 		if(searchedTasks.size() == 0) {
 			UI.ui.printRed("NO TASKS FOUND");
 		}

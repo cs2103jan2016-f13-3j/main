@@ -992,8 +992,7 @@ public class Parser {
 				} else if (list.size() < num || num - 1 < 0) {
 					UI.ui.printRed(MSG_MARK_FAIL);
 				} else {
-
-					Task temp = Logic.Search.getSearchedTask(num - 1);
+					Task temp = list.get(num -1);
 					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 					ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
 					int counter = 0;
@@ -1011,7 +1010,7 @@ public class Parser {
 						}
 						counter++;
 					}
-					
+
 					UI.ui.eraseScreen();
 					UI.ui.printGreen(s + MSG_MARK);
 					Logic.crud.displayNearestFiveCompletedTaskList(temp);
@@ -1097,34 +1096,47 @@ public class Parser {
 		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			try {
 				int num = Integer.parseInt(s);
-				System.out.println(num);
-				System.out.println(Logic.crud.getTempTask(num - 1).getTaskString());
-				Task temp = Logic.crud.getTempTask(num - 1);
-				System.out.println("dsadas");
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
+				ArrayList<Task> list = Logic.Search.getSearchedTasks();
+				if (list.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.printRed("Invalid index entered");
+				} else {
+					Task temp = list.get(num - 1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
 					}
-					counter++;
-				}
 
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
+					for(Task t : tempFloatingTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
 					}
-					counter++;
 				}
+				
 			}
 			catch(Exception e) {
+			}
+		}
+		
+		else {
+			try {
+				int num = Integer.parseInt(s);
+				Logic.crud.viewIndividualTask(num - 1);
+			} catch (Exception e) {
 			}
 		}
 	}

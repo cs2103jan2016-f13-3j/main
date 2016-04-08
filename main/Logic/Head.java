@@ -76,10 +76,9 @@ public class Head {
 			}
 
 			Parser.Parser.run(cmd, description);
-			if(input.contains("display") || input.contains("search")) {
-				lastDisplay = cmd;
-				lastDisplayArg = description;
-			}
+			lastDisplay = cmd;
+			lastDisplayArg = description;
+
 			/*if((lastCommand.equals("sort") && (lastArg.equals("c") || lastArg.equals("chrono")))!= true) {
 
 			 }*/
