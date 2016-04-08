@@ -983,7 +983,7 @@ public class Parser {
 			} else {
 				Task temp = Logic.crud.getCompletedTask(num - 1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
-				UI.ui.printGreen(s + MSG_UNMARK);
+				UI.ui.printGreen("\""+temp.getIssue()+"\"" + MSG_UNMARK);
 				Logic.crud.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
@@ -1062,7 +1062,7 @@ public class Parser {
 				Task temp = Logic.crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
 				UI.ui.eraseScreen();
-				UI.ui.printGreen(s + MSG_MARK);
+				UI.ui.printGreen("\""+temp.getIssue()+"\"" + MSG_MARK);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
