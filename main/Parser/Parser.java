@@ -808,7 +808,7 @@ public class Parser {
 		}
 		return num;
 	}
-	
+
 	public static int getCorrectIndexWelcomeView(int num) {
 		Task temp = Logic.Notification.getSpecificTask(num);
 		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
@@ -1110,7 +1110,7 @@ public class Parser {
 			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
 			Logic.crud.viewIndividualTask(num - 1);
 		}
-			else {
+		else {
 			try {
 				int num = Integer.parseInt(s);
 				Logic.crud.viewIndividualTask(num - 1);
@@ -1914,14 +1914,12 @@ public class Parser {
 		String today = dateFormat.format(date);
 
 		try {
-
 			String ed = task.getDateCompare();
-
 
 			boolean expired = isExpired(ed, task.getLastDate());
 
 			while (true) {
-				if (expired) {//If task is not within display time frame or when task expired									//expired
+				if (expired) {//If task is not within display time frame or when task expired
 					break;
 				}
 				localStorage.addToUncompletedTasks(task);
@@ -1942,28 +1940,26 @@ public class Parser {
 				ed = task.getDateCompare();
 
 				expired = (isExpired(ed,task.getLastDate()));
-
-
 			}
-
-
-
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
 	}
-	public static boolean isExpired(String date1, String date2) {
-		String[] temp = date1.split("/");
-		String[] temp2 = date2.split("/");
-		if (Integer.parseInt(temp2[2]) < Integer.parseInt(temp[2])) {
+	
+	public static boolean isExpired(String currentRecurDate, String recurDeadline) {
+		String[] splitCurrentRecurDate = currentRecurDate.split("/");
+		String[] splitRecurDeadline = recurDeadline.split("/");
+		if (Integer.parseInt(splitRecurDeadline[2]) < Integer.parseInt(splitCurrentRecurDate[2])) { // end year < current year
 			return true;
-		}	else {	
-			if (Integer.parseInt(temp2[1]) > Integer.parseInt(temp[1]) ) {//year or month < today 
+		} else if (Integer.parseInt(splitRecurDeadline[2]) > Integer.parseInt(splitCurrentRecurDate[2])) { // end year > current year
+			return false;
+		} else {	// end year == current year
+			if (Integer.parseInt(splitRecurDeadline[1]) > Integer.parseInt(splitCurrentRecurDate[1]) ) { // end month > current month 
 				return false;
-			} 	if (Integer.parseInt(temp2[1]) < Integer.parseInt(temp[1]) ) {//year or month < today 
+			} 	if (Integer.parseInt(splitRecurDeadline[1]) < Integer.parseInt(splitCurrentRecurDate[1]) ) { // end month < today 
 				return true;
-			} else {
-				if (Integer.parseInt(temp2[0]) >= Integer.parseInt(temp[0])) {// day
+			} else { // same year & month
+				if (Integer.parseInt(splitRecurDeadline[0]) >= Integer.parseInt(splitCurrentRecurDate[0])) { // valid date
 					return false;
 				} else {
 					return true;
