@@ -21,6 +21,12 @@ public class Task implements java.io.Serializable {
 	private String id ="";
 	private static final String MSG_RECURSE_FREQUENCY = "(Recurs every ";
 	private static final String MSG_DAYS = " day(s))";
+	private static final String PRIORITY_HIGH = "high"; 
+	private static final String PRIORITY_HIGH_SHORT = "(H) ";
+	private static final String PRIORITY_MEDIUM = "medium";
+	private static final String PRIORITY_MEDIUM_SHORT = "(M) ";
+//	private static final String PRIORITY_LOW = "low";
+	private static final String PRIORITY_LOW_SHORT = "(L) ";
 
 	// Constructors
 
@@ -516,7 +522,17 @@ public class Task implements java.io.Serializable {
 	public String getPriority(){
 		return priority;
 	}
-
+	
+	// Method to get (H) for task with high priority, (M) for medium priority, (L) for low priority
+	public String getShortPriority() {
+		if (priority.equals(PRIORITY_HIGH)) {
+			return PRIORITY_HIGH_SHORT;
+		} else if (priority.equals(PRIORITY_MEDIUM)) {
+			return PRIORITY_MEDIUM_SHORT;
+		} else {
+			return PRIORITY_LOW_SHORT;
+		}
+	}
 
 	public void setPriority(String priority){
 		this.priority = priority;
