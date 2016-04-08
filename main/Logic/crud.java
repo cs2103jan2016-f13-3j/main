@@ -468,6 +468,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 clipboard.setContents(selec, selec);
 		 }
 	 }
+	 public static void copyTask(Task t){
+		 if(t!=null){
+			 String copy = t.getDescription();
+			 StringSelection selec = new StringSelection(copy);
+			 Clipboard clipboard = Toolkit.getDefaultToolkit().getSystemClipboard();
+			 clipboard.setContents(selec, selec);	 
+		 }
+	 }
 	 /**
 	  * Function to copy the editing Task Description
 	  * @param index
@@ -494,7 +502,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 	 }
-
 	 //@@author Kowshik
 	 /**
 	  * Function to edit task (edited task has no date)
@@ -840,12 +847,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
 		 else {
-			 UI.ui.eraseScreen();
-			 UI.ui.print("Index\tTask");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 Task temp=tempTasks.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
-			 }
+			 printUncompletedTask(tempTasks);
 		 }
 	 }
 

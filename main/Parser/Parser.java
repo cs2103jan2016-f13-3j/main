@@ -770,11 +770,12 @@ public class Parser {
 					} else {
 						UI.ui.printYellow("Enter priority");
 						String priority = sc.nextLine();
-						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+						while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 								priority.equals("low") != true) {
 							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 							priority = sc.nextLine();
 						}
+						UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 						Task temp = list.get(num - 1);
 						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 						int counter = 1;
@@ -803,11 +804,12 @@ public class Parser {
 					} else {
 						UI.ui.printYellow("Enter priority");
 						String priority = sc.nextLine();
-						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+						while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 								priority.equals("low") != true) {
 							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 							priority = sc.nextLine();
 						}
+						UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 						Logic.Mark.setPriority(num - 1, priority);
 						arraylistsHaveBeenModified = true;
 					}
@@ -825,11 +827,12 @@ public class Parser {
 				} else {
 					UI.ui.printYellow("Enter priority");
 					String priority = sc.nextLine();
-					if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+					while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 							priority.equals("low") != true) {
 						UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
 						priority = sc.nextLine();
 					}
+					UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 					Task temp = list.get(num - 1);
 					System.out.println(temp.getTaskString());
 					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
@@ -1202,13 +1205,9 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							boolean isDeleted  = delAllRecurringTask(num - 1);
-						if (isDeleted) {
-						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
-						} else {
-						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
-						}
-						arraylistsHaveBeenModified = isDeleted;
+							Task t = delAllRecurringTask(num - 1);
+							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+							arraylistsHaveBeenModified = true;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1266,13 +1265,9 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							boolean isDeleted  = delAllRecurringTask(num - 1);
-						if (isDeleted) {
-						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
-						} else {
-						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
-						}
-						arraylistsHaveBeenModified = isDeleted;
+							Task t = delAllRecurringTask(num - 1);
+							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+							arraylistsHaveBeenModified = true;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1344,13 +1339,9 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							boolean isDeleted  = delAllRecurringTask(num - 1);
-						if (isDeleted) {
-						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
-						} else {
-						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
-						}
-						arraylistsHaveBeenModified = isDeleted;
+							Task t = delAllRecurringTask(num - 1);
+							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+							arraylistsHaveBeenModified = true;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1411,13 +1402,9 @@ public class Parser {
 					String[] tmp = s.split(" ");
 					if (s.contains("all")) {
 						int num = Integer.parseInt(tmp[1]);
-						boolean isDeleted  = delAllRecurringTask(num - 1);
-						if (isDeleted) {
-						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
-						} else {
-						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
-						}
-						arraylistsHaveBeenModified = isDeleted;
+						Task t = delAllRecurringTask(num - 1);
+						UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
+						arraylistsHaveBeenModified = true;
 					} else {
 						int num = Integer.parseInt(s);
 						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1818,7 +1805,7 @@ public class Parser {
 
 	}
 
-/**
+	/**
 	 * method that delete all recurring task at index n from recurring tasks and
 	 * uncompleted tasks in storage
 	 * 
@@ -1827,14 +1814,10 @@ public class Parser {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
+	public static Task delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
 		ArrayList<Task> list = localStorage.getUncompletedTasks();
 		Task deleted = list.get(n);
-		
 		String id = deleted.getId();
-		if (id.equals("")) {// if the task is not recurring task
-		 return false;
-		} else {
 		for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
 			Task task = list.get(i);
 			if (id.equals(task.getId())) {
@@ -1842,8 +1825,7 @@ public class Parser {
 				i = -1;// loop again
 			}
 		}
-		return true;
-	}
+		return deleted;
 	}
 
 	/** 
