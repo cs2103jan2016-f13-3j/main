@@ -256,7 +256,7 @@ public class Parser {
 					} else { // for recurring tasks
 						issue = s2[0];
 						if (start == -1 && end != -1) {// no start date but has
-							setStartEndDateRecurring(temp);
+							setStartEndDate(temp);
 
 							if (!Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
@@ -277,7 +277,7 @@ public class Parser {
 
 							}
 						} else if (start != -1 && end == -1) {// has start date
-							setStartEndDateRecurring(temp);
+							setStartEndDate(temp);
 							if (!Logic.checkDate.checkDateformat(startDate)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -297,7 +297,7 @@ public class Parser {
 
 							}
 						} else { // has both start date and end date
-							setStartEndDateRecurring(temp);
+							setStartEndDate(temp);
 							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
@@ -618,7 +618,6 @@ public class Parser {
 				num = Integer.parseInt(s);
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
-				System.out.println(num);
 			}
 		}
 		else if(Logic.Head.getLastDisplay().equals("search") ||  Logic.Head.getLastDisplay().equals("s")) {
@@ -629,7 +628,9 @@ public class Parser {
 		}
 		//@@author Jung Kai
 		try {
-			if(s.contains("all")) {
+			if(num<0){
+				UI.ui.printRed(MSG_INVALID);
+			}else if(s.contains("all")) {
 				editRecurringTask(num - 1);
 			} else {
 				// check if user input integer is valid. If it is valid, edit
@@ -797,7 +798,9 @@ public class Parser {
 	}
 
 	public static int getCorrectIndexFromDisplayAll(int num) {
+		try{
 		Task temp = Logic.crud.getTempTask(num - 1);
+		
 		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
 
@@ -819,6 +822,9 @@ public class Parser {
 			counter++;
 		}
 		return num;
+		}catch(Exception e){
+			return -1;
+		}
 	}
 	
 	public static int getCorrectIndexWelcomeView(int num) {
