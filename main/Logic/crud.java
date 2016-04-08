@@ -734,6 +734,15 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 UI.ui.print("________________________________________________________________");
 		 
 	 }
+	 public static void printCompletedTask(ArrayList<Task> tempTask){
+		 UI.ui.eraseScreen();
+		 UI.ui.printGreen("COMPLETED TASKS");
+		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		 for(int i=0; i<tempTasks.size(); i++) {
+			 Task temp=tempTasks.get(i);
+			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+		 }
+	 }
 	 /**
 	  * function to display all floating task in storage
 	  * 
@@ -789,14 +798,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	  * 
 	  */
 	 public static void displayCompletedTasks() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("COMPLETED TASKS");
-		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		 tempTasks = Storage.localStorage.getCompletedTasks();
-		 for(int i=0; i<tempTasks.size(); i++) {
-			 Task temp=tempTasks.get(i);
-			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-		 }
+		 printCompletedTask(tempTasks);
 		 if (tempTasks.isEmpty()) {
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
@@ -895,11 +898,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("COMPLETED TASKS");
-			 UI.ui.printYellow("Index \t Task");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
-			 }
+			 printCompletedTask(tempTasks);
 		 }
 	 }
 
