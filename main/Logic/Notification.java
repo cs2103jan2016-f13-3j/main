@@ -8,7 +8,17 @@ import Storage.localStorage;
 import Task.Task;
 
 public class Notification {
+	private static ArrayList<Task> tasksToBeDisplayed;
 	private static int daysInAdvance = 3;
+	
+	public static ArrayList<Task> getTasksToBeDisplayed() {
+		return tasksToBeDisplayed;
+	}
+	
+	public static Task getSpecificTask(int index) {
+		return tasksToBeDisplayed.get(index);
+	}
+	
 	/**
 	 * Function that prints the upcoming uncompleted tasks in the next three days
 	 */
@@ -39,7 +49,7 @@ public class Notification {
 
 
 		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		tasksToBeDisplayed = new ArrayList<Task>();
 
 		for(Task temp : tempTasks) {
 			if(temp.getEndDate() != null) {
