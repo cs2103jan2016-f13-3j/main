@@ -209,6 +209,9 @@ public class ui {
 	 */
 	public static String acceptCommand() {
 		String command = sc.nextLine();
+		UI.ui.eraseScreen();
+		System.out.println(HIGH_INTENSITY+RED+"command: "+ansi().reset()+command);
+		
 		String[] splitCommand = command.split(" ");
 		String firstWord = splitCommand[0];
 		if (firstWord.equals("add") || firstWord.equals("+") || firstWord.equals("a")) { // only use natty if add command is detected

@@ -376,8 +376,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 			 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
-
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
+				 UI.ui.printFloating(i, temp.getIssue());
+				 
 
 			 }
 		 }
