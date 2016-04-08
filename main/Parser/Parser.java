@@ -1202,9 +1202,13 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1262,9 +1266,13 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1336,9 +1344,13 @@ public class Parser {
 						String[] tmp = s.split(" ");
 						if (s.contains("all")) {
 							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
 						} else {
 							int num = Integer.parseInt(s);
 							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1399,9 +1411,13 @@ public class Parser {
 					String[] tmp = s.split(" ");
 					if (s.contains("all")) {
 						int num = Integer.parseInt(tmp[1]);
-						Task t = delAllRecurringTask(num - 1);
-						UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-						arraylistsHaveBeenModified = true;
+						boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
 					} else {
 						int num = Integer.parseInt(s);
 						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1802,7 +1818,7 @@ public class Parser {
 
 	}
 
-	/**
+/**
 	 * method that delete all recurring task at index n from recurring tasks and
 	 * uncompleted tasks in storage
 	 * 
@@ -1811,10 +1827,14 @@ public class Parser {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static Task delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
+	public static boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
 		ArrayList<Task> list = localStorage.getUncompletedTasks();
 		Task deleted = list.get(n);
+		
 		String id = deleted.getId();
+		if (id.equals("")) {// if the task is not recurring task
+		 return false;
+		} else {
 		for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
 			Task task = list.get(i);
 			if (id.equals(task.getId())) {
@@ -1822,7 +1842,8 @@ public class Parser {
 				i = -1;// loop again
 			}
 		}
-		return deleted;
+		return true;
+	}
 	}
 
 	/** 
