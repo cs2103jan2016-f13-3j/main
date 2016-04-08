@@ -538,11 +538,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 if (!temp.getIssue().equals(line)) {
+				 temp.resetID();
+			 }
 			 temp.setIssue(line);
 			 temp.setDescription(msg);
 			 temp.setEndDate(null);
 			 temp.setStartDate(date);
-			 temp.resetID();
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
@@ -567,14 +569,17 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 if (!temp.getIssue().equals(line)) {
+				 temp.resetID();
+			 }
 			 temp.setIssue(line);
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
 			 temp.setDescription(msg);
-			 deleteTask(index,1);
-			 addTaskWithEndDate(line, date, msg);
+		//	 deleteTask(index,1);
+		//	 addTaskWithEndDate(line, date, msg);
 			 //Storage.localStorage.addToUncompletedTasks(temp);
-			 //Storage.localStorage.setUncompletedTask(index, temp);
+			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
 			 deleteTask(index, 1);
@@ -598,11 +603,13 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
 		 if(index < uncompleteList){
 			 Task temp = Storage.localStorage.getUncompletedTask(index);
+			 if (!temp.getIssue().equals(line)) {
+				 temp.resetID();
+			 }
 			 temp.setIssue(line);
 			 temp.setDescription(msg);
 			 temp.setStartDate(startDate);
 			 temp.setEndDate(endDate);
-			 temp.resetID();
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 }else{
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
