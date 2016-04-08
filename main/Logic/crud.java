@@ -906,6 +906,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 		 if(tempTasks.size() > 0) {
 			 printCompletedTask(tempTasks);
+		 }else{
+			 UI.ui.printRed("There is no task under this label");
 		 }
 	 }
 
