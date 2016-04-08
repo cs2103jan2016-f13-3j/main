@@ -883,21 +883,21 @@ public class Parser {
 			}
 			else if(Logic.Head.getLastArg().equals("all")) {
 				try { 
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
-				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-					UI.ui.printRed(MSG_MARK_FAIL);
-				} else {
-					Task temp = Logic.crud.getUncompletedTask(num - 1);
-					Logic.Mark.markTaskAsCompleted(num - 1);
-					UI.ui.eraseScreen();
-					UI.ui.printGreen(s + MSG_MARK);
-					Logic.crud.displayNearestFiveCompletedTaskList(temp);
-					arraylistsHaveBeenModified = true;
-				}
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+						Task temp = Logic.crud.getUncompletedTask(num - 1);
+						Logic.Mark.markTaskAsCompleted(num - 1);
+						UI.ui.eraseScreen();
+						UI.ui.printGreen(s + MSG_MARK);
+						Logic.crud.displayNearestFiveCompletedTaskList(temp);
+						arraylistsHaveBeenModified = true;
+					}
 				} catch (Exception e) {
 
 				}
@@ -926,8 +926,8 @@ public class Parser {
 
 			}
 		}
-			else {
-				try { 
+		else {
+			try { 
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
@@ -936,7 +936,6 @@ public class Parser {
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 					UI.ui.printRed(MSG_MARK_FAIL);
 				} else {
-					System.out.println("reached");
 					Task temp = Logic.crud.getUncompletedTask(num - 1);
 					Logic.Mark.markTaskAsCompleted(num - 1);
 					UI.ui.eraseScreen();
@@ -944,12 +943,12 @@ public class Parser {
 					Logic.crud.displayNearestFiveCompletedTaskList(temp);
 					arraylistsHaveBeenModified = true;
 				}
-				} catch (Exception e) {
+			} catch (Exception e) {
 
-				}
 			}
 		}
-	
+	}
+
 
 	public static void sortCommand(String s) {
 		if (s.equals("p") || s.equals("priority")) {
@@ -969,10 +968,37 @@ public class Parser {
 	}
 
 	public static void viewCommand(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			Logic.crud.viewIndividualTask(num - 1);
-		} catch (Exception e) {
+		if(Logic.Head.getLastCommand().equals("display") || Logic.Head.getLastCommand().equals("d")) {
+			if(Logic.Head.getLastArg().equals("")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					Task temp = Logic.crud.getTempTask(num - 1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
+					}
+				}
+				catch (Exception e) {
+
+				}
+
+			}
+
+		}
+		else {
+			try {
+				int num = Integer.parseInt(s);
+				Logic.crud.viewIndividualTask(num - 1);
+			} catch (Exception e) {
+			}
 		}
 	}
 
