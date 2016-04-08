@@ -814,7 +814,39 @@ public class Parser {
 				} catch (Exception e) {
 				}
 			}
-		} else {
+		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Logic.Search.getSearchedTasks();
+				if (list.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_PRIORITY_FAIL);
+				} else {
+					UI.ui.printYellow("Enter priority");
+					String priority = sc.nextLine();
+					if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+							priority.equals("low") != true) {
+						UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+						priority = sc.nextLine();
+					}
+					Task temp = list.get(num - 1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					int counter = 1;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							num = counter;
+							break;
+						}
+						counter++;
+					}
+					Logic.Mark.setPriority(num - 1, priority);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+			}
+		}
+			else {
 			try {
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
@@ -1012,10 +1044,11 @@ public class Parser {
 				} catch (Exception e) {
 				}
 			}
-		} /*else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplayArg().equals("s")) {
-
+		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			try {
 				int num = Integer.parseInt(s);
+				System.out.println(num);
+				System.out.println(Logic.crud.getTempTask(num - 1).getTaskString());
 				Task temp = Logic.crud.getTempTask(num - 1);
 				System.out.println("dsadas");
 				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
@@ -1044,7 +1077,7 @@ public class Parser {
 			catch(Exception e) {
 			}
 		}
-		 */	}
+	}
 
 
 	public static void displayCommand(String s) {
