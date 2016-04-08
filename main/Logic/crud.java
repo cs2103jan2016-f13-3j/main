@@ -746,8 +746,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 
 	 }
 	 public static void printCompletedTask(ArrayList<Task> tempTask){
-		 ();
-		 UI.ui.printGreen("COMPLETEUI.ui.eraseScreenD TASKS");
+		 UI.ui.eraseScreen();
+		 UI.ui.printGreen("COMPLETED TASKS");
 		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		 for(int i=0; i<tempTasks.size(); i++) {
 			 Task temp=tempTasks.get(i);
