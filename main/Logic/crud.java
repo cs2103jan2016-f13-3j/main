@@ -714,7 +714,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("Index\tTask");
 			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 			 for(int i=0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
+				 Task temp=tempTasks.get(i);
+				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" +temp.getShortPriority()+ temp.getIssue());
 			 }
 		 }
 		 if(isEmptyUn && isEmptyF) {
@@ -728,7 +729,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 for(int i=0; i<tempTask.size(); i++) {
 			 Task temp = tempTask.get(i);
 
-			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
+			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getShortPriority()+temp.getIssue(),temp.getRecurFrequency());
 		 }
 		 UI.ui.print("________________________________________________________________");
 		 
@@ -745,7 +746,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 tempTasks = Storage.localStorage.getFloatingTasks();
 		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
+			 Task temp=tempTasks.get(i);
+			 UI.ui.printYellow((getSize.size() + i+1) + ".\t" +temp.getShortPriority()+ temp.getIssue());
 		 }
 		 if (tempTasks.isEmpty()) {
 			 isEmptyF = true;
@@ -878,7 +880,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printGreen("FLOATING TASKS");
 			 UI.ui.printGreen("Index \t Task");
 			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
+				 Task temp=tempTasks.get(i);
+				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" +temp.getShortPriority()+ temp.getIssue());
 			 }
 			 UI.ui.print("________________________________");
 		 }

@@ -22,11 +22,11 @@ public class Task implements java.io.Serializable {
 	private static final String MSG_RECURSE_FREQUENCY = "(Recurs every ";
 	private static final String MSG_DAYS = " day(s))";
 	private static final String PRIORITY_HIGH = "high"; 
-	private static final String PRIORITY_HIGH_SHORT = "(H) ";
+	private static final String PRIORITY_HIGH_SHORT = "(H)";
 	private static final String PRIORITY_MEDIUM = "medium";
-	private static final String PRIORITY_MEDIUM_SHORT = "(M) ";
+	private static final String PRIORITY_MEDIUM_SHORT = "(M)";
 //	private static final String PRIORITY_LOW = "low";
-	private static final String PRIORITY_LOW_SHORT = "(L) ";
+	private static final String PRIORITY_LOW_SHORT = "(L)";
 
 	// Constructors
 
