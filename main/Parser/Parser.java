@@ -770,7 +770,11 @@ public class Parser {
 					} else {
 						UI.ui.printYellow("Enter priority");
 						String priority = sc.nextLine();
-
+						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+								priority.equals("low") != true) {
+							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+							priority = sc.nextLine();
+						}
 						Task temp = list.get(num - 1);
 						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 						int counter = 1;
@@ -799,6 +803,11 @@ public class Parser {
 					} else {
 						UI.ui.printYellow("Enter priority");
 						String priority = sc.nextLine();
+						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+								priority.equals("low") != true) {
+							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+							priority = sc.nextLine();
+						}
 						Logic.Mark.setPriority(num - 1, priority);
 						arraylistsHaveBeenModified = true;
 					}
@@ -817,6 +826,11 @@ public class Parser {
 				} else {
 					UI.ui.printYellow("Enter priority");
 					String priority = sc.nextLine();
+					if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+							priority.equals("low") != true) {
+						UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+						priority = sc.nextLine();
+					}
 					Logic.Mark.setPriority(num - 1, priority);
 					arraylistsHaveBeenModified = true;
 				}
