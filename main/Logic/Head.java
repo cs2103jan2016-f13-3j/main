@@ -24,8 +24,8 @@ public class Head {
 	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 	private static final String USER_PROMPT = "command: ";
 	private static Scanner sc = new Scanner(System.in);
-	private static String lastCommand = "";
-	private static String lastArg = "";
+	private static String lastDisplay = "";
+	private static String lastDisplayArg = "";
 	private static String logo1="********   ********   ********  **       **   *****       ********   **    **";
 	private static String logo2="********   ********   ********  ***      **   **   **     ********   **    **";
 	private static String logo3="**    **   **         **        ****     **   **    **    **    **   **    **";
@@ -40,7 +40,7 @@ public class Head {
 		AnsiConsole.systemInstall();
 
 		//		 System.out.print(ansi().eraseScreen().fgBright(RED));
-	//	checkDateAndAdd();
+		//	checkDateAndAdd();
 		UI.ui.eraseScreen();
 		UI.ui.printGreen(logo1);
 		UI.ui.printGreen(logo2);
@@ -76,8 +76,10 @@ public class Head {
 			}
 
 			Parser.Parser.run(cmd, description);
-			lastCommand = cmd;
-			lastArg = description;
+			if(input.contains("display") || input.contains("search")) {
+				lastDisplay = cmd;
+				lastDisplayArg = description;
+			}
 			/*if((lastCommand.equals("sort") && (lastArg.equals("c") || lastArg.equals("chrono")))!= true) {
 
 			 }*/
@@ -89,11 +91,11 @@ public class Head {
 
 
 	//getter method
-	public static String getLastCommand() {
-		return lastCommand;
+	public static String getLastDisplay() {
+		return lastDisplay;
 	}
-	
-	public static String getLastArg() {
-		return lastArg;
+
+	public static String getLastDisplayArg() {
+		return lastDisplayArg;
 	}
 }
