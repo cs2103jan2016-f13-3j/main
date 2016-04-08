@@ -520,13 +520,27 @@ public class Parser {
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if
-					// entered count is outside valid bounds
+					// entered
+					// count
+					// is
+					// outside
+					// valid
+					// bounds
 					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // redo the number of
 						// commands specified
 						if (Undo.getInstance().getRedoCount() == 0) { // all
-							// commands have been redone but user used a higher int
+							// commands
+							// have
+							// been
+							// redone
+							// but
+							// user
+							// used
+							// a
+							// higher
+							// int
 							UI.ui.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
@@ -561,7 +575,12 @@ public class Parser {
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if
-					// entered count is outside valid bounds
+					// entered
+					// count
+					// is
+					// outside
+					// valid
+					// bounds
 					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of
@@ -583,34 +602,15 @@ public class Parser {
 
 
 
-	// @@author Kowshik
+	// @@author Jung Kai
 	public static void editCommand(String s) {
-		int num;
-		if(s.contains("all")) {
-			String[] tmp = s.split(" ");
-			num = Integer.parseInt(tmp[1]);
-		} else {
-			num = Integer.parseInt(s);
-		}
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
-				num = Integer.parseInt(s);
-			} else {
-				num = getCorrectIndexFromDisplayAll(num);
-				System.out.println(num);
-			}
-		}
-		else if(Logic.Head.getLastDisplay().equals("search") ||  Logic.Head.getLastDisplay().equals("s")) {
-			num = getCorrectIndexFromSearchView(num);
-		}
-		else if(Logic.Head.getLastDisplay().equals("")) {
-			num = getCorrectIndexWelcomeView(num - 1);
-		}
-		//@@author Jung Kai
 		try {
-			if(s.contains("all")) {
+			String[] tmp = s.split(" ");
+			if (s.contains("all")) {
+				int num = Integer.parseInt(tmp[1]);
 				editRecurringTask(num - 1);
 			} else {
+				int num = Integer.parseInt(s);
 				// check if user input integer is valid. If it is valid, edit
 				// should
 				// work
@@ -751,202 +751,139 @@ public class Parser {
 					}
 				}
 			}
-
 		} catch (Exception e) {
 
 		}
 	}
 
-	//@@author Kowshik
-	public static int getCorrectIndexFromSearchView(int num) {
-		Task temp = Logic.Search.getSearchedTask(num - 1);
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-
-		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-
-		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-		return num;
-	}
-
-	public static int getCorrectIndexFromDisplayAll(int num) {
-		Task temp = Logic.crud.getTempTask(num - 1);
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-
-		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-
-		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-		return num;
-	}
-	
-	public static int getCorrectIndexWelcomeView(int num) {
-		Task temp = Logic.Notification.getSpecificTask(num);
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-
-		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-
-		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
-		return num;
-	}
-
-
+	// @@author Kowshik
 	public static void setPriorityCommand(String s) {
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
-				setPriorityFromDisplayAllView(s);
+			if(Logic.Head.getLastDisplayArg().equals("")) { //set priority from "display" view
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					if (list.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if (list.size() < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_PRIORITY_FAIL);
+					} else {
+						UI.ui.printYellow("Enter priority");
+						String priority = sc.nextLine();
+						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+								priority.equals("low") != true) {
+							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+							priority = sc.nextLine();
+						}
+						Task temp = list.get(num - 1);
+						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+						int counter = 1;
+						for(Task t : tempUncompletedTasks) {
+							if(t.getTaskString().equals(temp.getTaskString())) {
+								num = counter;
+								break;
+							}
+							counter++;
+						}
+						Logic.Mark.setPriority(num - 1, priority);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
 			}
-			else {
-				setPriorityFromDisplayView(s);
+			else if(Logic.Head.getLastDisplayArg().equals("all")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_PRIORITY_FAIL);
+					} else {
+						UI.ui.printYellow("Enter priority");
+						String priority = sc.nextLine();
+						if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+								priority.equals("low") != true) {
+							UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+							priority = sc.nextLine();
+						}
+						Logic.Mark.setPriority(num - 1, priority);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
 			}
 		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
-			setPriorityFromSearchTaskView(s);
-		} else if(Logic.Head.getLastDisplay().equals("")) {
-			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-			String index = "" + num;
-			setPriorityFromDisplayAllView(index);
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Logic.Search.getSearchedTasks();
+				if (list.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_PRIORITY_FAIL);
+				} else {
+					UI.ui.printYellow("Enter priority");
+					String priority = sc.nextLine();
+					if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+							priority.equals("low") != true) {
+						UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+						priority = sc.nextLine();
+					}
+					Task temp = list.get(num - 1);
+					System.out.println(temp.getTaskString());
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							num = counter;
+							//System.out.println(num);
+							break;
+						}
+						counter++;
+					}
+					counter++;
+					for(Task t : tempFloatingTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							num = counter;
+							System.out.println(num);
+							break;
+						}
+						counter++;
+					}
+					Logic.Mark.setPriority(num - 1, priority);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+			}
 		}
 		else {
-			setPriorityFromDisplayAllView(s);
-		}
-	}
-
-	public static void setPriorityFromDisplayView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
-			} else {
-				num = getCorrectIndexFromDisplayAll(num);
-				UI.ui.printYellow("Enter priority");
-				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
-					priority = sc.nextLine();
-				}
-				Logic.Mark.setPriority(num - 1, priority);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	public static void setPriorityFromSearchTaskView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
-			} else {
-				UI.ui.printYellow("Enter priority");
-				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
-					priority = sc.nextLine();
-				}
-				Task temp = list.get(num - 1);
-				System.out.println(temp.getTaskString());
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						num = counter;
-						//System.out.println(num);
-						break;
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_PRIORITY_FAIL);
+				} else {
+					UI.ui.printYellow("Enter priority");
+					String priority = sc.nextLine();
+					if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
+							priority.equals("low") != true) {
+						UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+						priority = sc.nextLine();
 					}
-					counter++;
+					Logic.Mark.setPriority(num - 1, priority);
+					arraylistsHaveBeenModified = true;
 				}
-				counter++;
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						num = counter;
-						System.out.println(num);
-						break;
-					}
-					counter++;
-				}
-				Logic.Mark.setPriority(num - 1, priority);
-				arraylistsHaveBeenModified = true;
+			} catch (Exception e) {
 			}
-		} catch (Exception e) {
 		}
 	}
 
-	public static void setPriorityFromDisplayAllView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
-			} else {
-				UI.ui.printYellow("Enter priority");
-				String priority = sc.nextLine();
-				if((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
-					priority = sc.nextLine();
-				}
-				Logic.Mark.setPriority(num - 1, priority);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-		}
-	}
-
+	// @@author Kowshik
 	public static void unmarkCommand(String s) {
 		try {
 			int num = Integer.parseInt(s);
@@ -972,103 +909,138 @@ public class Parser {
 
 	public static void markCommand(String s) {
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) { // marking from "display" view
-				markFromDisplayAllView(s);
-			} else {
-				markFromDisplayView(s);
+			if(Logic.Head.getLastDisplayArg().equals("")) { // marking from "display" view
+
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					if (list.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if (list.size() < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+
+						Task temp = Logic.crud.getTempTask(num - 1);
+						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+						int counter = 0;
+						for(Task t : tempUncompletedTasks) {
+							if(t.getTaskString().equals(temp.getTaskString())) {
+								Logic.Mark.markTaskAsCompleted(counter);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen(s + MSG_MARK);
+								Logic.crud.displayNearestFiveCompletedTaskList(temp);
+								arraylistsHaveBeenModified = true;
+								break;
+							}
+							counter++;
+						}
+					}
+				} catch (Exception e) {
+
+				}
+			}
+			else if(Logic.Head.getLastDisplayArg().equals("all")) {
+				try { 
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+						Task temp = Logic.crud.getUncompletedTask(num - 1);
+						Logic.Mark.markTaskAsCompleted(num - 1);
+						UI.ui.eraseScreen();
+						UI.ui.printGreen(s + MSG_MARK);
+						Logic.crud.displayNearestFiveCompletedTaskList(temp);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+
+				}
+			}
+			else if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("f")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+					if (list.size() + list2.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+						UI.ui.printRed(MSG_MARK_FAIL);
+					} else {
+						int i = list.size();
+						Task temp = Logic.crud.getUncompletedTask(num -1);
+						Logic.Mark.markTaskAsCompleted(num - 1);
+						UI.ui.eraseScreen();
+						UI.ui.printGreen(s + MSG_MARK);
+						Logic.crud.displayNearestFiveCompletedTaskList(temp);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+
+				}
+
 			}
 		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
-			markFromSearchView(s);
-		} else if(Logic.Head.getLastDisplay().equals("")) {
-			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-			String index = "" + num;
-			markFromDisplayAllView(index);
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Logic.Search.getSearchedTasks();
+				if (list.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_MARK_FAIL);
+				} else {
+					Task temp = list.get(num -1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							Logic.Mark.markTaskAsCompleted(counter);
+							break;
+						}
+						counter++;
+					}
+					for(Task t : tempFloatingTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							Logic.Mark.markTaskAsCompleted(counter);
+							break;
+						}
+						counter++;
+					}
+
+					UI.ui.eraseScreen();
+					UI.ui.printGreen(s + MSG_MARK);
+					Logic.crud.displayNearestFiveCompletedTaskList(temp);
+					arraylistsHaveBeenModified = true;
+				}
+			} catch (Exception e) {
+
+			}
 		}
+
 		else {
-			markFromDisplayAllView(s);
-		}
-	}
-
-	public static void markFromSearchView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
-			} else {
-				Task temp = list.get(num -1);
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						Logic.Mark.markTaskAsCompleted(counter);
-						break;
-					}
-					counter++;
+			try { 
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				if (list.size() + list2.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+					UI.ui.printRed(MSG_MARK_FAIL);
+				} else {
+					Task temp = Logic.crud.getUncompletedTask(num - 1);
+					Logic.Mark.markTaskAsCompleted(num - 1);
+					UI.ui.eraseScreen();
+					UI.ui.printGreen(s + MSG_MARK);
+					Logic.crud.displayNearestFiveCompletedTaskList(temp);
+					arraylistsHaveBeenModified = true;
 				}
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						Logic.Mark.markTaskAsCompleted(counter);
-						break;
-					}
-					counter++;
-				}
+			} catch (Exception e) {
 
-				UI.ui.eraseScreen();
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
-				arraylistsHaveBeenModified = true;
 			}
-		} catch (Exception e) {
-
-		}
-	}
-
-	public static void markFromDisplayAllView(String s) {
-		try { 
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
-			} else {
-				Task temp = Logic.crud.getUncompletedTask(num - 1);
-				Logic.Mark.markTaskAsCompleted(num - 1);
-				UI.ui.eraseScreen();
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-
-		}
-	}
-
-	public static void markFromDisplayView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
-			} else {
-
-				Task temp = Logic.crud.getTempTask(num - 1);
-				num = getCorrectIndexFromDisplayAll(num);
-				Logic.Mark.markTaskAsCompleted(num - 1);
-				UI.ui.eraseScreen();
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
-				arraylistsHaveBeenModified = true;
-			}
-		}
-		catch (Exception e) {
 		}
 	}
 
@@ -1092,21 +1064,75 @@ public class Parser {
 
 	public static void viewCommand(String s) {
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
-				int num = Integer.parseInt(s);
-				Logic.crud.viewIndividualTask(num - 1);
+			if(Logic.Head.getLastDisplayArg().equals("")) {
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					Task temp = Logic.crud.getTempTask(num - 1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
+					}
+				}
+				catch (Exception e) {
+
+				}
+
 			}
 			else {
-				viewFromDisplayView(s);
+				try {
+					int num = Integer.parseInt(s);
+					Logic.crud.viewIndividualTask(num - 1);
+				} catch (Exception e) {
+				}
 			}
 		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
-			viewFromSearchView(s);
+			try {
+				int num = Integer.parseInt(s);
+				ArrayList<Task> list = Logic.Search.getSearchedTasks();
+				if (list.size() == 0) {
+					UI.ui.printRed(MSG_EMPTY);
+				} else if (list.size() < num || num - 1 < 0) {
+					UI.ui.printRed("Invalid index entered");
+				} else {
+					Task temp = list.get(num - 1);
+					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+					ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+					int counter = 0;
+					for(Task t : tempUncompletedTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
+					}
+
+					for(Task t : tempFloatingTasks) {
+						if(t.getTaskString().equals(temp.getTaskString())) {
+							UI.ui.eraseScreen();
+							Logic.crud.viewIndividualTask(counter);
+							arraylistsHaveBeenModified = true;
+							break;
+						}
+						counter++;
+					}
+				}
+
+			}
+			catch(Exception e) {
+			}
 		}
-		else if(Logic.Head.getLastDisplay().equals("")) {
-			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-			Logic.crud.viewIndividualTask(num - 1);
-		}
-			else {
+
+		else {
 			try {
 				int num = Integer.parseInt(s);
 				Logic.crud.viewIndividualTask(num - 1);
@@ -1115,64 +1141,6 @@ public class Parser {
 		}
 	}
 
-	public static void viewFromSearchView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed("Invalid index entered");
-			} else {
-				Task temp = list.get(num - 1);
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
-					}
-					counter++;
-				}
-
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
-					}
-					counter++;
-				}
-			}
-
-		}
-		catch(Exception e) {
-		}
-	}
-
-	public static void viewFromDisplayView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed("Wrong index entered");
-			} else {
-				num = getCorrectIndexFromDisplayAll(num);
-				UI.ui.eraseScreen();
-				Logic.crud.viewIndividualTask(num - 1);
-				arraylistsHaveBeenModified = true;
-			}
-		}
-		catch (Exception e) {
-
-		}
-	}
 
 	public static void displayCommand(String s) {
 		if (s.equals("completed") || s.equals("c")) {
@@ -1197,6 +1165,8 @@ public class Parser {
 			String tomorrowString = df.format(tomorrow.getTime());
 
 			Logic.crud.displayScheduleForADay(tomorrowString);
+		} else if (s.equals("week") || s.equals("this week")) {
+			Logic.crud.displayTasksForThisWeek();
 		} else if (s.equals("next week") || s.equals("w+1")) {
 			Logic.crud.displayTasksForNextWeek();
 		} else if (s.equals("two weeks later") || s.equals("w+2")) {
@@ -1212,153 +1182,279 @@ public class Parser {
 		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
 			if(Logic.Head.getLastDisplayArg().equals("")) {
 				if(s.contains("all")!= true) { 
-					deleteFromDisplayView(s);
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.crud.getTemp();
+					Task deleted = list.get(num - 1);
+					issue = deleted.getIssue();
+					UI.ui.eraseScreen();
+					try {
+						Logic.crud.deleteTask(num - 1, 5);
+					} catch (ClassNotFoundException | IOException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+					arraylistsHaveBeenModified = true;
 				}
 				else {
-					deleteAllRecurringTasks(s);
+					try {
+						String[] tmp = s.split(" ");
+						if (s.contains("all")) {
+							int num = Integer.parseInt(tmp[1]);
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
+						} else {
+							int num = Integer.parseInt(s);
+							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+							if (list.size() + list2.size() == 0) {
+								UI.ui.printRed(MSG_EMPTY);
+							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+								// handle indexOutofBoundException
+								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+							} else {
+								if ((num - 1) < list.size()) {
+									Task deleted = list.get(num - 1);
+									issue = deleted.getIssue();
+									UI.ui.eraseScreen();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+									arraylistsHaveBeenModified = true;
+								} else {
+									Task deleted = list2.get(num - list.size() - 1);
+									issue = deleted.getIssue();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.eraseScreen();
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+									arraylistsHaveBeenModified = true;
+								}
+							}
+						}
+					} catch (Exception e) {
+					}
 				} 
 			} else if(Logic.Head.getLastDisplayArg().equals("completed") || Logic.Head.getLastDisplayArg().equals("c")) {
 				if(s.contains("all")!= true) {
-					deleteFromDisplayCompletedView(s);
+					try {
+						int num = Integer.parseInt(s);
+						ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+						if (list.size() == 0) {
+							UI.ui.printRed(MSG_EMPTY);
+						} else if (list.size() < num || num - 1 < 0) {
+							// handle indexOutofBoundException
+							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+						} else {
+							Task deleted = list.get(num - 1);
+							issue = deleted.getIssue();
+							Logic.crud.deleteTask(num - 1, 2);
+							UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+							arraylistsHaveBeenModified = true;
+						}
+					} catch (Exception e) {
+					}
 				}
 				else {
-					deleteAllRecurringTasks(s);
+					try {
+						String[] tmp = s.split(" ");
+						if (s.contains("all")) {
+							int num = Integer.parseInt(tmp[1]);
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
+						} else {
+							int num = Integer.parseInt(s);
+							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+							if (list.size() + list2.size() == 0) {
+								UI.ui.printRed(MSG_EMPTY);
+							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+								// handle indexOutofBoundException
+								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+							} else {
+								if ((num - 1) < list.size()) {
+									Task deleted = list.get(num - 1);
+									issue = deleted.getIssue();
+									UI.ui.eraseScreen();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+									arraylistsHaveBeenModified = true;
+								} else {
+									Task deleted = list2.get(num - list.size() - 1);
+									issue = deleted.getIssue();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.eraseScreen();
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+									arraylistsHaveBeenModified = true;
+								}
+							}
+						}
+					} catch (Exception e) {
+					}
 				}
 			}
 			else if(Logic.Head.getLastDisplayArg().equals("all")) {
 				if(s.contains("all") != true) {
-					deleteFromDisplayAllView(s);
+					try {
+						int num = Integer.parseInt(s);
+						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+						ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+						if (list.size() + list2.size() == 0) {
+							UI.ui.printRed(MSG_EMPTY);
+						} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+							// handle indexOutofBoundException
+							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+						} else {
+							if ((num - 1) < list.size()) {
+								Task deleted = list.get(num - 1);
+								issue = deleted.getIssue();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+								arraylistsHaveBeenModified = true;
+							} else {
+								Task deleted = list2.get(num - list.size() - 1);
+								issue = deleted.getIssue();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+								arraylistsHaveBeenModified = true;
+							}
+						}
+					} catch (Exception e) {
+					}
 				}
 				else {
-					deleteAllRecurringTasks(s);
+					try {
+						String[] tmp = s.split(" ");
+						if (s.contains("all")) {
+							int num = Integer.parseInt(tmp[1]);
+							boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
+						} else {
+							int num = Integer.parseInt(s);
+							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+							if (list.size() + list2.size() == 0) {
+								UI.ui.printRed(MSG_EMPTY);
+							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+								// handle indexOutofBoundException
+								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+							} else {
+								if ((num - 1) < list.size()) {
+									Task deleted = list.get(num - 1);
+									issue = deleted.getIssue();
+									UI.ui.eraseScreen();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+									arraylistsHaveBeenModified = true;
+								} else {
+									Task deleted = list2.get(num - list.size() - 1);
+									issue = deleted.getIssue();
+									Logic.crud.deleteTask(num - 1, 1);
+									UI.ui.eraseScreen();
+									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+									arraylistsHaveBeenModified = true;
+								}
+							}
+						}
+					} catch (Exception e) {
+					}
 				}
 			}
 		} else if ((Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s"))) {
 			// delete from search results
 			if(s.contains("all")!=true) {
-				deleteFromSearchView(s);
+				try {
+					int num = Integer.parseInt(s);
+					ArrayList<Task> list = Logic.Search.getSearchedTasks();
+					if (list.size() == 0) {
+						UI.ui.printRed(MSG_EMPTY);
+					} else if (list.size() < num || num - 1 < 0) {
+						// handle indexOutofBoundException
+						UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+					} else {
+						Task deleted = list.get(num - 1);
+						issue = deleted.getIssue();
+						Logic.crud.deleteTask(num - 1, 3);
+						UI.ui.eraseScreen();
+						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+						arraylistsHaveBeenModified = true;
+					}
+				} catch (Exception e) {
+				}
 			}
 			else {
-				deleteAllRecurringTasks(s);
+				try {
+					String[] tmp = s.split(" ");
+					if (s.contains("all")) {
+						int num = Integer.parseInt(tmp[1]);
+						boolean isDeleted  = delAllRecurringTask(num - 1);
+						if (isDeleted) {
+						UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+						} else {
+						 UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+						}
+						arraylistsHaveBeenModified = isDeleted;
+					} else {
+						int num = Integer.parseInt(s);
+						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+						ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+						if (list.size() + list2.size() == 0) {
+							UI.ui.printRed(MSG_EMPTY);
+						} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+							// handle indexOutofBoundException
+							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+						} else {
+							if ((num - 1) < list.size()) {
+								Task deleted = list.get(num - 1);
+								issue = deleted.getIssue();
+								UI.ui.eraseScreen();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+								arraylistsHaveBeenModified = true;
+							} else {
+								Task deleted = list2.get(num - list.size() - 1);
+								issue = deleted.getIssue();
+								Logic.crud.deleteTask(num - 1, 1);
+								UI.ui.eraseScreen();
+								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+								Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+								arraylistsHaveBeenModified = true;
+							}
+						}
+					}
+				} catch (Exception e) {
+				}
 
 			}
 		}
-		else if (Logic.Head.getLastDisplay().equals("")) {
-			if(s.contains("all") != true) {
-				int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-				String index = "" + num;
-				deleteFromDisplayAllView(index);
-			}
-		}
+
 		else {
-			deleteFromDisplayAllView(s);
-		}
-	}
-
-	public static void deleteFromDisplayView(String s) {
-		int num = Integer.parseInt(s);
-		ArrayList<Task> list = Logic.crud.getTemp();
-		Task deleted = list.get(num - 1);
-		issue = deleted.getIssue();
-		UI.ui.eraseScreen();
-		try {
-			Logic.crud.deleteTask(num - 1, 5);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-		Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-		arraylistsHaveBeenModified = true;
-	}
-
-	public static void deleteFromDisplayCompletedView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-			} else {
-				Task deleted = list.get(num - 1);
-				issue = deleted.getIssue();
-				Logic.crud.deleteTask(num - 1, 2);
-				UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	public static void deleteFromSearchView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if (list.size() < num || num - 1 < 0) {
-				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-			} else {
-				Task deleted = list.get(num - 1);
-				issue = deleted.getIssue();
-				Logic.crud.deleteTask(num - 1, 3);
-				UI.ui.eraseScreen();
-				UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	public static void deleteFromDisplayAllView(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-			} else {
-				if ((num - 1) < list.size()) {
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 1);
-					UI.ui.eraseScreen();
-					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-					arraylistsHaveBeenModified = true;
-				} else {
-					Task deleted = list2.get(num - list.size() - 1);
-					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 1);
-					UI.ui.eraseScreen();
-					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-					arraylistsHaveBeenModified = true;
-				}
-			}
-		} catch (Exception e) {
-		}
-	}
-
-	public static void deleteAllRecurringTasks(String s) {
-		try {
-			String[] tmp = s.split(" ");
-			if (s.contains("all")) {
-				int num = Integer.parseInt(tmp[1]);
-				boolean isDeleted  = delAllRecurringTask(num - 1);
-				if (isDeleted) {
-					UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
-				} else {
-					UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
-				}
-				arraylistsHaveBeenModified = isDeleted;
-			} else {
+			try {
 				int num = Integer.parseInt(s);
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
@@ -1371,8 +1467,8 @@ public class Parser {
 					if ((num - 1) < list.size()) {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
-						UI.ui.eraseScreen();
 						Logic.crud.deleteTask(num - 1, 1);
+						UI.ui.eraseScreen();
 						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
 						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 						arraylistsHaveBeenModified = true;
@@ -1386,8 +1482,8 @@ public class Parser {
 						arraylistsHaveBeenModified = true;
 					}
 				}
+			} catch (Exception e) {
 			}
-		} catch (Exception e) {
 		}
 	}
 
@@ -1722,7 +1818,7 @@ public class Parser {
 
 	}
 
-	/**
+/**
 	 * method that delete all recurring task at index n from recurring tasks and
 	 * uncompleted tasks in storage
 	 * 
@@ -1734,20 +1830,20 @@ public class Parser {
 	public static boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
 		ArrayList<Task> list = localStorage.getUncompletedTasks();
 		Task deleted = list.get(n);
-
+		
 		String id = deleted.getId();
 		if (id.equals("")) {// if the task is not recurring task
-			return false;
+		 return false;
 		} else {
-			for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
-				Task task = list.get(i);
-				if (id.equals(task.getId())) {
-					Logic.crud.deleteTask(i, 1);
-					i = -1;// loop again
-				}
+		for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
+			Task task = list.get(i);
+			if (id.equals(task.getId())) {
+				Logic.crud.deleteTask(i, 1);
+				i = -1;// loop again
 			}
-			return true;
 		}
+		return true;
+	}
 	}
 
 	/** 

@@ -14,11 +14,6 @@ public class Search {
 		return searchedTasks;
 
 	}
-	
-	public static Task getSearchedTask(int index) {
-		return searchedTasks.get(index);
-
-	}
 
 	/**
 	 * Function to search task according to keyword in list of uncompleted tasks

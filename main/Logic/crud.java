@@ -935,14 +935,14 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	/* public static void displayTasksForThisWeek() {
+	 public static void displayTasksForThisWeek() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
 		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		 //getting today and seven days later
-		 Calendar d1 = Calendar.getInstance();
+		 /*Calendar d1 = Calendar.getInstance();
 		 int todayDay = d1.get(Calendar.DAY_OF_MONTH);
 		 int todayMonth = d1.get(Calendar.MONTH);
 		 int todayYear = d1.get(Calendar.YEAR);
@@ -953,7 +953,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 int futureDay = d2.get(Calendar.DAY_OF_MONTH);
 		 int futureMonth = d2.get(Calendar.MONTH);
 		 int futureYear = d2.get(Calendar.YEAR);
-		 Date future = new Date(futureYear, futureMonth, futureDay);
+		 Date future = new Date(futureYear, futureMonth, futureDay);*/
 
 		 Calendar date = Calendar.getInstance();
 		 int thisWeek = date.get(Calendar.WEEK_OF_YEAR);
@@ -980,35 +980,35 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 else {
 			 UI.ui.printRed("No tasks this week");
 		 }
-	 }*/
+	 }
 
 	 public static void displayTasksForNextWeek() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks next week - ");
-		 tempTasks = new ArrayList<Task>();
-		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		 Calendar date = Calendar.getInstance();
 		 date.add(Calendar.WEEK_OF_YEAR, 1);
 		 int nextWeek = date.get(Calendar.WEEK_OF_YEAR);
 
 		 //finding tasks which has dates in the next week
-		 for(Task temp : tempUncompletedTasks) {
+		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
 				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 					 continue;
 				 }
 			 }
 			 if(temp.getStartDate() != null) {
 				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
 		 }
 
-		 if(tempTasks.size() > 0) {
-			 printUncompletedTask(tempTasks);
+		 if(tasksToBeDisplayed.size() > 0) {
+			 printUncompletedTask(tasksToBeDisplayed);
 			 
 		 }
 		 else {
@@ -1020,30 +1020,30 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayTaksForTwoWeeksLater() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks for two weeks later - ");
-		 tempTasks = new ArrayList<Task>();
-		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		 Calendar date = Calendar.getInstance();
 		 date.add(Calendar.WEEK_OF_YEAR, 2);
 		 int twoWeeksLater = date.get(Calendar.WEEK_OF_YEAR);
 
 		 //finding tasks which has dates in two weeks time
-		 for(Task temp : tempUncompletedTasks) {
+		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
 				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 					 continue;
 				 }
 			 }
 			 if(temp.getStartDate() != null) {
 				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
 		 }
 
-		 if(tempTasks.size() > 0) {
-			 printUncompletedTask(tempTasks);
+		 if(tasksToBeDisplayed.size() > 0) {
+			 printUncompletedTask(tasksToBeDisplayed);
 			 
 		 }
 		 else {
@@ -1055,30 +1055,30 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayTasksForLastWeek() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Tasks uncompleted from last week - ");
-		 tempTasks = new ArrayList<Task>();
-		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
+		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
 
 		 Calendar date = Calendar.getInstance();
 		 date.add(Calendar.WEEK_OF_YEAR, -1);
 		 int lastWeek = date.get(Calendar.WEEK_OF_YEAR);
 
 		 //finding tasks which has dates in two weeks time
-		 for(Task temp : tempUncompletedTasks) {
+		 for(Task temp : tempTasks) {
 			 if(temp.getEndDate() != null) {
 				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 					 continue;
 				 }
 			 }
 			 if(temp.getStartDate() != null) {
 				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
-					 tempTasks.add(temp);
+					 tasksToBeDisplayed.add(temp);
 				 }
 			 }
 		 }
 
-		 if(tempTasks.size() > 0) {
-			 printUncompletedTask(tempTasks);
+		 if(tasksToBeDisplayed.size() > 0) {
+			 printUncompletedTask(tasksToBeDisplayed);
 			 
 		 }
 		 else {
