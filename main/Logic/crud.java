@@ -630,6 +630,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setStartDate(startDate);
 			 temp.setEndDate(endDate);
 			 addTaskWithBothDates(line,startDate,endDate,msg);
+			 
 		 }
 	 }
 	 /**
