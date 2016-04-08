@@ -879,9 +879,10 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 if(tempTasks.size() > 0) {
 			 UI.ui.printGreen("FLOATING TASKS");
 			 UI.ui.printGreen("Index \t Task");
+			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
 			 for(int i = 0; i<tempTasks.size(); i++) {
 				 Task temp=tempTasks.get(i);
-				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" +temp.getShortPriority()+ temp.getIssue());
+				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" +temp.getShortPriority() +temp.getIssue());
 			 }
 			 UI.ui.print("________________________________");
 		 }
