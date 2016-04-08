@@ -55,7 +55,8 @@ public class Search {
 				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 				for(int i = 0; i<searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.ui.printTask1(i,temp1.getStartDateLineOne(),temp1.getStartDateLineTwo(),
+							temp1.getEndDateLineOne(),temp1.getEndDateLineTwo(),temp1.getIssue(),temp1.getRecurFrequency());
 
 					counter++;
 				}
@@ -82,7 +83,7 @@ public class Search {
 				UI.ui.printGreen("Index\tTask");
 				for(int i = counter; i<searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.ui.printYellow((i+1) + ".\t" + temp1.getIssue());
 					counter++;
 				}
 
@@ -108,7 +109,8 @@ public class Search {
 				UI.ui.printGreen("Index\tTask");
 				for(int i = counter; i<searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.ui.printTask1(i,temp1.getStartDateLineOne(),temp1.getStartDateLineTwo(),
+							temp1.getEndDateLineOne(),temp1.getEndDateLineTwo(),temp1.getIssue(),temp1.getRecurFrequency());
 
 				}
 			}
@@ -143,7 +145,8 @@ public class Search {
 				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 				for(int i = 0; i<searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.ui.printTask1(i,temp1.getStartDateLineOne(),temp1.getStartDateLineTwo(),
+							temp1.getEndDateLineOne(),temp1.getEndDateLineTwo(),temp1.getIssue(),temp1.getRecurFrequency());
 
 					counter++;
 				}
@@ -176,7 +179,7 @@ public class Search {
 				UI.ui.printGreen("Index\tTask");
 				for(int i = counter; i<searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.ui.printYellow((i+1) + ".\t" + temp1.getIssue());
 					counter++;
 				}
 
