@@ -50,7 +50,7 @@ public class Parser {
 	private static final String MSG_NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 	private static final String MSG_INVALID_UNDO_COUNT = "Please enter a valid number of commands you wish to undo";
 	private static final String MSG_INVALID_REDO_COUNT = "Please enter a valid number of commands you wish to redo";
-
+	
 	private static final String PROMPT_DATE = "Enter date in dd/mm/yyyy";
 	private static final String PROMPT_DEADLINE = "Enter deadline in dd/mm/yyyy or enter - for no deadline";
 	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";	
@@ -175,6 +175,7 @@ public class Parser {
 	public static void 	addCommand(String s) throws IOException, ClassNotFoundException {
 		boolean isAdded;
 		if (s.equals("")) {
+			UI.ui.printRed(MSG_INVALID);
 		} else {
 			// get index of key
 			if (s.contains("`")) {
@@ -610,10 +611,13 @@ public class Parser {
 				int num = Integer.parseInt(tmp[1]);
 				editRecurringTask(num - 1);
 			} else {
+				
+				try{
 				int num = Integer.parseInt(s);
 				// check if user input integer is valid. If it is valid, edit
 				// should
 				// work
+				
 				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
 				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
@@ -750,7 +754,11 @@ public class Parser {
 						arraylistsHaveBeenModified = true;
 					}
 				}
+				}catch(Exception e){
+					UI.ui.printRed(MSG_INVALID);
+				}
 			}
+				
 		} catch (Exception e) {
 
 		}
