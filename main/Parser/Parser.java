@@ -186,7 +186,7 @@ public class Parser {
 					String[] temp = s2[1].split(" ");
 					String r = s.substring(0, ind) + s.substring(ind + 2);
 					checkStartEndDate(temp);
-					
+
 
 					boolean toRecurred = (temp[temp.length - 1].equals("r")); // return
 					if (!toRecurred) {
@@ -338,7 +338,7 @@ public class Parser {
 
 		}
 	}
-	
+
 	// @@author Cheng Gee
 	public static void checkStartEndDate(String[] temp){
 		start = getStartingIndex(temp);// start has value of -1 if no start date
@@ -480,7 +480,7 @@ public class Parser {
 			}
 		}
 	}
-	
+
 	// @@author Kowshik
 	public static void setLabelCommand(String s) {
 		try {
@@ -799,29 +799,29 @@ public class Parser {
 
 	public static int getCorrectIndexFromDisplayAll(int num) {
 		try{
-		Task temp = Logic.crud.getTempTask(num - 1);
-		
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+			Task temp = Logic.crud.getTempTask(num - 1);
 
-		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
-			}
-			counter++;
-		}
+			ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+			ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
 
-		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
-				num = counter;
-				break;
+			int counter = 1;
+			for(Task t : tempUncompletedTasks) {
+				if(t.getTaskString().equals(temp.getTaskString())) {
+					num = counter;
+					break;
+				}
+				counter++;
 			}
+
 			counter++;
-		}
-		return num;
+			for(Task t : tempFloatingTasks) {
+				if(t.getTaskString().equals(temp.getTaskString())) {
+					num = counter;
+					break;
+				}
+				counter++;
+			}
+			return num;
 		}catch(Exception e){
 			return -1;
 		}
@@ -1232,28 +1232,23 @@ public class Parser {
 
 	public static void deleteCommand(String s) {
 		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
-			if(Logic.Head.getLastDisplayArg().equals("")) {
-				if(s.contains("all")!= true) { 
-					deleteFromDisplayView(s);
+			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				if(s.equals("all") != true) {
+					deleteFromDisplayAllView(s);
 				}
 				else {
 					deleteAllRecurringTasks(s);
-				} 
-			} else if(Logic.Head.getLastDisplayArg().equals("completed") || Logic.Head.getLastDisplayArg().equals("c")) {
+				}
+			}
+			else if(Logic.Head.getLastDisplayArg().equals("completed") || Logic.Head.getLastDisplayArg().equals("c")) {
 				if(s.contains("all")!= true) {
 					deleteFromDisplayCompletedView(s);
 				}
 				else {
 					deleteAllRecurringTasks(s);
 				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("all")) {
-				if(s.contains("all") != true) {
-					deleteFromDisplayAllView(s);
-				}
-				else {
-					deleteAllRecurringTasks(s);
-				}
+			} else {
+				deleteFromDisplayView(s);
 			}
 		} else if ((Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s"))) {
 			// delete from search results
@@ -1262,7 +1257,6 @@ public class Parser {
 			}
 			else {
 				deleteAllRecurringTasks(s);
-
 			}
 		}
 		else if (Logic.Head.getLastDisplay().equals("")) {
@@ -1279,20 +1273,20 @@ public class Parser {
 
 	public static void deleteFromDisplayView(String s) {
 		try{
-		int num = Integer.parseInt(s);
-		ArrayList<Task> list = Logic.crud.getTemp();
-		Task deleted = list.get(num - 1);
-		issue = deleted.getIssue();
-		UI.ui.eraseScreen();
-		try {
-			Logic.crud.deleteTask(num - 1, 5);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-		Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-		arraylistsHaveBeenModified = true;
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = Logic.crud.getTemp();
+			Task deleted = list.get(num - 1);
+			issue = deleted.getIssue();
+			UI.ui.eraseScreen();
+			try {
+				Logic.crud.deleteTask(num - 1, 5);
+			} catch (ClassNotFoundException | IOException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+			UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+			Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+			arraylistsHaveBeenModified = true;
 		}catch(Exception e){
 			UI.ui.printRed(MSG_INVALID);
 		}
@@ -1971,7 +1965,7 @@ public class Parser {
 			e.printStackTrace();
 		}
 	}
-	
+
 	public static boolean isExpired(String currentRecurDate, String recurDeadline) {
 		String[] splitCurrentRecurDate = currentRecurDate.split("/");
 		String[] splitRecurDeadline = recurDeadline.split("/");
