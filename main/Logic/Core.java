@@ -361,7 +361,7 @@ public class Core {
 		}
 	}
 
-	// @@author Jie Wei
+// @@author Jie Wei
 	public static void changeDirectoryCommand() throws IOException, ClassNotFoundException {
 		String s = Parser.Parser.getDescription();
 		if (s.isEmpty()) { // only "dir" was typed, this will display the

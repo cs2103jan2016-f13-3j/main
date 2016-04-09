@@ -25,11 +25,14 @@ public class Undo {
 		
 	private ArrayList<String> undoCommands, redoCommands;
 	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot;
+	private static LocalStorage localStorageObject; 
 	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack,
 								   completedRedoStack, uncompletedRedoStack, floatingRedoStack;
 
 	// Private constructor, following the singleton pattern.
 	private Undo() {
+		localStorageObject = new LocalStorage(); 
+		
 		completedStack = new Stack<ArrayList<Task>>();
 		uncompletedStack = new Stack<ArrayList<Task>>();
 		floatingStack = new Stack<ArrayList<Task>>();
@@ -212,7 +215,7 @@ public class Undo {
 		copyCurrentTasksState();	
 		storeCurrentStateForRedo(lastCommand);
 
-		LocalStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
+		localStorageObject.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
 		return "\"" + lastCommand + "\"" + CONFIRMATION_UNDO;
 	}
 
@@ -235,7 +238,7 @@ public class Undo {
 		copyCurrentTasksState();
 		storePreviousState(redoneCommand); // store current "snapshots" for undo purposes
 
-		LocalStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
+		localStorageObject.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
 		return "\"" + redoneCommand + "\"" + CONFIRMATION_REDO;
 	}
 
@@ -246,9 +249,9 @@ public class Undo {
 	 * @throws IOException
 	 */
 	public void copyCurrentTasksState() throws ClassNotFoundException, IOException {
-		uncompletedTasksSnapshot = copyArrayList(Storage.LocalStorage.getUncompletedTasks());
-		completedTasksSnapshot = copyArrayList(Storage.LocalStorage.getCompletedTasks());
-		floatingTasksSnapshot = copyArrayList(Storage.LocalStorage.getFloatingTasks());
+		uncompletedTasksSnapshot = copyArrayList(localStorageObject.getUncompletedTasks());
+		completedTasksSnapshot = copyArrayList(localStorageObject.getCompletedTasks());
+		floatingTasksSnapshot = copyArrayList(localStorageObject.getFloatingTasks());
 	}
 
 	/**

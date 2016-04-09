@@ -7,12 +7,14 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import Storage.LocalStorage;
 import Task.Task;
 
 public class crud {
 
 	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
 	private static boolean noDuplicate;
+	private static LocalStorage localStorageObject = new LocalStorage();
 	private static Task tempTask;
 
 	private static final String FLAG_COMPLETED = "completed";
