@@ -23,6 +23,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
 	 private static final String FLAG_RECURRING = "recurring";
+	 private static final String MSG_NO_TASK_UNDER_THIS_LABEL = "There is no task under this label";
 	 private static boolean noDuplicate;
 
 	 //@@author Kowshik
@@ -864,6 +865,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 }
 
 	 public static void displayByLabel(String s) {
+		 boolean hasTaskUnderThisLabel = false;
 		 UI.ui.eraseScreen();
 		 tempTasks = new ArrayList<Task>();
 		 ArrayList<Task> displayResults = Storage.localStorage.getUncompletedTasks();
@@ -875,6 +877,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tempTasks.size() > 0) {
+			 hasTaskUnderThisLabel = true;
 			 printUncompletedTask(tempTasks);
 		 }
 
@@ -887,6 +890,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 		 if(tempTasks.size() > 0) {
+			 hasTaskUnderThisLabel = true;
 			 UI.ui.printGreen("FLOATING TASKS");
 			 UI.ui.printGreen("Index \t Task");
 			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
@@ -905,9 +909,12 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }
 		 if(tempTasks.size() > 0) {
+			 hasTaskUnderThisLabel = true;
 			 printCompletedTask(tempTasks);
-		 }else{
-			 UI.ui.printRed("There is no task under this label");
+		 }
+		 
+		 if (!hasTaskUnderThisLabel) {
+			 UI.ui.printRed(MSG_NO_TASK_UNDER_THIS_LABEL);
 		 }
 	 }
 
