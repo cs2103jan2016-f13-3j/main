@@ -105,7 +105,7 @@ public class SystemTest {
 		assertEquals(initialFloatingNum, Storage.LocalStorage.getFloatingTasks().size());
 
 		// Clear all tasks for clean testing state
-		Storage.LocalStorage.clear(); 
+		Storage.LocalStorage.clearAllTasks(); 
 		initialFloatingNum = Storage.LocalStorage.getFloatingTasks().size();
 
 		//Add 2 sample floating tasks

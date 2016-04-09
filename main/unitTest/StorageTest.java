@@ -58,7 +58,7 @@ public class StorageTest {
 		String error = "";
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex1);
+			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex1);
 			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
@@ -73,7 +73,7 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex2);
+			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex2);
 			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
@@ -88,7 +88,7 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex3);
+			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex3);
 			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {

@@ -556,7 +556,7 @@ public class crud {
 			temp.setDescription(msg);
 			temp.setEndDate(null);
 			temp.setStartDate(date);
-			Storage.LocalStorage.delFromFloatingTasks(index-uncompleteList);
+			Storage.LocalStorage.deleteFromFloatingTasks(index-uncompleteList);
 			Storage.LocalStorage.addToUncompletedTasks(temp);
 		}
 	}
@@ -655,14 +655,14 @@ public class crud {
 		if(listOfTasks == 1) { //delete from "display all" view
 			ArrayList<Task> getSize = Storage.LocalStorage.getUncompletedTasks();
 			if(index < getSize.size()) {
-				Storage.LocalStorage.delFromUncompletedTasks(index);
+				Storage.LocalStorage.deleteFromUncompletedTasks(index);
 			}
 			else {
-				Storage.LocalStorage.delFromFloatingTasks(index - getSize.size());
+				Storage.LocalStorage.deleteFromFloatingTasks(index - getSize.size());
 			}
 		}
 		else if(listOfTasks == 2) { //delete from completed tasks
-			Storage.LocalStorage.delFromCompletedTasks(index);
+			Storage.LocalStorage.deleteFromCompletedTasks(index);
 		}
 		else if(listOfTasks == 3) { //delete from search completed tasks view
 			ArrayList<Task> searchTemp = Search.getSearchedTasks();
@@ -676,7 +676,7 @@ public class crud {
 			}
 		}
 		else if(listOfTasks == 4) { //delete from floating tasks view
-			Storage.LocalStorage.delFromFloatingTasks(index);
+			Storage.LocalStorage.deleteFromFloatingTasks(index);
 		}
 		else if(listOfTasks == 5) { //delete from "display" view
 			Task temp = tempTasks.get(index);
@@ -921,7 +921,7 @@ public class crud {
 	 * 
 	 */
 	public static void clearTasks() throws ClassNotFoundException, IOException{
-		Storage.LocalStorage.clear();
+		Storage.LocalStorage.clearAllTasks();
 	}
 
 	/**

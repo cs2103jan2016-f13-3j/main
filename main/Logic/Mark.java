@@ -21,13 +21,13 @@ public class Mark {
 		if(index < getSize.size()) {
 			Task temp = Storage.LocalStorage.getUncompletedTask(index);
 			temp.setComplete();
-			Storage.LocalStorage.delFromUncompletedTasks(index);
+			Storage.LocalStorage.deleteFromUncompletedTasks(index);
 			Storage.LocalStorage.addToCompletedTasks(temp);
 		}
 		else {
 			Task temp = Storage.LocalStorage.getFloatingTask(index - getSize.size());
 			temp.setComplete();
-			Storage.LocalStorage.delFromFloatingTasks(index - getSize.size());
+			Storage.LocalStorage.deleteFromFloatingTasks(index - getSize.size());
 			Storage.LocalStorage.addToCompletedTasks(temp);
 		}
 	}
@@ -44,10 +44,10 @@ public class Mark {
 
 		if(temp.getEndDate() != null || temp.getStartDate() != null) {
 			Storage.LocalStorage.addToUncompletedTasks(temp);
-			Storage.LocalStorage.delFromCompletedTasks(index);
+			Storage.LocalStorage.deleteFromCompletedTasks(index);
 		} else {
 			Storage.LocalStorage.addToFloatingTasks(temp);
-			Storage.LocalStorage.delFromCompletedTasks(index);
+			Storage.LocalStorage.deleteFromCompletedTasks(index);
 		}
 	}
 
