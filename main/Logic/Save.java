@@ -1,5 +1,7 @@
 //@@author Jie Wei
+
 package Logic;
+
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.Writer;
@@ -12,36 +14,32 @@ import Task.Task;
 
 public class Save {
 	
+	/**
+	 * Method to save all 3 storage arraylists into their respective save files.
+	 * 
+	 * @throws IOException
+	 */
 	public static void saveToFile() throws IOException {
-		 saveUncompletedTasksToFile(Logic.ImportTasks.getUncompletedTasksStorageFileName());
-		 saveCompletedTasksToFile(Logic.ImportTasks.getCompletedTasksStorageFileName());
-		 saveFloatingTasksToFile(Logic.ImportTasks.getFloatingTasksStorageFileName());
+		// Save uncompleted tasks
+		String UncompletedTasksStorageFIleName = Logic.ImportTasks.getUncompletedTasksStorageFileName();
+		saveArrayToFile(Storage.localStorage.getUncompletedTasks(), UncompletedTasksStorageFIleName);
+		
+		// Save completed tasks
+		String CompletedTasksStorageFileName = Logic.ImportTasks.getCompletedTasksStorageFileName();
+		saveArrayToFile(Storage.localStorage.getCompletedTasks(), CompletedTasksStorageFileName);
+		
+		// Save floating tasks
+		String FloatingTasksStorageFileName = Logic.ImportTasks.getFloatingTasksStorageFileName();
+		saveArrayToFile(Storage.localStorage.getFloatingTasks(), FloatingTasksStorageFileName);
 	 }
 
 	/**
-	 * Function to save the uncompleted tasks arraylist into the storage file
+	 * Method to save the contents of an arraylist into a Gson text file.
 	 * 
+	 * @param sourceArray         The arraylist to be saved.
+	 * @param destinationFileName The name to save the file as.
+	 * @throws IOException
 	 */
-	private static void saveUncompletedTasksToFile(String fileName) throws IOException {
-		saveArrayToFile(Storage.localStorage.getUncompletedTasks(), fileName);
-	}
-
-	/**
-	 * Function to save the completed tasks arraylist into the storage file
-	 * 
-	 */
-	private static void saveCompletedTasksToFile(String fileName) throws IOException {
-		saveArrayToFile(Storage.localStorage.getCompletedTasks(), fileName);
-	}
-
-	/**
-	 * Function to save the floating tasks arraylist into the storage file
-	 * 
-	 */
-	private static void saveFloatingTasksToFile(String fileName) throws IOException {
-		saveArrayToFile(Storage.localStorage.getFloatingTasks(), fileName);
-	}
-
 	private static void saveArrayToFile(ArrayList<Task> sourceArray, String destinationFileName) throws IOException {
 		Writer writer = new FileWriter(destinationFileName);
 		Gson gson = new GsonBuilder().setPrettyPrinting().create();
