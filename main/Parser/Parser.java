@@ -11,10 +11,12 @@ import Logic.Undo;
 import Storage.localStorage;
 
 import java.io.*;
+import java.rmi.server.UID;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import org.fusesource.jansi.AnsiConsole;
 import Task.Task;
+import net.fortuna.ical4j.model.property.Uid;
 
 public class Parser {
 	private static boolean arraylistsHaveBeenModified;
@@ -57,6 +59,7 @@ public class Parser {
 	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";	
 	private static final String PROMPT_ISSUE = "Enter keyword contained in the issue";
 	private static final String PROMPT_SEARCH = "Press 1 to search by issue, 2 to search by date";
+	private static final String PROMPT_RECURRING = "Enter <frequency> <date in dd/mm/yyyy>. e.g \"4 01/01/2016\"";
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -261,19 +264,22 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date>\"");
+								UI.ui.printRed(PROMPT_RECURRING);
+								try {
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								//	String before = tmp[2];
-
 								int frequency = Integer.parseInt(freq);						
 
 								Task task = new Task(issue,dateIn,s,true,frequency,last);
 								checkDateAndAdd(task);
 								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
+								} catch (Exception e) {
+									UI.ui.printRed(MSG_INVALID);
+									arraylistsHaveBeenModified = false;
+								}
 
 							}
 						} else if (start != -1 && end == -1) {// has start date
@@ -281,12 +287,13 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(startDate)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date>\"");
+								UI.ui.printRed(PROMPT_RECURRING);
+								try {
+								
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								//	String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
 
@@ -294,6 +301,10 @@ public class Parser {
 								checkDateAndAdd(task);
 								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
+								} catch (Exception e ) {
+									UI.ui.printRed(MSG_INVALID);
+									arraylistsHaveBeenModified = false;
+								}
 
 							}
 						} else { // has both start date and end date
@@ -301,7 +312,8 @@ public class Parser {
 							if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 								UI.ui.printRed(MSG_WRONG_DATE);
 							} else {
-								UI.ui.printRed("Enter \"<frequency> <last date>\"");
+								UI.ui.printRed(PROMPT_RECURRING);
+								try {
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
@@ -316,13 +328,15 @@ public class Parser {
 								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
 
+							} catch (Exception e) {
+								UI.ui.printRed(MSG_INVALID);
+								arraylistsHaveBeenModified = false;
 							}
 						}
-					}
+					
+				
 
-				}
-
-			} else {
+						}}}} else {
 				isAdded = Logic.crud.addTask(s);
 				if (isAdded) {
 					Logic.Sort.sortTasksChronologically();
@@ -336,7 +350,7 @@ public class Parser {
 
 			}
 
-		}
+			}
 	}
 
 	// @@author Cheng Gee
@@ -615,7 +629,12 @@ public class Parser {
 		}
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
+				if (s.contains("all")) {
+						String[] tmp = s.split(" ");
+						num = Integer.parseInt(tmp[1]);
+				} else {
 				num = Integer.parseInt(s);
+				}
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
 			}
@@ -631,7 +650,7 @@ public class Parser {
 			if(num<0){
 				UI.ui.printRed(MSG_INVALID);
 			}else if(s.contains("all")) {
-				editRecurringTask(num - 1);
+				editRecurringTask(num-1);
 			} else {
 				// check if user input integer is valid. If it is valid, edit
 				// should
@@ -1826,7 +1845,8 @@ public class Parser {
 				if (!Logic.checkDate.checkDateformat(date)) {
 					UI.ui.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+					UI.ui.printRed(PROMPT_RECURRING);
+					try {
 					String in2 = sc.nextLine();
 					String[] tmp = in2.split(" ");
 					String freq = tmp[0];
@@ -1834,15 +1854,19 @@ public class Parser {
 					//	String before = tmp[2];
 
 					int frequency = Integer.parseInt(freq);
-					//int be4 = Integer.parseInt(before);
-					int be4 = 0;
 
-					Task task = new Task(issue,dateIn2,in,false,frequency,last);
+					Task task = new Task(issue,dateIn,in,false,frequency,last);
 					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
+					delAllRecurringTask(n);
+					UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+					
 
+				} catch (Exception e) {
+					UI.ui.printRed(MSG_INVALID);
+					arraylistsHaveBeenModified = false;
 				}
-			} else if (start != -1 && end == -1) {// has start date
+			}} else if (start != -1 && end == -1) {// has start date
 				// but
 				// no end date
 				date = "-";
@@ -1864,7 +1888,9 @@ public class Parser {
 				if (!Logic.checkDate.checkDateformat(startDate)) {
 					UI.ui.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+				
+					UI.ui.printRed(PROMPT_RECURRING);
+					try {
 					String in2 = sc.nextLine();
 					String[] tmp = in2.split(" ");
 					String freq = tmp[0];
@@ -1876,7 +1902,13 @@ public class Parser {
 					Task task = new Task(issue,dateIn2,in,true,frequency,last);
 					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
+					delAllRecurringTask(n);
+					UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
 
+				} catch (Exception e) {
+					UI.ui.printRed(MSG_INVALID);
+					arraylistsHaveBeenModified = false;
+				}
 				}
 			} else { // has both start date and end date
 				startDate = temp[start + 1];
@@ -1909,24 +1941,27 @@ public class Parser {
 				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
 					UI.ui.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed("Enter \"<frequency> <last date>\"");
+					UI.ui.printRed(PROMPT_RECURRING);
+					try {
 					String in2 = sc.nextLine();
 					String[] tmp = in2.split(" ");
 					String freq = tmp[0];
 					String last = tmp[1];
-					//	String before = tmp[2];
-
 					int frequency = Integer.parseInt(freq);
 					Task task = new Task(issue,dateIn2,dateIn,in,frequency,last);
 					checkDateAndAdd(task);
 					arraylistsHaveBeenModified = true;
+					delAllRecurringTask(n);
+					UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
 
+				} catch (Exception e) {
+					UI.ui.printRed(MSG_INVALID);
+					arraylistsHaveBeenModified = false;
 				}
 			}
-		} 
-		delAllRecurringTask(n);
-		UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
-
+			} 
+		
+		}
 	}
 	public static void checkDateAndAdd(Task task) {
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
