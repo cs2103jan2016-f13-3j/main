@@ -25,15 +25,15 @@ public class Save {
 	public void saveToFile() throws IOException {
 		// Save uncompleted tasks
 		String UncompletedTasksStorageFIleName = Logic.ImportTasks.getUncompletedTasksStorageFileName();
-		saveArrayToFile(Storage.localStorage.getUncompletedTasks(), UncompletedTasksStorageFIleName);
+		saveArrayToFile(Storage.LocalStorage.getUncompletedTasks(), UncompletedTasksStorageFIleName);
 
 		// Save completed tasks
 		String CompletedTasksStorageFileName = Logic.ImportTasks.getCompletedTasksStorageFileName();
-		saveArrayToFile(Storage.localStorage.getCompletedTasks(), CompletedTasksStorageFileName);
+		saveArrayToFile(Storage.LocalStorage.getCompletedTasks(), CompletedTasksStorageFileName);
 
 		// Save floating tasks
 		String FloatingTasksStorageFileName = Logic.ImportTasks.getFloatingTasksStorageFileName();
-		saveArrayToFile(Storage.localStorage.getFloatingTasks(), FloatingTasksStorageFileName);
+		saveArrayToFile(Storage.LocalStorage.getFloatingTasks(), FloatingTasksStorageFileName);
 	}
 
 	/**

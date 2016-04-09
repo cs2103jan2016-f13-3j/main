@@ -9,7 +9,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Stack;
 
-import Storage.localStorage;
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Undo {
@@ -212,7 +212,7 @@ public class Undo {
 		copyCurrentTasksState();	
 		storeCurrentStateForRedo(lastCommand);
 
-		localStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
+		LocalStorage.revertToPreviousState(getLastCompletedState(), getLastUnompletedState(), getLastFloatingState());
 		return "\"" + lastCommand + "\"" + CONFIRMATION_UNDO;
 	}
 
@@ -235,7 +235,7 @@ public class Undo {
 		copyCurrentTasksState();
 		storePreviousState(redoneCommand); // store current "snapshots" for undo purposes
 
-		localStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
+		LocalStorage.revertToPreviousState(getLastRedoCompletedState(), getLastRedoUnompletedState(), getLastRedoFloatingState());
 		return "\"" + redoneCommand + "\"" + CONFIRMATION_REDO;
 	}
 
@@ -246,9 +246,9 @@ public class Undo {
 	 * @throws IOException
 	 */
 	public void copyCurrentTasksState() throws ClassNotFoundException, IOException {
-		uncompletedTasksSnapshot = copyArrayList(Storage.localStorage.getUncompletedTasks());
-		completedTasksSnapshot = copyArrayList(Storage.localStorage.getCompletedTasks());
-		floatingTasksSnapshot = copyArrayList(Storage.localStorage.getFloatingTasks());
+		uncompletedTasksSnapshot = copyArrayList(Storage.LocalStorage.getUncompletedTasks());
+		completedTasksSnapshot = copyArrayList(Storage.LocalStorage.getCompletedTasks());
+		floatingTasksSnapshot = copyArrayList(Storage.LocalStorage.getFloatingTasks());
 	}
 
 	/**

@@ -8,7 +8,7 @@ import java.util.logging.Logger;
 
 import org.junit.Test;
 
-import Storage.localStorage;
+import Storage.LocalStorage;
 import Task.Task;
 
 public class StorageTest {
@@ -28,7 +28,7 @@ public class StorageTest {
 
 		String error = "";
 
-		localStorage.addToUncompletedTasks(temp);
+		LocalStorage.addToUncompletedTasks(temp);
 		
 		/*try {
 			localStorage.addToCompletedTasks(temp1);
@@ -36,7 +36,7 @@ public class StorageTest {
 			result = 
 		}*/
 
-		Task isMatch = localStorage.getUncompletedTask(0);
+		Task isMatch = LocalStorage.getUncompletedTask(0);
 		assertEquals(temp, isMatch);
 	}
 	/**
@@ -58,8 +58,8 @@ public class StorageTest {
 		String error = "";
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = localStorage.delFromUncompletedTasks(deleteIndex1);
-			ArrayList<Task> tempTasks = localStorage.getUncompletedTasks();
+			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex1);
+			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -73,8 +73,8 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = localStorage.delFromUncompletedTasks(deleteIndex2);
-			ArrayList<Task> tempTasks = localStorage.getUncompletedTasks();
+			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex2);
+			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -88,8 +88,8 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = localStorage.delFromUncompletedTasks(deleteIndex3);
-			ArrayList<Task> tempTasks = localStorage.getUncompletedTasks();
+			Task temp = LocalStorage.delFromUncompletedTasks(deleteIndex3);
+			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -120,10 +120,10 @@ public class StorageTest {
 	 */
 	@Test
 	public void testGetUncompletedTasks() {
-		Task temp1 = localStorage.getUncompletedTask(0);
-		Task temp2 = localStorage.getUncompletedTask(localStorage.getUncompletedTasks().size());
+		Task temp1 = LocalStorage.getUncompletedTask(0);
+		Task temp2 = LocalStorage.getUncompletedTask(LocalStorage.getUncompletedTasks().size());
 		
-		assertEquals(temp1, localStorage.getUncompletedTask(0));
-		assertEquals(temp2, localStorage.getUncompletedTask(localStorage.getUncompletedTasks().size()));
+		assertEquals(temp1, LocalStorage.getUncompletedTask(0));
+		assertEquals(temp2, LocalStorage.getUncompletedTask(LocalStorage.getUncompletedTasks().size()));
 	}
 }

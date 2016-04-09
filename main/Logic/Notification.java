@@ -47,7 +47,7 @@ public class Notification {
 		Date today = new Date(todayYear, todayMonth, todayDay);
 
 
-		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempTasks = Storage.LocalStorage.getUncompletedTasks();
 		tasksToBeDisplayed = new ArrayList<Task>();
 
 		for(Task temp : tempTasks) {

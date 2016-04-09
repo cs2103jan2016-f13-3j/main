@@ -14,7 +14,7 @@ import java.util.Scanner;
 import org.fusesource.jansi.AnsiConsole;
 
 import Parser.Natty;
-import Storage.localStorage;
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Core {
@@ -160,7 +160,7 @@ public class Core {
 		int num = Integer.parseInt(idx);
 
 
-		ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
 
 		if (list.size() == 0) {
 			UI.ui.printRed(MSG_EMPTY);
@@ -342,8 +342,8 @@ public class Core {
 		try {
 			int num = Integer.parseInt(s);
 
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 
 			if (list.size() + list2.size() == 0) {
 				UI.ui.printRed(MSG_EMPTY);
@@ -500,8 +500,8 @@ public class Core {
 				editRecurringTask(num - 1);
 			} else {
 				// check if user input integer is valid. If it is valid, edit should work
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
 					UI.ui.printRed(MSG_EMPTY);
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
@@ -596,8 +596,8 @@ public class Core {
 	//@@author Kowshik
 	public static int getCorrectIndexFromSearchView(int num) {
 		Task temp = Logic.Search.getSearchedTask(num - 1);
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+		ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+		ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 
 		int counter = 1;
 		for(Task t : tempUncompletedTasks) {
@@ -623,8 +623,8 @@ public class Core {
 		try{
 			Task temp = Logic.crud.getTempTask(num - 1);
 
-			ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+			ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+			ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 
 			int counter = 1;
 			for(Task t : tempUncompletedTasks) {
@@ -657,8 +657,8 @@ public class Core {
 			return INVALID_TASK_INDEX;
 		}
 		
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+		ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+		ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 
 		int counter = 1;
 		for(Task t : tempUncompletedTasks) {
@@ -745,8 +745,8 @@ public class Core {
 				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 				Task temp = list.get(num - 1);
 				System.out.println(temp.getTaskString());
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+				ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+				ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 				int counter = 0;
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
@@ -776,8 +776,8 @@ public class Core {
 		try {
 			String s = Parser.Parser.getDescription();
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
 				UI.ui.printRed(MSG_EMPTY);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
@@ -805,7 +805,7 @@ public class Core {
 			// check if user input integer is valid. If it is valid, unmark
 			// should
 			// work
-			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getCompletedTasks();
 			if (list.size() == 0) {
 				UI.ui.printRed(MSG_NO_COMPLETED_TASKS);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -854,8 +854,8 @@ public class Core {
 				UI.ui.printRed(MSG_MARK_FAIL);
 			} else {
 				Task temp = list.get(num -1);
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+				ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+				ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 				int counter = 0;
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
@@ -886,8 +886,8 @@ public class Core {
 
 		try { 
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
 				UI.ui.printRed(MSG_EMPTY);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
@@ -972,8 +972,8 @@ public class Core {
 				UI.ui.printRed("Invalid index entered");
 			} else {
 				Task temp = list.get(num - 1);
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+				ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
+				ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 				int counter = 0;
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
@@ -1142,7 +1142,7 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getCompletedTasks();
 			if (list.size() == 0) {
 				UI.ui.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -1186,8 +1186,8 @@ public class Core {
 	public static void deleteFromDisplayAllView(String s) {
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+			ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
 				UI.ui.printRed(MSG_EMPTY);
 			} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
@@ -1232,8 +1232,8 @@ public class Core {
 				arraylistsHaveBeenModified = isDeleted;
 			} else {
 				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
+				ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
+				ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
 					UI.ui.printRed(MSG_EMPTY);
 				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
@@ -1603,7 +1603,7 @@ public class Core {
 	 * @throws IOException
 	 */
 	public static boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
-		ArrayList<Task> list = localStorage.getUncompletedTasks();
+		ArrayList<Task> list = LocalStorage.getUncompletedTasks();
 		Task deleted = list.get(n);
 
 		String id = deleted.getId();
@@ -1630,7 +1630,7 @@ public class Core {
 	 */
 
 	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
-		Task replaced = localStorage.getUncompletedTask(n);
+		Task replaced = LocalStorage.getUncompletedTask(n);
 
 		if (replaced.getId().equals("")) { // if the task at the user-entered index is not a recurring task. stop & inform user
 			UI.ui.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
@@ -1797,7 +1797,7 @@ public class Core {
 				if (expired) {//If task is not within display time frame or when task expired
 					break;
 				}
-				localStorage.addToUncompletedTasks(task);
+				LocalStorage.addToUncompletedTasks(task);
 				String newED = processDate(ed, task.getFrequency());
 				if (task.getStartDate() == null) {//no start date
 					task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),

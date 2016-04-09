@@ -47,7 +47,7 @@ public class parserTest {
 		try {
 			String s = "1";
 			String cmd = "delete";
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
+			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
 			Task deleted = list.get(0);
 			assertTrue(Parser.run(cmd,s));			
 			assertEquals(deleted.getIssue(),"task 1");

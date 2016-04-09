@@ -32,7 +32,7 @@ public class Search {
 
 
 		int counter = 0;
-		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> temp = Storage.LocalStorage.getUncompletedTasks();
 
 		if((searchKeywords.length == 1) && (searchKeywords[0].length() == 1)) {
 			searchSingleLetter(searchKeywords, counter, temp);
@@ -71,7 +71,7 @@ public class Search {
 			}
 		}
 		
-		temp = Storage.localStorage.getFloatingTasks();
+		temp = Storage.LocalStorage.getFloatingTasks();
 		if(temp.size() > 0) {
 			for(int i = 0; i<temp.size(); i++) {
 				String[] taskParts = temp.get(i).getIssue().split(" ");
@@ -161,7 +161,7 @@ public class Search {
 			}
 		}
 
-		temp = Storage.localStorage.getFloatingTasks();
+		temp = Storage.LocalStorage.getFloatingTasks();
 		if(temp.size() > 0) {
 			for(int i = 0; i<temp.size(); i++) {
 				boolean isSuccess = true;
@@ -193,7 +193,7 @@ public class Search {
 			}
 		}
 
-		temp = Storage.localStorage.getCompletedTasks();
+		temp = Storage.LocalStorage.getCompletedTasks();
 		if(temp.size() > 0) {
 			for(int i = 0; i<temp.size(); i++) {
 				boolean isSuccess = true;

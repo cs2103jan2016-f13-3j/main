@@ -13,7 +13,7 @@ public class Sort {
 	 * 
 	 */
 	public static void sortTasksAlphabetically(){
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
 
 		for(int i = 0; i<tempUncompletedTasks.size()-1; i++) {
 			for(int j = i+1; j<tempUncompletedTasks.size(); j++) {
@@ -26,13 +26,13 @@ public class Sort {
 			}
 		}
 		try {
-			Storage.localStorage.setUncompletedTasks(tempUncompletedTasks);
+			Storage.LocalStorage.setUncompletedTasks(tempUncompletedTasks);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+		ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 
 		for(int i = 0; i<tempFloatingTasks.size()-1; i++) {
 			for(int j = i+1; j<tempFloatingTasks.size(); j++) {
@@ -45,7 +45,7 @@ public class Sort {
 			}
 		}
 		try {
-			Storage.localStorage.setFloatingTasks(tempFloatingTasks);
+			Storage.LocalStorage.setFloatingTasks(tempFloatingTasks);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -56,7 +56,7 @@ public class Sort {
 	 * Function to sort tasks in chronological order
 	 */
 	public static void sortTasksChronologically() {
-		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempTasks = Storage.LocalStorage.getUncompletedTasks();
 		for(int i = 0; i<tempTasks.size(); i++) {
 			for(int j = i+1; j<tempTasks.size(); j++) {
 				Calendar startDate1 = tempTasks.get(i).getStartDate();
@@ -116,7 +116,7 @@ public class Sort {
 		}
 
 		try {
-			Storage.localStorage.setUncompletedTasks(tempTasks);
+			Storage.LocalStorage.setUncompletedTasks(tempTasks);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -170,7 +170,7 @@ public class Sort {
 	 */
 	public static void sortTasksPriority() {
 		sortTasksChronologically();
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
 
 		for(int i = 0; i<tempUncompletedTasks.size(); i++) {
 			for(int j = i+1; j<tempUncompletedTasks.size(); j++) {
@@ -225,13 +225,13 @@ public class Sort {
 		}
 		
 		try {
-			Storage.localStorage.setUncompletedTasks(changedTasks);
+			Storage.LocalStorage.setUncompletedTasks(changedTasks);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
+		ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 
 		/*for(int i = 0; i<tempFloatingTasks.size(); i++) {
 			for(int j = i+1; j<tempFloatingTasks.size(); j++) {
@@ -283,7 +283,7 @@ public class Sort {
 		}
 		
 		try {
-			Storage.localStorage.setFloatingTasks(changedTasks);
+			Storage.LocalStorage.setFloatingTasks(changedTasks);
 		} catch (ClassNotFoundException | IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
