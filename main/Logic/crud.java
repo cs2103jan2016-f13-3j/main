@@ -29,11 +29,11 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static ArrayList<Task> getTemp(){
 		 return tempTasks;
 	 }
-	 
+
 	 public static Task getTempTask(int index) {
 		 return tempTasks.get(index);
 	 }
-	 
+
 	 /**
 	  * Function to add task without time into storage
 	  * @throws ClassNotFoundException 
@@ -57,7 +57,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	 
+
 
 	 /**
 	  * Function to add task with only start date into storage
@@ -165,7 +165,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 Storage.localStorage.addToFloatingTasks(task);
 			 }
 		 } 
-		 
+
 	 }
 
 	 private static boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
@@ -230,7 +230,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 }
 		 }return -1;
 	 }
-	 
+
 	 /**
 	  * Function to find the index of Task with No Date
 	  * @param line
@@ -377,7 +377,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 for(int i=head;i<tail;i++){
 				 Task temp=tempTasks.get(i);
 				 UI.ui.printFloating(i, temp.getIssue());
-				 
+
 
 			 }
 		 }
@@ -443,8 +443,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 
 	 }
-	 
-	 
+
+
 	 public static void copyTask(Task t){
 		 if(t!=null){
 			 String copy = t.getDescription();
@@ -453,7 +453,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 clipboard.setContents(selec, selec);	 
 		 }
 	 }
-	 
+
 	 /**
 	  * Function to copy the Recurring Task Description
 	  * @param t
@@ -587,8 +587,8 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setStartDate(null);
 			 temp.setEndDate(date);
 			 temp.setDescription(msg);
-		//	 deleteTask(index,1);
-		//	 addTaskWithEndDate(line, date, msg);
+			 //	 deleteTask(index,1);
+			 //	 addTaskWithEndDate(line, date, msg);
 			 //Storage.localStorage.addToUncompletedTasks(temp);
 			 Storage.localStorage.setUncompletedTask(index, temp);
 		 } else {
@@ -630,7 +630,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 temp.setStartDate(startDate);
 			 temp.setEndDate(endDate);
 			 addTaskWithBothDates(line,startDate,endDate,msg);
-			 
+
 		 }
 	 }
 	 /**
@@ -642,9 +642,9 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 int size1=Storage.localStorage.getUncompletedTasks().size();
 		 if(index<size1){
-		 return Storage.localStorage.getUncompletedTask(index);
+			 return Storage.localStorage.getUncompletedTask(index);
 		 }else{
-		 
+
 			 return Storage.localStorage.getFloatingTask(index-size1);
 		 }
 	 }
@@ -744,7 +744,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getShortPriority()+temp.getIssue(),temp.getRecurFrequency());
 		 }
 		 UI.ui.print("________________________________________________________________");
-		 
+
 	 }
 	 public static void printCompletedTask(ArrayList<Task> tempTask){
 		 UI.ui.eraseScreen();
@@ -944,7 +944,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
 
-	/* public static void displayTasksForThisWeek() {
+	 /* public static void displayTasksForThisWeek() {
 		 UI.ui.eraseScreen();
 		 UI.ui.printGreen("Upcoming tasks this week - ");
 		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
@@ -984,7 +984,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(tasksToBeDisplayed.size() > 0) {
 			 printUncompletedTask(tasksToBeDisplayed);
-			 
+
 		 }
 		 else {
 			 UI.ui.printRed("No tasks this week");
@@ -1018,7 +1018,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(tempTasks.size() > 0) {
 			 printUncompletedTask(tempTasks);
-			 
+
 		 }
 		 else {
 			 UI.ui.printRed("No tasks next week");
@@ -1053,7 +1053,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(tempTasks.size() > 0) {
 			 printUncompletedTask(tempTasks);
-			 
+
 		 }
 		 else {
 			 UI.ui.printRed("No tasks for two weeks later");
@@ -1088,7 +1088,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 
 		 if(tempTasks.size() > 0) {
 			 printUncompletedTask(tempTasks);
-			 
+
 		 }
 		 else {
 			 UI.ui.printRed("No tasks left from last week");
@@ -1100,35 +1100,73 @@ import static org.fusesource.jansi.Ansi.Color.*;
 	 public static void displayUpcomingTasks() {
 		 UI.ui.eraseScreen();
 		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		 //today
-		 Calendar d1 = Calendar.getInstance();
-		 d1.add(Calendar.DAY_OF_MONTH, -1);
 
 		 //7 days in advance
 		 Calendar d2 = Calendar.getInstance();
 		 d2.add(Calendar.DAY_OF_MONTH, 7);
 
+		 //today
+		 Calendar d3 = Calendar.getInstance();
+		 int todayDay = d2.get(Calendar.DAY_OF_MONTH);
+		 int todayMonth = d2.get(Calendar.MONTH);
+		 int todayYear = d2.get(Calendar.YEAR);
+		 Date today = new Date(todayYear, todayMonth, todayDay);
+
 		 tempTasks = new ArrayList<Task>();
 
 		 for(Task temp : tempUncompletedTasks) {
 			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().compareTo(d1) >= 0 && temp.getEndDate().compareTo(d2) <=0) {
+				 if(temp.getEndDate().compareTo(d2) <=0) {
 					 tempTasks.add(temp);
 					 continue;
 				 }
 			 }
 			 else if(temp.getStartDate() != null) {
-				 if((temp.getStartDate().compareTo(d1) >= 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
+				 if(temp.getStartDate().compareTo(d2) <= 0) {
 					 tempTasks.add(temp);
 				 }
 			 }
 		 }
-		 
+
 		 if(tempTasks.size() > 0) {
-			 printUncompletedTask(tempTasks);
+			 UI.ui.printGreen("UNCOMPLETED TASKS");
+			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			 
+			 for(int i = 0; i<tempTasks.size(); i++) {
+				 Task temp = tempTasks.get(i);
+				 
+				 if(temp.getEndDate() != null) {
+					 int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					 String message = "";
+					 if(result < 0) {
+						 message = "overdue by " + Math.abs(result) + " days";
+					 } else if (result == 0) {
+						 message = "deadline today";
+					 }
+					 
+					 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							 temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+				 }
+				 else if(temp.getStartDate() != null) {
+					 int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					 String message = "";
+					 if(result < 0) {
+						 message = "started " + Math.abs(result) + " days ago";
+					 } else if(result == 0) {
+						 message = "starts today";
+					 }
+					 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							 temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+				 }
+				 else {
+					 String message = "";
+					 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							 temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+				 }
 			 }
 		 }
 	 }
- 
+ }
+
+
 
