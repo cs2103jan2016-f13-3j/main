@@ -4,19 +4,18 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
-import Storage.localStorage;
 import Task.Task;
 
 public class Notification {
 	private static ArrayList<Task> tasksToBeDisplayed;
 	private static int daysInAdvance = 3;
-
+	
 	public static ArrayList<Task> getTasksToBeDisplayed() {
 		return tasksToBeDisplayed;
 	}
 
-	public static Task getSpecificTask(int index) {
-		return tasksToBeDisplayed.get(index);
+	public static Task getSpecificTask(int index) throws IndexOutOfBoundsException {
+			return tasksToBeDisplayed.get(index);
 	}
 
 	/**

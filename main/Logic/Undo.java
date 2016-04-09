@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.Stack;
 
 import Storage.localStorage;
-
 import Task.Task;
 
 public class Undo {
@@ -19,8 +18,8 @@ public class Undo {
 	
 	private static final String CONFIRMATION_REDO = " has been redone";
 	private static final String CONFIRMATION_UNDO = " has been undone";
-	private static final String HEADER_UNDO_HISTORY = "Here are the commands you can undo, starting from the top: \n";
-	private static final String HEADER_REDO_HISTORY = "Here are the commands you can redo, starting from the top: \n";
+	private static final String HEADER_UNDO_HISTORY = "Here are the commands you can undo, starting from the top: \n\n";
+	private static final String HEADER_REDO_HISTORY = "Here are the commands you can redo, starting from the top: \n\n";
 	private static final String MSG_NO_UNDO_COMMAND = "There are no remaining commands that can be undone";
 	private static final String MSG_NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 		

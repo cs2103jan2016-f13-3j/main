@@ -1,6 +1,6 @@
-package Parser;
-
 //@@author Jie Wei
+
+package Parser;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -13,23 +13,26 @@ import com.joestelmach.natty.DateGroup;
 import com.joestelmach.natty.Parser;
 
 public class Natty {
+	
 	private static Natty natty;
-	private static Parser parser;
+	
+	private static ArrayList<String> monthNamesList, endDateKeywordsList;
+	private static boolean hasTime;
+	private static Parser nattyParser; // This Parser is the one included in Natty's jar file, not our project Parser class.
+	
 	private static final String DATE_INDICATOR = " ` ";
-	private static final String MSG_START_DATE_INDICATOR = "on";
+	private static final String MSG_START_DATE_KEYWORD = "on";
 	private static final String MSG_TODAY = "Today";
 	private static final String MSG_TOMORROW = "Tomorrow";
 	private static final String[] NAMES_OF_MONTHS = {"Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"};
 	private static final String[] END_DATE_KEYWORDS = {"by", "on", "before"};
-	private static ArrayList<String> monthNamesList, endDateKeywordsList;
-	private static boolean hasTime, hasTwoDates;
+	
 
 	private Natty() {
-		parser = new Parser();
+		nattyParser = new Parser();
 		monthNamesList = new ArrayList<String>(Arrays.asList(NAMES_OF_MONTHS));
 		endDateKeywordsList = new ArrayList<String>(Arrays.asList(END_DATE_KEYWORDS));
 		hasTime = false;
-		hasTwoDates = false;
 	}
 
 	public static Natty getInstance() {
@@ -80,7 +83,7 @@ public class Natty {
 		String stringBeforeIndicator = source.substring(0, indexOfIndicator);
 		String stringAfterIndicator = source.substring(indexOfIndicator + 3); // e.g. add buy egg ` <by tomorrow>
 		stringAfterIndicator = convertToAmericanFormat(stringAfterIndicator); // if user enter DD/MM/YYYY, neede to convert for natty
-		List<DateGroup> dateGroups = parser.parse(stringAfterIndicator);
+		List<DateGroup> dateGroups = nattyParser.parse(stringAfterIndicator);
 
 		if (dateGroups.isEmpty()) { // if no date was found by natty
 			// return the string without the indicator, treat as floating task etc
@@ -96,7 +99,7 @@ public class Natty {
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
 		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 04/05/2016, terminate early. treat it as start date
-			return stringBeforeIndicator + DATE_INDICATOR + MSG_START_DATE_INDICATOR + " " + result;
+			return stringBeforeIndicator + DATE_INDICATOR + MSG_START_DATE_KEYWORD + " " + result;
 		}
 
 		String[] splitArray = stringAfterIndicator.split(" ");
@@ -119,7 +122,7 @@ public class Natty {
 		String issueDescription =  input.substring(0, indexOfIndicator);
 		String stringAfterIndicator = input.substring(indexOfIndicator + 3); // e.g. add buy egg ` <by tomorrow>
 		stringAfterIndicator = convertToAmericanFormat(stringAfterIndicator); // if user enter DD/MM/YYYY, neede to convert for natty
-		List<DateGroup> dateGroups = parser.parse(stringAfterIndicator);
+		List<DateGroup> dateGroups = nattyParser.parse(stringAfterIndicator);
 
 		if (dateGroups.isEmpty()) { // if no date was found by natty
 			// return the string without the indicator, treat as floating task etc
@@ -135,7 +138,7 @@ public class Natty {
 		String result = convertDateGroupToString(dateGroups); // get a DD/MM/YYYY or DD/MM/YYYY HrHr:MinMin representation of the string
 
 		if (stringAfterIndicator.split(" ").length == 1) { // if input was only 1 date, terminate early. treat it as start date
-			return issueDescription + DATE_INDICATOR + MSG_START_DATE_INDICATOR + " " + result;
+			return issueDescription + DATE_INDICATOR + MSG_START_DATE_KEYWORD + " " + result;
 		}
 
 		String[] splitArray = stringAfterIndicator.split(" ");
@@ -160,10 +163,8 @@ public class Natty {
 
 		if (dates.size() == 1) { // only 1 date was parsed
 			result = changeOneDateStringFormat(originalString);
-			hasTwoDates = false;
 		} else if (dates.size() == 2) { // 2 dates were parsed
 			result = changeTwoDatesStringFormat(originalString);
-			hasTwoDates = true;
 		}
 		return result;
 	}
@@ -288,13 +289,13 @@ public class Natty {
 			}			
 		}
 		if (count == 0) { // means user enter something like "add have lunch ` "today", without "from"/"on"/"by"/"to"
-			return MSG_START_DATE_INDICATOR;
+			return MSG_START_DATE_KEYWORD;
 		}
 		return splitArray[count - 1]; // count is where detectedKeyword is, return the word before it
 	}
 
 	public String getDayName(String source) {
-		List<DateGroup> dateGroups = parser.parse(source);
+		List<DateGroup> dateGroups = nattyParser.parse(source);
 		List<Date> dates = dateGroups.get(0).getDates();
 		String originalString = dates.toString(); // At this point, String is "[Mon Apr 03......"
 		return originalString.substring(1,4);

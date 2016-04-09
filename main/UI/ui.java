@@ -1,14 +1,13 @@
 //@@author Kowshik
 package UI;
 
+import static org.fusesource.jansi.Ansi.ansi;
+
 import java.util.Scanner;
 
 import org.fusesource.jansi.AnsiConsole;
 
 import Parser.Natty;
-
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
 public class ui {
 	//@@author Cheng Gee
 	public static final String	SANE				= "\u001B[0m";

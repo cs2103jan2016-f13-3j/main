@@ -19,6 +19,8 @@ import Task.Task;
 
 public class Core {
 	private static boolean arraylistsHaveBeenModified;
+	
+	private static int INVALID_TASK_INDEX = -1;	
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 
 	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
@@ -34,7 +36,6 @@ public class Core {
 	private static final String MSG_NO_COMPLETED_TASKS = "No task has been completed yet.";
 	private static final String MSG_DUPLICATE_ADD = "Duplicate task detected.";
 	private static final String MSG_DELETE = "is deleted from the task list.";
-	private static final String MSG_SORT = "All items are sorted in alphabetical order";
 	private static final String MSG_EDIT = " is edited and saved";
 	private static final String MSG_MARK = " is marked as completed";
 	private static final String MSG_UNMARK = " is marked as uncompleted";
@@ -55,6 +56,14 @@ public class Core {
 
 	private static Scanner sc = new Scanner(System.in);
 
+	/**
+	 * method that simulate command line interface that will responds to user's
+	 * inputs
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 *             return boolean
+	 */
 	public static void acceptCommand() throws ClassNotFoundException, IOException {
 		// take "snapshots" of current storage state
 		Undo.getInstance().copyCurrentTasksState();
@@ -81,6 +90,16 @@ public class Core {
 		}
 	}
 
+	/**
+	 * methods that take in command and the body as the argument and process
+	 * them to to meet the requests of the user.
+	 * 
+	 * @param option
+	 * @param s
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 *             return boolean
+	 */
 	public static boolean parseCommands() throws IOException, ClassNotFoundException {
 		arraylistsHaveBeenModified = false;
 		String option = Parser.Parser.getCommand();
@@ -637,7 +656,13 @@ public class Core {
 	}
 
 	public static int getCorrectIndexWelcomeView(int num) {
-		Task temp = Logic.Notification.getSpecificTask(num);
+		Task temp;
+		try {
+			temp = Logic.Notification.getSpecificTask(num);
+		} catch (IndexOutOfBoundsException e) {
+			return INVALID_TASK_INDEX;
+		}
+		
 		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
 
@@ -910,19 +935,6 @@ public class Core {
 		}
 	}
 
-
-	public static void sortCommand() {
-		String s = Parser.Parser.getDescription();
-		if (s.equals("p") || s.equals("priority")) {
-			Logic.Sort.sortTasksPriority();
-			Logic.crud.displayUncompletedAndFloatingTasks();
-		} else {
-			Logic.Sort.sortTasksAlphabetically();
-			UI.ui.printGreen(MSG_SORT);
-			arraylistsHaveBeenModified = true;
-		}
-	}
-
 	public static void clearCommand() throws ClassNotFoundException, IOException {
 		Logic.crud.clearTasks();
 		UI.ui.printGreen(MSG_CLEAR);
@@ -1051,16 +1063,13 @@ public class Core {
 	}
 
 	public static void deleteCommand() {
-		System.out.println("HERE");
 		String s = Parser.Parser.getDescription();
 		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
 			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				if(s.contains("all") != true) {
-					System.out.println("HERE 1");
 					deleteFromDisplayAllView(s);
 				}
 				else {
-					System.out.println("HERE 2");
 					deleteAllRecurringTasks();
 				}
 			}
@@ -1090,6 +1099,12 @@ public class Core {
 		else if (Logic.Head.getLastDisplay().equals("")) {
 			if(s.contains("all") != true) {
 				int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
+				
+				if (num == -1) { // -1 when storage is empty, and user tries to delete immediately after launch
+					UI.ui.printRed(MSG_EMPTY);
+					return;
+				}
+				
 				String index = "" + num;
 				deleteFromDisplayAllView(index);
 			}else{
@@ -1102,7 +1117,6 @@ public class Core {
 	}
 
 	public static void deleteFromDisplayView() {
-		System.out.println("DEBUG");
 		String s = Parser.Parser.getDescription();
 		String[] splitInput = s.split(" ");
 		try{

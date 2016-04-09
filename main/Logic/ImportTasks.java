@@ -130,6 +130,8 @@ public class ImportTasks {
 		writer.close();
 		if (destination.equals("default")) {
 			storageFolderDirectory = "";
+		} else if (!destination.contains("\\")) { // does not contain \, thus not folder on Windows
+			storageFolderDirectory = "";
 		} else {
 			storageFolderDirectory = destination;
 		}
@@ -148,6 +150,9 @@ public class ImportTasks {
 			return FEEDBACK_CHANGE_DIRECTORY_DEFAULT;
 		}
 		if (storageFolderDirectory.equals("")) { // invalid directory was given
+			return FEEDBACK_CHANGE_DIRECTORY_ERROR;
+		}
+		if (!destination.contains("\\")) { // does not contain \, thus not folder on Windows
 			return FEEDBACK_CHANGE_DIRECTORY_ERROR;
 		}
 		return FEEDBACK_CHANGE_DIRECTORY_SUCCESS + storageFolderDirectory; // directory successfully changed

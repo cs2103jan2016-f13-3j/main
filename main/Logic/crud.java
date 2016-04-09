@@ -1,13 +1,13 @@
 package Logic;
 
-import Task.Task;
-
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
+
+import Task.Task;
 
 public class crud {
 
@@ -19,6 +19,8 @@ public class crud {
 	 private static final String FLAG_FLOATING = "floating";
 	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String MSG_NO_TASK_UNDER_THIS_LABEL = "There is no task under this label";
+	 private static final String MSG_NO_TASK = "There are no tasks to show.";
+	 private static final String MSG_INVALID = "Invalid inputs! Please try again";
 
 	 //@@author Kowshik
 	 public static ArrayList<Task> getTemp(){
@@ -720,7 +722,7 @@ public class crud {
 			 }
 		 }
 		 if(isEmptyUn && isEmptyF) {
-			 UI.ui.printGreen("There are no tasks to show.");
+			 UI.ui.printGreen(MSG_NO_TASK);
 		 }
 	 }
 	 public static void printUncompletedTask(ArrayList<Task> tempTask){
@@ -778,6 +780,10 @@ public class crud {
 		 }
 		 else {
 			 tempTask = Storage.localStorage.getFloatingTask(index - getSize.size());
+		 }
+		 if (tempTask == null) {
+			 UI.ui.printRed(MSG_INVALID);
+			 return;
 		 }
 		 boolean isCompleted = tempTask.getCompletedStatus();
 		 String completed = "Not completed";
@@ -1156,6 +1162,8 @@ public class crud {
 							 temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
 				 }
 			 }
+		 } else {
+			 UI.ui.printGreen(MSG_NO_TASK);
 		 }
 	 }
  }
