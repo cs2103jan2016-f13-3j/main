@@ -10,7 +10,7 @@ import java.io.ObjectOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
 
-public class localStorage {
+public class LocalStorage {
 
 	//ArrayLists to store the contents added to the file
 	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
