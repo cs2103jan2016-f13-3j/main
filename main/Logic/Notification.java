@@ -10,15 +10,15 @@ import Task.Task;
 public class Notification {
 	private static ArrayList<Task> tasksToBeDisplayed;
 	private static int daysInAdvance = 3;
-	
+
 	public static ArrayList<Task> getTasksToBeDisplayed() {
 		return tasksToBeDisplayed;
 	}
-	
+
 	public static Task getSpecificTask(int index) {
 		return tasksToBeDisplayed.get(index);
 	}
-	
+
 	/**
 	 * Function that prints the upcoming uncompleted tasks in the next three days
 	 */
@@ -70,26 +70,34 @@ public class Notification {
 			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				Task temp = tasksToBeDisplayed.get(i);
+
 				if(temp.getEndDate() != null) {
-					if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) < d3.get(Calendar.DAY_OF_YEAR)) {
-						int overdue = d3.get(Calendar.DAY_OF_MONTH) - temp.getEndDate().get(Calendar.DAY_OF_MONTH);
-						String message = "";
-						if(overdue != 1) {
-							message = "overdue by " + overdue + " days";
-						} else {
-							message = "overdue by " + overdue + " day";
-						}
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),message);
-
-					} else if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) == d3.get(Calendar.DAY_OF_YEAR)) {
-						String message = "deadline today";
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),message);
-
-					} 
-					else {
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-
+					int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					String message = "";
+					if(result < 0) {
+						message = "overdue by " + Math.abs(result) + " days";
+					} else if (result == 0) {
+						message = "deadline today";
 					}
+
+					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+				}
+				else if(temp.getStartDate() != null) {
+					int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					String message = "";
+					if(result < 0) {
+						message = "started " + Math.abs(result) + " days ago";
+					} else if(result == 0) {
+						message = "starts today";
+					}
+					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+				}
+				else {
+					String message = "";
+					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
 				}
 			}
 		}
