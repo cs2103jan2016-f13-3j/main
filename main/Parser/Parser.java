@@ -1252,8 +1252,9 @@ public class Parser {
 	public static void deleteCommand(String s) {
 		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
 			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
-				if(s.equals("all") != true) {
+				if(s.contains("all") != true) {
 					deleteFromDisplayAllView(s);
+					
 				}
 				else {
 					deleteAllRecurringTasks(s);
@@ -1430,6 +1431,7 @@ public class Parser {
 				}
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 			UI.ui.printRed(MSG_INVALID);
 		}
 	}
