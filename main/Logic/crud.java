@@ -831,13 +831,13 @@ public class crud {
 					tempTasks.add(temp);
 					continue;
 				}
-				if(temp.getEndDate() != null) {
-					String endDay = "" + temp.getEndDate().get(Calendar.DAY_OF_MONTH);
-					String endMonth = "" + (temp.getEndDate().get(Calendar.MONTH) + 1);
-					String endYear = "" + temp.getEndDate().get(Calendar.YEAR);
-					if(checkIfDateIsContained(splitDate, endDay, endMonth, endYear)) {
-						tempTasks.add(temp);
-					}
+			}
+			if(temp.getEndDate() != null) {
+				String endDay = "" + temp.getEndDate().get(Calendar.DAY_OF_MONTH);
+				String endMonth = "" + (temp.getEndDate().get(Calendar.MONTH) + 1);
+				String endYear = "" + temp.getEndDate().get(Calendar.YEAR);
+				if(checkIfDateIsContained(splitDate, endDay, endMonth, endYear)) {
+					tempTasks.add(temp);
 				}
 			}
 		}
