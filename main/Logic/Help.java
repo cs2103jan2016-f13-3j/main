@@ -111,9 +111,9 @@ public class Help {
 	
 	private static final String UNDO_REDO_HEADER = "10. UNDOING & REDOING COMMANDS\n";
 	private static final String UNDO_REDO_1 = "Type \"history\" to see all the commands you may undo.\n"
-            + "Commands will be undone from the top of the list.\n";
+                                              + "Commands will be undone from the top of the list.\n";
 	private static final String UNDO_REDO_2 = "Type \"future\" to see all the commands you may redo.\n"
-            + "Commands will be redone from the top of the list.";
+                                              + "Commands will be redone from the top of the list.";
 	private static final String UNDO_REDO_3 = "Type \"undo\" to roll back the last command that was executed (if any).";
 	private static final String UNDO_REDO_4 = "Type \"redo\" to re-execute the last command that was undone (if any).\n";
 	private static final String UNDO_REDO_5 = "You may also add a number to undo/redo a specific number of commands (if any).";
@@ -144,7 +144,10 @@ public class Help {
 	private static final String HELP_PROMPT = "Enter the number of the topic you need help with";
 	private static final String MSG_INVALID_INPUT = "Please enter a valid number";
 
-	public static void printHelpMenu() {
+	public Help() {
+	}
+	
+	public void printHelpMenu() {
 
 		Scanner sc = new Scanner(System.in);
 
@@ -192,7 +195,7 @@ public class Help {
 		}
 	}
 
-	private static void printAddHelp() {
+	private void printAddHelp() {
 		UI.ui.printGreen(ADD_HEADER);
 		UI.ui.printYellow(ADD_1);
 		UI.ui.printYellow(ADD_2);
@@ -206,7 +209,7 @@ public class Help {
 		UI.ui.printCyan(ADD_SAMPLE_4);
 	}
 
-	private static void printDeleteHelp() {
+	private void printDeleteHelp() {
 		UI.ui.printGreen(DELETE_HEADER);
 		UI.ui.printYellow(DELETE_1);
 		UI.ui.printYellow(DELETE_2);
@@ -218,7 +221,7 @@ public class Help {
 		UI.ui.printCyan(DELETE_SAMPLE_3);
 	}
 
-	private static void printEditHelp() {
+	private void printEditHelp() {
 		UI.ui.printGreen(EDIT_HEADER);
 		UI.ui.printYellow(EDIT_1);
 		UI.ui.printYellow(EDIT_2);
@@ -230,7 +233,7 @@ public class Help {
 		UI.ui.printCyan(EDIT_SAMPLE_2);
 	}
 
-	private static void printDisplayHelp() {
+	private void printDisplayHelp() {
 		UI.ui.printGreen(DISPLAY_HEADER);
 		UI.ui.printYellow(DISPLAY_1);
 		UI.ui.printYellow(DISPLAY_2);
@@ -248,7 +251,7 @@ public class Help {
 		UI.ui.printCyan(DISPLAY_SAMPLE_2);
 	}
 
-	private static void printMarkHelp() {
+	private void printMarkHelp() {
 		UI.ui.printGreen(MARK_HEADER);
 		UI.ui.printYellow(MARK_1);
 		UI.ui.printYellow(MARK_2);
@@ -256,7 +259,7 @@ public class Help {
 		UI.ui.printCyan(MARK_SAMPLE_1);
 	}
 
-	private static void printPriorityHelp() {
+	private void printPriorityHelp() {
 		UI.ui.printGreen(PRIORITY_HEADER);
 		UI.ui.printYellow(PRIORITY_1);
 		UI.ui.printYellow(PRIORITY_2);
@@ -267,7 +270,7 @@ public class Help {
 		UI.ui.printCyan(PRIORITY_SAMPLE_2);
 	}
 
-	private static void printLabelHelp() {
+	private void printLabelHelp() {
 		UI.ui.printGreen(LABEL_HEADER);
 		UI.ui.printYellow(LABEL_1);
 		UI.ui.printYellow(LABEL_2);
@@ -275,7 +278,7 @@ public class Help {
 		UI.ui.printCyan(LABEL_SAMPLE_1);
 	}
 
-	private static void printViewHelp() {
+	private void printViewHelp() {
 		UI.ui.printGreen(VIEW_HEADER);
 		UI.ui.printYellow(VIEW_1);
 		UI.ui.printYellow(VIEW_2);
@@ -283,7 +286,7 @@ public class Help {
 		UI.ui.printCyan(VIEW_SAMPLE_1);
 	}
 
-	private static void printSearcHelp() {
+	private void printSearcHelp() {
 		UI.ui.printGreen(SEARCH_HEADER);
 		UI.ui.printYellow(SEARCH_1);
 		UI.ui.printYellow(SEARCH_2);
@@ -293,7 +296,7 @@ public class Help {
 		UI.ui.printCyan(SEARCH_SAMPLE_2);
 	}
 
-	private static void printUndoRedoHelp() {
+	private void printUndoRedoHelp() {
 		UI.ui.printGreen(UNDO_REDO_HEADER);
 		UI.ui.printYellow(UNDO_REDO_1);
 		UI.ui.printYellow(UNDO_REDO_2);
@@ -306,7 +309,7 @@ public class Help {
 		UI.ui.printCyan(UNDO_REDO_SAMPLE_2);
 	}
 
-	private static void printDirectoryHelp() {		
+	private void printDirectoryHelp() {		
 		UI.ui.printGreen(DIRECTORY_HEADER);
 		UI.ui.printYellow(DIRECTORY_1);
 		UI.ui.printYellow(DIRECTORY_2);
@@ -318,7 +321,7 @@ public class Help {
 		UI.ui.printCyan(DIRECTORY_SAMPLE_1);
 	}
 
-	private static void printExitHelp() {
+	private void printExitHelp() {
 		UI.ui.printGreen(EXIT_HEADER);
 		UI.ui.printYellow(EXIT_1);
 		UI.ui.printYellow(EXIT_2);

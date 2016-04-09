@@ -54,6 +54,7 @@ public class Core {
 	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";	
 	private static final String PROMPT_RECURRING = "Enter <frequency> <date in dd/mm/yyyy>. e.g \"4 01/01/2016\"";
 
+	private static Help helpObject = new Help();
 	private static Scanner sc = new Scanner(System.in);
 
 	/**
@@ -143,7 +144,7 @@ public class Core {
 			AnsiConsole.systemUninstall();
 			Logic.crud.exit();
 		} else if (option.equals("help")) {
-			Logic.Help.printHelpMenu();
+			helpObject.printHelpMenu();
 		} else if (option.equals("dir")) {
 			changeDirectoryCommand();
 		} else if (option.equals("label")) {
