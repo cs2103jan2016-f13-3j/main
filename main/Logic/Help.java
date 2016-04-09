@@ -6,6 +6,8 @@ import java.util.Scanner;
 
 public class Help {
 	
+	private static Scanner sc;
+	
 	private static final String EXAMPLE_HEADER = "\nEXAMPLES\n";
 	
 	private static final String ADD_HEADER = "1.  ADDING TASKS\n";
@@ -140,17 +142,15 @@ public class Help {
 	private static final String HELP_MENU = "\nHELP CONTENTS:\n\n" + ADD_HEADER + DELETE_HEADER + EDIT_HEADER + DISPLAY_HEADER
 			                                + MARK_HEADER + PRIORITY_HEADER + LABEL_HEADER + VIEW_HEADER + SEARCH_HEADER
 			                                + UNDO_REDO_HEADER + DIRECTORY_HEADER + EXIT_HEADER;
-	
 	private static final String HELP_PROMPT = "Enter the number of the topic you need help with";
+	
 	private static final String MSG_INVALID_INPUT = "Please enter a valid number";
 
 	public Help() {
+		sc = new Scanner(System.in);
 	}
 	
 	public void printHelpMenu() {
-
-		Scanner sc = new Scanner(System.in);
-
 		UI.ui.printYellow(HELP_MENU);
 		UI.ui.printGreen(HELP_PROMPT);
 		
@@ -163,7 +163,15 @@ public class Help {
 		}
 
 		UI.ui.eraseScreen();
-		
+		printHelpTopic(topicNumber);
+	}
+	
+	/**
+	 * Method to print a help topic according to the input topic number.
+	 * 
+	 * @param topicNumber The topic number to be printed.
+	 */
+	private void printHelpTopic(int topicNumber) {
 		if (topicNumber == 1) {
 			printAddHelp();
 		} else if (topicNumber == 2) {
@@ -195,6 +203,7 @@ public class Help {
 		}
 	}
 
+	// Method to print the strings related to Add function.
 	private void printAddHelp() {
 		UI.ui.printGreen(ADD_HEADER);
 		UI.ui.printYellow(ADD_1);
@@ -209,6 +218,7 @@ public class Help {
 		UI.ui.printCyan(ADD_SAMPLE_4);
 	}
 
+	// Method to print the strings related to Delete function.
 	private void printDeleteHelp() {
 		UI.ui.printGreen(DELETE_HEADER);
 		UI.ui.printYellow(DELETE_1);
@@ -221,6 +231,7 @@ public class Help {
 		UI.ui.printCyan(DELETE_SAMPLE_3);
 	}
 
+	// Method to print the strings related to Edit function.
 	private void printEditHelp() {
 		UI.ui.printGreen(EDIT_HEADER);
 		UI.ui.printYellow(EDIT_1);
@@ -233,6 +244,7 @@ public class Help {
 		UI.ui.printCyan(EDIT_SAMPLE_2);
 	}
 
+	// Method to print the strings related to Display function.
 	private void printDisplayHelp() {
 		UI.ui.printGreen(DISPLAY_HEADER);
 		UI.ui.printYellow(DISPLAY_1);
@@ -251,6 +263,7 @@ public class Help {
 		UI.ui.printCyan(DISPLAY_SAMPLE_2);
 	}
 
+	// Method to print the strings related to Mark function.
 	private void printMarkHelp() {
 		UI.ui.printGreen(MARK_HEADER);
 		UI.ui.printYellow(MARK_1);
@@ -259,6 +272,7 @@ public class Help {
 		UI.ui.printCyan(MARK_SAMPLE_1);
 	}
 
+	// Method to print the strings related to Priority function.
 	private void printPriorityHelp() {
 		UI.ui.printGreen(PRIORITY_HEADER);
 		UI.ui.printYellow(PRIORITY_1);
@@ -270,6 +284,7 @@ public class Help {
 		UI.ui.printCyan(PRIORITY_SAMPLE_2);
 	}
 
+	// Method to print the strings related to Label function.
 	private void printLabelHelp() {
 		UI.ui.printGreen(LABEL_HEADER);
 		UI.ui.printYellow(LABEL_1);
@@ -278,6 +293,7 @@ public class Help {
 		UI.ui.printCyan(LABEL_SAMPLE_1);
 	}
 
+	// Method to print the strings related to View function.
 	private void printViewHelp() {
 		UI.ui.printGreen(VIEW_HEADER);
 		UI.ui.printYellow(VIEW_1);
@@ -286,6 +302,7 @@ public class Help {
 		UI.ui.printCyan(VIEW_SAMPLE_1);
 	}
 
+	// Method to print the strings related to Search function.
 	private void printSearcHelp() {
 		UI.ui.printGreen(SEARCH_HEADER);
 		UI.ui.printYellow(SEARCH_1);
@@ -296,6 +313,7 @@ public class Help {
 		UI.ui.printCyan(SEARCH_SAMPLE_2);
 	}
 
+	// Method to print the strings related to Undo function.
 	private void printUndoRedoHelp() {
 		UI.ui.printGreen(UNDO_REDO_HEADER);
 		UI.ui.printYellow(UNDO_REDO_1);
@@ -309,6 +327,7 @@ public class Help {
 		UI.ui.printCyan(UNDO_REDO_SAMPLE_2);
 	}
 
+	// Method to print the strings related to Directory function.
 	private void printDirectoryHelp() {		
 		UI.ui.printGreen(DIRECTORY_HEADER);
 		UI.ui.printYellow(DIRECTORY_1);
@@ -321,6 +340,7 @@ public class Help {
 		UI.ui.printCyan(DIRECTORY_SAMPLE_1);
 	}
 
+	// Method to print the strings related to Exit function.
 	private void printExitHelp() {
 		UI.ui.printGreen(EXIT_HEADER);
 		UI.ui.printYellow(EXIT_1);
