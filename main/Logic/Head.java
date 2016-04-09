@@ -62,22 +62,11 @@ public class Head {
 	public static void runProgram() throws IOException, ClassNotFoundException {
 		while (true) {
 			UI.ui.printRed(USER_PROMPT);
-			String input = UI.ui.acceptCommand();
-			String[] arr = input.split(" ");
-			// get command
-			String cmd = arr[0];
-			String description;
-			// handle lines with only the command
-			if (cmd.length() == input.length()) {
-				description = "";
-			} else {
-				// get description
-				description = input.substring(cmd.length() + 1, input.length());
-			}
+			Logic.Core.acceptCommand();
+			lastDisplay = Parser.Parser.getCommand();
+			lastDisplayArg = Parser.Parser.getDescription();
+			
 
-			Parser.Parser.run(cmd, description);
-			lastDisplay = cmd;
-			lastDisplayArg = description;
 
 			/*if((lastCommand.equals("sort") && (lastArg.equals("c") || lastArg.equals("chrono")))!= true) {
 
