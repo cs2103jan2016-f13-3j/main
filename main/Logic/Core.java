@@ -193,7 +193,7 @@ public class Core {
 			// get index of key
 			if(containDate){
 				if (!rec) {
-					if (startDate.equals("-") && !endDate.equals("-")) {// no start date but has end date
+					if (startDate.equals("-") && !endDate.equals("-")) { // no start date but has end date
 						if (!Logic.checkDate.checkDateformat(endDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
@@ -209,15 +209,11 @@ public class Core {
 							}
 						}
 
-					} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has start date
+					} else if ((!startDate.equals("-")) && endDate.equals("-")) { // has start date
 
 						if (!Logic.checkDate.checkDateformat(startDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
-							// get issue
-
-							// isAdded =
-							// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 							isAdded = Logic.crud.addTaskWithStartDate(issue, startDateWithTime, s);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
@@ -234,9 +230,7 @@ public class Core {
 						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(endDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
-							// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-
-							isAdded = Logic.crud.addTaskWithBothDates(issue, startDate, endDateWithTime, s);
+							isAdded = Logic.crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, s);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
 								int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, s);
