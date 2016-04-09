@@ -846,6 +846,7 @@ public class crud {
 			 UI.ui.printGreen("There is no stored task to display");
 		 }
 		 else {
+			 Logic.Sort.sortTasksPriority();
 			 printUncompletedTask(tempTasks);
 		 }
 	 }

@@ -72,15 +72,34 @@ public class Sort {
 					}
 				}
 				else if(endDate1 != null && endDate2 != null) { //both end dates are not null
-					if(endDate1.compareTo(endDate2) > 0) {
+					if(endDate1.compareTo(endDate2) > 0) { //end date one is greater than end date two
 						Task temp = tempTasks.get(i);
 						tempTasks.set(i, tempTasks.get(j));
 						tempTasks.set(j, temp);
+					} else if(endDate1.compareTo(endDate2) == 0){ //end dates are equal
+						if(startDate1 != null) {
+							if(startDate2 != null) { // both start dates are not null
+								if(startDate1.compareTo(startDate2) > 0) { //start date 1 is greater than start date 2
+									Task temp = tempTasks.get(i);
+									tempTasks.set(i, tempTasks.get(j));
+									tempTasks.set(j, temp);
+								}
+							}
+						} else { //start date 1 is null
+							Task temp = tempTasks.get(i);
+							tempTasks.set(i, tempTasks.get(j));
+							tempTasks.set(j, temp);
+						}
 					}
 				}
 
 				else if(endDate1 == null && endDate2 != null) { //one end date is null
 					if(startDate1.compareTo(endDate2) > 0) {
+						Task temp = tempTasks.get(i);
+						tempTasks.set(i, tempTasks.get(j));
+						tempTasks.set(j, temp);
+					}
+					else if(startDate1.compareTo(endDate2) == 0) {
 						Task temp = tempTasks.get(i);
 						tempTasks.set(i, tempTasks.get(j));
 						tempTasks.set(j, temp);
@@ -91,7 +110,7 @@ public class Sort {
 						Task temp = tempTasks.get(i);
 						tempTasks.set(i, tempTasks.get(j));
 						tempTasks.set(j, temp);
-					}
+					} 
 				}
 			}
 		}
