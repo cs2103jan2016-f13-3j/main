@@ -817,7 +817,6 @@ public class crud {
 		 if(inputDate.startsWith("0")) {
 			 inputDate = inputDate.replaceFirst("0", "");
 		 }
-		 System.out.println(inputDate);
 		 String[] splitDate = inputDate.split("/");
 		 //run through all the tasks and find which have same date
 		 tempTasks = new ArrayList<Task>();
@@ -852,7 +851,7 @@ public class crud {
 	 }
 
 	 public static boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
-		 if(day.contains(splitDate[0]) && month.contains(splitDate[1]) && year.contains(splitDate[2])) {
+		 if(day.equals(splitDate[0]) && month.equals(splitDate[1]) && year.equals(splitDate[2])) {
 			 return true;
 		 }
 		 return false;
