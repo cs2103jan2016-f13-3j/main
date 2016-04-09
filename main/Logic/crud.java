@@ -1,30 +1,24 @@
 package Logic;
 
 import Task.Task;
-import unitTest.StorageTest;
-import Storage.localStorage;
 
 import java.awt.Toolkit;
 import java.awt.datatransfer.Clipboard;
 import java.awt.datatransfer.StringSelection;
 import java.io.IOException;
-import java.rmi.server.UID;
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
-import java.util.GregorianCalendar;
-/*import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
- */public class crud {
+
+public class crud {
 
 	 private static ArrayList<Task> tempTasks = new ArrayList<Task>();
+	 private static boolean noDuplicate;
 	 private static Task tempTask;
-	 private static final String FLAG_UNCOMPLETED = "uncompleted";
+	 
 	 private static final String FLAG_COMPLETED = "completed";
 	 private static final String FLAG_FLOATING = "floating";
-	 private static final String FLAG_RECURRING = "recurring";
+	 private static final String FLAG_UNCOMPLETED = "uncompleted";
 	 private static final String MSG_NO_TASK_UNDER_THIS_LABEL = "There is no task under this label";
-	 private static boolean noDuplicate;
 
 	 //@@author Kowshik
 	 public static ArrayList<Task> getTemp(){
@@ -57,8 +51,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 			 return false;
 		 }
 	 }
-
-
 
 	 /**
 	  * Function to add task with only start date into storage
@@ -521,9 +513,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
 
 		 if(index < uncompleteList){
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
 			 deleteTask(index,1);
-
 			 addTask(msg);
 		 } else {
 			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
@@ -708,8 +698,6 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 UI.ui.eraseScreen();
 		 boolean isEmptyUn = false;
 		 tempTasks = Storage.localStorage.getUncompletedTasks();
-		 String dt="";
-
 		 if (tempTasks.isEmpty()) {
 			 isEmptyUn = true;
 		 } else {
@@ -908,6 +896,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 tempTasks.add(temp);
 			 }
 		 }
+		 
 		 if(tempTasks.size() > 0) {
 			 hasTaskUnderThisLabel = true;
 			 printCompletedTask(tempTasks);
@@ -1109,27 +1098,23 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
 
 		 //7 days in advance
-		 Calendar d2 = Calendar.getInstance();
-		 d2.add(Calendar.DAY_OF_MONTH, 7);
+		 Calendar sevenDaysLaterCalendar = Calendar.getInstance();
+		 sevenDaysLaterCalendar.add(Calendar.DAY_OF_MONTH, 7);
 
 		 //today
-		 Calendar d3 = Calendar.getInstance();
-		 int todayDay = d2.get(Calendar.DAY_OF_MONTH);
-		 int todayMonth = d2.get(Calendar.MONTH);
-		 int todayYear = d2.get(Calendar.YEAR);
-		 Date today = new Date(todayYear, todayMonth, todayDay);
+		 Calendar todayCalendar = Calendar.getInstance();
 
 		 tempTasks = new ArrayList<Task>();
 
 		 for(Task temp : tempUncompletedTasks) {
 			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().compareTo(d2) <=0) {
+				 if(temp.getEndDate().compareTo(sevenDaysLaterCalendar) <=0) {
 					 tempTasks.add(temp);
 					 continue;
 				 }
 			 }
 			 else if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().compareTo(d2) <= 0) {
+				 if(temp.getStartDate().compareTo(sevenDaysLaterCalendar) <= 0) {
 					 tempTasks.add(temp);
 				 }
 			 }
@@ -1143,7 +1128,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 				 Task temp = tempTasks.get(i);
 				 
 				 if(temp.getEndDate() != null) {
-					 int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					 int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - todayCalendar.get(Calendar.DAY_OF_YEAR);
 					 String message = "";
 					 if(result < 0) {
 						 message = "overdue by " + Math.abs(result) + " days";
@@ -1155,7 +1140,7 @@ import static org.fusesource.jansi.Ansi.Color.*;
 							 temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
 				 }
 				 else if(temp.getStartDate() != null) {
-					 int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					 int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - todayCalendar.get(Calendar.DAY_OF_YEAR);
 					 String message = "";
 					 if(result < 0) {
 						 message = "started " + Math.abs(result) + " days ago";
@@ -1174,6 +1159,3 @@ import static org.fusesource.jansi.Ansi.Color.*;
 		 }
 	 }
  }
-
-
-
