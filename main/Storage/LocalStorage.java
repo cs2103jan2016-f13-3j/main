@@ -185,7 +185,7 @@ public class LocalStorage {
 	 * @param previousFloating    the old list of floating tasks
 	 */
 	public void revertToPreviousState(ArrayList<Task> previousCompleted, ArrayList<Task> previousUncompleted,
-			ArrayList<Task> previousFloating) {
+			                          ArrayList<Task> previousFloating) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
 		floatingTasks = previousFloating;
