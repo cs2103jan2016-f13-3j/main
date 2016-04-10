@@ -265,7 +265,8 @@ public class crud {
 		}
 		if(tail>=size){
 			tail=size;
-		}
+		}UI.ui.printGreen("COMPLETED TASKS");
+		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for(int i=head;i<tail;i++){
 			Task temp=tempTasks.get(i);
 			if(index==i){
@@ -286,9 +287,12 @@ public class crud {
 	public static void displayNearestFiveUnmarkCompleteTaskList(Task t){
 		ArrayList<Task> tempTasks;
 		if(t.getEndDate() != null || t.getStartDate() != null){
-
+			UI.ui.printGreen("UNCOMPLETED TASKS");
+			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			tempTasks = Storage.LocalStorage.getUncompletedTasks();
 		}else{
+			UI.ui.printGreen("FLOATING TASKS");
+			UI.ui.printGreen("Index\tTask");
 			tempTasks = Storage.LocalStorage.getFloatingTasks();
 		}
 		int size = tempTasks.size();
@@ -341,7 +345,8 @@ public class crud {
 			if(tail>=size){
 				tail=size;
 			}
-
+			UI.ui.printGreen("UNCOMPLETED TASKS");
+			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 			for(int i=head;i<tail;i++){
 				Task temp=tempTasks.get(i);
 				UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
@@ -371,6 +376,8 @@ public class crud {
 			if(tail>size2){
 				tail=size2;
 			}
+			UI.ui.printGreen("FLOATING TASKS");
+			UI.ui.printGreen("Index\tTask");
 			for(int i=head;i<tail;i++){
 				Task temp=tempTasks.get(i);
 				UI.ui.printFloating(i, temp.getIssue());
@@ -395,6 +402,8 @@ public class crud {
 		if(tail>=size){
 			tail=size;
 		}
+		UI.ui.printGreen("UNCOMPLETED TASKS");
+		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 
 		for(int i=head;i<tail;i++){
 			Task temp=tempTasks.get(i);
@@ -425,6 +434,8 @@ public class crud {
 		if(tail>=size){
 			tail=size;
 		}
+		UI.ui.printGreen("FLOATING TASKS");
+		UI.ui.printGreen("Index\tTask");
 
 		for(int i=head;i<tail;i++){
 			Task temp=tempTasks.get(i);

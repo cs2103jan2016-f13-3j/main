@@ -70,9 +70,14 @@ public class Core {
 		Undo.getInstance().copyCurrentTasksState();
 
 		String command = sc.nextLine();
+		if(command.contains("edit")){
+			
+		}else{
 		UI.ui.eraseScreen();
 		UI.ui.printRed("command: ");
 		UI.ui.print(command);
+		}
+		
 
 		String[] splitCommand = command.split(" ");
 		if (splitCommand[0].equals("add") || splitCommand[0].equals("a") || splitCommand[0].equals("+")) {
@@ -155,8 +160,8 @@ public class Core {
 		return arraylistsHaveBeenModified;
 	}
 	private static void setAllRecurringTasksPriorityCommand() {
-		String s=Parser.Parser.getDescription();
-		String [] tmp = s.split(" ");
+		String description=Parser.Parser.getDescription();
+		String [] tmp = description.split(" ");
 		String idx = tmp[1];
 		int num = Integer.parseInt(idx);
 
@@ -178,30 +183,30 @@ public class Core {
 
 
 	public static void 	addCommand() throws IOException, ClassNotFoundException {
-		String s = Parser.Parser.getDescription();
+		String description = Parser.Parser.getDescription();
 		String startDate = Parser.Parser.getStartDate();
 		String startDateWithTime = Parser.Parser.getStartDateWithTime();
 		String endDate = Parser.Parser.getEndDate();
 		String endDateWithTime = Parser.Parser.getEndDateWithTime();
 		String issue = Parser.Parser.getIssueM();
-		boolean rec = Parser.Parser.getRecurrence();
+		boolean recurrence = Parser.Parser.getRecurrence();
 		boolean containDate = Parser.Parser.getContainDate();
 		boolean isAdded;
 
-		if (s.equals("")) {
+		if (description.equals("")) {
 			UI.ui.printRed(MSG_INVALID);
 		} else {
 			// get index of key
 			if(containDate){
-				if (!rec) {
+				if (!recurrence) {
 					if (startDate.equals("-") && !endDate.equals("-")) { // no start date but has end date
 						if (!Logic.checkDate.checkDateformat(endDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithEndDate(issue, endDateWithTime, s);
+							isAdded = Logic.crud.addTaskWithEndDate(issue, endDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, s);
+								int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
 								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
 								arraylistsHaveBeenModified = true;
 								Logic.crud.displayNearestFiveUncompleted(index);
@@ -215,10 +220,10 @@ public class Core {
 						if (!Logic.checkDate.checkDateformat(startDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithStartDate(issue, startDateWithTime, s);
+							isAdded = Logic.crud.addTaskWithStartDate(issue, startDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, s);
+								int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
 								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
 								Logic.crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
@@ -231,10 +236,10 @@ public class Core {
 						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(endDate)) {
 							UI.ui.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, s);
+							isAdded = Logic.crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, s);
+								int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, description);
 								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
 								Logic.crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
@@ -258,7 +263,7 @@ public class Core {
 
 								int frequency = Integer.parseInt(freq);						
 
-								Task task = new Task(issue,endDateWithTime,s,true,frequency,last);
+								Task task = new Task(issue,endDateWithTime,description,true,frequency,last);
 								checkDateAndAdd(task);
 								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
@@ -282,7 +287,7 @@ public class Core {
 
 								int frequency = Integer.parseInt(freq);
 
-								Task task = new Task(issue,startDateWithTime,s,true,frequency,last);
+								Task task = new Task(issue,startDateWithTime,description,true,frequency,last);
 								checkDateAndAdd(task);
 								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
@@ -308,7 +313,7 @@ public class Core {
 								int frequency = Integer.parseInt(freq);
 
 
-								Task task = new Task(issue,startDateWithTime,endDateWithTime,s,frequency,last);
+								Task task = new Task(issue,startDateWithTime,endDateWithTime,description,frequency,last);
 								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
@@ -320,11 +325,11 @@ public class Core {
 					}
 				}
 			} else {
-				isAdded = Logic.crud.addTask(s);
+				isAdded = Logic.crud.addTask(description);
 				if (isAdded) {
 					Logic.Sort.sortTasksChronologically();
-					int index = Logic.crud.uncompletedTaskIndexWithNoDate(s);
-					UI.ui.printGreen("\"" + s + "\" " + MSG_ADD);
+					int index = Logic.crud.uncompletedTaskIndexWithNoDate(description);
+					UI.ui.printGreen("\"" + description + "\" " + MSG_ADD);
 					Logic.crud.displayNearestFiveFloating(index);
 					arraylistsHaveBeenModified = true;
 				} else {
@@ -339,9 +344,9 @@ public class Core {
 
 	// @@author Kowshik
 	public static void setLabelCommand() {
-		String s = Parser.Parser.getDescription();
+		String description = Parser.Parser.getDescription();
 		try {
-			int num = Integer.parseInt(s);
+			int num = Integer.parseInt(description);
 
 			ArrayList<Task> list = Storage.LocalStorage.getUncompletedTasks();
 			ArrayList<Task> list2 = Storage.LocalStorage.getFloatingTasks();
@@ -355,6 +360,9 @@ public class Core {
 				String label = sc.nextLine();
 				Logic.crud.addLabelToTask(num - 1, label);
 				arraylistsHaveBeenModified = true;
+				Task temp = Storage.LocalStorage.getUncompletedTask(num-1);
+				String issue = temp.getIssue();
+				UI.ui.printGreen("Task "+issue+" has been labelled "+label);
 			}
 		} catch (Exception e) {
 
@@ -363,8 +371,8 @@ public class Core {
 
 // @@author Jie Wei
 	public static void changeDirectoryCommand() throws IOException, ClassNotFoundException {
-		String s = Parser.Parser.getDescription();
-		if (s.isEmpty()) { // only "dir" was typed, this will display the
+		String description = Parser.Parser.getDescription();
+		if (description.isEmpty()) { // only "dir" was typed, this will display the
 			// current storage folder directory in use
 			String currentStorageDirectory = Logic.ImportTasks.getFolderDirectory();
 			if (currentStorageDirectory.isEmpty()) { // indicates source
@@ -374,7 +382,7 @@ public class Core {
 				UI.ui.printGreen(MSG_DIRECTORY_USED + currentStorageDirectory);
 			}
 		} else { // "dir <path>" was entered
-			String feedback = Logic.ImportTasks.changeStorageDestination(s);
+			String feedback = Logic.ImportTasks.changeStorageDestination(description);
 			UI.ui.print(feedback);
 		}
 	}
@@ -467,20 +475,20 @@ public class Core {
 	// @@author Kowshik
 	public static void editCommand() {
 		int num;
-		String s = Parser.Parser.getDescription();
-		if(s.contains("all")) {
-			String[] tmp = s.split(" ");
+		String description = Parser.Parser.getDescription();
+		if(description.contains("all")) {
+			String[] tmp = description.split(" ");
 			num = Integer.parseInt(tmp[1]);
 		} else {
-			num = Integer.parseInt(s);
+			num = Integer.parseInt(description);
 		}
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
-				if (s.contains("all")) {
-					String[] tmp = s.split(" ");
+				if (description.contains("all")) {
+					String[] tmp = description.split(" ");
 					num = Integer.parseInt(tmp[1]);
 				} else {
-					num = Integer.parseInt(s);
+					num = Integer.parseInt(description);
 				}
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
@@ -497,7 +505,7 @@ public class Core {
 		try {
 			if(num<0){
 				UI.ui.printRed(MSG_INVALID);
-			}else if(s.contains("all")) {
+			}else if(description.contains("all")) {
 				editRecurringTask(num - 1);
 			} else {
 				// check if user input integer is valid. If it is valid, edit should work
@@ -507,9 +515,6 @@ public class Core {
 					UI.ui.printRed(MSG_EMPTY);
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 					UI.ui.printRed(MSG_EDIT_FAIL);
-					System.out.println(list.size()+" test");
-					System.out.println(list2.size()+"LIST");
-					System.out.println(num);
 				} else {
 					UI.ui.printGreen(PROMPT_EDIT);
 					Logic.crud.copyEditingTask(num);
@@ -517,7 +522,7 @@ public class Core {
 					input = Natty.getInstance().parseEditString(input);
 					input ="edit "+input;
 					Parser.Parser.parse(input);
-					s = Parser.Parser.getDescription();
+					description = Parser.Parser.getDescription();
 					String startDate = Parser.Parser.getStartDate();
 					String startDateWithTime = Parser.Parser.getStartDateWithTime();
 					String endDate = Parser.Parser.getEndDate();
@@ -525,7 +530,7 @@ public class Core {
 					String issue = Parser.Parser.getIssueM();
 					boolean rec = Parser.Parser.getRecurrence();
 					boolean containDate = Parser.Parser.getContainDate();
-					if (s.equals("")) {
+					if (description.equals("")) {
 						UI.ui.printRed(MSG_INVALID);
 					}else{
 						if (containDate) {
@@ -536,10 +541,10 @@ public class Core {
 									} else {
 										// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 										// (to be implemented)
-										Logic.crud.editTaskWithEndDate(issue, startDateWithTime, input, num - 1);
+										Logic.crud.editTaskWithEndDate(issue, startDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
 										UI.ui.eraseScreen();
-										int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, input);
+										int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
@@ -551,9 +556,9 @@ public class Core {
 									} else {
 
 										// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-										Logic.crud.editTaskWithStartDate(issue, startDateWithTime, input, num - 1);
+										Logic.crud.editTaskWithStartDate(issue, startDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
-										int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, input);
+										int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
 										UI.ui.eraseScreen();
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.crud.displayNearestFiveUncompleted(index);
@@ -565,7 +570,7 @@ public class Core {
 									} else {
 										// get issue
 										// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-										Logic.crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, input, num - 1);
+										Logic.crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description, num - 1);
 										UI.ui.eraseScreen();
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Sort.sortTasksChronologically();
@@ -580,7 +585,7 @@ public class Core {
 							// start date
 
 							Logic.crud.editTaskWithNoDate(input, input, num - 1);
-							int index = Logic.crud.uncompletedTaskIndexWithNoDate(input);
+							int index = Logic.crud.uncompletedTaskIndexWithNoDate(description);
 							UI.ui.printGreen("Task number " + num + MSG_EDIT);
 							Logic.crud.displayNearestFiveFloating(index);
 							arraylistsHaveBeenModified = true;
@@ -745,14 +750,12 @@ public class Core {
 				}
 				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
 				Task temp = list.get(num - 1);
-				System.out.println(temp.getTaskString());
 				ArrayList<Task> tempUncompletedTasks = Storage.LocalStorage.getUncompletedTasks();
 				ArrayList<Task> tempFloatingTasks = Storage.LocalStorage.getFloatingTasks();
 				int counter = 0;
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
 						num = counter;
-						//System.out.println(num);
 						break;
 					}
 					counter++;
@@ -761,7 +764,6 @@ public class Core {
 				for(Task t : tempFloatingTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
 						num = counter;
-						System.out.println(num);
 						break;
 					}
 					counter++;
@@ -1509,9 +1511,6 @@ public class Core {
 		return date;
 	}
 
-	public static void display(String s) {
-		System.out.println(s);
-	}
 
 	/**
 	 * method that return index of week, if it is not a week day, -1 will be
