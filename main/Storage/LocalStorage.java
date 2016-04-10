@@ -22,8 +22,8 @@ public class LocalStorage {
 	}
 
 	/**
-	 * Method to access this class, following the singleton pattern. Invokes
-	 * constructor if LocalStorage has not been initialised.
+	 * Method to access this class, following the singleton pattern. 
+	 * Invokes constructor if LocalStorage has not been initialised.
 	 * 
 	 * @return The LocalStorage object.
 	 */
@@ -111,36 +111,36 @@ public class LocalStorage {
 	}
 
 	/**
-	 * Function to add a task to the list of uncompleted tasks
+	 * Function to add a task to the list of uncompleted tasks.
 	 * 
-	 * @param task contains the task to be added to list of uncompleted tasks
+	 * @param task contains the task to be added to list of uncompleted tasks.
 	 */
 	public void addToUncompletedTasks(Task task) {
 		uncompletedTasks.add(task);
 	}
 
 	/**
-	 * Function to add a task to the list of floating tasks
+	 * Function to add a task to the list of floating tasks.
 	 * 
-	 * @param task contains the task to be added to list of floating tasks
+	 * @param task contains the task to be added to list of floating tasks.
 	 */
 	public void addToFloatingTasks(Task task) {
 		floatingTasks.add(task);
 	}
 
 	/**
-	 * Function to add a task to the list of completed tasks
+	 * Function to add a task to the list of completed tasks.
 	 * 
-	 * @param task contains the task to be added to list of completed tasks
+	 * @param task contains the task to be added to list of completed tasks.
 	 */
 	public void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
 		completedTasks.add(task);
 	}
 
 	/**
-	 * Function to delete a task from the list of uncompleted tasks
+	 * Function to delete a task from the list of uncompleted tasks.
 	 * 
-	 * @param index contains the index of the task to be deleted from list of uncompleted tasks
+	 * @param index contains the index of the task to be deleted from list of uncompleted tasks.
 	 */
 	public Task deleteFromUncompletedTasks(int index) {
 		Task temp = uncompletedTasks.remove(index);
@@ -148,9 +148,9 @@ public class LocalStorage {
 	}
 
 	/**
-	 * Function to delete a task from the list of floating tasks
+	 * Function to delete a task from the list of floating tasks.
 	 * 
-	 * @param index  contains the index of the task to be deleted from list of floating tasks
+	 * @param index  contains the index of the task to be deleted from list of floating tasks.
 	 */
 	public Task deleteFromFloatingTasks(int index) {
 		Task temp = floatingTasks.remove(index);
@@ -158,9 +158,9 @@ public class LocalStorage {
 	}
 
 	/**
-	 * Function to delete a task from the list of completed tasks
+	 * Function to delete a task from the list of completed tasks.
 	 * 
-	 * @param index contains the index of the task to be deleted from list of completed tasks
+	 * @param index contains the index of the task to be deleted from list of completed tasks.
 	 */
 	public Task deleteFromCompletedTasks(int index) {
 		Task temp = completedTasks.remove(index);
@@ -168,7 +168,7 @@ public class LocalStorage {
 	}
 
 	/**
-	 * Function to clear the contents of the file
+	 * Function to clear the contents of the file.
 	 */
 	public void clearAllTasks() {
 		uncompletedTasks.clear();
@@ -178,11 +178,11 @@ public class LocalStorage {
 
 	// @@author Jie Wei
 	/**
-	 * Function to replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
+	 * Function to replace the current tasks arraylists with the given arraylists, to "undo" to the previous state.
 	 * 
-	 * @param previousCompleted   the old list of completed tasks
-	 * @param previousUnCompleted the old list of uncompleted tasks
-	 * @param previousFloating    the old list of floating tasks
+	 * @param previousCompleted   the old list of completed tasks.
+	 * @param previousUnCompleted the old list of uncompleted tasks.
+	 * @param previousFloating    the old list of floating tasks.
 	 */
 	public void revertToPreviousState(ArrayList<Task> previousCompleted, ArrayList<Task> previousUncompleted,
 			                          ArrayList<Task> previousFloating) {
