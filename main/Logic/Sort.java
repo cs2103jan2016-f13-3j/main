@@ -1,5 +1,4 @@
 //@@author Kowshik
-
 package Logic;
 
 import java.io.IOException;
@@ -18,7 +17,7 @@ public class Sort {
 	}
 
 	/**
-	 * Function to sort tasks according to priority
+	 * Function to sort tasks according to priority.
 	 */
 	public void sortTasksPriority() {
 		sortTasksChronologically();
@@ -42,12 +41,12 @@ public class Sort {
 	}
 
 	/**
-	 * Function to sort given arraylist according to priority
+	 * Function to sort given arraylist according to priority.
 	 * 
-	 * @param tempTasks  the arraylist to be sorted
- 	 * @param isFloating to indicate if arraylist is floating task arraylist or not
- 	 * 
-	 * @return           arraylist sorted according to priority  
+	 * @param tempTasks  the arraylist to be sorted.
+	 * @param isFloating to indicate if arraylist is floating task arraylist or not.
+	 * 
+	 * @return arraylist sorted according to priority .
 	 */
 	public ArrayList<Task> getArrayListSortedInPriority(ArrayList<Task> tempTasks, boolean isFloating) {
 		ArrayList<Task> highPriorityTasks = new ArrayList<Task>();
@@ -84,7 +83,7 @@ public class Sort {
 	}
 
 	/**
-	 * Function to sort tasks in chronological order
+	 * Function to sort tasks in chronological order.
 	 */
 	public void sortTasksChronologically() {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
@@ -108,47 +107,47 @@ public class Sort {
 	}
 
 	/**
-	 * Function to compare the different dates of uncompleted tasks and sort  them accordingly
+	 * Function to compare the different dates of uncompleted tasks and sort them accordingly.
 	 * 
-	 * @param tempTasks  arraylist of tasks to be sorted
-	 * @param i          index of first Task
-	 * @param j          index of second Task
-	 * @param startDate1 start date of first Calendar object
-	 * @param startDate2 start date of second Calendar object
-	 * @param endDate1   end date of first Calendar object
-	 * @param endDate2   end date of second Calendar object
+	 * @param tempTasks  arraylist of tasks to be sorted.
+	 * @param i          index of first Task.
+	 * @param j          index of second Task.
+	 * @param startDate1 start date of first Calendar object.
+	 * @param startDate2 start date of second Calendar object.
+	 * @param endDate1   end date of first Calendar object.
+	 * @param endDate2   end date of second Calendar object.
 	 */
 	public void compareDates(ArrayList<Task> tempTasks, int i, int j, Calendar startDate1, Calendar startDate2,
-			                 Calendar endDate1, Calendar endDate2) {
-		if (endDate1 == null && endDate2 == null) { // both end dates are null
+			Calendar endDate1, Calendar endDate2) {
+		if (endDate1 == null && endDate2 == null) { // both end dates are null.
 			if (startDate1.compareTo(startDate2) > 0) {
 				Task temp = tempTasks.get(i);
 				tempTasks.set(i, tempTasks.get(j));
 				tempTasks.set(j, temp);
 			}
-		} else if (endDate1 != null && endDate2 != null) { // both end dates are  not null
-			if (endDate1.compareTo(endDate2) > 0) { // endDate1 is greater than endDate2
+		} else if (endDate1 != null && endDate2 != null) { // both end dates are
+															// not null.
+			if (endDate1.compareTo(endDate2) > 0) { // endDate1 is greater than
+													// endDate2.
 				Task temp = tempTasks.get(i);
 				tempTasks.set(i, tempTasks.get(j));
 				tempTasks.set(j, temp);
-			} else if (endDate1.compareTo(endDate2) == 0) { // end dates are equal
+			} else if (endDate1.compareTo(endDate2) == 0) { // end dates are equal.
 				if (startDate1 != null) {
-					if (startDate2 != null) { // both start dates are not null
-						if (startDate1.compareTo(startDate2) > 0) { // startDate1 is greater than startDate2
+					if (startDate2 != null) { // both start dates are not null.
+						if (startDate1.compareTo(startDate2) > 0) { // startDate1 is greater than startDate2.
 							Task temp = tempTasks.get(i);
 							tempTasks.set(i, tempTasks.get(j));
 							tempTasks.set(j, temp);
 						}
 					}
-				} else { // start date 1 is null
+				} else { // start date 1 is null.
 					Task temp = tempTasks.get(i);
 					tempTasks.set(i, tempTasks.get(j));
 					tempTasks.set(j, temp);
 				}
 			}
-		}
-
-		else if (endDate1 == null && endDate2 != null) { // endDate1 is null
+		} else if (endDate1 == null && endDate2 != null) { // endDate1 is null.
 			if (startDate1.compareTo(endDate2) > 0) {
 				Task temp = tempTasks.get(i);
 				tempTasks.set(i, tempTasks.get(j));
@@ -159,7 +158,7 @@ public class Sort {
 				tempTasks.set(j, temp);
 			}
 		} else {
-			if (endDate1.compareTo(startDate2) > 0) { // endDate2 is null
+			if (endDate1.compareTo(startDate2) > 0) { // endDate2 is null.
 				Task temp = tempTasks.get(i);
 				tempTasks.set(i, tempTasks.get(j));
 				tempTasks.set(j, temp);
@@ -168,11 +167,11 @@ public class Sort {
 	}
 
 	/**
-	 * Function to sort a given arraylist of tasks in chronological order and return the sorted list
+	 * Function to sort a given arraylist of tasks in chronological order and return the sorted list.
 	 * 
-	 * @param tempTasks arraylist of tasks to be sorted in chronological order
+	 * @param tempTasks arraylist of tasks to be sorted in chronological order.
 	 * 
-	 * @return          arraylist sortedChronologically
+	 * @return          the arraylist sortedChronologically.
 	 */
 	public ArrayList<Task> sortArrayListInChronologicalOrder(ArrayList<Task> tempTasks) {
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -187,5 +186,4 @@ public class Sort {
 		}
 		return tempTasks;
 	}
-
 }
