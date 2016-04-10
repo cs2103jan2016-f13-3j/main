@@ -1165,6 +1165,7 @@ public class crud {
 		return Storage.LocalStorage.getCompletedTask(index);
 	}
 
+	
 	// @@author Cheng Gee
 	/**
 	 * Function to print uncompleted Task List.
