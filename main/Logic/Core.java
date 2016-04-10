@@ -21,7 +21,9 @@ import UI.UI;
 
 public class Core {
 	
-	private static Core coreObject;
+	private static Core core;
+	
+	private static Crud crudObject;
 	private static Mark markObject;
 	private static Notification notificationObject;
 	private static Search searchObject;
@@ -81,6 +83,7 @@ public class Core {
 		time = "";
 		
 		checkDateObject = new CheckDate();
+		crudObject = Crud.getInstance();
 		helpObject = new Help();
 		localStorageObject = LocalStorage.getInstance();
 		notificationObject = new Notification();
@@ -93,10 +96,10 @@ public class Core {
 	}
 	
 	public static Core getInstance() {
-		if (coreObject == null) {
-			coreObject = new Core();
+		if (core == null) {
+			core = new Core();
 		}
-		return coreObject;
+		return core;
 	}
 
 	/**
@@ -189,7 +192,7 @@ public class Core {
 		} else if (option.equals("exit")) {
 			uiObject.printGreen("Bye!");
 			AnsiConsole.systemUninstall();
-			Logic.Crud.exit();
+			crudObject.exit();
 		} else if (option.equals("help")) {
 			helpObject.printHelpMenu();
 		} else if (option.equals("dir")) {
@@ -250,14 +253,14 @@ public class Core {
 						if (!checkDateObject.checkDateformat(endDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.Crud.addTaskWithEndDate(issue, endDateWithTime, description);
+							isAdded = crudObject.addTaskWithEndDate(issue, endDateWithTime, description);
 							if (isAdded) {
 								sortObject.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
+								int index = crudObject.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
 										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
 								arraylistsHaveBeenModified = true;
-								Logic.Crud.displayNearestFiveUncompleted(index);
+								crudObject.displayNearestFiveUncompleted(index);
 							} else {
 								uiObject.printRed(MSG_DUPLICATE_ADD);
 							}
@@ -270,13 +273,13 @@ public class Core {
 						if (!checkDateObject.checkDateformat(startDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.Crud.addTaskWithStartDate(issue, startDateWithTime, description);
+							isAdded = crudObject.addTaskWithStartDate(issue, startDateWithTime, description);
 							if (isAdded) {
 								sortObject.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime,
+								int index = crudObject.uncompletedTaskIndexWithStartDate(issue, startDateWithTime,
 										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
-								Logic.Crud.displayNearestFiveUncompleted(index);
+								crudObject.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
 							} else {
 								uiObject.printRed(MSG_DUPLICATE_ADD);
@@ -287,14 +290,14 @@ public class Core {
 						if (!checkDateObject.checkDateformat(startDate) && !checkDateObject.checkDateformat(endDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.Crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
+							isAdded = crudObject.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
 									description);
 							if (isAdded) {
 								sortObject.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime,
+								int index = crudObject.uncompletedTaskIndexWithBothDates(issue, startDateWithTime,
 										endDateWithTime, description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
-								Logic.Crud.displayNearestFiveUncompleted(index);
+								crudObject.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
 							} else {
 								uiObject.printRed(MSG_DUPLICATE_ADD);
@@ -387,12 +390,12 @@ public class Core {
 					}
 				}
 			} else {
-				isAdded = Logic.Crud.addTask(description);
+				isAdded = crudObject.addTask(description);
 				if (isAdded) {
 					sortObject.sortTasksChronologically();
-					int index = Logic.Crud.uncompletedTaskIndexWithNoDate(description);
+					int index = crudObject.uncompletedTaskIndexWithNoDate(description);
 					uiObject.printGreen("\"" + description + "\" " + MSG_ADD);
-					Logic.Crud.displayNearestFiveFloating(index);
+					crudObject.displayNearestFiveFloating(index);
 					arraylistsHaveBeenModified = true;
 				} else {
 					uiObject.printRed(MSG_DUPLICATE_ADD);
@@ -417,7 +420,7 @@ public class Core {
 			} else {
 				uiObject.print("Enter label");
 				String label = sc.nextLine();
-				Logic.Crud.addLabelToTask(num - 1, label);
+				crudObject.addLabelToTask(num - 1, label);
 				arraylistsHaveBeenModified = true;
 				Task temp = localStorageObject.getUncompletedTask(num - 1);
 				String issue = temp.getIssue();
@@ -586,7 +589,7 @@ public class Core {
 					uiObject.printRed(MSG_EDIT_FAIL);
 				} else {
 					uiObject.printGreen(PROMPT_EDIT);
-					Logic.Crud.copyEditingTask(num);
+					crudObject.copyEditingTask(num);
 					input = sc.nextLine();
 					input = Natty.getInstance().parseEditString(input);
 					input = "edit " + input;
@@ -608,15 +611,15 @@ public class Core {
 									if (!checkDateObject.checkDateformat(endDate)) {
 										uiObject.printRed(MSG_WRONG_DATE);
 									} else {
-										// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
+										// crudObject.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 										// (to be implemented)
-										Logic.Crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
+										crudObject.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
 										sortObject.sortTasksChronologically();
 
-										int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
+										int index = crudObject.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
 												description);
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
-										Logic.Crud.displayNearestFiveUncompleted(index);
+										crudObject.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has
@@ -627,15 +630,15 @@ public class Core {
 										uiObject.printRed(MSG_WRONG_DATE);
 									} else {
 
-										// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-										Logic.Crud.editTaskWithStartDate(issue, startDateWithTime, description,
+										// crudObject.editTask(issue,startDate,startTime,endDate,endTime,input);
+										crudObject.editTaskWithStartDate(issue, startDateWithTime, description,
 												num - 1);
 										sortObject.sortTasksChronologically();
-										int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue,
+										int index = crudObject.uncompletedTaskIndexWithStartDate(issue,
 												startDateWithTime, description);
 
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
-										Logic.Crud.displayNearestFiveUncompleted(index);
+										crudObject.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								} else { // has both start date and end date
@@ -644,15 +647,15 @@ public class Core {
 										uiObject.printRed(MSG_WRONG_DATE);
 									} else {
 										// get issue
-										// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-										Logic.Crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
+										// crudObject.addTask(issue,startDate,startTime,endDate,endTime);
+										crudObject.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
 												description, num - 1);
 
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
 										sortObject.sortTasksChronologically();
-										int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue,
+										int index = crudObject.uncompletedTaskIndexWithBothDates(issue,
 												startDateWithTime, endDateWithTime, input);
-										Logic.Crud.displayNearestFiveUncompleted(index);
+										crudObject.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								}
@@ -660,10 +663,10 @@ public class Core {
 						} else {// no end date and no
 							// start date
 
-							Logic.Crud.editTaskWithNoDate(input, input, num - 1);
-							int index = Logic.Crud.uncompletedTaskIndexWithNoDate(description);
+							crudObject.editTaskWithNoDate(input, input, num - 1);
+							int index = crudObject.uncompletedTaskIndexWithNoDate(description);
 							uiObject.printGreen("Task number " + num + MSG_EDIT);
-							Logic.Crud.displayNearestFiveFloating(index);
+							crudObject.displayNearestFiveFloating(index);
 							arraylistsHaveBeenModified = true;
 						}
 					}
@@ -703,7 +706,7 @@ public class Core {
 
 	public int getCorrectIndexFromDisplayAll(int num) {
 		try {
-			Task temp = Logic.Crud.getTempTask(num - 1);
+			Task temp = crudObject.getTempTask(num - 1);
 
 			ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
@@ -782,7 +785,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Crud.getTemp();
+			ArrayList<Task> list = crudObject.getTemp();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -887,10 +890,10 @@ public class Core {
 			} else if (list.size() < num || num - 1 < 0) {
 				uiObject.printRed(MSG_UNMARK_FAIL);
 			} else {
-				Task temp = Logic.Crud.getCompletedTask(num - 1);
+				Task temp = crudObject.getCompletedTask(num - 1);
 				markObject.markTaskAsUncompleted(num - 1);
 				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_UNMARK);
-				Logic.Crud.displayNearestFiveUnmarkCompleteTaskList(temp);
+				crudObject.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -951,7 +954,7 @@ public class Core {
 				}
 
 				uiObject.printGreen(s + MSG_MARK);
-				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -970,11 +973,11 @@ public class Core {
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
 				uiObject.printRed(MSG_MARK_FAIL);
 			} else {
-				Task temp = Logic.Crud.getUncompletedTask(num - 1);
+				Task temp = crudObject.getUncompletedTask(num - 1);
 				markObject.markTaskAsCompleted(num - 1);
 
 				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
-				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -986,19 +989,19 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Crud.getTemp();
+			ArrayList<Task> list = crudObject.getTemp();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
 				uiObject.printRed(MSG_MARK_FAIL);
 			} else {
 
-				Task temp = Logic.Crud.getTempTask(num - 1);
+				Task temp = crudObject.getTempTask(num - 1);
 				num = getCorrectIndexFromDisplayAll(num);
 				markObject.markTaskAsCompleted(num - 1);
 
 				uiObject.printGreen(s + MSG_MARK);
-				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -1006,7 +1009,7 @@ public class Core {
 	}
 
 	public void clearCommand() throws ClassNotFoundException, IOException {
-		Logic.Crud.clearTasks();
+		crudObject.clearTasks();
 		uiObject.printGreen(MSG_CLEAR);
 		arraylistsHaveBeenModified = true;
 	}
@@ -1016,7 +1019,7 @@ public class Core {
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				int num = Integer.parseInt(s);
-				Logic.Crud.viewIndividualTask(num - 1);
+				crudObject.viewIndividualTask(num - 1);
 			} else {
 				viewFromDisplayView();
 			}
@@ -1024,11 +1027,11 @@ public class Core {
 			viewFromSearchView();
 		} else if (Logic.Head.getLastDisplay().equals("")) {
 			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-			Logic.Crud.viewIndividualTask(num - 1);
+			crudObject.viewIndividualTask(num - 1);
 		} else {
 			try {
 				int num = Integer.parseInt(s);
-				Logic.Crud.viewIndividualTask(num - 1);
+				crudObject.viewIndividualTask(num - 1);
 			} catch (Exception e) {
 			}
 		}
@@ -1051,7 +1054,7 @@ public class Core {
 				for (Task t : tempUncompletedTasks) {
 					if (t.getTaskString().equals(temp.getTaskString())) {
 
-						Logic.Crud.viewIndividualTask(counter);
+						crudObject.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
 					}
@@ -1061,7 +1064,7 @@ public class Core {
 				for (Task t : tempFloatingTasks) {
 					if (t.getTaskString().equals(temp.getTaskString())) {
 
-						Logic.Crud.viewIndividualTask(counter);
+						crudObject.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
 					}
@@ -1077,7 +1080,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Crud.getTemp();
+			ArrayList<Task> list = crudObject.getTemp();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -1085,7 +1088,7 @@ public class Core {
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
 
-				Logic.Crud.viewIndividualTask(num - 1);
+				crudObject.viewIndividualTask(num - 1);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -1096,34 +1099,34 @@ public class Core {
 	public void displayCommand() {
 		String s = parserObject.getDescription();
 		if (s.equals("completed") || s.equals("c")) {
-			Logic.Crud.displayCompletedTasks();
+			crudObject.displayCompletedTasks();
 		} else if (s.equals("floating") || s.equals("f")) {
-			Logic.Crud.displayFloatingTasks();
+			crudObject.displayFloatingTasks();
 		} else if (checkDateObject.checkDateformat(s)) {
-			Logic.Crud.displayScheduleForADay(s);
+			crudObject.displayScheduleForADay(s);
 		} else if (s.equals("all")) {
-			Logic.Crud.displayUncompletedAndFloatingTasks();
+			crudObject.displayUncompletedAndFloatingTasks();
 		} else if (s.equals("")) {
-			Logic.Crud.displayUpcomingTasks();
+			crudObject.displayUpcomingTasks();
 		} else if (s.equals("today")) {
 			Calendar today = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String todayString = df.format(today.getTime());
-			Logic.Crud.displayScheduleForADay(todayString);
+			crudObject.displayScheduleForADay(todayString);
 		} else if (s.equals("tomorrow")) {
 			Calendar tomorrow = Calendar.getInstance();
 			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String tomorrowString = df.format(tomorrow.getTime());
-			Logic.Crud.displayScheduleForADay(tomorrowString);
+			crudObject.displayScheduleForADay(tomorrowString);
 		} else if (s.equals("next week") || s.equals("w+1")) {
-			Logic.Crud.displayTasksForNextWeek();
+			crudObject.displayTasksForNextWeek();
 		} else if (s.equals("two weeks later") || s.equals("w+2")) {
-			Logic.Crud.displayTaksForTwoWeeksLater();
+			crudObject.displayTaksForTwoWeeksLater();
 		} else if (s.equals("last week") || s.equals("w -1")) {
-			Logic.Crud.displayTasksForLastWeek();
+			crudObject.displayTasksForLastWeek();
 		} else {
-			Logic.Crud.displayByLabel(s);
+			crudObject.displayByLabel(s);
 		}
 	}
 
@@ -1189,17 +1192,17 @@ public class Core {
 				num = Integer.parseInt(splitInput[0]);
 			}
 
-			ArrayList<Task> list = Logic.Crud.getTemp();
+			ArrayList<Task> list = crudObject.getTemp();
 			Task deleted = list.get(num - 1);
 			issue = deleted.getIssue();
 
 			try {
-				Logic.Crud.deleteTask(num - 1, 5);
+				crudObject.deleteTask(num - 1, 5);
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
 			uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
-			Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+			crudObject.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 			arraylistsHaveBeenModified = true;
 		} catch (Exception e) {
 			uiObject.printRed(MSG_INVALID);
@@ -1219,7 +1222,7 @@ public class Core {
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.Crud.deleteTask(num - 1, 2);
+				crudObject.deleteTask(num - 1, 2);
 				uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 				arraylistsHaveBeenModified = true;
 			}
@@ -1241,7 +1244,7 @@ public class Core {
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.Crud.deleteTask(num - 1, 3);
+				crudObject.deleteTask(num - 1, 3);
 
 				uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 				arraylistsHaveBeenModified = true;
@@ -1265,18 +1268,18 @@ public class Core {
 				if ((num - 1) < list.size()) {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
-					Logic.Crud.deleteTask(num - 1, 1);
+					crudObject.deleteTask(num - 1, 1);
 
 					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+					crudObject.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 					arraylistsHaveBeenModified = true;
 				} else {
 					Task deleted = list2.get(num - list.size() - 1);
 					issue = deleted.getIssue();
-					Logic.Crud.deleteTask(num - 1, 1);
+					crudObject.deleteTask(num - 1, 1);
 
 					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
+					crudObject.displayNearestFiveDeleteFloatingTask(num - 1);
 					arraylistsHaveBeenModified = true;
 				}
 			}
@@ -1312,17 +1315,17 @@ public class Core {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
 
-						Logic.Crud.deleteTask(num - 1, 1);
+						crudObject.deleteTask(num - 1, 1);
 						uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+						crudObject.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 						arraylistsHaveBeenModified = true;
 					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
-						Logic.Crud.deleteTask(num - 1, 1);
+						crudObject.deleteTask(num - 1, 1);
 
 						uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
+						crudObject.displayNearestFiveDeleteFloatingTask(num - 1);
 						arraylistsHaveBeenModified = true;
 					}
 				}
@@ -1679,7 +1682,7 @@ public class Core {
 													// tasks
 				Task task = list.get(i);
 				if (id.equals(task.getId())) {
-					Logic.Crud.deleteTask(i, 1);
+					crudObject.deleteTask(i, 1);
 					i = -1;// loop again
 				}
 			}
@@ -1705,7 +1708,7 @@ public class Core {
 			return;
 		}
 
-		Logic.Crud.copyTask(replaced);
+		crudObject.copyTask(replaced);
 		uiObject.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
 		in = Natty.getInstance().parseEditString(in);

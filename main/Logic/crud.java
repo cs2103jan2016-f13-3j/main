@@ -12,21 +12,37 @@ import Task.Task;
 import UI.UI;
 
 public class Crud {
+	private static Crud crud;
 
 	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
 	private static boolean noDuplicate;
-	private static LocalStorage localStorageObject = LocalStorage.getInstance();
-	private static Search searchObject = Search.getInstance();
-	private static Sort sortObject = new Sort();
 	private static Task tempTask;
-	private static UI uiObject = new UI();
-
+	
 	private static final String FLAG_COMPLETED = "completed";
 	private static final String FLAG_FLOATING = "floating";
 	private static final String FLAG_UNCOMPLETED = "uncompleted";
 	private static final String MSG_NO_TASK_UNDER_THIS_LABEL = "There is no task under this label";
 	private static final String MSG_NO_TASK = "There are no tasks to show.";
 	private static final String MSG_INVALID = "Invalid inputs! Please try again";
+	
+	private LocalStorage localStorageObject;
+	private Search searchObject;
+	private Sort sortObject = new Sort();
+	private UI uiObject;
+	
+	private Crud() {
+		localStorageObject = LocalStorage.getInstance();
+		searchObject = Search.getInstance();
+		sortObject = new Sort();
+		uiObject = new UI();
+	}
+	
+	public static Crud getInstance() {
+		if (crud == null) {
+			crud = new Crud();
+		}
+		return crud;
+	}
 
 	// Adding Methods
 	/**
@@ -37,7 +53,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static boolean addTask(String line) throws IOException, ClassNotFoundException {
+	public boolean addTask(String line) throws IOException, ClassNotFoundException {
 		Task task = new Task(line);
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		boolean noDuplicate = true;
@@ -60,7 +76,7 @@ public class Crud {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public static boolean addTaskWithStartDate(String line, String date, String msg)
+	public boolean addTaskWithStartDate(String line, String date, String msg)
 			throws IOException, ClassNotFoundException {
 		Task task = new Task(line, date, msg, true);
 
@@ -86,7 +102,7 @@ public class Crud {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public static boolean addTaskWithEndDate(String line, String date, String msg)
+	public boolean addTaskWithEndDate(String line, String date, String msg)
 			throws IOException, ClassNotFoundException {
 		Task task = new Task(line, date, msg, false);
 
@@ -112,7 +128,7 @@ public class Crud {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public static boolean addTaskWithBothDates(String line, String startDate, String endDate, String msg)
+	public boolean addTaskWithBothDates(String line, String startDate, String endDate, String msg)
 			throws IOException, ClassNotFoundException {
 		Task task = new Task(line, startDate, endDate, msg);
 
@@ -140,7 +156,7 @@ public class Crud {
 		}
 	}
 
-	public static void addLabelToTask(int index, String label) {
+	public void addLabelToTask(int index, String label) {
 		int sizeOfUncompletedTasks = localStorageObject.getUncompletedTasks().size();
 		if (index < sizeOfUncompletedTasks) {
 			Task temp = localStorageObject.getUncompletedTask(index);
@@ -162,7 +178,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void addTaskViaImport(Task task, String flag) throws IOException, ClassNotFoundException {
+	public void addTaskViaImport(Task task, String flag) throws IOException, ClassNotFoundException {
 		if (flag.equals(FLAG_UNCOMPLETED)) {
 			noDuplicate = checkForDuplicateTasks(task, localStorageObject.getUncompletedTasks());
 			if (noDuplicate) {
@@ -194,7 +210,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void editTaskWithNoDate(String line, String message, int index)
+	public void editTaskWithNoDate(String line, String message, int index)
 			throws IOException, ClassNotFoundException {
 		int uncompleteList = localStorageObject.getUncompletedTasks().size();
 
@@ -222,7 +238,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void editTaskWithStartDate(String line, String date, String message, int index)
+	public void editTaskWithStartDate(String line, String date, String message, int index)
 			throws IOException, ClassNotFoundException {
 		int uncompleteList = localStorageObject.getUncompletedTasks().size();
 
@@ -255,7 +271,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void editTaskWithEndDate(String line, String date, String message, int index)
+	public void editTaskWithEndDate(String line, String date, String message, int index)
 			throws IOException, ClassNotFoundException {
 		int uncompleteList = localStorageObject.getUncompletedTasks().size();
 
@@ -292,7 +308,7 @@ public class Crud {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void editTaskWithBothDates(String line, String startDate, String endDate, String message, int index)
+	public void editTaskWithBothDates(String line, String startDate, String endDate, String message, int index)
 			throws IOException, ClassNotFoundException {
 		int uncompleteList = localStorageObject.getUncompletedTasks().size();
 		if (index < uncompleteList) {
@@ -324,7 +340,7 @@ public class Crud {
 	 * Function to display all the completed tasks in the storage
 	 * 
 	 */
-	public static void displayCompletedTasks() {
+	public void displayCompletedTasks() {
 		tempTasks = localStorageObject.getCompletedTasks();
 		printCompletedTask(tempTasks);
 		if (tempTasks.isEmpty()) {
@@ -336,7 +352,7 @@ public class Crud {
 	 * Function to display all floating task in storage
 	 * 
 	 */
-	public static void displayFloatingTasks() {
+	public void displayFloatingTasks() {
 		
 		uiObject.printGreen("FLOATING TASKS");
 		uiObject.printGreen("Index\tTask");
@@ -361,7 +377,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void displayNearestFiveFloating(int index) {
+	public void displayNearestFiveFloating(int index) {
 		ArrayList<Task> tempTasks = localStorageObject.getFloatingTasks();
 		int unSize = localStorageObject.getUncompletedTasks().size();
 		int size = tempTasks.size();
@@ -396,7 +412,7 @@ public class Crud {
 	 * @param t
 	 */
 
-	public static void displayNearestFiveCompletedTaskList(Task t) {
+	public void displayNearestFiveCompletedTaskList(Task t) {
 		int index = -1;
 		ArrayList<Task> tempTasks = localStorageObject.getCompletedTasks();
 		int size = tempTasks.size();
@@ -438,7 +454,7 @@ public class Crud {
 	 * 
 	 * @param t
 	 */
-	public static void displayNearestFiveUnmarkCompleteTaskList(Task t) {
+	public void displayNearestFiveUnmarkCompleteTaskList(Task t) {
 		ArrayList<Task> tempTasks;
 		if (t.getEndDate() != null || t.getStartDate() != null) {
 			uiObject.printGreen("UNCOMPLETED TASKS");
@@ -487,7 +503,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void displayNearestFiveDeleteUncompleteTaskList(int index) {
+	public void displayNearestFiveDeleteUncompleteTaskList(int index) {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		int size = tempTasks.size();
 		if (size == 0) {
@@ -518,7 +534,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void displayNearestFiveDeleteFloatingTask(int index) {
+	public void displayNearestFiveDeleteFloatingTask(int index) {
 		ArrayList<Task> tempTasks = localStorageObject.getFloatingTasks();
 		int size = localStorageObject.getUncompletedTasks().size();
 		int size2 = tempTasks.size();
@@ -550,7 +566,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void displayNearestFiveUncompleted(int index) {
+	public void displayNearestFiveUncompleted(int index) {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		int size = tempTasks.size();
 		int head = index - 2;
@@ -583,7 +599,7 @@ public class Crud {
 	 * Function to display all the uncompleted tasks in the storage
 	 * 
 	 */
-	public static void displayUncompletedAndFloatingTasks() {
+	public void displayUncompletedAndFloatingTasks() {
 
 		
 		boolean isEmptyUn = false;
@@ -612,7 +628,7 @@ public class Crud {
 		}
 	}
 
-	public static void displayUpcomingTasks() {
+	public void displayUpcomingTasks() {
 		
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 
@@ -681,7 +697,7 @@ public class Crud {
 		}
 	}
 
-	public static void displayTasksForNextWeek() {
+	public void displayTasksForNextWeek() {
 		
 		uiObject.printGreen("Upcoming tasks next week - ");
 		tempTasks = new ArrayList<Task>();
@@ -715,7 +731,7 @@ public class Crud {
 
 	}
 
-	public static void displayTaksForTwoWeeksLater() {
+	public void displayTaksForTwoWeeksLater() {
 		
 		uiObject.printGreen("Upcoming tasks for two weeks later - ");
 		tempTasks = new ArrayList<Task>();
@@ -749,7 +765,7 @@ public class Crud {
 
 	}
 
-	public static void displayTasksForLastWeek() {
+	public void displayTasksForLastWeek() {
 		
 		uiObject.printGreen("Tasks uncompleted from last week - ");
 		tempTasks = new ArrayList<Task>();
@@ -783,7 +799,7 @@ public class Crud {
 
 	}
 
-	public static void displayByLabel(String description) {
+	public void displayByLabel(String description) {
 		boolean hasTaskUnderThisLabel = false;
 		
 		tempTasks = new ArrayList<Task>();
@@ -838,7 +854,7 @@ public class Crud {
 		}
 	}
 
-	public static void displayScheduleForADay(String inputDate) {
+	public void displayScheduleForADay(String inputDate) {
 		inputDate = inputDate.replace("/0", "/");
 		if (inputDate.startsWith("0")) {
 			inputDate = inputDate.replaceFirst("0", "");
@@ -876,7 +892,7 @@ public class Crud {
 		}
 	}
 
-	public static boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
+	public boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
 		if (day.equals(splitDate[0]) && month.equals(splitDate[1]) && year.equals(splitDate[2])) {
 			return true;
 		}
@@ -891,7 +907,7 @@ public class Crud {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public static void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException {
+	public void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException {
 		if (listOfTasks == 1) { // delete from "display all" view
 			ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 			if (index < getSize.size()) {
@@ -937,7 +953,7 @@ public class Crud {
 	 *            the index of the task to be edited
 	 * @throws IOException
 	 */
-	public static int uncompletedTaskIndexWithStartDate(String line, String date, String msg) {
+	public int uncompletedTaskIndexWithStartDate(String line, String date, String msg) {
 		Task task = new Task(line, date, msg, true);
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -956,7 +972,7 @@ public class Crud {
 	 * @param msg
 	 * @return
 	 */
-	public static int uncompletedTaskIndexWithEndDate(String line, String date, String msg) {
+	public int uncompletedTaskIndexWithEndDate(String line, String date, String msg) {
 		Task task = new Task(line, date, msg, false);
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -977,7 +993,7 @@ public class Crud {
 	 * @return
 	 */
 
-	public static int uncompletedTaskIndexWithBothDates(String line, String startDate, String endDate, String msg) {
+	public int uncompletedTaskIndexWithBothDates(String line, String startDate, String endDate, String msg) {
 		Task task = new Task(line, startDate, endDate, msg);
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -995,7 +1011,7 @@ public class Crud {
 	 * @return
 	 */
 
-	public static int uncompletedTaskIndexWithNoDate(String line) {
+	public int uncompletedTaskIndexWithNoDate(String line) {
 		Task task = new Task(line);
 		ArrayList<Task> tempTasks = localStorageObject.getFloatingTasks();
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -1006,7 +1022,7 @@ public class Crud {
 		return -1;
 	}
 
-	private static boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
+	private boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
 		boolean noDuplicate = true;
 		for (Task temp : destination) {
 			if (temp.getTaskString().equals(task.getTaskString())) {
@@ -1017,14 +1033,12 @@ public class Crud {
 		return noDuplicate;
 	}
 
-	// Copy Description Metthods
 	/**
 	 * Function to copy the Task Description
 	 * 
 	 * @param temp
 	 */
-
-	public static void copyTask(Task temp) {
+	public void copyTask(Task temp) {
 		if (temp != null) {
 			String copy = temp.getDescription();
 			StringSelection selec = new StringSelection(copy);
@@ -1038,7 +1052,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void copyTask(int index) {
+	public void copyTask(int index) {
 		Task edit = localStorageObject.getUncompletedTask(index - 1);
 		if (edit != null) {
 			String copy = edit.getDescription();
@@ -1053,7 +1067,7 @@ public class Crud {
 	 * 
 	 * @param index
 	 */
-	public static void copyEditingTask(int index) {
+	public void copyEditingTask(int index) {
 		ArrayList<Task> task1 = localStorageObject.getUncompletedTasks();
 
 		int size = task1.size();
@@ -1078,11 +1092,11 @@ public class Crud {
 
 	// @@author Kowshik
 	// getter method
-	public static ArrayList<Task> getTemp() {
+	public ArrayList<Task> getTemp() {
 		return tempTasks;
 	}
 
-	public static Task getTempTask(int index) {
+	public Task getTempTask(int index) {
 		return tempTasks.get(index);
 	}
 
@@ -1092,7 +1106,7 @@ public class Crud {
 	 * @param index
 	 * @return
 	 */
-	public static Task getUncompletedTask(int index) {
+	public Task getUncompletedTask(int index) {
 
 		int size1 = localStorageObject.getUncompletedTasks().size();
 		if (index < size1) {
@@ -1103,7 +1117,7 @@ public class Crud {
 		}
 	}
 
-	public static Task getCompletedTask(int index) {
+	public Task getCompletedTask(int index) {
 		return localStorageObject.getCompletedTask(index);
 	}
 
@@ -1113,7 +1127,7 @@ public class Crud {
 	 * 
 	 * @param tempTask
 	 */
-	public static void printUncompletedTask(ArrayList<Task> tempTask) {
+	public void printUncompletedTask(ArrayList<Task> tempTask) {
 		uiObject.printGreen("UNCOMPLETED TASKS");
 		uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
 
@@ -1133,8 +1147,7 @@ public class Crud {
 	 * @param tempTask
 	 */
 
-	public static void printCompletedTask(ArrayList<Task> tempTask) {
-		
+	public void printCompletedTask(ArrayList<Task> tempTask) {
 		uiObject.printGreen("COMPLETED TASKS");
 		uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -1150,7 +1163,7 @@ public class Crud {
 	 * @param index
 	 *            the index of the task to be displayed
 	 */
-	public static void viewIndividualTask(int index) {
+	public void viewIndividualTask(int index) {
 		
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 		if (index < getSize.size()) {
@@ -1184,14 +1197,14 @@ public class Crud {
 	 * @throws ClassNotFoundException
 	 * 
 	 */
-	public static void clearTasks() throws ClassNotFoundException, IOException {
+	public void clearTasks() throws ClassNotFoundException, IOException {
 		localStorageObject.clearAllTasks();
 	}
 
 	/**
 	 * Function to exit the application when user enters exit command
 	 */
-	public static void exit() {
+	public void exit() {
 		System.exit(0);
 	}
 

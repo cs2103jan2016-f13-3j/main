@@ -38,9 +38,12 @@ public class ImportTasks {
 	private static final String STRING_DEFAULT = "default";
 	private static final String STRING_EMPTY = "";
 
-	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
+	private static final Logger logger = Logger.getLogger(Class.class.getName());
+	
+	private Crud crudObject;
 	
 	public ImportTasks(){
+		crudObject = Crud.getInstance();
 	}
 	
 	/**
@@ -118,7 +121,7 @@ public class ImportTasks {
 			reader.endArray();
 			reader.close();
 			for (Task t : GsonObjects) {
-				Logic.Crud.addTaskViaImport(t, flag);
+				crudObject.addTaskViaImport(t, flag);
 			}
 		} catch (EOFException e) {
 			return;
