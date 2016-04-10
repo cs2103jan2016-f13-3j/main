@@ -70,13 +70,12 @@ public class Core {
 		Undo.getInstance().copyCurrentTasksState();
 
 		String command = sc.nextLine();
-		if(command.contains("edit")){
-			
-		}else{
+		
 		UI.ui.eraseScreen();
 		UI.ui.printRed("command: ");
 		UI.ui.print(command);
-		}
+		
+		
 		
 
 		String[] splitCommand = command.split(" ");
@@ -544,7 +543,6 @@ public class Core {
 										// (to be implemented)
 										Logic.crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
-										UI.ui.eraseScreen();
 										int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.crud.displayNearestFiveUncompleted(index);
@@ -560,7 +558,6 @@ public class Core {
 										Logic.crud.editTaskWithStartDate(issue, startDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
 										int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
-										UI.ui.eraseScreen();
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
@@ -572,7 +569,6 @@ public class Core {
 										// get issue
 										// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
 										Logic.crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description, num - 1);
-										UI.ui.eraseScreen();
 										UI.ui.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Sort.sortTasksChronologically();
 										int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime,
@@ -876,7 +872,6 @@ public class Core {
 					counter++;
 				}
 
-				UI.ui.eraseScreen();
 				UI.ui.printGreen(s + MSG_MARK);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -899,7 +894,6 @@ public class Core {
 			} else {
 				Task temp = Logic.crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
-				UI.ui.eraseScreen();
 				UI.ui.printGreen("\""+temp.getIssue()+"\"" + MSG_MARK);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -923,7 +917,6 @@ public class Core {
 				Task temp = Logic.crud.getTempTask(num - 1);
 				num = getCorrectIndexFromDisplayAll(num);
 				Logic.Mark.markTaskAsCompleted(num - 1);
-				UI.ui.eraseScreen();
 				UI.ui.printGreen(s + MSG_MARK);
 				Logic.crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -981,7 +974,6 @@ public class Core {
 				int counter = 0;
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
 						Logic.crud.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
@@ -1016,7 +1008,6 @@ public class Core {
 				UI.ui.printRed("Wrong index entered");
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
-				UI.ui.eraseScreen();
 				Logic.crud.viewIndividualTask(num - 1);
 				arraylistsHaveBeenModified = true;
 			}
