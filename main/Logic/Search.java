@@ -44,7 +44,6 @@ public class Search {
 	 *            the string to be searched for in the list of tasks
 	 */
 	public void searchTasksByKeyword(String keyword) {
-		uiObject.eraseScreen();
 		searchedTasks = new ArrayList<Task>();
 		String[] searchKeywords = keyword.split(" ");
 
