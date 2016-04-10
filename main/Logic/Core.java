@@ -1789,6 +1789,7 @@ public class Core {
 	}
 	public static void checkDateAndAdd(Task task) {
 		try {
+			String id = task.getId();
 			String ed = task.getDateCompare();
 
 			boolean expired = isExpired(ed, task.getLastDate());
@@ -1800,16 +1801,20 @@ public class Core {
 				LocalStorage.addToUncompletedTasks(task);
 				String newED = processDate(ed, task.getFrequency());
 				if (task.getStartDate() == null) {//no start date
+					
 					task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),
-							task.getLastDate(),task.getId());
+							task.getLastDate());
+					task.setID(id);
 
 				} else if (task.getEndDate() == null) {
 					task = new Task(task.getIssue(), newED, task.getMsg(), true, task.getFrequency(),
-							task.getLastDate(),task.getId());
+							task.getLastDate());
+					task.setID(id);
 				}
 				else {// has start date and end date
 					task = new Task(task.getIssue(),task.getFixedStartDateString(),newED,task.getMsg(),task.getFrequency()
-							,task.getLastDate(),task.getId());								
+							,task.getLastDate());
+					task.setID(id);
 				}
 
 				ed = task.getDateCompare();
