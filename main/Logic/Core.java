@@ -125,19 +125,16 @@ public class Core {
 			// only use natty if add command is detected
 			command = Natty.getInstance().parseString(command);
 		}
+		
 		parserObject.parse(command);
 
-		// take "snapshots" of current storage state
-		Undo.getInstance().copyCurrentTasksState();
 		boolean modificationsWereMade = parseCommands();
 		if (modificationsWereMade) {
-			// store the "snapshots" into Undo class if arraylists have been
-			// modified
+			// store the "snapshots" into Undo class if arraylists have been modified
 			Undo.getInstance().storePreviousState(command);
-			Undo.getInstance().clearRedoCommands(); // if valid command executed
-													// and arraylists modified,
-													// remove all stored redo
-													// commands
+			
+			// if valid command executed and arraylists modified, remove all stored redo commands
+			Undo.getInstance().clearRedoCommands();
 		}
 	}
 
