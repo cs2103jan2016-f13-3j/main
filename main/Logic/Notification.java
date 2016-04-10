@@ -6,11 +6,13 @@ import java.util.Date;
 
 import Storage.LocalStorage;
 import Task.Task;
+import UI.UI;
 
 public class Notification {
 	private static ArrayList<Task> tasksToBeDisplayed;
 	private static int daysInAdvance = 3;
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
+	private static UI uiObject = new UI();
 	
 	public static ArrayList<Task> getTasksToBeDisplayed() {
 		return tasksToBeDisplayed;
@@ -25,7 +27,7 @@ public class Notification {
 	 */
 	public static void welcomeReminder() {
 		// before daysInAdvance
-		UI.UI.printRed("DEADLINES APPROACHING - ");
+		uiObject.printRed("DEADLINES APPROACHING - ");
 		Calendar d1 = Calendar.getInstance();
 		d1.add(Calendar.DAY_OF_MONTH, -daysInAdvance);
 		int pastDay = d1.get(Calendar.DAY_OF_MONTH);
@@ -67,8 +69,8 @@ public class Notification {
 		}
 
 		if(tasksToBeDisplayed.size() > 0) {
-			UI.UI.printGreen("UNCOMPLETED TASKS");
-			UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
+			uiObject.printGreen("UNCOMPLETED TASKS");
+			uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
 			for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				Task temp = tasksToBeDisplayed.get(i);
 
@@ -81,7 +83,7 @@ public class Notification {
 						message = "deadline today";
 					}
 
-					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					uiObject.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else if(temp.getStartDate() != null) {
@@ -92,12 +94,12 @@ public class Notification {
 					} else if(result == 0) {
 						message = "starts today";
 					}
-					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					uiObject.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else {
 					String message = "";
-					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					uiObject.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 			}

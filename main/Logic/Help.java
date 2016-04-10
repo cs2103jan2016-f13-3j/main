@@ -4,6 +4,8 @@ package Logic;
 import java.util.InputMismatchException;
 import java.util.Scanner;
 
+import UI.UI;
+
 public class Help {
 	
 	private static Scanner sc;
@@ -145,24 +147,27 @@ public class Help {
 	private static final String HELP_PROMPT = "Enter the number of the topic you need help with";
 	
 	private static final String MSG_INVALID_INPUT = "Please enter a valid number";
+	
+	private UI uiObject;
 
 	public Help() {
 		sc = new Scanner(System.in);
+		uiObject = new UI();
 	}
 	
 	public void printHelpMenu() {
-		UI.UI.printYellow(HELP_MENU);
-		UI.UI.printGreen(HELP_PROMPT);
+		uiObject.printYellow(HELP_MENU);
+		uiObject.printGreen(HELP_PROMPT);
 		
 		int topicNumber = 0;
 		try {
 			topicNumber = sc.nextInt();
 		} catch (InputMismatchException e) {
-			UI.UI.printRed(MSG_INVALID_INPUT);
+			uiObject.printRed(MSG_INVALID_INPUT);
 			return;
 		}
 
-		UI.UI.eraseScreen();
+		uiObject.eraseScreen();
 		printHelpTopic(topicNumber);
 	}
 	
@@ -198,152 +203,152 @@ public class Help {
 			printExitHelp();
 		} else {
 			// topicNumber < 1 or > 12
-			UI.UI.printRed(MSG_INVALID_INPUT);
+			uiObject.printRed(MSG_INVALID_INPUT);
 			return;
 		}
 	}
 
 	// Method to print the strings related to Add function.
 	private void printAddHelp() {
-		UI.UI.printGreen(ADD_HEADER);
-		UI.UI.printYellow(ADD_1);
-		UI.UI.printYellow(ADD_2);
-		UI.UI.printYellow(ADD_3);
-		UI.UI.printYellow(ADD_4);
-		UI.UI.printYellow(ADD_5);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(ADD_SAMPLE_1);
-		UI.UI.printCyan(ADD_SAMPLE_2);
-		UI.UI.printCyan(ADD_SAMPLE_3);
-		UI.UI.printCyan(ADD_SAMPLE_4);
+		uiObject.printGreen(ADD_HEADER);
+		uiObject.printYellow(ADD_1);
+		uiObject.printYellow(ADD_2);
+		uiObject.printYellow(ADD_3);
+		uiObject.printYellow(ADD_4);
+		uiObject.printYellow(ADD_5);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(ADD_SAMPLE_1);
+		uiObject.printCyan(ADD_SAMPLE_2);
+		uiObject.printCyan(ADD_SAMPLE_3);
+		uiObject.printCyan(ADD_SAMPLE_4);
 	}
 
 	// Method to print the strings related to Delete function.
 	private void printDeleteHelp() {
-		UI.UI.printGreen(DELETE_HEADER);
-		UI.UI.printYellow(DELETE_1);
-		UI.UI.printYellow(DELETE_2);
-		UI.UI.printYellow(DELETE_3);
-		UI.UI.printYellow(DELETE_4);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(DELETE_SAMPLE_1);
-		UI.UI.printCyan(DELETE_SAMPLE_2);
-		UI.UI.printCyan(DELETE_SAMPLE_3);
+		uiObject.printGreen(DELETE_HEADER);
+		uiObject.printYellow(DELETE_1);
+		uiObject.printYellow(DELETE_2);
+		uiObject.printYellow(DELETE_3);
+		uiObject.printYellow(DELETE_4);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(DELETE_SAMPLE_1);
+		uiObject.printCyan(DELETE_SAMPLE_2);
+		uiObject.printCyan(DELETE_SAMPLE_3);
 	}
 
 	// Method to print the strings related to Edit function.
 	private void printEditHelp() {
-		UI.UI.printGreen(EDIT_HEADER);
-		UI.UI.printYellow(EDIT_1);
-		UI.UI.printYellow(EDIT_2);
-		UI.UI.printYellow(EDIT_3);
-		UI.UI.printYellow(EDIT_4);
-		UI.UI.printYellow(EDIT_5);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(EDIT_SAMPLE_1);
-		UI.UI.printCyan(EDIT_SAMPLE_2);
+		uiObject.printGreen(EDIT_HEADER);
+		uiObject.printYellow(EDIT_1);
+		uiObject.printYellow(EDIT_2);
+		uiObject.printYellow(EDIT_3);
+		uiObject.printYellow(EDIT_4);
+		uiObject.printYellow(EDIT_5);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(EDIT_SAMPLE_1);
+		uiObject.printCyan(EDIT_SAMPLE_2);
 	}
 
 	// Method to print the strings related to Display function.
 	private void printDisplayHelp() {
-		UI.UI.printGreen(DISPLAY_HEADER);
-		UI.UI.printYellow(DISPLAY_1);
-		UI.UI.printYellow(DISPLAY_2);
-		UI.UI.printYellow(DISPLAY_3);
-		UI.UI.printYellow(DISPLAY_4);
-		UI.UI.printYellow(DISPLAY_5);
-		UI.UI.printYellow(DISPLAY_6);
-		UI.UI.printYellow(DISPLAY_7);
-		UI.UI.printYellow(DISPLAY_8);
-		UI.UI.printYellow(DISPLAY_9);
-		UI.UI.printYellow(DISPLAY_10);
-		UI.UI.printYellow(DISPLAY_11);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(DISPLAY_SAMPLE_1);
-		UI.UI.printCyan(DISPLAY_SAMPLE_2);
+		uiObject.printGreen(DISPLAY_HEADER);
+		uiObject.printYellow(DISPLAY_1);
+		uiObject.printYellow(DISPLAY_2);
+		uiObject.printYellow(DISPLAY_3);
+		uiObject.printYellow(DISPLAY_4);
+		uiObject.printYellow(DISPLAY_5);
+		uiObject.printYellow(DISPLAY_6);
+		uiObject.printYellow(DISPLAY_7);
+		uiObject.printYellow(DISPLAY_8);
+		uiObject.printYellow(DISPLAY_9);
+		uiObject.printYellow(DISPLAY_10);
+		uiObject.printYellow(DISPLAY_11);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(DISPLAY_SAMPLE_1);
+		uiObject.printCyan(DISPLAY_SAMPLE_2);
 	}
 
 	// Method to print the strings related to Mark function.
 	private void printMarkHelp() {
-		UI.UI.printGreen(MARK_HEADER);
-		UI.UI.printYellow(MARK_1);
-		UI.UI.printYellow(MARK_2);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(MARK_SAMPLE_1);
+		uiObject.printGreen(MARK_HEADER);
+		uiObject.printYellow(MARK_1);
+		uiObject.printYellow(MARK_2);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(MARK_SAMPLE_1);
 	}
 
 	// Method to print the strings related to Priority function.
 	private void printPriorityHelp() {
-		UI.UI.printGreen(PRIORITY_HEADER);
-		UI.UI.printYellow(PRIORITY_1);
-		UI.UI.printYellow(PRIORITY_2);
-		UI.UI.printYellow(PRIORITY_3);
-		UI.UI.printYellow(PRIORITY_4);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(PRIORITY_SAMPLE_1);
-		UI.UI.printCyan(PRIORITY_SAMPLE_2);
+		uiObject.printGreen(PRIORITY_HEADER);
+		uiObject.printYellow(PRIORITY_1);
+		uiObject.printYellow(PRIORITY_2);
+		uiObject.printYellow(PRIORITY_3);
+		uiObject.printYellow(PRIORITY_4);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(PRIORITY_SAMPLE_1);
+		uiObject.printCyan(PRIORITY_SAMPLE_2);
 	}
 
 	// Method to print the strings related to Label function.
 	private void printLabelHelp() {
-		UI.UI.printGreen(LABEL_HEADER);
-		UI.UI.printYellow(LABEL_1);
-		UI.UI.printYellow(LABEL_2);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(LABEL_SAMPLE_1);
+		uiObject.printGreen(LABEL_HEADER);
+		uiObject.printYellow(LABEL_1);
+		uiObject.printYellow(LABEL_2);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(LABEL_SAMPLE_1);
 	}
 
 	// Method to print the strings related to View function.
 	private void printViewHelp() {
-		UI.UI.printGreen(VIEW_HEADER);
-		UI.UI.printYellow(VIEW_1);
-		UI.UI.printYellow(VIEW_2);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(VIEW_SAMPLE_1);
+		uiObject.printGreen(VIEW_HEADER);
+		uiObject.printYellow(VIEW_1);
+		uiObject.printYellow(VIEW_2);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(VIEW_SAMPLE_1);
 	}
 
 	// Method to print the strings related to Search function.
 	private void printSearcHelp() {
-		UI.UI.printGreen(SEARCH_HEADER);
-		UI.UI.printYellow(SEARCH_1);
-		UI.UI.printYellow(SEARCH_2);
-		UI.UI.printYellow(SEARCH_3);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(SEARCH_SAMPLE_1);
-		UI.UI.printCyan(SEARCH_SAMPLE_2);
+		uiObject.printGreen(SEARCH_HEADER);
+		uiObject.printYellow(SEARCH_1);
+		uiObject.printYellow(SEARCH_2);
+		uiObject.printYellow(SEARCH_3);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(SEARCH_SAMPLE_1);
+		uiObject.printCyan(SEARCH_SAMPLE_2);
 	}
 
 	// Method to print the strings related to Undo function.
 	private void printUndoRedoHelp() {
-		UI.UI.printGreen(UNDO_REDO_HEADER);
-		UI.UI.printYellow(UNDO_REDO_1);
-		UI.UI.printYellow(UNDO_REDO_2);
-		UI.UI.printYellow(UNDO_REDO_3);
-		UI.UI.printYellow(UNDO_REDO_4);
-		UI.UI.printYellow(UNDO_REDO_5);
-		UI.UI.printYellow(UNDO_REDO_6);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(UNDO_REDO_SAMPLE_1);
-		UI.UI.printCyan(UNDO_REDO_SAMPLE_2);
+		uiObject.printGreen(UNDO_REDO_HEADER);
+		uiObject.printYellow(UNDO_REDO_1);
+		uiObject.printYellow(UNDO_REDO_2);
+		uiObject.printYellow(UNDO_REDO_3);
+		uiObject.printYellow(UNDO_REDO_4);
+		uiObject.printYellow(UNDO_REDO_5);
+		uiObject.printYellow(UNDO_REDO_6);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(UNDO_REDO_SAMPLE_1);
+		uiObject.printCyan(UNDO_REDO_SAMPLE_2);
 	}
 
 	// Method to print the strings related to Directory function.
 	private void printDirectoryHelp() {		
-		UI.UI.printGreen(DIRECTORY_HEADER);
-		UI.UI.printYellow(DIRECTORY_1);
-		UI.UI.printYellow(DIRECTORY_2);
-		UI.UI.printYellow(DIRECTORY_3);
-		UI.UI.printYellow(DIRECTORY_4);
-		UI.UI.printYellow(DIRECTORY_5);
-		UI.UI.printYellow(DIRECTORY_6);
-		UI.UI.printGreen(EXAMPLE_HEADER);
-		UI.UI.printCyan(DIRECTORY_SAMPLE_1);
+		uiObject.printGreen(DIRECTORY_HEADER);
+		uiObject.printYellow(DIRECTORY_1);
+		uiObject.printYellow(DIRECTORY_2);
+		uiObject.printYellow(DIRECTORY_3);
+		uiObject.printYellow(DIRECTORY_4);
+		uiObject.printYellow(DIRECTORY_5);
+		uiObject.printYellow(DIRECTORY_6);
+		uiObject.printGreen(EXAMPLE_HEADER);
+		uiObject.printCyan(DIRECTORY_SAMPLE_1);
 	}
 
 	// Method to print the strings related to Exit function.
 	private void printExitHelp() {
-		UI.UI.printGreen(EXIT_HEADER);
-		UI.UI.printYellow(EXIT_1);
-		UI.UI.printYellow(EXIT_2);
+		uiObject.printGreen(EXIT_HEADER);
+		uiObject.printYellow(EXIT_1);
+		uiObject.printYellow(EXIT_2);
 	}
 }

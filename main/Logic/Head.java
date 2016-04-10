@@ -5,10 +5,14 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 
 import org.fusesource.jansi.AnsiConsole;
+
+import UI.UI;
+
 public class Head {
 
 	private static String lastDisplay = "";
 	private static String lastDisplayArg = "";
+	private static UI uiObject = new UI();
 
 	private static final String USER_PROMPT = "command: ";
 	private static final String WELCOME_HELP = "Enter \"help\" for instructions.\n";
@@ -21,12 +25,12 @@ public class Head {
 
 		AnsiConsole.systemInstall();
 
-		UI.UI.printLogo();
+		uiObject.printLogo();
 
-		UI.UI.printYellow(WELCOME_MSG_1 + WELCOME_MSG_2);
+		uiObject.printYellow(WELCOME_MSG_1 + WELCOME_MSG_2);
 
-		UI.UI.print("\n");
-		UI.UI.printYellow(WELCOME_HELP);
+		uiObject.print("\n");
+		uiObject.printYellow(WELCOME_HELP);
 
 		Logic.Notification.welcomeReminder();
 
@@ -43,7 +47,7 @@ public class Head {
 		Save arrayListsSaver = new Save();
 
 		while (true) {
-			UI.UI.printRed(USER_PROMPT);
+			uiObject.printRed(USER_PROMPT);
 			Logic.Core.acceptCommand();
 
 			lastDisplay = Parser.Parser.getCommand();

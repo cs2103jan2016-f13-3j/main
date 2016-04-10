@@ -3,16 +3,10 @@ package UI;
 
 import static org.fusesource.jansi.Ansi.ansi;
 
-import java.util.Scanner;
-
 import org.fusesource.jansi.AnsiConsole;
-
-import Parser.Natty;
 
 public class UI {
 	//@@author Cheng Gee
-	
-	private static Scanner sc = new Scanner(System.in);
 	
 	private static final String LOGO_LINE_1 = "********   ********   ********  **       **   *****       ********   **    **";
 	private static final String LOGO_LINE_2 = "********   ********   ********  ***      **   **   **     ********   **    **";
@@ -61,10 +55,13 @@ public class UI {
 	public static final String BACKGROUND_CYAN = "\u001B[46m";
 	public static final String BACKGROUND_WHITE	= "\u001B[47m";
 
+	public UI() {
+	}
+	
 	/**
 	 * Method to print the welcome logo of Agendah.
 	 */
-	public static void printLogo() {
+	public void printLogo() {
 		eraseScreen();
 		printGreen(LOGO_LINE_1);
 		printGreen(LOGO_LINE_2);
@@ -81,7 +78,7 @@ public class UI {
 	 * 
 	 * @param temp The string to be printed.
 	 */
-	public static void print(String temp) {
+	public void print(String temp) {
 		System.out.print(temp);
 		if(temp.equals("command: ") != true) {
 			System.out.println();
@@ -91,7 +88,7 @@ public class UI {
 	/**
 	 * Method to clear the screen in CLI.
 	 */
-	public static void eraseScreen() {
+	public void eraseScreen() {
 		AnsiConsole.systemUninstall();
 		System.out.print(ansi().eraseScreen());
 		AnsiConsole.systemInstall();
@@ -108,7 +105,7 @@ public class UI {
 	 * @param edate End date and time (if any) of the task.
 	 * @param msg   Issue description of the task.
 	 */
-	public static void printTask(int i, String sdate, String edate, String msg) {
+	public void printTask(int i, String sdate, String edate, String msg) {
 		i = i + 1;
 		System.out.println(HIGH_INTENSITY + YELLOW + i + ".\t" + CYAN + sdate
 				           + " " + edate + " " + YELLOW + msg + ansi().reset());
@@ -125,7 +122,7 @@ public class UI {
 	 * @param msg   Issue description of the task.
 	 * @param rec   Recurrence interval of the task (if any).
 	 */
-	public static void printTask1(int i, String sdate, String stime,
+	public void printTask1(int i, String sdate, String stime,
 			                      String edate,String etime,
 			                      String msg, String rec) {
 		i = i + 1;
@@ -172,7 +169,7 @@ public class UI {
 	 * @param msg   Issue description of the task.
 	 * @param rec   Information regarding expiry/deadline (if any) of task.
 	 */
-	public static void printTask2(int i, String sdate, String stime,
+	public void printTask2(int i, String sdate, String stime,
 			                      String edate, String etime,
 			                      String msg, String rec) {
 		i = i + 1;
@@ -217,7 +214,7 @@ public class UI {
 	 * @param edate End date and time (if any) of the task.
 	 * @param msg   Issue description of the task.
 	 */
-	public static void printTaskAdded(int i, String sdate, String edate, String msg) {
+	public void printTaskAdded(int i, String sdate, String edate, String msg) {
 		i = i + 1;
 		System.out.println(BACKGROUND_BLUE + HIGH_INTENSITY + YELLOW + i + ".\t"
 		                   + CYAN + sdate + edate + YELLOW + msg + ansi().reset());
@@ -234,7 +231,7 @@ public class UI {
 	 * @param msg   Issue description of the task.
 	 * @param rec   Information regarding expiry/deadline (if any) of task.
 	 */
-	public static void printTaskAdded1(int i, String sdate, String stime,
+	public void printTaskAdded1(int i, String sdate, String stime,
 			                           String edate, String etime,
 			                           String msg, String rec) {
 		i = i + 1;
@@ -276,7 +273,7 @@ public class UI {
 	 * @param i   A counter to print a numbered list.
 	 * @param msg Issue description of the task.
 	 */
-	public static void printFloating(int i, String msg) {
+	public void printFloating(int i, String msg) {
 		i = i + 1;
 		System.out.println(HIGH_INTENSITY + YELLOW + i + ".\t" + msg + ansi().reset());
 
@@ -288,14 +285,14 @@ public class UI {
 	 * @param i   A counter to print a numbered list.
 	 * @param msg Issue description of the task.
 	 */
-	public static void printFloatingBackground(int i, String msg) {
+	public void printFloatingBackground(int i, String msg) {
 		i = i + 1;
 		System.out.println(BACKGROUND_BLUE + HIGH_INTENSITY + YELLOW + i + ".\t" + msg + ansi().reset());
 
 	}
 
 	// The following methods print the given string in the stated colour.
-	public static void printRed(String temp) {
+	public void printRed(String temp) {
 
 		System.out.print(HIGH_INTENSITY + RED + temp + ansi().reset());
 		if (temp.equals("command: ") != true) {
@@ -303,19 +300,19 @@ public class UI {
 		}
 	}
 
-	public static void printBlue(String temp) {
+	public void printBlue(String temp) {
 		System.out.println(HIGH_INTENSITY + BLUE + temp + ansi().reset());
 	}
 
-	public static void printGreen(String temp) {
+	public void printGreen(String temp) {
 		System.out.println(HIGH_INTENSITY + GREEN + temp + ansi().reset());
 	}
 
-	public static void printYellow(String temp) {
+	public void printYellow(String temp) {
 		System.out.println(HIGH_INTENSITY + YELLOW + temp + ansi().reset());
 	}
 
-	public static void printCyan(String temp) {
+	public void printCyan(String temp) {
 		System.out.println(HIGH_INTENSITY + CYAN + temp + ansi().reset());
 	}
 }
