@@ -541,7 +541,7 @@ public class Core {
 									} else {
 										// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 										// (to be implemented)
-										Logic.crud.editTaskWithEndDate(issue, startDateWithTime, description, num - 1);
+										Logic.crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
 										UI.ui.eraseScreen();
 										int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
@@ -1637,7 +1637,7 @@ public class Core {
 			return;
 		}
 
-		Logic.crud.copyRecurringTask(replaced);
+		Logic.crud.copyTask(replaced);
 		UI.ui.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
 		in = Natty.getInstance().parseEditString(in);

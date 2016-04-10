@@ -2,6 +2,10 @@ package unitTest;
 
 import static org.junit.Assert.*;
 
+import java.awt.HeadlessException;
+import java.awt.Toolkit;
+import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.UnsupportedFlavorException;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -20,20 +24,30 @@ import Task.Task;
 
 public class crudTest {
 	@Test
-	public void testHead() throws ClassNotFoundException, IOException{
-		final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-		System.setOut(new PrintStream(outContent));
-		Logic.Head.runProgram();
+	public void testuncompletedTaskIndexWithNoDate() throws ClassNotFoundException, IOException{
+		int test =Logic.crud.uncompletedTaskIndexWithNoDate("test");
+		//final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		//System.setOut(new PrintStream(outContent));
+		//Logic.Head.runProgram();
 		
 		
-		assertEquals("test",1);
-		ByteArrayInputStream in = new ByteArrayInputStream("exit".getBytes());
-		System.setIn(in);
-		assertEquals("test",1);
-		 System.out.println("test"+outContent.toString());
+		assertEquals(test,-1);
+		//ByteArrayInputStream in = new ByteArrayInputStream("exit".getBytes());
+		//System.setIn(in);
+		//assertEquals("test",1);
+		// System.out.println("test"+outContent.toString());
 
 		 
-	}/*
+	}
+	@Test
+	public void testCopyTask() throws HeadlessException, UnsupportedFlavorException, IOException{
+		Task test = new Task("test");
+		Logic.crud.copyTask(test);
+		String data = (String) Toolkit.getDefaultToolkit()
+                .getSystemClipboard().getData(DataFlavor.stringFlavor);
+		assertEquals("test",data);
+	}
+	/*
 	@Test
 	public void testAddTaskString() throws ClassNotFoundException {
 		boolean test=false;
