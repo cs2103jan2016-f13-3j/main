@@ -14,6 +14,7 @@ import java.util.Scanner;
 import org.fusesource.jansi.AnsiConsole;
 
 import Parser.Natty;
+import Parser.Parser;
 import Storage.LocalStorage;
 import Task.Task;
 import UI.UI;
@@ -21,7 +22,7 @@ import UI.UI;
 public class Core {
 	private static boolean arraylistsHaveBeenModified;
 	private static CheckDate checkDateObject = new CheckDate();
-	private static int INVALID_TASK_INDEX = -1;	
+	private static int INVALID_TASK_INDEX = -1;
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
 	private static UI uiObject = new UI();
@@ -54,10 +55,11 @@ public class Core {
 	private static final String MSG_NO_REDO_COMMAND = "There are no remaining commands that can be redone";
 	private static final String MSG_INVALID_UNDO_COUNT = "Please enter a valid number of commands you wish to undo";
 	private static final String MSG_INVALID_REDO_COUNT = "Please enter a valid number of commands you wish to redo";
-	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";	
+	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";
 	private static final String PROMPT_RECURRING = "Enter <frequency> <date in dd/mm/yyyy>. e.g \"4 01/01/2016\"";
 
 	private static Help helpObject = new Help();
+	private static Parser parserObject = Parser.getInstance();
 	private static Scanner sc = new Scanner(System.in);
 
 	/**
@@ -73,25 +75,29 @@ public class Core {
 		Undo.getInstance().copyCurrentTasksState();
 
 		String command = sc.nextLine();
-		
+
 		uiObject.eraseScreen();
 		uiObject.printRed("command: ");
 		uiObject.print(command);
-	
+
 		String[] splitCommand = command.split(" ");
 		if (splitCommand[0].equals("add") || splitCommand[0].equals("a") || splitCommand[0].equals("+")) {
 			// only use natty if add command is detected
 			command = Natty.getInstance().parseString(command);
 		}
-		Parser.Parser.parse(command);
+		parserObject.parse(command);
 
 		// take "snapshots" of current storage state
 		Undo.getInstance().copyCurrentTasksState();
 		boolean modificationsWereMade = parseCommands();
 		if (modificationsWereMade) {
-			// store the "snapshots" into Undo class if arraylists have been modified
+			// store the "snapshots" into Undo class if arraylists have been
+			// modified
 			Undo.getInstance().storePreviousState(command);
-			Undo.getInstance().clearRedoCommands(); // if valid command executed and arraylists modified, remove all stored redo commands
+			Undo.getInstance().clearRedoCommands(); // if valid command executed
+													// and arraylists modified,
+													// remove all stored redo
+													// commands
 		}
 	}
 
@@ -107,7 +113,7 @@ public class Core {
 	 */
 	public static boolean parseCommands() throws IOException, ClassNotFoundException {
 		arraylistsHaveBeenModified = false;
-		String option = Parser.Parser.getCommand();
+		String option = parserObject.getCommand();
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
 			addCommand();
 		} else if (option.equals("delete") || option.equals("-")) {
@@ -119,7 +125,7 @@ public class Core {
 		} else if (option.equals("clear") || option.equals("c")) {
 			clearCommand();
 		} else if (option.equals("search") || option.equals("s")) {
-			Logic.Search.searchTasksByKeyword(Parser.Parser.getDescription());
+			Logic.Search.searchTasksByKeyword(parserObject.getDescription());
 		} else if (option.equals("mark") || option.equals("m")) {
 			markCommand();
 		} else if (option.equals("unmark") || option.equals("um")) {
@@ -127,8 +133,8 @@ public class Core {
 		} else if (option.equals("edit") || option.equals("e")) {
 			editCommand();
 		} else if (option.equals("priority") || option.equals("p")) {
-			String s=Parser.Parser.getIssueM();
-			if(s.contains("all")) {
+			String s = parserObject.getIssueM();
+			if (s.contains("all")) {
 				setAllRecurringTasksPriorityCommand();
 			} else {
 				setPriorityCommand();
@@ -158,18 +164,18 @@ public class Core {
 		}
 		return arraylistsHaveBeenModified;
 	}
+
 	private static void setAllRecurringTasksPriorityCommand() {
-		String description=Parser.Parser.getDescription();
-		String [] tmp = description.split(" ");
+		String description = parserObject.getDescription();
+		String[] tmp = description.split(" ");
 		String idx = tmp[1];
 		int num = Integer.parseInt(idx);
-
 
 		ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 
 		if (list.size() == 0) {
 			uiObject.printRed(MSG_EMPTY);
-		} else if (list.size()  < num || num - 1 < 0) {
+		} else if (list.size() < num || num - 1 < 0) {
 			uiObject.printRed(MSG_PRIORITY_FAIL);
 		} else {
 			uiObject.printYellow("Enter priority");
@@ -180,32 +186,38 @@ public class Core {
 
 	}
 
-
-	public static void 	addCommand() throws IOException, ClassNotFoundException {
-		String description = Parser.Parser.getDescription();
-		String startDate = Parser.Parser.getStartDate();
-		String startDateWithTime = Parser.Parser.getStartDateWithTime();
-		String endDate = Parser.Parser.getEndDate();
-		String endDateWithTime = Parser.Parser.getEndDateWithTime();
-		String issue = Parser.Parser.getIssueM();
-		boolean recurrence = Parser.Parser.getRecurrence();
-		boolean containDate = Parser.Parser.getContainDate();
+	public static void addCommand() throws IOException, ClassNotFoundException {
+		String description = parserObject.getDescription();
+		String startDate = parserObject.getStartDate();
+		String startDateWithTime = parserObject.getStartDateWithTime();
+		String endDate = parserObject.getEndDate();
+		String endDateWithTime = parserObject.getEndDateWithTime();
+		String issue = parserObject.getIssueM();
+		boolean recurrence = parserObject.getRecurrence();
+		boolean containDate = parserObject.getContainDate();
 		boolean isAdded;
 
 		if (description.equals("")) {
 			uiObject.printRed(MSG_INVALID);
 		} else {
 			// get index of key
-			if(containDate){
+			if (containDate) {
 				if (!recurrence) {
-					if (startDate.equals("-") && !endDate.equals("-")) { // no start date but has end date
+					if (startDate.equals("-") && !endDate.equals("-")) { // no
+																			// start
+																			// date
+																			// but
+																			// has
+																			// end
+																			// date
 						if (!checkDateObject.checkDateformat(endDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
 							isAdded = Logic.Crud.addTaskWithEndDate(issue, endDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
+								int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
+										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
 								arraylistsHaveBeenModified = true;
 								Logic.Crud.displayNearestFiveUncompleted(index);
@@ -214,7 +226,9 @@ public class Core {
 							}
 						}
 
-					} else if ((!startDate.equals("-")) && endDate.equals("-")) { // has start date
+					} else if ((!startDate.equals("-")) && endDate.equals("-")) { // has
+																					// start
+																					// date
 
 						if (!checkDateObject.checkDateformat(startDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
@@ -222,7 +236,8 @@ public class Core {
 							isAdded = Logic.Crud.addTaskWithStartDate(issue, startDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
+								int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime,
+										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
 								Logic.Crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
@@ -235,10 +250,12 @@ public class Core {
 						if (!checkDateObject.checkDateformat(startDate) && !checkDateObject.checkDateformat(endDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.Crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description);
+							isAdded = Logic.Crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
+									description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, description);
+								int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime,
+										endDateWithTime, description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
 								Logic.Crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
@@ -249,7 +266,11 @@ public class Core {
 					}
 				} else { // for recurring tasks
 
-					if (startDate.equals("-") && !endDate.equals("-")) {// no start date but has
+					if (startDate.equals("-") && !endDate.equals("-")) {// no
+																		// start
+																		// date
+																		// but
+																		// has
 						if (!checkDateObject.checkDateformat(endDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
 						} else {
@@ -260,11 +281,12 @@ public class Core {
 								String freq = tmp[0];
 								String last = tmp[1];
 
-								int frequency = Integer.parseInt(freq);						
+								int frequency = Integer.parseInt(freq);
 
-								Task task = new Task(issue,endDateWithTime,description,true,frequency,last);
+								Task task = new Task(issue, endDateWithTime, description, true, frequency, last);
 								checkDateAndAdd(task);
-								uiObject.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								uiObject.printGreen("\"" + task.getIssue() + "\""
+										+ " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
 								uiObject.printRed(MSG_INVALID);
@@ -272,7 +294,9 @@ public class Core {
 							}
 
 						}
-					} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has start date
+					} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has
+																					// start
+																					// date
 
 						if (!checkDateObject.checkDateformat(startDate)) {
 							uiObject.printRed(MSG_WRONG_DATE);
@@ -286,9 +310,10 @@ public class Core {
 
 								int frequency = Integer.parseInt(freq);
 
-								Task task = new Task(issue,startDateWithTime,description,true,frequency,last);
+								Task task = new Task(issue, startDateWithTime, description, true, frequency, last);
 								checkDateAndAdd(task);
-								uiObject.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								uiObject.printGreen("\"" + task.getIssue() + "\""
+										+ " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
 								uiObject.printRed(MSG_INVALID);
@@ -307,13 +332,14 @@ public class Core {
 								String[] tmp = in.split(" ");
 								String freq = tmp[0];
 								String last = tmp[1];
-								//	String before = tmp[2];
+								// String before = tmp[2];
 
 								int frequency = Integer.parseInt(freq);
 
-
-								Task task = new Task(issue,startDateWithTime,endDateWithTime,description,frequency,last);
-								uiObject.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								Task task = new Task(issue, startDateWithTime, endDateWithTime, description, frequency,
+										last);
+								uiObject.printGreen("\"" + task.getIssue() + "\""
+										+ " is added to the task list. (recurs every " + freq + " days)");
 								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
@@ -338,12 +364,9 @@ public class Core {
 		}
 	}
 
-
-
-
 	// @@author Kowshik
 	public static void setLabelCommand() {
-		String description = Parser.Parser.getDescription();
+		String description = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(description);
 
@@ -359,20 +382,21 @@ public class Core {
 				String label = sc.nextLine();
 				Logic.Crud.addLabelToTask(num - 1, label);
 				arraylistsHaveBeenModified = true;
-				Task temp = localStorageObject.getUncompletedTask(num-1);
+				Task temp = localStorageObject.getUncompletedTask(num - 1);
 				String issue = temp.getIssue();
-				uiObject.printGreen("Task "+issue+" has been labelled "+label);
+				uiObject.printGreen("Task " + issue + " has been labelled " + label);
 			}
 		} catch (Exception e) {
 
 		}
 	}
 
-// @@author Jie Wei
+	// @@author Jie Wei
 	public static void changeDirectoryCommand() throws IOException, ClassNotFoundException {
-		String description = Parser.Parser.getDescription();
+		String description = parserObject.getDescription();
 		ImportTasks importTasksObject = new ImportTasks();
-		if (description.isEmpty()) { // only "dir" was typed, this will display the
+		if (description.isEmpty()) { // only "dir" was typed, this will display
+										// the
 			// current storage folder directory in use
 			String currentStorageDirectory = importTasksObject.getFolderDirectory();
 			if (currentStorageDirectory.isEmpty()) { // indicates source
@@ -388,7 +412,7 @@ public class Core {
 	}
 
 	public static void redoCommand() throws ClassNotFoundException, IOException {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		if (s.isEmpty()) { // only "redo" was typed
 			String outcome = Undo.getInstance().redo();
 			uiObject.printGreen(outcome);
@@ -414,7 +438,8 @@ public class Core {
 					for (int i = 0; i < count; i++) { // redo the number of
 						// commands specified
 						if (Undo.getInstance().getRedoCount() == 0) { // all
-							// commands have been redone but user used a higher int
+							// commands have been redone but user used a higher
+							// int
 							uiObject.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
@@ -430,7 +455,7 @@ public class Core {
 	}
 
 	public static void undoCommand() throws ClassNotFoundException, IOException {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		if (s.isEmpty()) { // only "undo" was typed
 			String outcome = Undo.getInstance().undo();
 			uiObject.printGreen(outcome);
@@ -455,7 +480,17 @@ public class Core {
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of
 						// commands specified
-						if (Undo.getInstance().getHistoryCount() == 0) { // all commands have been undone but user used a higher int
+						if (Undo.getInstance().getHistoryCount() == 0) { // all
+																			// commands
+																			// have
+																			// been
+																			// undone
+																			// but
+																			// user
+																			// used
+																			// a
+																			// higher
+																			// int
 							uiObject.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
@@ -470,20 +505,18 @@ public class Core {
 		}
 	}
 
-
-
 	// @@author Kowshik
 	public static void editCommand() {
 		int num;
-		String description = Parser.Parser.getDescription();
-		if(description.contains("all")) {
+		String description = parserObject.getDescription();
+		if (description.contains("all")) {
 			String[] tmp = description.split(" ");
 			num = Integer.parseInt(tmp[1]);
 		} else {
 			num = Integer.parseInt(description);
 		}
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
 				if (description.contains("all")) {
 					String[] tmp = description.split(" ");
 					num = Integer.parseInt(tmp[1]);
@@ -493,22 +526,21 @@ public class Core {
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
 			}
-		}
-		else if(Logic.Head.getLastDisplay().equals("search") ||  Logic.Head.getLastDisplay().equals("s")) {
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			num = getCorrectIndexFromSearchView(num);
-		}
-		else if(Logic.Head.getLastDisplay().equals("")) {
+		} else if (Logic.Head.getLastDisplay().equals("")) {
 			num = getCorrectIndexWelcomeView(num - 1);
 		}
 
-		//@@author Jung Kai
+		// @@author Jung Kai
 		try {
-			if(num<0){
+			if (num < 0) {
 				uiObject.printRed(MSG_INVALID);
-			}else if(description.contains("all")) {
+			} else if (description.contains("all")) {
 				editRecurringTask(num - 1);
 			} else {
-				// check if user input integer is valid. If it is valid, edit should work
+				// check if user input integer is valid. If it is valid, edit
+				// should work
 				ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
@@ -520,19 +552,19 @@ public class Core {
 					Logic.Crud.copyEditingTask(num);
 					input = sc.nextLine();
 					input = Natty.getInstance().parseEditString(input);
-					input ="edit "+input;
-					Parser.Parser.parse(input);
-					description = Parser.Parser.getDescription();
-					String startDate = Parser.Parser.getStartDate();
-					String startDateWithTime = Parser.Parser.getStartDateWithTime();
-					String endDate = Parser.Parser.getEndDate();
-					String endDateWithTime = Parser.Parser.getEndDateWithTime();
-					String issue = Parser.Parser.getIssueM();
-					boolean rec = Parser.Parser.getRecurrence();
-					boolean containDate = Parser.Parser.getContainDate();
+					input = "edit " + input;
+					parserObject.parse(input);
+					description = parserObject.getDescription();
+					String startDate = parserObject.getStartDate();
+					String startDateWithTime = parserObject.getStartDateWithTime();
+					String endDate = parserObject.getEndDate();
+					String endDateWithTime = parserObject.getEndDateWithTime();
+					String issue = parserObject.getIssueM();
+					boolean rec = parserObject.getRecurrence();
+					boolean containDate = parserObject.getContainDate();
 					if (description.equals("")) {
 						uiObject.printRed(MSG_INVALID);
-					}else{
+					} else {
 						if (containDate) {
 							if (!rec) {
 								if (startDate.equals("-") && !endDate.equals("-")) {
@@ -543,39 +575,46 @@ public class Core {
 										// (to be implemented)
 										Logic.Crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
-										
-										int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
+
+										int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
+												description);
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
-								} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has start date
+								} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has
+																								// start
+																								// date
 
 									if (!checkDateObject.checkDateformat(startDate)) {
 										uiObject.printRed(MSG_WRONG_DATE);
 									} else {
 
 										// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-										Logic.Crud.editTaskWithStartDate(issue, startDateWithTime, description, num - 1);
+										Logic.Crud.editTaskWithStartDate(issue, startDateWithTime, description,
+												num - 1);
 										Logic.Sort.sortTasksChronologically();
-										int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
-										
+										int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue,
+												startDateWithTime, description);
+
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								} else { // has both start date and end date
-									if (!checkDateObject.checkDateformat(startDate)	&& !checkDateObject.checkDateformat(endDate)) {
+									if (!checkDateObject.checkDateformat(startDate)
+											&& !checkDateObject.checkDateformat(endDate)) {
 										uiObject.printRed(MSG_WRONG_DATE);
 									} else {
 										// get issue
 										// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-										Logic.Crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description, num - 1);
-										
+										Logic.Crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
+												description, num - 1);
+
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Sort.sortTasksChronologically();
-										int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime,
-												input);
+										int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue,
+												startDateWithTime, endDateWithTime, input);
 										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
@@ -594,20 +633,20 @@ public class Core {
 				}
 
 			}
-		}catch (Exception e) {
+		} catch (Exception e) {
 
 		}
 	}
 
-	//@@author Kowshik
+	// @@author Kowshik
 	public static int getCorrectIndexFromSearchView(int num) {
 		Task temp = Logic.Search.getSearchedTask(num - 1);
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 
 		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
+		for (Task t : tempUncompletedTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
 				num = counter;
 				break;
 			}
@@ -615,8 +654,8 @@ public class Core {
 		}
 
 		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
+		for (Task t : tempFloatingTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
 				num = counter;
 				break;
 			}
@@ -626,15 +665,15 @@ public class Core {
 	}
 
 	public static int getCorrectIndexFromDisplayAll(int num) {
-		try{
+		try {
 			Task temp = Logic.Crud.getTempTask(num - 1);
 
 			ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 
 			int counter = 1;
-			for(Task t : tempUncompletedTasks) {
-				if(t.getTaskString().equals(temp.getTaskString())) {
+			for (Task t : tempUncompletedTasks) {
+				if (t.getTaskString().equals(temp.getTaskString())) {
 					num = counter;
 					break;
 				}
@@ -642,15 +681,15 @@ public class Core {
 			}
 
 			counter++;
-			for(Task t : tempFloatingTasks) {
-				if(t.getTaskString().equals(temp.getTaskString())) {
+			for (Task t : tempFloatingTasks) {
+				if (t.getTaskString().equals(temp.getTaskString())) {
 					num = counter;
 					break;
 				}
 				counter++;
 			}
 			return num;
-		}catch(Exception e){
+		} catch (Exception e) {
 			return -1;
 		}
 	}
@@ -662,13 +701,13 @@ public class Core {
 		} catch (IndexOutOfBoundsException e) {
 			return INVALID_TASK_INDEX;
 		}
-		
+
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 
 		int counter = 1;
-		for(Task t : tempUncompletedTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
+		for (Task t : tempUncompletedTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
 				num = counter;
 				break;
 			}
@@ -676,8 +715,8 @@ public class Core {
 		}
 
 		counter++;
-		for(Task t : tempFloatingTasks) {
-			if(t.getTaskString().equals(temp.getTaskString())) {
+		for (Task t : tempFloatingTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
 				num = counter;
 				break;
 			}
@@ -686,27 +725,24 @@ public class Core {
 		return num;
 	}
 
-
 	public static void setPriorityCommand() {
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				setPriorityFromDisplayAllView();
-			}
-			else {
+			} else {
 				setPriorityFromDisplayView();
 			}
-		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			setPriorityFromSearchTaskView();
-		} else if(Logic.Head.getLastDisplay().equals("")) {
+		} else if (Logic.Head.getLastDisplay().equals("")) {
 			setPriorityFromDisplayAllView();
-		}
-		else {
+		} else {
 			setPriorityFromDisplayAllView();
 		}
 	}
 
 	public static void setPriorityFromDisplayView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Crud.getTemp();
@@ -718,12 +754,12 @@ public class Core {
 				num = getCorrectIndexFromDisplayAll(num);
 				uiObject.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
+				while ((priority.equals("high") != true) && (priority.equals("medium") != true)
+						&& priority.equals("low") != true) {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue "+num+" has been set to "+priority);
+				uiObject.printGreen("Issue " + num + " has been set to " + priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -733,7 +769,7 @@ public class Core {
 
 	public static void setPriorityFromSearchTaskView() {
 		try {
-			String s = Parser.Parser.getDescription();
+			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
 			if (list.size() == 0) {
@@ -743,26 +779,26 @@ public class Core {
 			} else {
 				uiObject.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
+				while ((priority.equals("high") != true) && (priority.equals("medium") != true)
+						&& priority.equals("low") != true) {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue "+num+" has been set to "+priority);
+				uiObject.printGreen("Issue " + num + " has been set to " + priority);
 				Task temp = list.get(num - 1);
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
+				for (Task t : tempUncompletedTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
 						num = counter;
 						break;
 					}
 					counter++;
 				}
 				counter++;
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
+				for (Task t : tempFloatingTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
 						num = counter;
 						break;
 					}
@@ -777,7 +813,7 @@ public class Core {
 
 	public static void setPriorityFromDisplayAllView() {
 		try {
-			String s = Parser.Parser.getDescription();
+			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
@@ -788,12 +824,12 @@ public class Core {
 			} else {
 				uiObject.printYellow("Enter priority");
 				String priority = sc.nextLine();
-				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
-						priority.equals("low") != true) {
+				while ((priority.equals("high") != true) && (priority.equals("medium") != true)
+						&& priority.equals("low") != true) {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue "+num+" has been set to "+priority);
+				uiObject.printGreen("Issue " + num + " has been set to " + priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -803,7 +839,7 @@ public class Core {
 
 	public static void unmarkCommand() {
 		try {
-			String s = Parser.Parser.getDescription();
+			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
 			// check if user input integer is valid. If it is valid, unmark
 			// should
@@ -816,7 +852,7 @@ public class Core {
 			} else {
 				Task temp = Logic.Crud.getCompletedTask(num - 1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
-				uiObject.printGreen("\""+temp.getIssue()+"\"" + MSG_UNMARK);
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_UNMARK);
 				Logic.Crud.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
@@ -826,28 +862,30 @@ public class Core {
 	}
 
 	public static void markCommand() {
-		String s = Parser.Parser.getDescription();
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) { // marking from "display" view
+		String s = parserObject.getDescription();
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) { // marking
+																														// from
+																														// "display"
+																														// view
 
 				markFromDisplayAllView(s);
 			} else {
 				markFromDisplayView();
 			}
-		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			markFromSearchView();
-		} else if(Logic.Head.getLastDisplay().equals("")) {
+		} else if (Logic.Head.getLastDisplay().equals("")) {
 			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
 			String index = "" + num;
 			markFromDisplayAllView(index);
-		}
-		else {
+		} else {
 			markFromDisplayAllView(s);
 		}
 	}
 
 	public static void markFromSearchView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
@@ -856,26 +894,25 @@ public class Core {
 			} else if (list.size() < num || num - 1 < 0) {
 				uiObject.printRed(MSG_MARK_FAIL);
 			} else {
-				Task temp = list.get(num -1);
+				Task temp = list.get(num - 1);
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
+				for (Task t : tempUncompletedTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
 						Logic.Mark.markTaskAsCompleted(counter);
 						break;
 					}
 					counter++;
 				}
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
+				for (Task t : tempFloatingTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
 						Logic.Mark.markTaskAsCompleted(counter);
 						break;
 					}
 					counter++;
 				}
 
-				
 				uiObject.printGreen(s + MSG_MARK);
 				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -887,7 +924,7 @@ public class Core {
 
 	public static void markFromDisplayAllView(String s) {
 
-		try { 
+		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
@@ -898,8 +935,8 @@ public class Core {
 			} else {
 				Task temp = Logic.Crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
-				
-				uiObject.printGreen("\""+temp.getIssue()+"\"" + MSG_MARK);
+
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
 				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
@@ -909,7 +946,7 @@ public class Core {
 	}
 
 	public static void markFromDisplayView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Crud.getTemp();
@@ -922,13 +959,12 @@ public class Core {
 				Task temp = Logic.Crud.getTempTask(num - 1);
 				num = getCorrectIndexFromDisplayAll(num);
 				Logic.Mark.markTaskAsCompleted(num - 1);
-				
+
 				uiObject.printGreen(s + MSG_MARK);
 				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
@@ -939,23 +975,20 @@ public class Core {
 	}
 
 	public static void viewCommand() {
-		String s = Parser.Parser.getDescription();
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+		String s = parserObject.getDescription();
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				int num = Integer.parseInt(s);
 				Logic.Crud.viewIndividualTask(num - 1);
-			}
-			else {
+			} else {
 				viewFromDisplayView();
 			}
-		} else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
 			viewFromSearchView();
-		}
-		else if(Logic.Head.getLastDisplay().equals("")) {
+		} else if (Logic.Head.getLastDisplay().equals("")) {
 			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
 			Logic.Crud.viewIndividualTask(num - 1);
-		}
-		else {
+		} else {
 			try {
 				int num = Integer.parseInt(s);
 				Logic.Crud.viewIndividualTask(num - 1);
@@ -965,7 +998,7 @@ public class Core {
 	}
 
 	public static void viewFromSearchView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
@@ -978,9 +1011,9 @@ public class Core {
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						
+				for (Task t : tempUncompletedTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+
 						Logic.Crud.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
@@ -988,9 +1021,9 @@ public class Core {
 					counter++;
 				}
 
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						
+				for (Task t : tempFloatingTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+
 						Logic.Crud.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
@@ -999,13 +1032,12 @@ public class Core {
 				}
 			}
 
-		}
-		catch(Exception e) {
+		} catch (Exception e) {
 		}
 	}
 
 	public static void viewFromDisplayView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Crud.getTemp();
@@ -1015,18 +1047,17 @@ public class Core {
 				uiObject.printRed("Wrong index entered");
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
-				
+
 				Logic.Crud.viewIndividualTask(num - 1);
 				arraylistsHaveBeenModified = true;
 			}
-		}
-		catch (Exception e) {
+		} catch (Exception e) {
 
 		}
 	}
 
 	public static void displayCommand() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		if (s.equals("completed") || s.equals("c")) {
 			Logic.Crud.displayCompletedTasks();
 		} else if (s.equals("floating") || s.equals("f")) {
@@ -1035,7 +1066,7 @@ public class Core {
 			Logic.Crud.displayScheduleForADay(s);
 		} else if (s.equals("all")) {
 			Logic.Crud.displayUncompletedAndFloatingTasks();
-		} else if (s.equals("")){
+		} else if (s.equals("")) {
 			Logic.Crud.displayUpcomingTasks();
 		} else if (s.equals("today")) {
 			Calendar today = Calendar.getInstance();
@@ -1054,69 +1085,66 @@ public class Core {
 			Logic.Crud.displayTaksForTwoWeeksLater();
 		} else if (s.equals("last week") || s.equals("w -1")) {
 			Logic.Crud.displayTasksForLastWeek();
-		}  else {
+		} else {
 			Logic.Crud.displayByLabel(s);
 		}
 	}
 
 	public static void deleteCommand() {
-		String s = Parser.Parser.getDescription();
-		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
-			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
-				if(s.contains("all") != true) {
+		String s = parserObject.getDescription();
+		if ((Logic.Head.getLastDisplay().equals("d") == true
+				|| Logic.Head.getLastDisplay().equals("display")) == true) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				if (s.contains("all") != true) {
 					deleteFromDisplayAllView(s);
-				}
-				else {
+				} else {
 					deleteAllRecurringTasks();
 				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("completed") || Logic.Head.getLastDisplayArg().equals("c")) {
-				if(s.contains("all")!= true) {
+			} else if (Logic.Head.getLastDisplayArg().equals("completed")
+					|| Logic.Head.getLastDisplayArg().equals("c")) {
+				if (s.contains("all") != true) {
 					deleteFromDisplayCompletedView();
-				}
-				else {
+				} else {
 					deleteAllRecurringTasks();
 				}
 			} else { // this is "display" only
-				if(s.contains("all") != true) {
+				if (s.contains("all") != true) {
 					deleteFromDisplayView();
-				}else{
+				} else {
 					deleteAllRecurringTasks();
 				}
 			}
 		} else if ((Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s"))) {
 			// delete from search results
-			if(s.contains("all")!=true) {
+			if (s.contains("all") != true) {
 				deleteFromSearchView();
-			}
-			else {
+			} else {
 				deleteAllRecurringTasks();
 			}
-		}
-		else if (Logic.Head.getLastDisplay().equals("")) {
-			if(s.contains("all") != true) {
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			if (s.contains("all") != true) {
 				int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-				
-				if (num == -1) { // -1 when storage is empty, and user tries to delete immediately after launch
+
+				if (num == -1) { // -1 when storage is empty, and user tries to
+									// delete immediately after launch
 					uiObject.printRed(MSG_EMPTY);
 					return;
 				}
-				
+
 				String index = "" + num;
 				deleteFromDisplayAllView(index);
-			}else{
+			} else {
 				deleteAllRecurringTasks();
 			}
-		}
-		else {
+		} else {
 			deleteFromDisplayAllView(s);
 		}
 	}
 
 	public static void deleteFromDisplayView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		String[] splitInput = s.split(" ");
-		try{
+		try {
 			int num;
 			if (splitInput.length == 2) {
 				num = Integer.parseInt(splitInput[1]);
@@ -1127,7 +1155,7 @@ public class Core {
 			ArrayList<Task> list = Logic.Crud.getTemp();
 			Task deleted = list.get(num - 1);
 			issue = deleted.getIssue();
-			
+
 			try {
 				Logic.Crud.deleteTask(num - 1, 5);
 			} catch (ClassNotFoundException | IOException e) {
@@ -1136,13 +1164,13 @@ public class Core {
 			uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 			Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 			arraylistsHaveBeenModified = true;
-		}catch(Exception e){
+		} catch (Exception e) {
 			uiObject.printRed(MSG_INVALID);
 		}
 	}
 
 	public static void deleteFromDisplayCompletedView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = localStorageObject.getCompletedTasks();
@@ -1164,7 +1192,7 @@ public class Core {
 	}
 
 	public static void deleteFromSearchView() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
@@ -1177,7 +1205,7 @@ public class Core {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
 				Logic.Crud.deleteTask(num - 1, 3);
-				
+
 				uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 				arraylistsHaveBeenModified = true;
 			}
@@ -1201,7 +1229,7 @@ public class Core {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
 					Logic.Crud.deleteTask(num - 1, 1);
-					
+
 					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 					Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 					arraylistsHaveBeenModified = true;
@@ -1209,7 +1237,7 @@ public class Core {
 					Task deleted = list2.get(num - list.size() - 1);
 					issue = deleted.getIssue();
 					Logic.Crud.deleteTask(num - 1, 1);
-					
+
 					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 					Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
 					arraylistsHaveBeenModified = true;
@@ -1221,14 +1249,14 @@ public class Core {
 	}
 
 	public static void deleteAllRecurringTasks() {
-		String s = Parser.Parser.getDescription();
+		String s = parserObject.getDescription();
 		try {
 			String[] tmp = s.split(" ");
 			if (s.contains("all")) {
 				int num = Integer.parseInt(tmp[1]);
-				boolean isDeleted  = delAllRecurringTask(num - 1);
+				boolean isDeleted = delAllRecurringTask(num - 1);
 				if (isDeleted) {
-					uiObject.printGreen("All instances of Task " + num +  " have been deleted");
+					uiObject.printGreen("All instances of Task " + num + " have been deleted");
 				} else {
 					uiObject.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
 				}
@@ -1246,7 +1274,7 @@ public class Core {
 					if ((num - 1) < list.size()) {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
-						
+
 						Logic.Crud.deleteTask(num - 1, 1);
 						uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 						Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
@@ -1255,7 +1283,7 @@ public class Core {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
 						Logic.Crud.deleteTask(num - 1, 1);
-						
+
 						uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
 						Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
 						arraylistsHaveBeenModified = true;
@@ -1266,7 +1294,6 @@ public class Core {
 			uiObject.printRed(MSG_INVALID);
 		}
 	}
-
 
 	// @@author Jung Kai
 	/**
@@ -1421,7 +1448,9 @@ public class Core {
 				return arrayToString(temp);
 			}
 		}
-	}/**
+	}
+
+	/**
 	 * method that return the index of first keyword present in the String[] and
 	 * return -1 if no keyword is present
 	 * 
@@ -1510,7 +1539,6 @@ public class Core {
 	public static String getDate() {
 		return date;
 	}
-
 
 	/**
 	 * method that return index of week, if it is not a week day, -1 will be
@@ -1610,7 +1638,8 @@ public class Core {
 		if (id.equals("")) {// if the task is not recurring task
 			return false;
 		} else {
-			for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
+			for (int i = 0; i < list.size(); i++) {// delete from uncompleted
+													// tasks
 				Task task = list.get(i);
 				if (id.equals(task.getId())) {
 					Logic.Crud.deleteTask(i, 1);
@@ -1621,18 +1650,20 @@ public class Core {
 		}
 	}
 
-	/** 
+	/**
 	 * methods that support the editing of recurring task at index n
-	 *  
+	 * 
 	 * @param n
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
 
 	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
 		Task replaced = localStorageObject.getUncompletedTask(n);
 
-		if (replaced.getId().equals("")) { // if the task at the user-entered index is not a recurring task. stop & inform user
+		if (replaced.getId().equals("")) { // if the task at the user-entered
+											// index is not a recurring task.
+											// stop & inform user
 			uiObject.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
 			return;
 		}
@@ -1642,10 +1673,10 @@ public class Core {
 		String in = sc.nextLine();
 		in = Natty.getInstance().parseEditString(in);
 		// get index of key
-		String[] s2= in.split("`");
+		String[] s2 = in.split("`");
 
-		if(s2.length==2){			
-			String[] temp=s2[1].split(" ");
+		if (s2.length == 2) {
+			String[] temp = s2[1].split(" ");
 			int start = getStartingIndex(temp); // start has value of -1
 			// if
 			// it
@@ -1681,11 +1712,11 @@ public class Core {
 
 						int frequency = Integer.parseInt(freq);
 
-						Task task = new Task(issue,dateIn,in,false,frequency,last);
+						Task task = new Task(issue, dateIn, in, false, frequency, last);
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						uiObject.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						uiObject.printGreen("All instances of Task " + (n + 1) + " has been edited and saved");
 					} catch (Exception e) {
 						uiObject.printRed(MSG_INVALID);
 						arraylistsHaveBeenModified = false;
@@ -1722,11 +1753,11 @@ public class Core {
 
 						int frequency = Integer.parseInt(freq);
 
-						Task task = new Task(issue,dateIn,in,true,frequency,last);
+						Task task = new Task(issue, dateIn, in, true, frequency, last);
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						uiObject.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						uiObject.printGreen("All instances of Task " + (n + 1) + " has been edited and saved");
 
 					} catch (Exception e) {
 						uiObject.printRed(MSG_INVALID);
@@ -1773,11 +1804,11 @@ public class Core {
 						String last = tmp[1];
 
 						int frequency = Integer.parseInt(freq);
-						Task task = new Task(issue,dateIn2,dateIn,in,frequency,last);
+						Task task = new Task(issue, dateIn2, dateIn, in, frequency, last);
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						uiObject.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						uiObject.printGreen("All instances of Task " + (n + 1) + " has been edited and saved");
 
 					} catch (Exception e) {
 						uiObject.printRed(MSG_INVALID);
@@ -1787,6 +1818,7 @@ public class Core {
 			}
 		}
 	}
+
 	public static void checkDateAndAdd(Task task) {
 		try {
 			String id = task.getId();
@@ -1795,13 +1827,14 @@ public class Core {
 			boolean expired = isExpired(ed, task.getLastDate());
 
 			while (true) {
-				if (expired) {//If task is not within display time frame or when task expired
+				if (expired) {// If task is not within display time frame or
+								// when task expired
 					break;
 				}
 				localStorageObject.addToUncompletedTasks(task);
 				String newED = processDate(ed, task.getFrequency());
-				if (task.getStartDate() == null) {//no start date
-					
+				if (task.getStartDate() == null) {// no start date
+
 					task = new Task(task.getIssue(), newED, task.getMsg(), false, task.getFrequency(),
 							task.getLastDate());
 					task.setID(id);
@@ -1810,16 +1843,15 @@ public class Core {
 					task = new Task(task.getIssue(), newED, task.getMsg(), true, task.getFrequency(),
 							task.getLastDate());
 					task.setID(id);
-				}
-				else {// has start date and end date
-					task = new Task(task.getIssue(),task.getFixedStartDateString(),newED,task.getMsg(),task.getFrequency()
-							,task.getLastDate());
+				} else {// has start date and end date
+					task = new Task(task.getIssue(), task.getFixedStartDateString(), newED, task.getMsg(),
+							task.getFrequency(), task.getLastDate());
 					task.setID(id);
 				}
 
 				ed = task.getDateCompare();
 
-				expired = (isExpired(ed,task.getLastDate()));
+				expired = (isExpired(ed, task.getLastDate()));
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -1829,17 +1861,34 @@ public class Core {
 	public static boolean isExpired(String currentRecurDate, String recurDeadline) {
 		String[] splitCurrentRecurDate = currentRecurDate.split("/");
 		String[] splitRecurDeadline = recurDeadline.split("/");
-		if (Integer.parseInt(splitRecurDeadline[2]) < Integer.parseInt(splitCurrentRecurDate[2])) { // end year < current year
+		if (Integer.parseInt(splitRecurDeadline[2]) < Integer.parseInt(splitCurrentRecurDate[2])) { // end
+																									// year
+																									// <
+																									// current
+																									// year
 			return true;
-		} else if (Integer.parseInt(splitRecurDeadline[2]) > Integer.parseInt(splitCurrentRecurDate[2])) { // end year > current year
+		} else if (Integer.parseInt(splitRecurDeadline[2]) > Integer.parseInt(splitCurrentRecurDate[2])) { // end
+																											// year
+																											// >
+																											// current
+																											// year
 			return false;
-		} else {	// end year == current year
-			if (Integer.parseInt(splitRecurDeadline[1]) > Integer.parseInt(splitCurrentRecurDate[1]) ) { // end month > current month 
+		} else { // end year == current year
+			if (Integer.parseInt(splitRecurDeadline[1]) > Integer.parseInt(splitCurrentRecurDate[1])) { // end
+																										// month
+																										// >
+																										// current
+																										// month
 				return false;
-			} 	if (Integer.parseInt(splitRecurDeadline[1]) < Integer.parseInt(splitCurrentRecurDate[1]) ) { // end month < today 
+			}
+			if (Integer.parseInt(splitRecurDeadline[1]) < Integer.parseInt(splitCurrentRecurDate[1])) { // end
+																										// month
+																										// <
+																										// today
 				return true;
 			} else { // same year & month
-				if (Integer.parseInt(splitRecurDeadline[0]) >= Integer.parseInt(splitCurrentRecurDate[0])) { // valid date
+				if (Integer.parseInt(splitRecurDeadline[0]) >= Integer.parseInt(splitCurrentRecurDate[0])) { // valid
+																												// date
 					return false;
 				} else {
 					return true;

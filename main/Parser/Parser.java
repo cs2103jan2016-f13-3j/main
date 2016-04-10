@@ -1,128 +1,150 @@
 //@@author Jung Kai
 package Parser;
 
-
 import java.util.Arrays;
 
 import Logic.CheckDate;
 
-
 public class Parser {
-
-	private static boolean rec,containDate;
-	private static CheckDate checkDateObject = new CheckDate();
-	private static String command,sd,stime,sdWithTime,ed,etime,edWithTime,originalMsg,issueM;
+	
+	private static Parser parser;
 	
 	private static final String[] KEY = { "by", "at", "during", "before", "to", "in" };
+	
+	private boolean rec, containDate;
+	private CheckDate checkDateObject;
+	private String command, sd, stime, sdWithTime, ed, etime, edWithTime, originalMsg, issueM;
+	
+	private Parser() {
+		checkDateObject = new CheckDate();
+		containDate = false;
+		rec = false;
+		
+		command = "";
+		ed = "";
+		edWithTime = "";
+		etime = "";
+		issueM = "";
+		originalMsg = "";
+		sd = "";
+		sdWithTime = "";
+		stime = "";
+	}
+	
+	public static Parser getInstance() {
+		if (parser == null) {
+			parser = new Parser();
+		}
+		return parser;
+	}
 
-	public static void parse(String description){
+	public void parse(String description) {
 		String[] splitCommand = description.split(" ");
 		command = splitCommand[0];
-		if(splitCommand.length==1){
-			originalMsg="";
-			issueM=originalMsg;
-			sd="-";
-			stime="-";
-			ed="-";
-			etime="-";
-			sdWithTime="";
-			edWithTime="";
-			rec=false;
-		}else{
-			rec=false;
-			containDate=false;
-			if(splitCommand[splitCommand.length-1].equals("r")){
-				rec=true;
+		if (splitCommand.length == 1) {
+			originalMsg = "";
+			issueM = originalMsg;
+			sd = "-";
+			stime = "-";
+			ed = "-";
+			etime = "-";
+			sdWithTime = "";
+			edWithTime = "";
+			rec = false;
+		} else {
+			rec = false;
+			containDate = false;
+			if (splitCommand[splitCommand.length - 1].equals("r")) {
+				rec = true;
 			}
-			int i=description.indexOf(" ");
-			originalMsg=description.substring(i+1);
-			issueM=originalMsg;
-			sd="-";
-			stime="-";
-			ed="-";
-			etime="-";
-			sdWithTime="";
-			edWithTime="";
-			if(originalMsg.contains(" ` ")){
-				containDate=true;
-				String[] splitDate= originalMsg.split(" ` ");
-				issueM=splitDate[0];
-				String[] temp=splitDate[1].split(" ");
+			int i = description.indexOf(" ");
+			originalMsg = description.substring(i + 1);
+			issueM = originalMsg;
+			sd = "-";
+			stime = "-";
+			ed = "-";
+			etime = "-";
+			sdWithTime = "";
+			edWithTime = "";
+			if (originalMsg.contains(" ` ")) {
+				containDate = true;
+				String[] splitDate = originalMsg.split(" ` ");
+				issueM = splitDate[0];
+				String[] temp = splitDate[1].split(" ");
 				int start = getStartingIndex(temp); // start has value of -1
 				int end = getIndexOfKey(temp);
 				// end has value of -1 if it
-				if(end<start){
-					end=-1;
+				if (end < start) {
+					end = -1;
 				}
-				if(start!=-1 ){
-					sd=temp[start+1];
-					if(hasStartTime(temp)){
-						stime=temp[start+2];
+				if (start != -1) {
+					sd = temp[start + 1];
+					if (hasStartTime(temp)) {
+						stime = temp[start + 2];
 						stime = stime.replaceAll(":", "/");
 						sdWithTime = sd + "/" + stime;
-					}else{
+					} else {
 						sdWithTime = sd;
 					}
 				}
 
-				if(end!=-1){
-					ed=temp[end+1];
-					if(hasEndTime(temp)){
-						etime=temp[end+2];
+				if (end != -1) {
+					ed = temp[end + 1];
+					if (hasEndTime(temp)) {
+						etime = temp[end + 2];
 						etime = etime.replaceAll(":", "/");
 						edWithTime = ed + "/" + etime;
-					}else{
-						edWithTime=ed;
+					} else {
+						edWithTime = ed;
 					}
 				}
 			}
 		}
 	}
 
-	public static String getStartDateWithTime(){
+	public String getStartDateWithTime() {
 		return sdWithTime;
 	}
 
-	public static String getEndDateWithTime(){
+	public String getEndDateWithTime() {
 		return edWithTime;
 	}
 
-	public static boolean getContainDate(){
+	public boolean getContainDate() {
 		return containDate;
 	}
 
-	public static boolean getRecurrence(){
+	public boolean getRecurrence() {
 		return rec;
 	}
 
-	public static String getCommand(){
+	public String getCommand() {
 		return command;
 	}
 
-	public static String getStartDate(){
+	public String getStartDate() {
 		return sd;
 	}
 
-	public static String getEndDate(){
+	public String getEndDate() {
 		return ed;
 	}
 
-	public static String getStartTime(){
+	public String getStartTime() {
 		return stime;
 	}
 
-	public static String getEndTime(){
+	public String getEndTime() {
 		return etime;
 	}
 
-	public static String getDescription(){
+	public String getDescription() {
 		return originalMsg;
 	}
 
-	public static String getIssueM(){
+	public String getIssueM() {
 		return issueM;
 	}
-
 
 	// @@author Jung Kai
 	/**
@@ -131,7 +153,7 @@ public class Parser {
 	 * @param arr
 	 * @return String
 	 */
-	public static String arrayToString(String[] arr) {
+	public String arrayToString(String[] arr) {
 		String temp = Arrays.toString(arr);
 		temp = temp.substring(1, temp.length() - 1).replaceAll(", ", " ");
 		return temp;
@@ -144,7 +166,7 @@ public class Parser {
 	 * @param arr
 	 * @return Integer
 	 */
-	public static int getIndexOfKey(String[] arr) {
+	public int getIndexOfKey(String[] arr) {
 		int idx = -1;
 		for (int j = 0; j < arr.length; j++) {
 			for (int i = 0; i < KEY.length; i++) {
@@ -157,13 +179,13 @@ public class Parser {
 	}
 
 	/**
-	 * Method that return the index of "from" or "on" from the input String[] and return
-	 * -1 if no starting index is present
+	 * Method that return the index of "from" or "on" from the input String[]
+	 * and return -1 if no starting index is present
 	 * 
 	 * @param arr
 	 * @return Integer
 	 */
-	public static int getStartingIndex(String[] arr) {
+	public int getStartingIndex(String[] arr) {
 		int idx = -1;
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i].equals("from") || arr[i].equals("on")) {
@@ -179,9 +201,9 @@ public class Parser {
 	 * starting time
 	 * 
 	 * @param arr
-	 * @return 
+	 * @return
 	 */
-	public static boolean hasStartTime(String[] arr) {
+	public boolean hasStartTime(String[] arr) {
 		boolean containTime = true;
 		int start = getStartingIndex(arr);
 		// if date is the last argument => no time
@@ -202,7 +224,7 @@ public class Parser {
 	 * @param arr
 	 * @return boolean
 	 */
-	public static boolean hasEndTime(String[] arr) {
+	public  boolean hasEndTime(String[] arr) {
 		boolean containTime = true;
 		int end = getIndexOfKey(arr);
 		// if date is the last argument => no time
