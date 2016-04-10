@@ -9,7 +9,7 @@ import org.fusesource.jansi.AnsiConsole;
 
 import Parser.Natty;
 
-public class ui {
+public class UI {
 	//@@author Cheng Gee
 	
 	private static Scanner sc = new Scanner(System.in);
@@ -317,24 +317,5 @@ public class ui {
 
 	public static void printCyan(String temp) {
 		System.out.println(HIGH_INTENSITY + CYAN + temp + ansi().reset());
-	}
-
-	/**
-	 * Function to accept the command from the user
-	 * 
-	 * @return returns the string entered by the user
-	 */
-	public static String acceptCommand() {
-		String command = sc.nextLine();
-		UI.ui.eraseScreen();
-		System.out.println(HIGH_INTENSITY + RED + "command: " + ansi().reset() + command);
-
-		String[] splitCommand = command.split(" ");
-		String firstWord = splitCommand[0];
-		if (firstWord.equals("add") || firstWord.equals("+") || firstWord.equals("a")) {
-			// only use natty if add command (or its variants) is detected
-			command = Natty.getInstance().parseString(command);
-		}
-		return command;
 	}
 }

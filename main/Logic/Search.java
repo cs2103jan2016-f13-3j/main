@@ -30,7 +30,7 @@ public class Search {
 	 *            the string to be searched for in the list of tasks
 	 */
 	public static void searchTasksByKeyword(String keyword) {
-		UI.ui.eraseScreen();
+		UI.UI.eraseScreen();
 		searchedTasks = new ArrayList<Task>();
 		String[] searchKeywords = keyword.split(" ");
 
@@ -58,19 +58,19 @@ public class Search {
 			}
 
 			if (searchedTasks.size() > 0) {
-				UI.ui.printGreen("UNCOMPLETED TASKS");
-				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+				UI.UI.printGreen("UNCOMPLETED TASKS");
+				UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 				for (int i = 0; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask1(i, temp1.getStartDateLineOne(), temp1.getStartDateLineTwo(),
+					UI.UI.printTask1(i, temp1.getStartDateLineOne(), temp1.getStartDateLineTwo(),
 							temp1.getEndDateLineOne(), temp1.getEndDateLineTwo(), temp1.getIssue(),
 							temp1.getRecurFrequency());
 
 					counter++;
 				}
 
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				UI.UI.print("________________________________________________________________");
+				UI.UI.print("\n");
 			}
 		}
 
@@ -87,16 +87,16 @@ public class Search {
 			}
 
 			if (searchedTasks.size() > counter) {
-				UI.ui.printGreen("FLOATING TASKS");
-				UI.ui.printGreen("Index\tTask");
+				UI.UI.printGreen("FLOATING TASKS");
+				UI.UI.printGreen("Index\tTask");
 				for (int i = counter; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printYellow((i + 1) + ".\t" + temp1.getIssue());
+					UI.UI.printYellow((i + 1) + ".\t" + temp1.getIssue());
 					counter++;
 				}
 
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				UI.UI.print("________________________________________________________________");
+				UI.UI.print("\n");
 			}
 		}
 
@@ -119,7 +119,7 @@ public class Search {
 		 * } } }
 		 */
 		if (searchedTasks.size() == 0) {
-			UI.ui.printRed("NO TASKS FOUND");
+			UI.UI.printRed("NO TASKS FOUND");
 		}
 	}
 
@@ -142,18 +142,18 @@ public class Search {
 			}
 
 			if (searchedTasks.size() > 0) {
-				UI.ui.printGreen("UNCOMPLETED TASKS");
-				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+				UI.UI.printGreen("UNCOMPLETED TASKS");
+				UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 				for (int i = 0; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask1(i, temp1.getStartDateLineOne(), temp1.getStartDateLineTwo(),
+					UI.UI.printTask1(i, temp1.getStartDateLineOne(), temp1.getStartDateLineTwo(),
 							temp1.getEndDateLineOne(), temp1.getEndDateLineTwo(), temp1.getIssue(),
 							temp1.getRecurFrequency());
 					counter++;
 				}
 
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				UI.UI.print("________________________________________________________________");
+				UI.UI.print("\n");
 			}
 		}
 
@@ -174,16 +174,16 @@ public class Search {
 			}
 
 			if (searchedTasks.size() > counter) {
-				UI.ui.printGreen("FLOATING TASKS");
-				UI.ui.printGreen("Index\tTask");
+				UI.UI.printGreen("FLOATING TASKS");
+				UI.UI.printGreen("Index\tTask");
 				for (int i = counter; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printYellow((i + 1) + ".\t" + temp1.getIssue());
+					UI.UI.printYellow((i + 1) + ".\t" + temp1.getIssue());
 					counter++;
 				}
 
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				UI.UI.print("________________________________________________________________");
+				UI.UI.print("\n");
 			}
 		}
 
@@ -205,18 +205,18 @@ public class Search {
 			}
 
 			if (searchedTasks.size() > counter) {
-				UI.ui.printGreen("COMPLETED TASKS");
-				UI.ui.printGreen("Index\tTask");
+				UI.UI.printGreen("COMPLETED TASKS");
+				UI.UI.printGreen("Index\tTask");
 				for (int i = counter; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					UI.UI.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
 
 				}
 			}
 		}
 
 		if (searchedTasks.size() == 0) {
-			UI.ui.printRed("NO TASKS FOUND");
+			UI.UI.printRed("NO TASKS FOUND");
 		}
 	}
 

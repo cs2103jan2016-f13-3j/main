@@ -19,7 +19,7 @@ import Task.Task;
 
 public class Core {
 	private static boolean arraylistsHaveBeenModified;
-	
+	private static CheckDate checkDateObject = new CheckDate();
 	private static int INVALID_TASK_INDEX = -1;	
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
 	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
@@ -72,9 +72,9 @@ public class Core {
 
 		String command = sc.nextLine();
 		
-		UI.ui.eraseScreen();
-		UI.ui.printRed("command: ");
-		UI.ui.print(command);
+		UI.UI.eraseScreen();
+		UI.UI.printRed("command: ");
+		UI.UI.print(command);
 	
 		String[] splitCommand = command.split(" ");
 		if (splitCommand[0].equals("add") || splitCommand[0].equals("a") || splitCommand[0].equals("+")) {
@@ -133,18 +133,18 @@ public class Core {
 			}
 		} else if (option.equals("history")) {
 			String pastCommands = Undo.getInstance().viewPastCommands();
-			UI.ui.printYellow(pastCommands);
+			UI.UI.printYellow(pastCommands);
 		} else if (option.equals("future")) {
 			String possibleRedoCommands = Undo.getInstance().viewRedoCommands();
-			UI.ui.printYellow(possibleRedoCommands);
+			UI.UI.printYellow(possibleRedoCommands);
 		} else if (option.equals("undo")) {
 			undoCommand();
 		} else if (option.equals("redo")) {
 			redoCommand();
 		} else if (option.equals("exit")) {
-			UI.ui.printGreen("Bye!");
+			UI.UI.printGreen("Bye!");
 			AnsiConsole.systemUninstall();
-			Logic.crud.exit();
+			Logic.Crud.exit();
 		} else if (option.equals("help")) {
 			helpObject.printHelpMenu();
 		} else if (option.equals("dir")) {
@@ -152,7 +152,7 @@ public class Core {
 		} else if (option.equals("label")) {
 			setLabelCommand();
 		} else {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 		return arraylistsHaveBeenModified;
 	}
@@ -166,11 +166,11 @@ public class Core {
 		ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 
 		if (list.size() == 0) {
-			UI.ui.printRed(MSG_EMPTY);
+			UI.UI.printRed(MSG_EMPTY);
 		} else if (list.size()  < num || num - 1 < 0) {
-			UI.ui.printRed(MSG_PRIORITY_FAIL);
+			UI.UI.printRed(MSG_PRIORITY_FAIL);
 		} else {
-			UI.ui.printYellow("Enter priority");
+			UI.UI.printYellow("Enter priority");
 			String priority = sc.nextLine();
 			Logic.Mark.setRecurringTasksPriority(num - 1, priority);
 			arraylistsHaveBeenModified = true;
@@ -191,67 +191,67 @@ public class Core {
 		boolean isAdded;
 
 		if (description.equals("")) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		} else {
 			// get index of key
 			if(containDate){
 				if (!recurrence) {
 					if (startDate.equals("-") && !endDate.equals("-")) { // no start date but has end date
-						if (!Logic.checkDate.checkDateformat(endDate)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(endDate)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithEndDate(issue, endDateWithTime, description);
+							isAdded = Logic.Crud.addTaskWithEndDate(issue, endDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
+								int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
+								UI.UI.printGreen("\"" + issue + "\" " + MSG_ADD);
 								arraylistsHaveBeenModified = true;
-								Logic.crud.displayNearestFiveUncompleted(index);
+								Logic.Crud.displayNearestFiveUncompleted(index);
 							} else {
-								UI.ui.printRed(MSG_DUPLICATE_ADD);
+								UI.UI.printRed(MSG_DUPLICATE_ADD);
 							}
 						}
 
 					} else if ((!startDate.equals("-")) && endDate.equals("-")) { // has start date
 
-						if (!Logic.checkDate.checkDateformat(startDate)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(startDate)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithStartDate(issue, startDateWithTime, description);
+							isAdded = Logic.Crud.addTaskWithStartDate(issue, startDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
-								Logic.crud.displayNearestFiveUncompleted(index);
+								int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
+								UI.UI.printGreen("\"" + issue + "\" " + MSG_ADD);
+								Logic.Crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
 							} else {
-								UI.ui.printRed(MSG_DUPLICATE_ADD);
+								UI.UI.printRed(MSG_DUPLICATE_ADD);
 							}
 						}
 					} else { // has both start date and end date
 
-						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(endDate)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(startDate) && !checkDateObject.checkDateformat(endDate)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							isAdded = Logic.crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description);
+							isAdded = Logic.Crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description);
 							if (isAdded) {
 								Logic.Sort.sortTasksChronologically();
-								int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, description);
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_ADD);
-								Logic.crud.displayNearestFiveUncompleted(index);
+								int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime, description);
+								UI.UI.printGreen("\"" + issue + "\" " + MSG_ADD);
+								Logic.Crud.displayNearestFiveUncompleted(index);
 								arraylistsHaveBeenModified = true;
 							} else {
-								UI.ui.printRed(MSG_DUPLICATE_ADD);
+								UI.UI.printRed(MSG_DUPLICATE_ADD);
 							}
 						}
 					}
 				} else { // for recurring tasks
 
 					if (startDate.equals("-") && !endDate.equals("-")) {// no start date but has
-						if (!Logic.checkDate.checkDateformat(endDate)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(endDate)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							UI.ui.printRed(PROMPT_RECURRING);
+							UI.UI.printRed(PROMPT_RECURRING);
 							try {
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
@@ -262,20 +262,20 @@ public class Core {
 
 								Task task = new Task(issue,endDateWithTime,description,true,frequency,last);
 								checkDateAndAdd(task);
-								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.UI.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
-								UI.ui.printRed(MSG_INVALID);
+								UI.UI.printRed(MSG_INVALID);
 								arraylistsHaveBeenModified = false;
 							}
 
 						}
 					} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has start date
 
-						if (!Logic.checkDate.checkDateformat(startDate)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(startDate)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							UI.ui.printRed(PROMPT_RECURRING);
+							UI.UI.printRed(PROMPT_RECURRING);
 							try {
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
@@ -286,20 +286,20 @@ public class Core {
 
 								Task task = new Task(issue,startDateWithTime,description,true,frequency,last);
 								checkDateAndAdd(task);
-								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.UI.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
-								UI.ui.printRed(MSG_INVALID);
+								UI.UI.printRed(MSG_INVALID);
 								arraylistsHaveBeenModified = false;
 							}
 
 						}
 					} else { // has both start date and end date
 
-						if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-							UI.ui.printRed(MSG_WRONG_DATE);
+						if (!checkDateObject.checkDateformat(startDate) && !checkDateObject.checkDateformat(date)) {
+							UI.UI.printRed(MSG_WRONG_DATE);
 						} else {
-							UI.ui.printRed(PROMPT_RECURRING);
+							UI.UI.printRed(PROMPT_RECURRING);
 							try {
 								String in = sc.nextLine();
 								String[] tmp = in.split(" ");
@@ -311,26 +311,26 @@ public class Core {
 
 
 								Task task = new Task(issue,startDateWithTime,endDateWithTime,description,frequency,last);
-								UI.ui.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
+								UI.UI.printGreen("\"" + task.getIssue() + "\"" +  " is added to the task list. (recurs every " + freq + " days)");
 								checkDateAndAdd(task);
 								arraylistsHaveBeenModified = true;
 							} catch (Exception e) {
-								UI.ui.printRed(MSG_INVALID);
+								UI.UI.printRed(MSG_INVALID);
 								arraylistsHaveBeenModified = false;
 							}
 						}
 					}
 				}
 			} else {
-				isAdded = Logic.crud.addTask(description);
+				isAdded = Logic.Crud.addTask(description);
 				if (isAdded) {
 					Logic.Sort.sortTasksChronologically();
-					int index = Logic.crud.uncompletedTaskIndexWithNoDate(description);
-					UI.ui.printGreen("\"" + description + "\" " + MSG_ADD);
-					Logic.crud.displayNearestFiveFloating(index);
+					int index = Logic.Crud.uncompletedTaskIndexWithNoDate(description);
+					UI.UI.printGreen("\"" + description + "\" " + MSG_ADD);
+					Logic.Crud.displayNearestFiveFloating(index);
 					arraylistsHaveBeenModified = true;
 				} else {
-					UI.ui.printRed(MSG_DUPLICATE_ADD);
+					UI.UI.printRed(MSG_DUPLICATE_ADD);
 				}
 			}
 		}
@@ -349,17 +349,17 @@ public class Core {
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 
 			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
+				UI.UI.printRed(MSG_PRIORITY_FAIL);
 			} else {
-				UI.ui.print("Enter label");
+				UI.UI.print("Enter label");
 				String label = sc.nextLine();
-				Logic.crud.addLabelToTask(num - 1, label);
+				Logic.Crud.addLabelToTask(num - 1, label);
 				arraylistsHaveBeenModified = true;
 				Task temp = localStorageObject.getUncompletedTask(num-1);
 				String issue = temp.getIssue();
-				UI.ui.printGreen("Task "+issue+" has been labelled "+label);
+				UI.UI.printGreen("Task "+issue+" has been labelled "+label);
 			}
 		} catch (Exception e) {
 
@@ -375,13 +375,13 @@ public class Core {
 			String currentStorageDirectory = importTasksObject.getFolderDirectory();
 			if (currentStorageDirectory.isEmpty()) { // indicates source
 				// folder is in use
-				UI.ui.printGreen(MSG_DIRECTORY_USED + MSG_DEFAULT_DIRECTORY);
+				UI.UI.printGreen(MSG_DIRECTORY_USED + MSG_DEFAULT_DIRECTORY);
 			} else {
-				UI.ui.printGreen(MSG_DIRECTORY_USED + currentStorageDirectory);
+				UI.UI.printGreen(MSG_DIRECTORY_USED + currentStorageDirectory);
 			}
 		} else { // "dir <path>" was entered
 			String feedback = importTasksObject.changeStorageDestination(description);
-			UI.ui.print(feedback);
+			UI.UI.print(feedback);
 		}
 	}
 
@@ -389,40 +389,40 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		if (s.isEmpty()) { // only "redo" was typed
 			String outcome = Undo.getInstance().redo();
-			UI.ui.printGreen(outcome);
+			UI.UI.printGreen(outcome);
 		} else if (s.equals("all")) {
 			int redoCount = Undo.getInstance().getRedoCount();
 			if (redoCount == 0) { // if no commands to redo
-				UI.ui.printRed(MSG_NO_REDO_COMMAND);
+				UI.UI.printRed(MSG_NO_REDO_COMMAND);
 			} else {
 				for (int i = 0; i < redoCount; i++) { // do redo for all stored
 					// commands
 					String outcome = Undo.getInstance().redo();
-					UI.ui.printGreen(outcome);
+					UI.UI.printGreen(outcome);
 				}
-				UI.ui.printGreen(MSG_ALL_COMMANDS_REDONE);
+				UI.UI.printGreen(MSG_ALL_COMMANDS_REDONE);
 			}
 		} else { // e.g. "redo 2" will redo the latest 2 commands
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getRedoCount()) { // if
 					// entered count is outside valid bounds
-					UI.ui.printRed(MSG_INVALID_REDO_COUNT);
+					UI.UI.printRed(MSG_INVALID_REDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // redo the number of
 						// commands specified
 						if (Undo.getInstance().getRedoCount() == 0) { // all
 							// commands have been redone but user used a higher int
-							UI.ui.printRed(MSG_NO_REDO_COMMAND);
+							UI.UI.printRed(MSG_NO_REDO_COMMAND);
 							break;
 						}
 						String outcome = Undo.getInstance().redo();
-						UI.ui.printGreen(outcome);
+						UI.UI.printGreen(outcome);
 					}
 				}
 			} catch (NumberFormatException e) { // if non-number was entered,
 				// e.g. "redo hello"
-				UI.ui.printRed(MSG_INVALID_REDO_COUNT);
+				UI.UI.printRed(MSG_INVALID_REDO_COUNT);
 			}
 		}
 	}
@@ -431,39 +431,39 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		if (s.isEmpty()) { // only "undo" was typed
 			String outcome = Undo.getInstance().undo();
-			UI.ui.printGreen(outcome);
+			UI.UI.printGreen(outcome);
 		} else if (s.equals("all")) {
 			int historyCount = Undo.getInstance().getHistoryCount();
 			if (historyCount == 0) { // if no commands to undo
-				UI.ui.printRed(MSG_NO_PAST_COMMAND);
+				UI.UI.printRed(MSG_NO_PAST_COMMAND);
 			} else {
 				for (int i = 0; i < historyCount; i++) { // do undo for all
 					// stored commands
 					String outcome = Undo.getInstance().undo();
-					UI.ui.printGreen(outcome);
+					UI.UI.printGreen(outcome);
 				}
-				UI.ui.printGreen(MSG_ALL_COMMANDS_UNDONE);
+				UI.UI.printGreen(MSG_ALL_COMMANDS_UNDONE);
 			}
 		} else { // e.g. "undo 2" will undo the latest 2 commands
 			try {
 				int count = Integer.parseInt(s);
 				if (count < 1 || count > Undo.getInstance().getHistoryCount()) { // if
 					// entered count is outside valid bounds
-					UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
+					UI.UI.printRed(MSG_INVALID_UNDO_COUNT);
 				} else {
 					for (int i = 0; i < count; i++) { // undo the number of
 						// commands specified
 						if (Undo.getInstance().getHistoryCount() == 0) { // all commands have been undone but user used a higher int
-							UI.ui.printRed(MSG_NO_PAST_COMMAND);
+							UI.UI.printRed(MSG_NO_PAST_COMMAND);
 							break;
 						}
 						String outcome = Undo.getInstance().undo();
-						UI.ui.printGreen(outcome);
+						UI.UI.printGreen(outcome);
 					}
 				}
 			} catch (NumberFormatException e) { // if non-number was entered,
 				// e.g. "undo hello"
-				UI.ui.printRed(MSG_INVALID_UNDO_COUNT);
+				UI.UI.printRed(MSG_INVALID_UNDO_COUNT);
 			}
 		}
 	}
@@ -502,7 +502,7 @@ public class Core {
 		//@@author Jung Kai
 		try {
 			if(num<0){
-				UI.ui.printRed(MSG_INVALID);
+				UI.UI.printRed(MSG_INVALID);
 			}else if(description.contains("all")) {
 				editRecurringTask(num - 1);
 			} else {
@@ -510,12 +510,12 @@ public class Core {
 				ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
+					UI.UI.printRed(MSG_EMPTY);
 				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-					UI.ui.printRed(MSG_EDIT_FAIL);
+					UI.UI.printRed(MSG_EDIT_FAIL);
 				} else {
-					UI.ui.printGreen(PROMPT_EDIT);
-					Logic.crud.copyEditingTask(num);
+					UI.UI.printGreen(PROMPT_EDIT);
+					Logic.Crud.copyEditingTask(num);
 					input = sc.nextLine();
 					input = Natty.getInstance().parseEditString(input);
 					input ="edit "+input;
@@ -529,52 +529,52 @@ public class Core {
 					boolean rec = Parser.Parser.getRecurrence();
 					boolean containDate = Parser.Parser.getContainDate();
 					if (description.equals("")) {
-						UI.ui.printRed(MSG_INVALID);
+						UI.UI.printRed(MSG_INVALID);
 					}else{
 						if (containDate) {
 							if (!rec) {
 								if (startDate.equals("-") && !endDate.equals("-")) {
-									if (!Logic.checkDate.checkDateformat(endDate)) {
-										UI.ui.printRed(MSG_WRONG_DATE);
+									if (!checkDateObject.checkDateformat(endDate)) {
+										UI.UI.printRed(MSG_WRONG_DATE);
 									} else {
 										// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 										// (to be implemented)
-										Logic.crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
+										Logic.Crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
 										
-										int index = Logic.crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
-										UI.ui.printGreen("Task number " + num + MSG_EDIT);
-										Logic.crud.displayNearestFiveUncompleted(index);
+										int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime, description);
+										UI.UI.printGreen("Task number " + num + MSG_EDIT);
+										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								} else if ((!startDate.equals("-")) && endDate.equals("-")) {// has start date
 
-									if (!Logic.checkDate.checkDateformat(startDate)) {
-										UI.ui.printRed(MSG_WRONG_DATE);
+									if (!checkDateObject.checkDateformat(startDate)) {
+										UI.UI.printRed(MSG_WRONG_DATE);
 									} else {
 
 										// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
-										Logic.crud.editTaskWithStartDate(issue, startDateWithTime, description, num - 1);
+										Logic.Crud.editTaskWithStartDate(issue, startDateWithTime, description, num - 1);
 										Logic.Sort.sortTasksChronologically();
-										int index = Logic.crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
+										int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime, description);
 										
-										UI.ui.printGreen("Task number " + num + MSG_EDIT);
-										Logic.crud.displayNearestFiveUncompleted(index);
+										UI.UI.printGreen("Task number " + num + MSG_EDIT);
+										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								} else { // has both start date and end date
-									if (!Logic.checkDate.checkDateformat(startDate)	&& !Logic.checkDate.checkDateformat(endDate)) {
-										UI.ui.printRed(MSG_WRONG_DATE);
+									if (!checkDateObject.checkDateformat(startDate)	&& !checkDateObject.checkDateformat(endDate)) {
+										UI.UI.printRed(MSG_WRONG_DATE);
 									} else {
 										// get issue
 										// Logic.crud.addTask(issue,startDate,startTime,endDate,endTime);
-										Logic.crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description, num - 1);
+										Logic.Crud.editTaskWithBothDates(issue, startDateWithTime, endDateWithTime, description, num - 1);
 										
-										UI.ui.printGreen("Task number " + num + MSG_EDIT);
+										UI.UI.printGreen("Task number " + num + MSG_EDIT);
 										Logic.Sort.sortTasksChronologically();
-										int index = Logic.crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime,
+										int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime, endDateWithTime,
 												input);
-										Logic.crud.displayNearestFiveUncompleted(index);
+										Logic.Crud.displayNearestFiveUncompleted(index);
 										arraylistsHaveBeenModified = true;
 									}
 								}
@@ -582,10 +582,10 @@ public class Core {
 						} else {// no end date and no
 							// start date
 
-							Logic.crud.editTaskWithNoDate(input, input, num - 1);
-							int index = Logic.crud.uncompletedTaskIndexWithNoDate(description);
-							UI.ui.printGreen("Task number " + num + MSG_EDIT);
-							Logic.crud.displayNearestFiveFloating(index);
+							Logic.Crud.editTaskWithNoDate(input, input, num - 1);
+							int index = Logic.Crud.uncompletedTaskIndexWithNoDate(description);
+							UI.UI.printGreen("Task number " + num + MSG_EDIT);
+							Logic.Crud.displayNearestFiveFloating(index);
 							arraylistsHaveBeenModified = true;
 						}
 					}
@@ -625,7 +625,7 @@ public class Core {
 
 	public static int getCorrectIndexFromDisplayAll(int num) {
 		try{
-			Task temp = Logic.crud.getTempTask(num - 1);
+			Task temp = Logic.Crud.getTempTask(num - 1);
 
 			ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
@@ -707,21 +707,21 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
+			ArrayList<Task> list = Logic.Crud.getTemp();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
+				UI.UI.printRed(MSG_PRIORITY_FAIL);
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
-				UI.ui.printYellow("Enter priority");
+				UI.UI.printYellow("Enter priority");
 				String priority = sc.nextLine();
 				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+					UI.UI.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
+				UI.UI.printGreen("Issue "+num+" has been set to "+priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -735,18 +735,18 @@ public class Core {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
+				UI.UI.printRed(MSG_PRIORITY_FAIL);
 			} else {
-				UI.ui.printYellow("Enter priority");
+				UI.UI.printYellow("Enter priority");
 				String priority = sc.nextLine();
 				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+					UI.UI.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
+				UI.UI.printGreen("Issue "+num+" has been set to "+priority);
 				Task temp = list.get(num - 1);
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
@@ -780,18 +780,18 @@ public class Core {
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
+				UI.UI.printRed(MSG_PRIORITY_FAIL);
 			} else {
-				UI.ui.printYellow("Enter priority");
+				UI.UI.printYellow("Enter priority");
 				String priority = sc.nextLine();
 				while((priority.equals("high") != true) && (priority.equals("medium") != true) &&
 						priority.equals("low") != true) {
-					UI.ui.printRed("Invalid priority entered. Please enter high, medium or low.");
+					UI.UI.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				UI.ui.printGreen("Issue "+num+" has been set to "+priority);
+				UI.UI.printGreen("Issue "+num+" has been set to "+priority);
 				Logic.Mark.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -808,14 +808,14 @@ public class Core {
 			// work
 			ArrayList<Task> list = localStorageObject.getCompletedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_NO_COMPLETED_TASKS);
+				UI.UI.printRed(MSG_NO_COMPLETED_TASKS);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_UNMARK_FAIL);
+				UI.UI.printRed(MSG_UNMARK_FAIL);
 			} else {
-				Task temp = Logic.crud.getCompletedTask(num - 1);
+				Task temp = Logic.Crud.getCompletedTask(num - 1);
 				Logic.Mark.markTaskAsUncompleted(num - 1);
-				UI.ui.printGreen("\""+temp.getIssue()+"\"" + MSG_UNMARK);
-				Logic.crud.displayNearestFiveUnmarkCompleteTaskList(temp);
+				UI.UI.printGreen("\""+temp.getIssue()+"\"" + MSG_UNMARK);
+				Logic.Crud.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -850,9 +850,9 @@ public class Core {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
+				UI.UI.printRed(MSG_MARK_FAIL);
 			} else {
 				Task temp = list.get(num -1);
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
@@ -874,8 +874,8 @@ public class Core {
 				}
 
 				
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
+				UI.UI.printGreen(s + MSG_MARK);
+				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -890,15 +890,15 @@ public class Core {
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
+				UI.UI.printRed(MSG_MARK_FAIL);
 			} else {
-				Task temp = Logic.crud.getUncompletedTask(num - 1);
+				Task temp = Logic.Crud.getUncompletedTask(num - 1);
 				Logic.Mark.markTaskAsCompleted(num - 1);
 				
-				UI.ui.printGreen("\""+temp.getIssue()+"\"" + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
+				UI.UI.printGreen("\""+temp.getIssue()+"\"" + MSG_MARK);
+				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -910,19 +910,19 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
+			ArrayList<Task> list = Logic.Crud.getTemp();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_MARK_FAIL);
+				UI.UI.printRed(MSG_MARK_FAIL);
 			} else {
 
-				Task temp = Logic.crud.getTempTask(num - 1);
+				Task temp = Logic.Crud.getTempTask(num - 1);
 				num = getCorrectIndexFromDisplayAll(num);
 				Logic.Mark.markTaskAsCompleted(num - 1);
 				
-				UI.ui.printGreen(s + MSG_MARK);
-				Logic.crud.displayNearestFiveCompletedTaskList(temp);
+				UI.UI.printGreen(s + MSG_MARK);
+				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
 				arraylistsHaveBeenModified = true;
 			}
 		}
@@ -931,8 +931,8 @@ public class Core {
 	}
 
 	public static void clearCommand() throws ClassNotFoundException, IOException {
-		Logic.crud.clearTasks();
-		UI.ui.printGreen(MSG_CLEAR);
+		Logic.Crud.clearTasks();
+		UI.UI.printGreen(MSG_CLEAR);
 		arraylistsHaveBeenModified = true;
 	}
 
@@ -941,7 +941,7 @@ public class Core {
 		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if(Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				int num = Integer.parseInt(s);
-				Logic.crud.viewIndividualTask(num - 1);
+				Logic.Crud.viewIndividualTask(num - 1);
 			}
 			else {
 				viewFromDisplayView();
@@ -951,12 +951,12 @@ public class Core {
 		}
 		else if(Logic.Head.getLastDisplay().equals("")) {
 			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
-			Logic.crud.viewIndividualTask(num - 1);
+			Logic.Crud.viewIndividualTask(num - 1);
 		}
 		else {
 			try {
 				int num = Integer.parseInt(s);
-				Logic.crud.viewIndividualTask(num - 1);
+				Logic.Crud.viewIndividualTask(num - 1);
 			} catch (Exception e) {
 			}
 		}
@@ -968,9 +968,9 @@ public class Core {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed("Invalid index entered");
+				UI.UI.printRed("Invalid index entered");
 			} else {
 				Task temp = list.get(num - 1);
 				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
@@ -979,7 +979,7 @@ public class Core {
 				for(Task t : tempUncompletedTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
 						
-						Logic.crud.viewIndividualTask(counter);
+						Logic.Crud.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
 					}
@@ -989,7 +989,7 @@ public class Core {
 				for(Task t : tempFloatingTasks) {
 					if(t.getTaskString().equals(temp.getTaskString())) {
 						
-						Logic.crud.viewIndividualTask(counter);
+						Logic.Crud.viewIndividualTask(counter);
 						arraylistsHaveBeenModified = true;
 						break;
 					}
@@ -1006,15 +1006,15 @@ public class Core {
 		String s = Parser.Parser.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.crud.getTemp();
+			ArrayList<Task> list = Logic.Crud.getTemp();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed("Wrong index entered");
+				UI.UI.printRed("Wrong index entered");
 			} else {
 				num = getCorrectIndexFromDisplayAll(num);
 				
-				Logic.crud.viewIndividualTask(num - 1);
+				Logic.Crud.viewIndividualTask(num - 1);
 				arraylistsHaveBeenModified = true;
 			}
 		}
@@ -1026,34 +1026,34 @@ public class Core {
 	public static void displayCommand() {
 		String s = Parser.Parser.getDescription();
 		if (s.equals("completed") || s.equals("c")) {
-			Logic.crud.displayCompletedTasks();
+			Logic.Crud.displayCompletedTasks();
 		} else if (s.equals("floating") || s.equals("f")) {
-			Logic.crud.displayFloatingTasks();
-		} else if (Logic.checkDate.checkDateformat(s)) {
-			Logic.crud.displayScheduleForADay(s);
+			Logic.Crud.displayFloatingTasks();
+		} else if (checkDateObject.checkDateformat(s)) {
+			Logic.Crud.displayScheduleForADay(s);
 		} else if (s.equals("all")) {
-			Logic.crud.displayUncompletedAndFloatingTasks();
+			Logic.Crud.displayUncompletedAndFloatingTasks();
 		} else if (s.equals("")){
-			Logic.crud.displayUpcomingTasks();
+			Logic.Crud.displayUpcomingTasks();
 		} else if (s.equals("today")) {
 			Calendar today = Calendar.getInstance();
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String todayString = df.format(today.getTime());
-			Logic.crud.displayScheduleForADay(todayString);
+			Logic.Crud.displayScheduleForADay(todayString);
 		} else if (s.equals("tomorrow")) {
 			Calendar tomorrow = Calendar.getInstance();
 			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
 			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
 			String tomorrowString = df.format(tomorrow.getTime());
-			Logic.crud.displayScheduleForADay(tomorrowString);
+			Logic.Crud.displayScheduleForADay(tomorrowString);
 		} else if (s.equals("next week") || s.equals("w+1")) {
-			Logic.crud.displayTasksForNextWeek();
+			Logic.Crud.displayTasksForNextWeek();
 		} else if (s.equals("two weeks later") || s.equals("w+2")) {
-			Logic.crud.displayTaksForTwoWeeksLater();
+			Logic.Crud.displayTaksForTwoWeeksLater();
 		} else if (s.equals("last week") || s.equals("w -1")) {
-			Logic.crud.displayTasksForLastWeek();
+			Logic.Crud.displayTasksForLastWeek();
 		}  else {
-			Logic.crud.displayByLabel(s);
+			Logic.Crud.displayByLabel(s);
 		}
 	}
 
@@ -1096,7 +1096,7 @@ public class Core {
 				int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
 				
 				if (num == -1) { // -1 when storage is empty, and user tries to delete immediately after launch
-					UI.ui.printRed(MSG_EMPTY);
+					UI.UI.printRed(MSG_EMPTY);
 					return;
 				}
 				
@@ -1122,20 +1122,20 @@ public class Core {
 				num = Integer.parseInt(splitInput[0]);
 			}
 
-			ArrayList<Task> list = Logic.crud.getTemp();
+			ArrayList<Task> list = Logic.Crud.getTemp();
 			Task deleted = list.get(num - 1);
 			issue = deleted.getIssue();
 			
 			try {
-				Logic.crud.deleteTask(num - 1, 5);
+				Logic.Crud.deleteTask(num - 1, 5);
 			} catch (ClassNotFoundException | IOException e) {
 				e.printStackTrace();
 			}
-			UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-			Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+			UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
+			Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 			arraylistsHaveBeenModified = true;
 		}catch(Exception e){
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1145,19 +1145,19 @@ public class Core {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = localStorageObject.getCompletedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
 				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+				UI.UI.printRed(MSG_TASK_DES_NOT_EXIST);
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.crud.deleteTask(num - 1, 2);
-				UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+				Logic.Crud.deleteTask(num - 1, 2);
+				UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1167,20 +1167,20 @@ public class Core {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = Logic.Search.getSearchedTasks();
 			if (list.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
 				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+				UI.UI.printRed(MSG_TASK_DES_NOT_EXIST);
 			} else {
 				Task deleted = list.get(num - 1);
 				issue = deleted.getIssue();
-				Logic.crud.deleteTask(num - 1, 3);
+				Logic.Crud.deleteTask(num - 1, 3);
 				
-				UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
+				UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1190,31 +1190,31 @@ public class Core {
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
+				UI.UI.printRed(MSG_EMPTY);
 			} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
 				// handle indexOutofBoundException
-				UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+				UI.UI.printRed(MSG_TASK_DES_NOT_EXIST);
 			} else {
 				if ((num - 1) < list.size()) {
 					Task deleted = list.get(num - 1);
 					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 1);
+					Logic.Crud.deleteTask(num - 1, 1);
 					
-					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+					UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 					arraylistsHaveBeenModified = true;
 				} else {
 					Task deleted = list2.get(num - list.size() - 1);
 					issue = deleted.getIssue();
-					Logic.crud.deleteTask(num - 1, 1);
+					Logic.Crud.deleteTask(num - 1, 1);
 					
-					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+					UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
 					arraylistsHaveBeenModified = true;
 				}
 			}
 		} catch (Exception e) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1226,9 +1226,9 @@ public class Core {
 				int num = Integer.parseInt(tmp[1]);
 				boolean isDeleted  = delAllRecurringTask(num - 1);
 				if (isDeleted) {
-					UI.ui.printGreen("All instances of Task " + num +  " have been deleted");
+					UI.UI.printGreen("All instances of Task " + num +  " have been deleted");
 				} else {
-					UI.ui.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
+					UI.UI.printRed("Not a recurring tasks. Enter delete/d followed by index to delete this task");
 				}
 				arraylistsHaveBeenModified = isDeleted;
 			} else {
@@ -1236,32 +1236,32 @@ public class Core {
 				ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 				ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
 				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
+					UI.UI.printRed(MSG_EMPTY);
 				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
 					// handle indexOutofBoundException
-					UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
+					UI.UI.printRed(MSG_TASK_DES_NOT_EXIST);
 				} else {
 					if ((num - 1) < list.size()) {
 						Task deleted = list.get(num - 1);
 						issue = deleted.getIssue();
 						
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+						Logic.Crud.deleteTask(num - 1, 1);
+						UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
+						Logic.Crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
 						arraylistsHaveBeenModified = true;
 					} else {
 						Task deleted = list2.get(num - list.size() - 1);
 						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
+						Logic.Crud.deleteTask(num - 1, 1);
 						
-						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
+						UI.UI.printGreen("\"" + issue + "\" " + MSG_DELETE);
+						Logic.Crud.displayNearestFiveDeleteFloatingTask(num - 1);
 						arraylistsHaveBeenModified = true;
 					}
 				}
 			}
 		} catch (Exception e) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 		}
 	}
 
@@ -1470,7 +1470,7 @@ public class Core {
 		if (start + 2 >= arr.length) {
 			containTime = false;
 		} else {
-			if (!Logic.checkDate.checkTimeformat(arr[start + 2])) {
+			if (!checkDateObject.checkTimeformat(arr[start + 2])) {
 				containTime = false;
 			}
 		}
@@ -1492,7 +1492,7 @@ public class Core {
 			containTime = false;
 
 		} else {
-			if (!Logic.checkDate.checkTimeformat(arr[end + 2])) {
+			if (!checkDateObject.checkTimeformat(arr[end + 2])) {
 				containTime = false;
 			}
 		}
@@ -1611,7 +1611,7 @@ public class Core {
 			for (int i = 0; i < list.size(); i++) {// delete from uncompleted tasks
 				Task task = list.get(i);
 				if (id.equals(task.getId())) {
-					Logic.crud.deleteTask(i, 1);
+					Logic.Crud.deleteTask(i, 1);
 					i = -1;// loop again
 				}
 			}
@@ -1631,12 +1631,12 @@ public class Core {
 		Task replaced = localStorageObject.getUncompletedTask(n);
 
 		if (replaced.getId().equals("")) { // if the task at the user-entered index is not a recurring task. stop & inform user
-			UI.ui.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
+			UI.UI.printRed(MSG_EDIT_NOT_RECURRING_TASK_HEAD + (n + 1) + MSG_EDIT_NOT_RECURRING_TASK_TAIL);
 			return;
 		}
 
-		Logic.crud.copyTask(replaced);
-		UI.ui.printRed("Enter new description and deadline of recurring tasks");
+		Logic.Crud.copyTask(replaced);
+		UI.UI.printRed("Enter new description and deadline of recurring tasks");
 		String in = sc.nextLine();
 		in = Natty.getInstance().parseEditString(in);
 		// get index of key
@@ -1667,10 +1667,10 @@ public class Core {
 					time = "-";
 				}
 
-				if (!Logic.checkDate.checkDateformat(date)) {
-					UI.ui.printRed(MSG_WRONG_DATE);
+				if (!checkDateObject.checkDateformat(date)) {
+					UI.UI.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed(PROMPT_RECURRING);
+					UI.UI.printRed(PROMPT_RECURRING);
 					try {
 						String in2 = sc.nextLine();
 						String[] tmp = in2.split(" ");
@@ -1683,9 +1683,9 @@ public class Core {
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						UI.UI.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
 					} catch (Exception e) {
-						UI.ui.printRed(MSG_INVALID);
+						UI.UI.printRed(MSG_INVALID);
 						arraylistsHaveBeenModified = false;
 					}
 				}
@@ -1708,10 +1708,10 @@ public class Core {
 				} else {
 					startTime = "-";
 				}
-				if (!Logic.checkDate.checkDateformat(startDate)) {
-					UI.ui.printRed(MSG_WRONG_DATE);
+				if (!checkDateObject.checkDateformat(startDate)) {
+					UI.UI.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed(PROMPT_RECURRING);
+					UI.UI.printRed(PROMPT_RECURRING);
 					try {
 						String in2 = sc.nextLine();
 						String[] tmp = in2.split(" ");
@@ -1724,10 +1724,10 @@ public class Core {
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						UI.UI.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
 
 					} catch (Exception e) {
-						UI.ui.printRed(MSG_INVALID);
+						UI.UI.printRed(MSG_INVALID);
 						arraylistsHaveBeenModified = false;
 					}
 
@@ -1760,10 +1760,10 @@ public class Core {
 				} else {
 					time = "-";
 				}
-				if (!Logic.checkDate.checkDateformat(startDate) && !Logic.checkDate.checkDateformat(date)) {
-					UI.ui.printRed(MSG_WRONG_DATE);
+				if (!checkDateObject.checkDateformat(startDate) && !checkDateObject.checkDateformat(date)) {
+					UI.UI.printRed(MSG_WRONG_DATE);
 				} else {
-					UI.ui.printRed(PROMPT_RECURRING);
+					UI.UI.printRed(PROMPT_RECURRING);
 					try {
 						String in2 = sc.nextLine();
 						String[] tmp = in2.split(" ");
@@ -1775,10 +1775,10 @@ public class Core {
 						checkDateAndAdd(task);
 						arraylistsHaveBeenModified = true;
 						delAllRecurringTask(n);
-						UI.ui.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
+						UI.UI.printGreen("All instances of Task " + (n+1) +" has been edited and saved");
 
 					} catch (Exception e) {
-						UI.ui.printRed(MSG_INVALID);
+						UI.UI.printRed(MSG_INVALID);
 						arraylistsHaveBeenModified = false;
 					}
 				}

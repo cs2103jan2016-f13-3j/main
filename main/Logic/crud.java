@@ -10,7 +10,7 @@ import java.util.Calendar;
 import Storage.LocalStorage;
 import Task.Task;
 
-public class crud {
+public class Crud {
 
 	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
 	private static boolean noDuplicate;
@@ -64,7 +64,7 @@ public class crud {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (Task temp : tempTasks) {
 			if (temp.getTaskString().equals(task.getTaskString())) {
-				UI.ui.printRed(temp.getTaskString());
+				UI.UI.printRed(temp.getTaskString());
 				noDuplicate = false;
 			}
 		}
@@ -90,7 +90,7 @@ public class crud {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (Task temp : tempTasks) {
 			if (temp.getTaskString().equals(task.getTaskString())) {
-				UI.ui.printRed(temp.getTaskString());
+				UI.UI.printRed(temp.getTaskString());
 				noDuplicate = false;
 			}
 		}
@@ -116,15 +116,15 @@ public class crud {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		for (Task temp : tempTasks) {
 			if (temp.getTaskString().equals(task.getTaskString())) {
-				UI.ui.printRed(temp.getTaskString());
+				UI.UI.printRed(temp.getTaskString());
 				noDuplicate = false;
 			}
 
 			if (temp.getStartDate() != null && temp.getEndDate() != null) {
 				if (temp.getStartDateString().equals(task.getStartDateString())
 						&& temp.getEndDateString().equals(task.getEndDateString())) {
-					UI.ui.printRed("CLASH IN TIMING DETECTED WITH - ");
-					UI.ui.printRed(temp.getTaskString());
+					UI.UI.printRed("CLASH IN TIMING DETECTED WITH - ");
+					UI.UI.printRed(temp.getTaskString());
 				}
 			}
 		}
@@ -324,7 +324,7 @@ public class crud {
 		tempTasks = localStorageObject.getCompletedTasks();
 		printCompletedTask(tempTasks);
 		if (tempTasks.isEmpty()) {
-			UI.ui.printGreen("There is no stored task to display");
+			UI.UI.printGreen("There is no stored task to display");
 		}
 	}
 
@@ -334,20 +334,20 @@ public class crud {
 	 */
 	public static void displayFloatingTasks() {
 		
-		UI.ui.printGreen("FLOATING TASKS");
-		UI.ui.printGreen("Index\tTask");
+		UI.UI.printGreen("FLOATING TASKS");
+		UI.UI.printGreen("Index\tTask");
 		boolean isEmptyF = false;
 		tempTasks = localStorageObject.getFloatingTasks();
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 		for (int i = 0; i < tempTasks.size(); i++) {
 			Task temp = tempTasks.get(i);
-			UI.ui.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+			UI.UI.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
 		}
 		if (tempTasks.isEmpty()) {
 			isEmptyF = true;
 		}
 		if (isEmptyF) {
-			UI.ui.printGreen("There are no floating tasks to show.");
+			UI.UI.printGreen("There are no floating tasks to show.");
 		}
 	}
 
@@ -369,16 +369,16 @@ public class crud {
 		if (tail >= size) {
 			tail = size;
 		}
-		UI.ui.printGreen("FLOATING TASKS");
-		UI.ui.printGreen("Index\tTask");
+		UI.UI.printGreen("FLOATING TASKS");
+		UI.UI.printGreen("Index\tTask");
 
 		for (int i = head; i < tail; i++) {
 			Task temp = tempTasks.get(i);
 			if (i == index) {
-				UI.ui.printFloatingBackground(unSize + i, temp.getIssue());
+				UI.UI.printFloatingBackground(unSize + i, temp.getIssue());
 
 			} else {
-				UI.ui.printFloating(unSize + i, temp.getIssue());
+				UI.UI.printFloating(unSize + i, temp.getIssue());
 
 			}
 		}
@@ -411,16 +411,16 @@ public class crud {
 		if (tail >= size) {
 			tail = size;
 		}
-		UI.ui.printGreen("COMPLETED TASKS");
-		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		UI.UI.printGreen("COMPLETED TASKS");
+		UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for (int i = head; i < tail; i++) {
 			Task temp = tempTasks.get(i);
 			if (index == i) {
-				UI.ui.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+				UI.UI.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 						temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			} else {
-				UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+				UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 						temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 			}
 
@@ -437,12 +437,12 @@ public class crud {
 	public static void displayNearestFiveUnmarkCompleteTaskList(Task t) {
 		ArrayList<Task> tempTasks;
 		if (t.getEndDate() != null || t.getStartDate() != null) {
-			UI.ui.printGreen("UNCOMPLETED TASKS");
-			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			UI.UI.printGreen("UNCOMPLETED TASKS");
+			UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 			tempTasks = localStorageObject.getUncompletedTasks();
 		} else {
-			UI.ui.printGreen("FLOATING TASKS");
-			UI.ui.printGreen("Index\tTask");
+			UI.UI.printGreen("FLOATING TASKS");
+			UI.UI.printGreen("Index\tTask");
 			tempTasks = localStorageObject.getFloatingTasks();
 		}
 		int size = tempTasks.size();
@@ -465,11 +465,11 @@ public class crud {
 		for (int i = head; i < tail; i++) {
 			Task temp = tempTasks.get(i);
 			if (index == i) {
-				UI.ui.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+				UI.UI.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 						temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			} else {
-				UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+				UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 						temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			}
@@ -487,7 +487,7 @@ public class crud {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		int size = tempTasks.size();
 		if (size == 0) {
-			UI.ui.printGreen("Uncompleted Task List is empty");
+			UI.UI.printGreen("Uncompleted Task List is empty");
 		} else if (index <= tempTasks.size()) {
 
 			int head = index - 2;
@@ -498,11 +498,11 @@ public class crud {
 			if (tail >= size) {
 				tail = size;
 			}
-			UI.ui.printGreen("UNCOMPLETED TASKS");
-			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			UI.UI.printGreen("UNCOMPLETED TASKS");
+			UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 			for (int i = head; i < tail; i++) {
 				Task temp = tempTasks.get(i);
-				UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+				UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 						temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			}
@@ -520,7 +520,7 @@ public class crud {
 		int size2 = tempTasks.size();
 		index -= size;
 		if (size2 == 0) {
-			UI.ui.printGreen("Floating Task List is Empty");
+			UI.UI.printGreen("Floating Task List is Empty");
 		} else if (index < size2) {
 			int head = index - 2;
 			int tail = index + 3;
@@ -530,11 +530,11 @@ public class crud {
 			if (tail > size2) {
 				tail = size2;
 			}
-			UI.ui.printGreen("FLOATING TASKS");
-			UI.ui.printGreen("Index\tTask");
+			UI.UI.printGreen("FLOATING TASKS");
+			UI.UI.printGreen("Index\tTask");
 			for (int i = head; i < tail; i++) {
 				Task temp = tempTasks.get(i);
-				UI.ui.printFloating(i, temp.getIssue());
+				UI.UI.printFloating(i, temp.getIssue());
 
 			}
 		}
@@ -557,17 +557,17 @@ public class crud {
 		if (tail >= size) {
 			tail = size;
 		}
-		UI.ui.printGreen("UNCOMPLETED TASKS");
-		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		UI.UI.printGreen("UNCOMPLETED TASKS");
+		UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 
 		for (int i = head; i < tail; i++) {
 			Task temp = tempTasks.get(i);
 			if (i == index) {
-				UI.ui.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+				UI.UI.printTaskAdded1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 						temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			} else {
-				UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+				UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 						temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 
 			}
@@ -595,16 +595,16 @@ public class crud {
 		if (tempTasks.isEmpty()) {
 			isEmptyF = true;
 		} else {
-			UI.ui.printGreen("FLOATING TASKS");
-			UI.ui.printGreen("Index\tTask");
+			UI.UI.printGreen("FLOATING TASKS");
+			UI.UI.printGreen("Index\tTask");
 			ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 			for (int i = 0; i < tempTasks.size(); i++) {
 				Task temp = tempTasks.get(i);
-				UI.ui.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+				UI.UI.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
 			}
 		}
 		if (isEmptyUn && isEmptyF) {
-			UI.ui.printGreen(MSG_NO_TASK);
+			UI.UI.printGreen(MSG_NO_TASK);
 		}
 	}
 
@@ -635,8 +635,8 @@ public class crud {
 		}
 
 		if (tempTasks.size() > 0) {
-			UI.ui.printGreen("UNCOMPLETED TASKS");
-			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			UI.UI.printGreen("UNCOMPLETED TASKS");
+			UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 
 			for (int i = 0; i < tempTasks.size(); i++) {
 				Task temp = tempTasks.get(i);
@@ -650,7 +650,7 @@ public class crud {
 						message = "deadline today";
 					}
 
-					UI.ui.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
 							temp.getShortPriority() + temp.getIssue(), message);
 				} else if (temp.getStartDate() != null) {
@@ -662,24 +662,24 @@ public class crud {
 					} else if (result == 0) {
 						message = "starts today";
 					}
-					UI.ui.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
 							temp.getShortPriority() + temp.getIssue(), message);
 				} else {
 					String message = "";
-					UI.ui.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
 							temp.getShortPriority() + temp.getIssue(), message);
 				}
 			}
 		} else {
-			UI.ui.printGreen(MSG_NO_TASK);
+			UI.UI.printGreen(MSG_NO_TASK);
 		}
 	}
 
 	public static void displayTasksForNextWeek() {
 		
-		UI.ui.printGreen("Upcoming tasks next week - ");
+		UI.UI.printGreen("Upcoming tasks next week - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 
@@ -706,14 +706,14 @@ public class crud {
 			printUncompletedTask(tempTasks);
 
 		} else {
-			UI.ui.printRed("No tasks next week");
+			UI.UI.printRed("No tasks next week");
 		}
 
 	}
 
 	public static void displayTaksForTwoWeeksLater() {
 		
-		UI.ui.printGreen("Upcoming tasks for two weeks later - ");
+		UI.UI.printGreen("Upcoming tasks for two weeks later - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 
@@ -740,14 +740,14 @@ public class crud {
 			printUncompletedTask(tempTasks);
 
 		} else {
-			UI.ui.printRed("No tasks for two weeks later");
+			UI.UI.printRed("No tasks for two weeks later");
 		}
 
 	}
 
 	public static void displayTasksForLastWeek() {
 		
-		UI.ui.printGreen("Tasks uncompleted from last week - ");
+		UI.UI.printGreen("Tasks uncompleted from last week - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 
@@ -774,7 +774,7 @@ public class crud {
 			printUncompletedTask(tempTasks);
 
 		} else {
-			UI.ui.printRed("No tasks left from last week");
+			UI.UI.printRed("No tasks left from last week");
 		}
 
 	}
@@ -806,14 +806,14 @@ public class crud {
 
 		if (tempTasks.size() > 0) {
 			hasTaskUnderThisLabel = true;
-			UI.ui.printGreen("FLOATING TASKS");
-			UI.ui.printGreen("Index \t Task");
+			UI.UI.printGreen("FLOATING TASKS");
+			UI.UI.printGreen("Index \t Task");
 			ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 			for (int i = 0; i < tempTasks.size(); i++) {
 				Task temp = tempTasks.get(i);
-				UI.ui.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+				UI.UI.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
 			}
-			UI.ui.print("________________________________");
+			UI.UI.print("________________________________");
 		}
 
 		tempTasks = new ArrayList<Task>();
@@ -830,7 +830,7 @@ public class crud {
 		}
 
 		if (!hasTaskUnderThisLabel) {
-			UI.ui.printRed(MSG_NO_TASK_UNDER_THIS_LABEL);
+			UI.UI.printRed(MSG_NO_TASK_UNDER_THIS_LABEL);
 		}
 	}
 
@@ -865,7 +865,7 @@ public class crud {
 		}
 
 		if (tempTasks.isEmpty()) {
-			UI.ui.printGreen("There is no stored task to display");
+			UI.UI.printGreen("There is no stored task to display");
 		} else {
 			Logic.Sort.sortTasksPriority();
 			printUncompletedTask(tempTasks);
@@ -1111,16 +1111,16 @@ public class crud {
 	 * @param tempTask
 	 */
 	public static void printUncompletedTask(ArrayList<Task> tempTask) {
-		UI.ui.printGreen("UNCOMPLETED TASKS");
-		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		UI.UI.printGreen("UNCOMPLETED TASKS");
+		UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 
 		for (int i = 0; i < tempTask.size(); i++) {
 			Task temp = tempTask.get(i);
 
-			UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+			UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 					temp.getEndDateLineTwo(), temp.getShortPriority() + temp.getIssue(), temp.getRecurFrequency());
 		}
-		UI.ui.print("________________________________________________________________");
+		UI.UI.print("________________________________________________________________");
 
 	}
 
@@ -1132,11 +1132,11 @@ public class crud {
 
 	public static void printCompletedTask(ArrayList<Task> tempTask) {
 		
-		UI.ui.printGreen("COMPLETED TASKS");
-		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+		UI.UI.printGreen("COMPLETED TASKS");
+		UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for (int i = 0; i < tempTasks.size(); i++) {
 			Task temp = tempTasks.get(i);
-			UI.ui.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+			UI.UI.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
 					temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
 		}
 	}
@@ -1156,7 +1156,7 @@ public class crud {
 			tempTask = localStorageObject.getFloatingTask(index - getSize.size());
 		}
 		if (tempTask == null) {
-			UI.ui.printRed(MSG_INVALID);
+			UI.UI.printRed(MSG_INVALID);
 			return;
 		}
 		boolean isCompleted = tempTask.getCompletedStatus();
@@ -1165,12 +1165,12 @@ public class crud {
 			completed = "Completed";
 		}
 
-		UI.ui.printYellow(tempTask.getTaskString());
-		UI.ui.print("Status: " + completed);
-		UI.ui.print("Priority: " + tempTask.getPriority());
-		UI.ui.print("Labels:");
+		UI.UI.printYellow(tempTask.getTaskString());
+		UI.UI.print("Status: " + completed);
+		UI.UI.print("Priority: " + tempTask.getPriority());
+		UI.UI.print("Labels:");
 		for (String label : tempTask.getLabel()) {
-			UI.ui.print(label);
+			UI.UI.print(label);
 		}
 	}
 

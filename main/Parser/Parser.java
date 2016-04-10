@@ -4,12 +4,16 @@ package Parser;
 
 import java.util.Arrays;
 
+import Logic.CheckDate;
+
 
 public class Parser {
-	private static final String[] key = { "by", "at", "during", "before", "to", "in" };
 
-	private static String command,sd,stime,sdWithTime,ed,etime,edWithTime,originalMsg,issueM;
 	private static boolean rec,containDate;
+	private static CheckDate checkDateObject = new CheckDate();
+	private static String command,sd,stime,sdWithTime,ed,etime,edWithTime,originalMsg,issueM;
+	
+	private static final String[] KEY = { "by", "at", "during", "before", "to", "in" };
 
 	public static void parse(String description){
 		String[] splitCommand = description.split(" ");
@@ -143,8 +147,8 @@ public class Parser {
 	public static int getIndexOfKey(String[] arr) {
 		int idx = -1;
 		for (int j = 0; j < arr.length; j++) {
-			for (int i = 0; i < key.length; i++) {
-				if (arr[j].equals(key[i])) {
+			for (int i = 0; i < KEY.length; i++) {
+				if (arr[j].equals(KEY[i])) {
 					idx = j;
 				}
 			}
@@ -184,7 +188,7 @@ public class Parser {
 		if (start + 2 >= arr.length) {
 			containTime = false;
 		} else {
-			if (!Logic.checkDate.checkTimeformat(arr[start + 2])) {
+			if (!checkDateObject.checkTimeformat(arr[start + 2])) {
 				containTime = false;
 			}
 		}
@@ -206,16 +210,10 @@ public class Parser {
 			containTime = false;
 
 		} else {
-			if (!Logic.checkDate.checkTimeformat(arr[end + 2])) {
+			if (!checkDateObject.checkTimeformat(arr[end + 2])) {
 				containTime = false;
 			}
 		}
 		return containTime;
 	}
-	
-
-
-
-
-	
 }

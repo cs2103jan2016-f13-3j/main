@@ -21,12 +21,12 @@ public class Head {
 
 		AnsiConsole.systemInstall();
 
-		UI.ui.printLogo();
+		UI.UI.printLogo();
 
-		UI.ui.printYellow(WELCOME_MSG_1 + WELCOME_MSG_2);
+		UI.UI.printYellow(WELCOME_MSG_1 + WELCOME_MSG_2);
 
-		UI.ui.print("\n");
-		UI.ui.printYellow(WELCOME_HELP);
+		UI.UI.print("\n");
+		UI.UI.printYellow(WELCOME_HELP);
 
 		Logic.Notification.welcomeReminder();
 
@@ -43,7 +43,7 @@ public class Head {
 		Save arrayListsSaver = new Save();
 
 		while (true) {
-			UI.ui.printRed(USER_PROMPT);
+			UI.UI.printRed(USER_PROMPT);
 			Logic.Core.acceptCommand();
 
 			lastDisplay = Parser.Parser.getCommand();

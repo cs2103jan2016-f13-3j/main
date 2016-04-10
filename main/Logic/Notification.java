@@ -25,7 +25,7 @@ public class Notification {
 	 */
 	public static void welcomeReminder() {
 		// before daysInAdvance
-		UI.ui.printRed("DEADLINES APPROACHING - ");
+		UI.UI.printRed("DEADLINES APPROACHING - ");
 		Calendar d1 = Calendar.getInstance();
 		d1.add(Calendar.DAY_OF_MONTH, -daysInAdvance);
 		int pastDay = d1.get(Calendar.DAY_OF_MONTH);
@@ -67,8 +67,8 @@ public class Notification {
 		}
 
 		if(tasksToBeDisplayed.size() > 0) {
-			UI.ui.printGreen("UNCOMPLETED TASKS");
-			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
+			UI.UI.printGreen("UNCOMPLETED TASKS");
+			UI.UI.printGreen("Index\tStart Date\tEnd Date\tTask");
 			for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
 				Task temp = tasksToBeDisplayed.get(i);
 
@@ -81,7 +81,7 @@ public class Notification {
 						message = "deadline today";
 					}
 
-					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else if(temp.getStartDate() != null) {
@@ -92,12 +92,12 @@ public class Notification {
 					} else if(result == 0) {
 						message = "starts today";
 					}
-					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else {
 					String message = "";
-					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
+					UI.UI.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
 							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 			}

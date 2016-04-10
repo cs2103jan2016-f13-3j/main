@@ -118,7 +118,7 @@ public class ImportTasks {
 			reader.endArray();
 			reader.close();
 			for (Task t : GsonObjects) {
-				Logic.crud.addTaskViaImport(t, flag);
+				Logic.Crud.addTaskViaImport(t, flag);
 			}
 		} catch (EOFException e) {
 			return;
