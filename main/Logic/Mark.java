@@ -1,5 +1,6 @@
 //@@author Kowshik
 package Logic;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
@@ -8,7 +9,11 @@ import Task.Task;
 
 public class Mark {
 	
-	private static LocalStorage localStorageObject = LocalStorage.getInstance();
+	private LocalStorage localStorageObject;
+	
+	public Mark() {
+		localStorageObject = LocalStorage.getInstance();
+	}
 
 	/**
 	 * Function to mark tasks as completed
@@ -17,7 +22,7 @@ public class Mark {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void markTaskAsCompleted(int index) throws IOException, ClassNotFoundException {
+	public void markTaskAsCompleted(int index) throws IOException, ClassNotFoundException {
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 
 		if(index < getSize.size()) {
@@ -41,7 +46,7 @@ public class Mark {
 	 * @throws IOException
 	 * @throws ClassNotFoundException 
 	 */
-	public static void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
+	public void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
 		Task temp = localStorageObject.getCompletedTask(index);
 
 		if(temp.getEndDate() != null || temp.getStartDate() != null) {
@@ -61,7 +66,7 @@ public class Mark {
 	 * @throws IOException 
 	 * @throws ClassNotFoundException 
 	 */
-	public static void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
+	public void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
 		//		localStorage.copyCurrentState();
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 
@@ -77,7 +82,7 @@ public class Mark {
 		}
 	}
 
-	public static void setRecurringTasksPriority(int index, String priority) {
+	public void setRecurringTasksPriority(int index, String priority) {
 		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 
 		Task temp = localStorageObject.getUncompletedTask(index);

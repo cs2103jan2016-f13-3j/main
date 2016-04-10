@@ -21,7 +21,8 @@ import UI.UI;
 
 public class Core {
 	
-	private static Core core;
+	private static Core coreObject;
+	private static Mark markObject;
 	
 	private static final int INVALID_TASK_INDEX = -1;
 	private static final String[] WEEK = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
@@ -79,16 +80,17 @@ public class Core {
 		checkDateObject = new CheckDate();
 		helpObject = new Help();
 		localStorageObject = LocalStorage.getInstance();
+		markObject = new Mark();
 		parserObject = Parser.getInstance();
 		sc = new Scanner(System.in);
 		uiObject = new UI();
 	}
 	
 	public static Core getInstance() {
-		if (core == null) {
-			core = new Core();
+		if (coreObject == null) {
+			coreObject = new Core();
 		}
-		return core;
+		return coreObject;
 	}
 
 	/**
@@ -209,7 +211,7 @@ public class Core {
 		} else {
 			uiObject.printYellow("Enter priority");
 			String priority = sc.nextLine();
-			Logic.Mark.setRecurringTasksPriority(num - 1, priority);
+			markObject.setRecurringTasksPriority(num - 1, priority);
 			arraylistsHaveBeenModified = true;
 		}
 
@@ -789,7 +791,7 @@ public class Core {
 					priority = sc.nextLine();
 				}
 				uiObject.printGreen("Issue " + num + " has been set to " + priority);
-				Logic.Mark.setPriority(num - 1, priority);
+				markObject.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -833,7 +835,7 @@ public class Core {
 					}
 					counter++;
 				}
-				Logic.Mark.setPriority(num - 1, priority);
+				markObject.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -859,7 +861,7 @@ public class Core {
 					priority = sc.nextLine();
 				}
 				uiObject.printGreen("Issue " + num + " has been set to " + priority);
-				Logic.Mark.setPriority(num - 1, priority);
+				markObject.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
 		} catch (Exception e) {
@@ -880,7 +882,7 @@ public class Core {
 				uiObject.printRed(MSG_UNMARK_FAIL);
 			} else {
 				Task temp = Logic.Crud.getCompletedTask(num - 1);
-				Logic.Mark.markTaskAsUncompleted(num - 1);
+				markObject.markTaskAsUncompleted(num - 1);
 				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_UNMARK);
 				Logic.Crud.displayNearestFiveUnmarkCompleteTaskList(temp);
 				arraylistsHaveBeenModified = true;
@@ -929,14 +931,14 @@ public class Core {
 				int counter = 0;
 				for (Task t : tempUncompletedTasks) {
 					if (t.getTaskString().equals(temp.getTaskString())) {
-						Logic.Mark.markTaskAsCompleted(counter);
+						markObject.markTaskAsCompleted(counter);
 						break;
 					}
 					counter++;
 				}
 				for (Task t : tempFloatingTasks) {
 					if (t.getTaskString().equals(temp.getTaskString())) {
-						Logic.Mark.markTaskAsCompleted(counter);
+						markObject.markTaskAsCompleted(counter);
 						break;
 					}
 					counter++;
@@ -963,7 +965,7 @@ public class Core {
 				uiObject.printRed(MSG_MARK_FAIL);
 			} else {
 				Task temp = Logic.Crud.getUncompletedTask(num - 1);
-				Logic.Mark.markTaskAsCompleted(num - 1);
+				markObject.markTaskAsCompleted(num - 1);
 
 				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
 				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
@@ -987,7 +989,7 @@ public class Core {
 
 				Task temp = Logic.Crud.getTempTask(num - 1);
 				num = getCorrectIndexFromDisplayAll(num);
-				Logic.Mark.markTaskAsCompleted(num - 1);
+				markObject.markTaskAsCompleted(num - 1);
 
 				uiObject.printGreen(s + MSG_MARK);
 				Logic.Crud.displayNearestFiveCompletedTaskList(temp);
