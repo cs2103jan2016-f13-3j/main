@@ -40,6 +40,9 @@ public class ImportTasks {
 
 	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
 	
+	public ImportTasks(){
+	}
+	
 	/**
 	 * Method to check (and create) storage files, and import tasks from them into program instance.
 	 * 
@@ -47,7 +50,7 @@ public class ImportTasks {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
+	public void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
 		File StorageFolderPathFile = new File(STORAGE_FOLDER_TEXT_FILE);
 		if (!StorageFolderPathFile.exists()) {
 			StorageFolderPathFile.createNewFile();
@@ -82,7 +85,7 @@ public class ImportTasks {
 	 * @throws IOException
 	 * @throws FileNotFoundException
 	 */
-	public static void checkIfFileExists(String folderDirectory, String fileName) throws IOException, FileNotFoundException {
+	private void checkIfFileExists(String folderDirectory, String fileName) throws IOException, FileNotFoundException {
 		File file = new File(folderDirectory + fileName);
 		if (!file.exists()) {
 			try {
@@ -102,7 +105,7 @@ public class ImportTasks {
 	 * @throws IOException
 	 * @throws ClassNotFoundException 
 	 */
-	private static void importTasksFromStorage(String fileName, String flag) throws IOException, ClassNotFoundException {
+	private void importTasksFromStorage(String fileName, String flag) throws IOException, ClassNotFoundException {
 		//		LoggerTry.startLog();
 		JsonReader reader = new JsonReader(new FileReader(fileName));
 		ArrayList<Task> GsonObjects = new ArrayList<Task>();
@@ -123,19 +126,19 @@ public class ImportTasks {
 	}
 	
 	// Getter methods
-	public static String getUncompletedTasksStorageFileName() {
+	public String getUncompletedTasksStorageFileName() {
 		return storageFolderDirectory + STORAGE_FILENAME_UNCOMPLETED_TASKS;
 	}
 	
-	public static String getCompletedTasksStorageFileName() {
+	public String getCompletedTasksStorageFileName() {
 		return storageFolderDirectory + STORAGE_FILENAME_COMPLETED_TASKS;
 	}
 	
-	public static String getFloatingTasksStorageFileName() {
+	public String getFloatingTasksStorageFileName() {
 		return storageFolderDirectory + STORAGE_FILENAME_FLOATING_TASKS;
 	}
 	
-	public static String getFolderDirectory() {
+	public String getFolderDirectory() {
 		return storageFolderDirectory;
 	}
 	
@@ -147,7 +150,7 @@ public class ImportTasks {
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
-	public static String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
+	public String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
 		storageFolderDirectory = checkAndSetDirectoryName(destination);
 		
 		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_UNCOMPLETED_TASKS);
@@ -185,7 +188,7 @@ public class ImportTasks {
 	 * @param destination The directory to be checked.
 	 * @return            The directory to be used.
 	 */
-	private static String checkAndSetDirectoryName(String destination) {
+	private String checkAndSetDirectoryName(String destination) {
 		if (destination.equals(STRING_DEFAULT)) {
 			return STRING_EMPTY;
 		} else if (!destination.contains(STRING_BACKSLASH)) { // does not contain \, thus not folder on Windows
@@ -201,7 +204,7 @@ public class ImportTasks {
 	 * @param directory The target directory to be written.
 	 * @throws IOException
 	 */
-	private static void writeNewDirectory(String directory) throws IOException {
+	private void writeNewDirectory(String directory) throws IOException {
 		File StorageFolderPathFile = new File(STORAGE_FOLDER_TEXT_FILE);
 		FileWriter writer = new FileWriter(StorageFolderPathFile);
 		writer.write(directory);

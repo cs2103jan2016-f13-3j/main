@@ -23,8 +23,9 @@ public class Head {
 	private static final String WELCOME_MSG_1 = "Welcome to Agendah. ";
 	private static final String WELCOME_MSG_2 = "Agendah is ready for use";
 
-	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {		
-		Logic.ImportTasks.prepareAndImportFiles();
+	public static void main(String[] args) throws FileNotFoundException, IOException, ClassNotFoundException {
+		ImportTasks importTaskObject = new ImportTasks();
+		importTaskObject.prepareAndImportFiles();
 		AnsiConsole.systemInstall();
 
 		printLogo();
