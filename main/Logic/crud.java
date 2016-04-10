@@ -16,6 +16,7 @@ public class Crud {
 	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
 	private static boolean noDuplicate;
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
+	private static Search searchObject = Search.getInstance();
 	private static Sort sortObject = new Sort();
 	private static Task tempTask;
 	private static UI uiObject = new UI();
@@ -900,9 +901,8 @@ public class Crud {
 			}
 		} else if (listOfTasks == 2) { // delete from completed tasks
 			localStorageObject.deleteFromCompletedTasks(index);
-		} else if (listOfTasks == 3) { // delete from search completed tasks
-										// view
-			ArrayList<Task> searchTemp = Search.getSearchedTasks();
+		} else if (listOfTasks == 3) { // delete from search completed tasks view
+			ArrayList<Task> searchTemp = searchObject.getSearchedTasks();
 			Task taskToBeDeleted = searchTemp.get(index);
 			ArrayList<Task> uncompletedTemp = localStorageObject.getUncompletedTasks();
 			for (int i = 0; i < uncompletedTemp.size(); i++) {

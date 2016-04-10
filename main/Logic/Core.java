@@ -24,6 +24,7 @@ public class Core {
 	private static Core coreObject;
 	private static Mark markObject;
 	private static Notification notificationObject;
+	private static Search searchObject;
 	private static Sort sortObject;
 	
 	private static final int INVALID_TASK_INDEX = -1;
@@ -86,6 +87,7 @@ public class Core {
 		markObject = new Mark();
 		parserObject = Parser.getInstance();
 		sc = new Scanner(System.in);
+		searchObject = Search.getInstance();
 		sortObject = new Sort();
 		uiObject = new UI();
 	}
@@ -160,7 +162,7 @@ public class Core {
 		} else if (option.equals("clear") || option.equals("c")) {
 			clearCommand();
 		} else if (option.equals("search") || option.equals("s")) {
-			Logic.Search.searchTasksByKeyword(parserObject.getDescription());
+			searchObject.searchTasksByKeyword(parserObject.getDescription());
 		} else if (option.equals("mark") || option.equals("m")) {
 			markCommand();
 		} else if (option.equals("unmark") || option.equals("um")) {
@@ -675,7 +677,7 @@ public class Core {
 
 	// @@author Kowshik
 	public int getCorrectIndexFromSearchView(int num) {
-		Task temp = Logic.Search.getSearchedTask(num - 1);
+		Task temp = searchObject.getSearchedTask(num - 1);
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
 
@@ -806,7 +808,7 @@ public class Core {
 		try {
 			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
+			ArrayList<Task> list = searchObject.getSearchedTasks();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -923,7 +925,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
+			ArrayList<Task> list = searchObject.getSearchedTasks();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -1036,7 +1038,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
+			ArrayList<Task> list = searchObject.getSearchedTasks();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {
@@ -1230,7 +1232,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
-			ArrayList<Task> list = Logic.Search.getSearchedTasks();
+			ArrayList<Task> list = searchObject.getSearchedTasks();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
 			} else if (list.size() < num || num - 1 < 0) {

@@ -1,9 +1,8 @@
 //@@author Kowshik
+
 package Logic;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import Storage.LocalStorage;
 import Task.Task;
@@ -11,16 +10,29 @@ import UI.UI;
 
 public class Search {
 
+	private static Search search;
+	
 	private static ArrayList<Task> searchedTasks;
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
 	private static UI uiObject = new UI();
+	
+	private Search() {
+		
+	}
+	
+	public static Search getInstance() {
+		if (search == null) {
+			search = new Search();
+		}
+		return search;
+	}
 
-	public static ArrayList<Task> getSearchedTasks() {
+	public ArrayList<Task> getSearchedTasks() {
 		return searchedTasks;
 
 	}
 
-	public static Task getSearchedTask(int index) {
+	public Task getSearchedTask(int index) {
 		return searchedTasks.get(index);
 
 	}
@@ -31,7 +43,7 @@ public class Search {
 	 * @param keyword
 	 *            the string to be searched for in the list of tasks
 	 */
-	public static void searchTasksByKeyword(String keyword) {
+	public void searchTasksByKeyword(String keyword) {
 		uiObject.eraseScreen();
 		searchedTasks = new ArrayList<Task>();
 		String[] searchKeywords = keyword.split(" ");
@@ -46,7 +58,7 @@ public class Search {
 		}
 	}
 
-	public static void searchSingleLetter(String[] searchKeywords, int counter, ArrayList<Task> temp) {
+	public void searchSingleLetter(String[] searchKeywords, int counter, ArrayList<Task> temp) {
 		String search = searchKeywords[0];
 		if (temp.size() > 0) {
 			for (int i = 0; i < temp.size(); i++) {
@@ -125,7 +137,7 @@ public class Search {
 		}
 	}
 
-	public static void searchPhrase(String[] searchKeywords, int counter, ArrayList<Task> temp) {
+	public void searchPhrase(String[] searchKeywords, int counter, ArrayList<Task> temp) {
 
 		if (temp.size() > 0) {
 			for (int i = 0; i < temp.size(); i++) {
@@ -222,7 +234,7 @@ public class Search {
 		}
 	}
 
-	public static boolean isContainsKeyword(String[] searchKeywords, ArrayList<Task> temp, int i, int j) {
+	public boolean isContainsKeyword(String[] searchKeywords, ArrayList<Task> temp, int i, int j) {
 		return temp.get(i).getIssue().toLowerCase().contains(searchKeywords[j].toLowerCase())
 				|| temp.get(i).getTaskString().toLowerCase().contains(searchKeywords[j].toLowerCase());
 	}
