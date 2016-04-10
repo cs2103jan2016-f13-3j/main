@@ -10,17 +10,23 @@ public class LocalStorage {
 
 	private static LocalStorage localStorage;
 
-	// ArrayLists to store the contents added to the file
-	private ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
-	private ArrayList<Task> completedTasks = new ArrayList<Task>();
-	private ArrayList<Task> floatingTasks = new ArrayList<Task>();
-
+	private ArrayList<Task> uncompletedTasks;
+	private ArrayList<Task> floatingTasks;
+	private ArrayList<Task> completedTasks;
+	
+	// Private constructor, following the singleton pattern.
 	private LocalStorage() {
 		uncompletedTasks = new ArrayList<Task>();
-		completedTasks = new ArrayList<Task>();
 		floatingTasks = new ArrayList<Task>();
+		completedTasks = new ArrayList<Task>();
 	}
 
+	/**
+	 * Method to access this class, following the singleton pattern. Invokes
+	 * constructor if LocalStorage has not been initialised.
+	 * 
+	 * @return The LocalStorage object.
+	 */
 	public static LocalStorage getInstance() {
 		if (localStorage == null) {
 			localStorage = new LocalStorage();
@@ -28,17 +34,17 @@ public class LocalStorage {
 		return localStorage;
 	}
 
-	// getter methods
+	// Getter methods.
 	public ArrayList<Task> getUncompletedTasks() {
 		return uncompletedTasks;
 	}
 
-	public ArrayList<Task> getCompletedTasks() {
-		return completedTasks;
-	}
-
 	public ArrayList<Task> getFloatingTasks() {
 		return floatingTasks;
+	}
+	
+	public ArrayList<Task> getCompletedTasks() {
+		return completedTasks;
 	}
 
 	public Task getUncompletedTask(int index) {
@@ -57,7 +63,17 @@ public class LocalStorage {
 		else
 			return null;
 	}
-
+	
+	public Task getFloatingTask(int index) {
+		Task temp = null;
+		for (int i = 0; i < floatingTasks.size(); i++) {
+			if (i == index) {
+				temp = floatingTasks.get(i);
+			}
+		}
+		return temp;
+	}
+	
 	public Task getCompletedTask(int index) {
 		Task temp = null;
 		for (int i = 0; i < completedTasks.size(); i++) {
@@ -68,17 +84,8 @@ public class LocalStorage {
 		return temp;
 	}
 
-	public Task getFloatingTask(int index) {
-		Task temp = null;
-		for (int i = 0; i < floatingTasks.size(); i++) {
-			if (i == index) {
-				temp = floatingTasks.get(i);
-			}
-		}
-		return temp;
-	}
 
-	// setter methods
+	// Setter methods.
 	public void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
 		uncompletedTasks = changedDetails;
 	}
@@ -106,7 +113,7 @@ public class LocalStorage {
 	/**
 	 * Function to add a task to the list of uncompleted tasks
 	 * 
-	 * @param task contains the task to be added
+	 * @param task contains the task to be added to list of uncompleted tasks
 	 */
 	public void addToUncompletedTasks(Task task) {
 		uncompletedTasks.add(task);
@@ -115,7 +122,7 @@ public class LocalStorage {
 	/**
 	 * Function to add a task to the list of floating tasks
 	 * 
-	 * @param task contains the task to be added
+	 * @param task contains the task to be added to list of floating tasks
 	 */
 	public void addToFloatingTasks(Task task) {
 		floatingTasks.add(task);
@@ -124,7 +131,7 @@ public class LocalStorage {
 	/**
 	 * Function to add a task to the list of completed tasks
 	 * 
-	 * @param task contains the task to be added
+	 * @param task contains the task to be added to list of completed tasks
 	 */
 	public void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
 		completedTasks.add(task);
@@ -133,7 +140,7 @@ public class LocalStorage {
 	/**
 	 * Function to delete a task from the list of uncompleted tasks
 	 * 
-	 * @param index contains the index of the task to be deleted from uncompleted tasks
+	 * @param index contains the index of the task to be deleted from list of uncompleted tasks
 	 */
 	public Task deleteFromUncompletedTasks(int index) {
 		Task temp = uncompletedTasks.remove(index);
@@ -143,7 +150,7 @@ public class LocalStorage {
 	/**
 	 * Function to delete a task from the list of floating tasks
 	 * 
-	 * @param index contains the index of the task to be deleted from floating tasks
+	 * @param index  contains the index of the task to be deleted from list of floating tasks
 	 */
 	public Task deleteFromFloatingTasks(int index) {
 		Task temp = floatingTasks.remove(index);
@@ -153,7 +160,7 @@ public class LocalStorage {
 	/**
 	 * Function to delete a task from the list of completed tasks
 	 * 
-	 * @param index contains the index of the task to be deleted from completed tasks
+	 * @param index contains the index of the task to be deleted from list of completed tasks
 	 */
 	public Task deleteFromCompletedTasks(int index) {
 		Task temp = completedTasks.remove(index);
@@ -165,21 +172,20 @@ public class LocalStorage {
 	 */
 	public void clearAllTasks() {
 		uncompletedTasks.clear();
-		completedTasks.clear();
 		floatingTasks.clear();
-
+		completedTasks.clear();
 	}
 
 	// @@author Jie Wei
 	/**
 	 * Function to replace the current tasks arraylists with the given arraylists, to "undo" to the previous state
 	 * 
-	 * @param previousCompleted
-	 * @param previousUncompleted
-	 * @param previousFloating
+	 * @param previousCompleted   the old list of completed tasks
+	 * @param previousUnCompleted the old list of uncompleted tasks
+	 * @param previousFloating    the old list of floating tasks
 	 */
 	public void revertToPreviousState(ArrayList<Task> previousCompleted, ArrayList<Task> previousUncompleted,
-			                          ArrayList<Task> previousFloating) {
+			ArrayList<Task> previousFloating) {
 		completedTasks = previousCompleted;
 		uncompletedTasks = previousUncompleted;
 		floatingTasks = previousFloating;
