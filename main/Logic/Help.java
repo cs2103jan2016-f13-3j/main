@@ -155,6 +155,9 @@ public class Help {
 		uiObject = new UI();
 	}
 	
+	/**
+	 * Method to print the list of help topics, and the specific topic chosen by the user.
+	 */
 	public void printHelpMenu() {
 		uiObject.printYellow(HELP_MENU);
 		uiObject.printGreen(HELP_PROMPT);
