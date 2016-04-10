@@ -15,7 +15,7 @@ public class LocalStorage {
 	private ArrayList<Task> completedTasks = new ArrayList<Task>();
 	private ArrayList<Task> floatingTasks = new ArrayList<Task>();
 
-	private LocalStorage(){
+	private LocalStorage() {
 		uncompletedTasks = new ArrayList<Task>();
 		completedTasks = new ArrayList<Task>();
 		floatingTasks = new ArrayList<Task>();
