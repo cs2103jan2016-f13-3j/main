@@ -372,9 +372,10 @@ public class Core {
 // @@author Jie Wei
 	public static void changeDirectoryCommand() throws IOException, ClassNotFoundException {
 		String description = Parser.Parser.getDescription();
+		ImportTasks importTasksObject = new ImportTasks();
 		if (description.isEmpty()) { // only "dir" was typed, this will display the
 			// current storage folder directory in use
-			String currentStorageDirectory = Logic.ImportTasks.getFolderDirectory();
+			String currentStorageDirectory = importTasksObject.getFolderDirectory();
 			if (currentStorageDirectory.isEmpty()) { // indicates source
 				// folder is in use
 				UI.ui.printGreen(MSG_DIRECTORY_USED + MSG_DEFAULT_DIRECTORY);
@@ -382,7 +383,7 @@ public class Core {
 				UI.ui.printGreen(MSG_DIRECTORY_USED + currentStorageDirectory);
 			}
 		} else { // "dir <path>" was entered
-			String feedback = Logic.ImportTasks.changeStorageDestination(description);
+			String feedback = importTasksObject.changeStorageDestination(description);
 			UI.ui.print(feedback);
 		}
 	}

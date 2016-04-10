@@ -3,12 +3,10 @@ package Logic;
 
 import java.io.EOFException;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.io.ObjectInputStream;
 import java.util.ArrayList;
 import java.util.NoSuchElementException;
 import java.util.Scanner;
@@ -23,50 +21,71 @@ import com.google.gson.stream.JsonReader;
 import Task.Task;
 
 public class ImportTasks {
-	private static String storageFileNameCompletedTasks = "TasksCompleted.txt";
-	private static String storageFileNameUncompletedTasks = "TasksUncompleted.txt";
-	private static String storageFileNameFloatingTasks = "TasksFloating.txt";
+	
+	private static String storageFolderDirectory;
+	
 	private static final String FEEDBACK_CHANGE_DIRECTORY_DEFAULT = "The default folder is now in use as the storage folder directory";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_ERROR = "The target directory is invalid. The default folder is now in use";
 	private static final String FEEDBACK_CHANGE_DIRECTORY_SUCCESS = "The storage folder directory has been changed to ";
-	private static final String FLAG_UNCOMPLETED = "uncompleted";
 	private static final String FLAG_COMPLETED = "completed";
 	private static final String FLAG_FLOATING = "floating";
-	private static String storageFolderDirectory;
+	private static final String FLAG_UNCOMPLETED = "uncompleted";
+	private static final String STORAGE_FILENAME_COMPLETED_TASKS = "TasksCompleted.txt";
+	private static final String STORAGE_FILENAME_FLOATING_TASKS = "TasksFloating.txt";
+	private static final String STORAGE_FILENAME_UNCOMPLETED_TASKS = "TasksUncompleted.txt";
+	private static final String STORAGE_FOLDER_TEXT_FILE = "StorageFolderPath.txt";
+	private static final String STRING_BACKSLASH = "\\";
+	private static final String STRING_DEFAULT = "default";
+	private static final String STRING_EMPTY = "";
 
 	private static final Logger logger = Logger.getLogger(Class.class.getName()); 
-
 	
+	public ImportTasks(){
+	}
 	
-	// creates the necessary storage files if they do not exist
-	// and import tasks from they, if any
-	public static void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
-		File StorageFolderPathFile = new File("StorageFolderPath.txt");
+	/**
+	 * Method to check (and create) storage files, and import tasks from them into program instance.
+	 * 
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void prepareAndImportFiles() throws FileNotFoundException, IOException, ClassNotFoundException {
+		File StorageFolderPathFile = new File(STORAGE_FOLDER_TEXT_FILE);
 		if (!StorageFolderPathFile.exists()) {
 			StorageFolderPathFile.createNewFile();
 		}
+		
 		Scanner sc = new Scanner(StorageFolderPathFile);
 		try {
 			storageFolderDirectory = sc.nextLine();
 		} catch (NoSuchElementException e) { // empty file (no directory specified)
-			storageFolderDirectory = "";
+			storageFolderDirectory = STRING_EMPTY;
 		}
 		sc.close();
-		if (storageFolderDirectory.equals("default")) {
-			storageFolderDirectory = "";
+		
+		if (storageFolderDirectory.equals(STRING_DEFAULT)) {
+			storageFolderDirectory = STRING_EMPTY;
 		}
 		
-		checkIfFileExists(storageFolderDirectory, storageFileNameUncompletedTasks);
-		checkIfFileExists(storageFolderDirectory, storageFileNameCompletedTasks);
-		checkIfFileExists(storageFolderDirectory, storageFileNameFloatingTasks);
-
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_UNCOMPLETED_TASKS);
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_COMPLETED_TASKS);
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_FLOATING_TASKS);
 		
-		importTasksFromStorage(storageFolderDirectory + storageFileNameUncompletedTasks, FLAG_UNCOMPLETED);
-		importTasksFromStorage(storageFolderDirectory + storageFileNameCompletedTasks, FLAG_COMPLETED);
-		importTasksFromStorage(storageFolderDirectory + storageFileNameFloatingTasks, FLAG_FLOATING);
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_UNCOMPLETED_TASKS, FLAG_UNCOMPLETED);
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_COMPLETED_TASKS, FLAG_COMPLETED);
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_FLOATING_TASKS, FLAG_FLOATING);
 	}
 
-	public static void checkIfFileExists(String folderDirectory, String fileName) throws IOException, FileNotFoundException {
+	/**
+	 * Method to check whether the storage file exists. If not, creates one.
+	 * 
+	 * @param folderDirectory The destination storage folder.
+	 * @param fileName        The destination storage file.
+	 * @throws IOException
+	 * @throws FileNotFoundException
+	 */
+	private void checkIfFileExists(String folderDirectory, String fileName) throws IOException, FileNotFoundException {
 		File file = new File(folderDirectory + fileName);
 		if (!file.exists()) {
 			try {
@@ -74,7 +93,7 @@ public class ImportTasks {
 			} catch (IOException e) { // occurs when the specified folder directory does not exist
 				file = new File(fileName);
 				file.createNewFile();
-				storageFolderDirectory = ""; // replace the folder directory to the source folder
+				storageFolderDirectory = STRING_EMPTY; // replace the folder directory to the source folder
 			}
 		}
 	}
@@ -82,12 +101,11 @@ public class ImportTasks {
 	/**
 	 * Function to import tasks from a given storage file
 	 * 
-	 * @param fileName String that contains the name of the storage file
+	 * @param fileName String that contains the name of the storage file.
 	 * @throws IOException
 	 * @throws ClassNotFoundException 
 	 */
-
-	private static void importTasksFromStorage(String fileName, String flag) throws IOException, ClassNotFoundException {
+	private void importTasksFromStorage(String fileName, String flag) throws IOException, ClassNotFoundException {
 		//		LoggerTry.startLog();
 		JsonReader reader = new JsonReader(new FileReader(fileName));
 		ArrayList<Task> GsonObjects = new ArrayList<Task>();
@@ -107,55 +125,90 @@ public class ImportTasks {
 		}
 	}
 	
-	public static String getUncompletedTasksStorageFileName() {
-		return storageFolderDirectory + storageFileNameUncompletedTasks;
+	// Getter methods
+	public String getUncompletedTasksStorageFileName() {
+		return storageFolderDirectory + STORAGE_FILENAME_UNCOMPLETED_TASKS;
 	}
 	
-	public static String getCompletedTasksStorageFileName() {
-		return storageFolderDirectory + storageFileNameCompletedTasks;
+	public String getCompletedTasksStorageFileName() {
+		return storageFolderDirectory + STORAGE_FILENAME_COMPLETED_TASKS;
 	}
 	
-	public static String getFloatingTasksStorageFileName() {
-		return storageFolderDirectory + storageFileNameFloatingTasks;
+	public String getFloatingTasksStorageFileName() {
+		return storageFolderDirectory + STORAGE_FILENAME_FLOATING_TASKS;
 	}
 	
-	public static String getFolderDirectory() {
+	public String getFolderDirectory() {
 		return storageFolderDirectory;
 	}
 	
-	public static String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
-		File StorageFolderPathFile = new File("StorageFolderPath.txt");
-		FileWriter writer = new FileWriter(StorageFolderPathFile);
-		writer.write(destination);
-		writer.close();
-		if (destination.equals("default")) {
-			storageFolderDirectory = "";
-		} else if (!destination.contains("\\")) { // does not contain \, thus not folder on Windows
-			storageFolderDirectory = "";
-		} else {
-			storageFolderDirectory = destination;
-		}
-		checkIfFileExists(storageFolderDirectory, storageFileNameUncompletedTasks);
-		checkIfFileExists(storageFolderDirectory, storageFileNameCompletedTasks);
-		checkIfFileExists(storageFolderDirectory, storageFileNameFloatingTasks);
-
+	/**
+	 * Method to change storage folder directory. Uses source folder if invalid directory detected.
+	 * 
+	 * @param destination The folder path entered by the user.
+	 * @return            Feedback regarding outcome of directory change.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public String changeStorageDestination(String destination) throws IOException, ClassNotFoundException {
+		storageFolderDirectory = checkAndSetDirectoryName(destination);
+		
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_UNCOMPLETED_TASKS);
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_COMPLETED_TASKS);
+		checkIfFileExists(storageFolderDirectory, STORAGE_FILENAME_FLOATING_TASKS);
 		
 		// if the new storage directory already contains the storage files,
-		//all tasks (unless duplicate) in these files will be imported into the current program instance
-		importTasksFromStorage(storageFolderDirectory + storageFileNameUncompletedTasks, FLAG_UNCOMPLETED);
-		importTasksFromStorage(storageFolderDirectory + storageFileNameCompletedTasks, FLAG_COMPLETED);
-		importTasksFromStorage(storageFolderDirectory + storageFileNameFloatingTasks, FLAG_FLOATING);
+		// all tasks (unless duplicate) in these files will be imported into the current program instance
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_UNCOMPLETED_TASKS, FLAG_UNCOMPLETED);
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_COMPLETED_TASKS, FLAG_COMPLETED);
+		importTasksFromStorage(storageFolderDirectory + STORAGE_FILENAME_FLOATING_TASKS, FLAG_FLOATING);
 		
-		if (destination.equals("default")) { // default directory was chosen
+		if (destination.equals(STRING_DEFAULT)) { // default directory was chosen
+			writeNewDirectory(destination);
 			return FEEDBACK_CHANGE_DIRECTORY_DEFAULT;
 		}
-		if (storageFolderDirectory.equals("")) { // invalid directory was given
+		
+		if (storageFolderDirectory.equals(STRING_EMPTY)) { // empty directory was given
+			writeNewDirectory(STRING_DEFAULT);
 			return FEEDBACK_CHANGE_DIRECTORY_ERROR;
 		}
-		if (!destination.contains("\\")) { // does not contain \, thus not folder on Windows
+		
+		if (!destination.contains(STRING_BACKSLASH)) { // does not contain \, thus not folder in Windows environment
+			writeNewDirectory(STRING_DEFAULT);
 			return FEEDBACK_CHANGE_DIRECTORY_ERROR;
 		}
+		
+		writeNewDirectory(destination);
 		return FEEDBACK_CHANGE_DIRECTORY_SUCCESS + storageFolderDirectory; // directory successfully changed
+	}
+	
+	/**
+	 * Method to check the given folder directory and assign it appropriately.
+	 * 
+	 * @param destination The directory to be checked.
+	 * @return            The directory to be used.
+	 */
+	private String checkAndSetDirectoryName(String destination) {
+		if (destination.equals(STRING_DEFAULT)) {
+			return STRING_EMPTY;
+		} else if (!destination.contains(STRING_BACKSLASH)) { // does not contain \, thus not folder on Windows
+			return STRING_EMPTY;
+		} else {
+			return destination;
+		}
+	}
+	
+	/**
+	 * Method to write the given directory path to the StorageFolderPath.txt file.
+	 * 
+	 * @param directory The target directory to be written.
+	 * @throws IOException
+	 */
+	private void writeNewDirectory(String directory) throws IOException {
+		File StorageFolderPathFile = new File(STORAGE_FOLDER_TEXT_FILE);
+		FileWriter writer = new FileWriter(StorageFolderPathFile);
+		writer.write(directory);
+		writer.close();
 	}
 }
 

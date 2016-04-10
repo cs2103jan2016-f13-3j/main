@@ -13,8 +13,11 @@ import com.google.gson.GsonBuilder;
 import Task.Task;
 
 public class Save {
+	
+	private ImportTasks importTasksObject;
 
 	public Save() {
+		importTasksObject = new ImportTasks();
 	}
 
 	/**
@@ -24,15 +27,15 @@ public class Save {
 	 */
 	public void saveToFile() throws IOException {
 		// Save uncompleted tasks
-		String UncompletedTasksStorageFIleName = Logic.ImportTasks.getUncompletedTasksStorageFileName();
+		String UncompletedTasksStorageFIleName = importTasksObject.getUncompletedTasksStorageFileName();
 		saveArrayToFile(Storage.LocalStorage.getUncompletedTasks(), UncompletedTasksStorageFIleName);
 
 		// Save completed tasks
-		String CompletedTasksStorageFileName = Logic.ImportTasks.getCompletedTasksStorageFileName();
+		String CompletedTasksStorageFileName = importTasksObject.getCompletedTasksStorageFileName();
 		saveArrayToFile(Storage.LocalStorage.getCompletedTasks(), CompletedTasksStorageFileName);
 
 		// Save floating tasks
-		String FloatingTasksStorageFileName = Logic.ImportTasks.getFloatingTasksStorageFileName();
+		String FloatingTasksStorageFileName = importTasksObject.getFloatingTasksStorageFileName();
 		saveArrayToFile(Storage.LocalStorage.getFloatingTasks(), FloatingTasksStorageFileName);
 	}
 

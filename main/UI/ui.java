@@ -8,8 +8,19 @@ import java.util.Scanner;
 import org.fusesource.jansi.AnsiConsole;
 
 import Parser.Natty;
+
 public class ui {
 	//@@author Cheng Gee
+	
+	private static final String LOGO_LINE_1 = "********   ********   ********  **       **   *****       ********   **    **";
+	private static final String LOGO_LINE_2 = "********   ********   ********  ***      **   **   **     ********   **    **";
+	private static final String LOGO_LINE_3 = "**    **   **         **        ****     **   **    **    **    **   **    **";
+	private static final String LOGO_LINE_4 = "**    **   **         ******    *** **   **   **     **   **    **   ********";
+	private static final String LOGO_LINE_5 = "********   **   ***   ******    ***  **  **   **     **   ********   ********";
+	private static final String LOGO_LINE_6 = "********   **    **   **        ***   ** **   **     **   ********   **    **";
+	private static final String LOGO_LINE_7 = "**    **   ********   ********  ***    ****   **    **    **    **   **    **";
+	private static final String LOGO_LINE_8 = "**    **   ********   ********  ***     ***   *******     **    **   **    **";
+	
 	public static final String	SANE				= "\u001B[0m";
 
 	public static final String	HIGH_INTENSITY		= "\u001B[1m";
@@ -40,13 +51,28 @@ public class ui {
 	public static final String	BACKGROUND_CYAN		= "\u001B[46m";
 	public static final String	BACKGROUND_WHITE	= "\u001B[47m";
 	public static final String ANSI_CLS = "\u001b[2J";
-	  public static final String ANSI_HOME = "\u001b[H";
-	  public static final String ANSI_BOLD = "\u001b[1m";
-	  public static final String ANSI_AT55 = "\u001b[10;10H";
-	  public static final String ANSI_REVERSEON = "\u001b[7m";
-	  public static final String ANSI_NORMAL = "\u001b[0m";
-	  public static final String ANSI_WHITEONBLUE = "\u001b[37;44m";
+	public static final String ANSI_HOME = "\u001b[H";
+	public static final String ANSI_BOLD = "\u001b[1m";
+	public static final String ANSI_AT55 = "\u001b[10;10H";
+	public static final String ANSI_REVERSEON = "\u001b[7m";
+	public static final String ANSI_NORMAL = "\u001b[0m";
+	public static final String ANSI_WHITEONBLUE = "\u001b[37;44m";
 	private static Scanner sc = new Scanner(System.in);
+
+	/**
+	 * Method to print the welcome logo of Agendah.
+	 */
+	public static void printLogo() {
+		eraseScreen();
+		printGreen(LOGO_LINE_1);
+		printGreen(LOGO_LINE_2);
+		printGreen(LOGO_LINE_3);
+		printGreen(LOGO_LINE_4);
+		printGreen(LOGO_LINE_5);
+		printGreen(LOGO_LINE_6);
+		printGreen(LOGO_LINE_7);
+		printGreen(LOGO_LINE_8);
+	}
 	
 	/**
 	 * Function to print the incoming string
@@ -164,23 +190,23 @@ public class ui {
 		}
 		for(int j=rec.length();j<msg.length();j++){
 			rec+=" ";
-			
+
 		}
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+i+".\t"+CYAN+sdate+"\t"+edate+YELLOW+msg+ansi().reset());
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+HIGH_INTENSITY+YELLOW+"\t"+CYAN+stime +etime+rec+ansi().reset());
-		
+
 	}
 	public static void printFloating(int i, String msg){
 		i=i+1;
 		System.out.println(HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset());
-		
-		
+
+
 	}
 	public static void printFloatingBackground(int i, String msg){
 		i=i+1;
 		System.out.println(BACKGROUND_BLUE+HIGH_INTENSITY+YELLOW+i+".\t"+msg +ansi().reset());
-		
-		
+
+
 	}
 	public static void printRed(String temp){
 
@@ -210,7 +236,7 @@ public class ui {
 		String command = sc.nextLine();
 		UI.ui.eraseScreen();
 		System.out.println(HIGH_INTENSITY+RED+"command: "+ansi().reset()+command);
-		
+
 		String[] splitCommand = command.split(" ");
 		String firstWord = splitCommand[0];
 		if (firstWord.equals("add") || firstWord.equals("+") || firstWord.equals("a")) { // only use natty if add command is detected
