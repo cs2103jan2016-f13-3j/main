@@ -333,7 +333,7 @@ public class crud {
 	 * 
 	 */
 	public static void displayFloatingTasks() {
-		UI.ui.eraseScreen();
+		
 		UI.ui.printGreen("FLOATING TASKS");
 		UI.ui.printGreen("Index\tTask");
 		boolean isEmptyF = false;
@@ -581,7 +581,7 @@ public class crud {
 	 */
 	public static void displayUncompletedAndFloatingTasks() {
 
-		UI.ui.eraseScreen();
+		
 		boolean isEmptyUn = false;
 		tempTasks = localStorageObject.getUncompletedTasks();
 		if (tempTasks.isEmpty()) {
@@ -609,7 +609,7 @@ public class crud {
 	}
 
 	public static void displayUpcomingTasks() {
-		UI.ui.eraseScreen();
+		
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 
 		// 7 days in advance
@@ -678,7 +678,7 @@ public class crud {
 	}
 
 	public static void displayTasksForNextWeek() {
-		UI.ui.eraseScreen();
+		
 		UI.ui.printGreen("Upcoming tasks next week - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
@@ -712,7 +712,7 @@ public class crud {
 	}
 
 	public static void displayTaksForTwoWeeksLater() {
-		UI.ui.eraseScreen();
+		
 		UI.ui.printGreen("Upcoming tasks for two weeks later - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
@@ -746,7 +746,7 @@ public class crud {
 	}
 
 	public static void displayTasksForLastWeek() {
-		UI.ui.eraseScreen();
+		
 		UI.ui.printGreen("Tasks uncompleted from last week - ");
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
@@ -781,7 +781,7 @@ public class crud {
 
 	public static void displayByLabel(String description) {
 		boolean hasTaskUnderThisLabel = false;
-		UI.ui.eraseScreen();
+		
 		tempTasks = new ArrayList<Task>();
 		ArrayList<Task> displayResults = localStorageObject.getUncompletedTasks();
 
@@ -1131,7 +1131,7 @@ public class crud {
 	 */
 
 	public static void printCompletedTask(ArrayList<Task> tempTask) {
-		UI.ui.eraseScreen();
+		
 		UI.ui.printGreen("COMPLETED TASKS");
 		UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
 		for (int i = 0; i < tempTasks.size(); i++) {
@@ -1148,7 +1148,7 @@ public class crud {
 	 *            the index of the task to be displayed
 	 */
 	public static void viewIndividualTask(int index) {
-		UI.ui.eraseScreen();
+		
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 		if (index < getSize.size()) {
 			tempTask = localStorageObject.getUncompletedTask(index);
