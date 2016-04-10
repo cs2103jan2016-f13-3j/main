@@ -785,6 +785,7 @@ public class Core {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
+			int oldNum = num;
 			ArrayList<Task> list = crudObject.getTemp();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
@@ -799,7 +800,7 @@ public class Core {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue " + num + " has been set to " + priority);
+				uiObject.printGreen(crudObject.getTempTask(oldNum - 1).getIssue() + " has been set to " + priority + " priority");
 				markObject.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
@@ -811,6 +812,7 @@ public class Core {
 		try {
 			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
+			int oldNum = num;
 			ArrayList<Task> list = searchObject.getSearchedTasks();
 			if (list.size() == 0) {
 				uiObject.printRed(MSG_EMPTY);
@@ -824,7 +826,7 @@ public class Core {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue " + num + " has been set to " + priority);
+				uiObject.printGreen(searchObject.getSearchedTask(oldNum - 1).getIssue() + " has been set to " + priority + " priority");
 				Task temp = list.get(num - 1);
 				num = getCorrectIndexFromSearchView(num);
 				markObject.setPriority(num - 1, priority);
@@ -852,7 +854,13 @@ public class Core {
 					uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
 					priority = sc.nextLine();
 				}
-				uiObject.printGreen("Issue " + num + " has been set to " + priority);
+				
+				int sizeOfUncompletedTasksList = localStorageObject.getUncompletedTasks().size();
+				if(num <= localStorageObject.getUncompletedTasks().size()) {
+					uiObject.printGreen(localStorageObject.getUncompletedTask(num - 1).getIssue() + " has been set to " + priority + " priority");
+				} else {
+					uiObject.printGreen(localStorageObject.getFloatingTask(num - sizeOfUncompletedTasksList - 1).getIssue() + " has been set to " + priority + " priority");
+				}
 				markObject.setPriority(num - 1, priority);
 				arraylistsHaveBeenModified = true;
 			}
