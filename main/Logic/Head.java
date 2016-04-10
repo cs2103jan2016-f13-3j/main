@@ -17,6 +17,7 @@ public class Head {
 	private static Parser parserObject = Parser.getInstance();
 	private static Core coreObject = Core.getInstance();
 	private static Sort sortObject = new Sort();
+	private static Notification notificationObject = new Notification();
 
 	private static final String USER_PROMPT = "command: ";
 	private static final String WELCOME_HELP = "Enter \"help\" for instructions.\n";
@@ -36,7 +37,7 @@ public class Head {
 		uiObject.print("\n");
 		uiObject.printYellow(WELCOME_HELP);
 
-		Logic.Notification.welcomeReminder();
+		notificationObject.welcomeReminder();
 
 		runProgram();
 	}

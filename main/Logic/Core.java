@@ -23,6 +23,7 @@ public class Core {
 	
 	private static Core coreObject;
 	private static Mark markObject;
+	private static Notification notificationObject;
 	private static Sort sortObject;
 	
 	private static final int INVALID_TASK_INDEX = -1;
@@ -81,6 +82,7 @@ public class Core {
 		checkDateObject = new CheckDate();
 		helpObject = new Help();
 		localStorageObject = LocalStorage.getInstance();
+		notificationObject = new Notification();
 		markObject = new Mark();
 		parserObject = Parser.getInstance();
 		sc = new Scanner(System.in);
@@ -730,7 +732,7 @@ public class Core {
 	public int getCorrectIndexWelcomeView(int num) {
 		Task temp;
 		try {
-			temp = Logic.Notification.getSpecificTask(num);
+			temp = notificationObject.getSpecificTask(num);
 		} catch (IndexOutOfBoundsException e) {
 			return INVALID_TASK_INDEX;
 		}

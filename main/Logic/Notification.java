@@ -9,27 +9,34 @@ import Task.Task;
 import UI.UI;
 
 public class Notification {
-	private static ArrayList<Task> tasksToBeDisplayed;
-	private static int daysInAdvance = 3;
-	private static LocalStorage localStorageObject = LocalStorage.getInstance();
-	private static UI uiObject = new UI();
+	private static final int DAYS_IN_ADVANCE = 3;
 	
-	public static ArrayList<Task> getTasksToBeDisplayed() {
+	private ArrayList<Task> tasksToBeDisplayed;
+	private LocalStorage localStorageObject;
+	private UI uiObject;
+	
+	public Notification() {
+		localStorageObject = LocalStorage.getInstance();
+		tasksToBeDisplayed = new ArrayList<Task>();
+		uiObject = new UI();
+	}
+	
+	public ArrayList<Task> getTasksToBeDisplayed() {
 		return tasksToBeDisplayed;
 	}
 
-	public static Task getSpecificTask(int index) throws IndexOutOfBoundsException {
+	public Task getSpecificTask(int index) throws IndexOutOfBoundsException {
 			return tasksToBeDisplayed.get(index);
 	}
 
 	/**
 	 * Function that prints the upcoming uncompleted tasks in the next three days
 	 */
-	public static void welcomeReminder() {
+	public void welcomeReminder() {
 		// before daysInAdvance
 		uiObject.printRed("DEADLINES APPROACHING - ");
 		Calendar d1 = Calendar.getInstance();
-		d1.add(Calendar.DAY_OF_MONTH, -daysInAdvance);
+		d1.add(Calendar.DAY_OF_MONTH, - DAYS_IN_ADVANCE);
 		int pastDay = d1.get(Calendar.DAY_OF_MONTH);
 		int pastMonth = d1.get(Calendar.MONTH);
 		int pastYear = d1.get(Calendar.YEAR);
@@ -104,9 +111,5 @@ public class Notification {
 				}
 			}
 		}
-	}
-
-	public static void changeDaysInAdvance(int change) {
-		daysInAdvance = change;
 	}
 }
