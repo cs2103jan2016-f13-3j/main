@@ -26,10 +26,10 @@ public class crud {
 
 	// Adding Methods
 	/**
-	 * Function to add task without time into storage
+	 * Function to add task without time into storage.
 	 * 
-	 * @param line
-	 * @return
+	 * @param line						Description in Task
+	 * @return							Whether the task is a duplicate
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -51,10 +51,14 @@ public class crud {
 	}
 
 	/**
-	 * Function to add task with only start date into storage
+	 * Function to add task with only start date into storage.
 	 * 
+	 * @param line						Issue of Task
+	 * @param date						Start Date of Task
+	 * @param msg						Original Description Without Command
+	 * @return							Whether the task is a duplicate
+	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * 
 	 */
 	public static boolean addTaskWithStartDate(String line, String date, String msg)
 			throws IOException, ClassNotFoundException {
@@ -77,10 +81,14 @@ public class crud {
 	}
 
 	/**
-	 * Function to add task with only end date into storage
+	 * Function to add task with only end date into storage.
 	 * 
+	 * @param line						Issue of the Task
+	 * @param date						End Date String
+	 * @param msg						Original Description Without Command
+	 * @return							Whether the task is a duplicate
+	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * 
 	 */
 	public static boolean addTaskWithEndDate(String line, String date, String msg)
 			throws IOException, ClassNotFoundException {
@@ -101,12 +109,16 @@ public class crud {
 			return false;
 		}
 	}
-
 	/**
-	 * Function to add task with both start and end date into storage
+	 * Function to add task with both start and end date into storage.
 	 * 
+	 * @param line		Issue of Task
+	 * @param startDate Start Date of Task
+	 * @param endDate   End Date Of Task
+	 * @param msg		Original Description without Command
+	 * @return          Whether the task is a duplicate
+	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * 
 	 */
 	public static boolean addTaskWithBothDates(String line, String startDate, String endDate, String msg)
 			throws IOException, ClassNotFoundException {
@@ -135,7 +147,12 @@ public class crud {
 			return false;
 		}
 	}
-
+	
+	/**
+	 * Function to add label to Task.
+	 * @param index		index Of Task in ArrayList
+	 * @param label		Label String
+	 */
 	public static void addLabelToTask(int index, String label) {
 		int sizeOfUncompletedTasks = Storage.LocalStorage.getUncompletedTasks().size();
 		if (index < sizeOfUncompletedTasks) {
@@ -151,10 +168,10 @@ public class crud {
 
 	// @@author Jie Wei
 	/**
-	 * Function to import the tasks from the storage file
+	 * Function to import the tasks from the storage file.
 	 * 
-	 * @param task
-	 *            the tasks to be added to the arraylist storage
+	 * @param task						Task to be added
+	 * @param flag						String Indicating the directory to be imported
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -181,13 +198,12 @@ public class crud {
 	// Editing Methods
 	// @@author Kowshik
 	/**
-	 * Function to edit task (edited task has no date)
+	 * Function to edit task (edited task has no date).
 	 * 
-	 * @param line
-	 * @param date
-	 * @param message
-	 * @param index
-	 * @throws IOException
+	 * @param line						Issue of Task
+	 * @param message					Original Message of Task Without Command
+	 * @param index						Index of Task in ArrayList
+	 * @throws IOException				
 	 * @throws ClassNotFoundException
 	 */
 	public static void editTaskWithNoDate(String line, String message, int index)
@@ -209,12 +225,12 @@ public class crud {
 	}
 
 	/**
-	 * Function to edit task (edited task has only start date)
+	 * Function to edit task (edited task has only start date).
 	 * 
-	 * @param line
-	 * @param date
-	 * @param message
-	 * @param index
+	 * @param line						Issue of Task
+	 * @param date						Starting Date of Task
+	 * @param message					Original Message Without Command
+	 * @param index						Index of Task in ArrayList
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -244,10 +260,12 @@ public class crud {
 	}
 
 	/**
-	 * Function to edit task (edited task has only end date)
+	 * Function to edit task (edited task has only end date).
 	 * 
-	 * @param index
-	 * @param line
+	 * @param line						Issue of Task
+	 * @param date						Ending Date of Task
+	 * @param message					Original Message without Command
+	 * @param index						Index of Task in ArrayList
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -281,10 +299,13 @@ public class crud {
 	}
 
 	/**
-	 * Function to edit task (edited task has both start and end dates)
+	 * Function to edit task (edited task has both start date and end date).
 	 * 
-	 * @param index
-	 * @param line
+	 * @param line						Issue of Task
+	 * @param startDate					Starting Date of Task
+	 * @param endDate					Ending Date of Task
+	 * @param message					Original Message without Command
+	 * @param index						Index of Task in Arraylist
 	 * @throws IOException
 	 * @throws ClassNotFoundException
 	 */
@@ -317,7 +338,7 @@ public class crud {
 
 	// Display Methods
 	/**
-	 * Function to display all the completed tasks in the storage
+	 * Function to display all the completed tasks in the storage.
 	 * 
 	 */
 	public static void displayCompletedTasks() {
@@ -329,7 +350,7 @@ public class crud {
 	}
 
 	/**
-	 * Function to display all floating task in storage
+	 * Function to display all floating task in storage.
 	 * 
 	 */
 	public static void displayFloatingTasks() {
@@ -353,9 +374,9 @@ public class crud {
 
 	/**
 	 * Function to display the nearest 5 floating tasks including the newly
-	 * added floating task
+	 * added floating task.
 	 * 
-	 * @param index
+	 * @param index			index of Task in Arraylist
 	 */
 	public static void displayNearestFiveFloating(int index) {
 		ArrayList<Task> tempTasks = Storage.LocalStorage.getFloatingTasks();
@@ -387,9 +408,9 @@ public class crud {
 
 	/**
 	 * Function to display the Nearest 5 Completed Task with the newly mark
-	 * Completed Task
+	 * Completed Task.
 	 * 
-	 * @param t
+	 * @param t			Task that is edited or added
 	 */
 
 	public static void displayNearestFiveCompletedTaskList(Task t) {
@@ -430,9 +451,9 @@ public class crud {
 
 	/**
 	 * Function to display the nearest 5 task from uncompleted task list or
-	 * floating task list including the unmarked task
+	 * floating task list including the unmarked task.
 	 * 
-	 * @param t
+	 * @param t			Task that is edited or added
 	 */
 	public static void displayNearestFiveUnmarkCompleteTaskList(Task t) {
 		ArrayList<Task> tempTasks;
@@ -479,9 +500,9 @@ public class crud {
 
 	/**
 	 * Function to Display the surrounding uncomplete task list of the deleted
-	 * task
+	 * task.
 	 * 
-	 * @param index
+	 * @param index		index of the task the is deleted
 	 */
 	public static void displayNearestFiveDeleteUncompleteTaskList(int index) {
 		ArrayList<Task> tempTasks = Storage.LocalStorage.getUncompletedTasks();
@@ -510,9 +531,9 @@ public class crud {
 	}
 
 	/**
-	 * Function to display the surrounding floating task list of delete task
+	 * Function to display the surrounding floating task list of delete task.
 	 * 
-	 * @param index
+	 * @param index			index of the floating task that is deleted
 	 */
 	public static void displayNearestFiveDeleteFloatingTask(int index) {
 		ArrayList<Task> tempTasks = Storage.LocalStorage.getFloatingTasks();
@@ -542,9 +563,9 @@ public class crud {
 
 	/**
 	 * Function to display the nearest 5 uncompleted task including the new
-	 * added task
+	 * added task.
 	 * 
-	 * @param index
+	 * @param index			index of the task in ArrayList
 	 */
 	public static void displayNearestFiveUncompleted(int index) {
 		ArrayList<Task> tempTasks = Storage.LocalStorage.getUncompletedTasks();
@@ -576,7 +597,7 @@ public class crud {
 	}
 
 	/**
-	 * Function to display all the uncompleted tasks in the storage
+	 * Function to display all the uncompleted tasks in the storage.
 	 * 
 	 */
 	public static void displayUncompletedAndFloatingTasks() {
@@ -607,6 +628,10 @@ public class crud {
 			UI.ui.printGreen(MSG_NO_TASK);
 		}
 	}
+	
+	/**
+	 * Function to display all the task up to 7 days from now.
+	 */
 
 	public static void displayUpcomingTasks() {
 		UI.ui.eraseScreen();
@@ -676,7 +701,9 @@ public class crud {
 			UI.ui.printGreen(MSG_NO_TASK);
 		}
 	}
-
+	/**
+	 * Function to display next week task.
+	 */
 	public static void displayTasksForNextWeek() {
 		UI.ui.eraseScreen();
 		UI.ui.printGreen("Upcoming tasks next week - ");
@@ -710,6 +737,10 @@ public class crud {
 		}
 
 	}
+	
+	/**
+	 * Function to display tasks two weeks later from now.
+	 */
 
 	public static void displayTaksForTwoWeeksLater() {
 		UI.ui.eraseScreen();
@@ -744,7 +775,10 @@ public class crud {
 		}
 
 	}
-
+	
+	/**
+	 * Function to display last week task.
+	 */
 	public static void displayTasksForLastWeek() {
 		UI.ui.eraseScreen();
 		UI.ui.printGreen("Tasks uncompleted from last week - ");
@@ -778,7 +812,11 @@ public class crud {
 		}
 
 	}
-
+	
+	/** 
+	 * Function to display Task by Label.
+	 * @param description		The label of Task
+	 */
 	public static void displayByLabel(String description) {
 		boolean hasTaskUnderThisLabel = false;
 		UI.ui.eraseScreen();
@@ -833,7 +871,10 @@ public class crud {
 			UI.ui.printRed(MSG_NO_TASK_UNDER_THIS_LABEL);
 		}
 	}
-
+	/**
+	 * Function to display task for a specified date.
+	 * @param inputDate			Date of Task
+	 */
 	public static void displayScheduleForADay(String inputDate) {
 		inputDate = inputDate.replace("/0", "/");
 		if (inputDate.startsWith("0")) {
@@ -872,6 +913,15 @@ public class crud {
 		}
 	}
 
+	/**
+	 * Function to check whether a date is contained in the String.
+	 *  
+	 * @param splitDate			Array Contains Day, Month, Year
+	 * @param day				Day String
+	 * @param month				Month String
+	 * @param year				Year String
+	 * @return					Whether a date is contain in the arguments
+	 */
 	public static boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
 		if (day.equals(splitDate[0]) && month.equals(splitDate[1]) && year.equals(splitDate[2])) {
 			return true;
@@ -881,7 +931,7 @@ public class crud {
 
 	// Delete Methods
 	/**
-	 * Function to delete task according to index in storage
+	 * Function to delete task according to index in storage.
 	 * 
 	 * @throws IOException
 	 * @throws ClassNotFoundException
@@ -926,13 +976,12 @@ public class crud {
 	// Other Methods
 
 	/**
-	 * Function to find the index of Task with Start Date
+	 * Function to find the index of Task with Start Date.
 	 * 
-	 * @param line
-	 *            the updated task description
-	 * @param index
-	 *            the index of the task to be edited
-	 * @throws IOException
+	 * @param line	Issue of Task
+	 * @param date	Start Date of Task
+	 * @param msg	Original Message without Command
+	 * @return		The integer of Task With the start date
 	 */
 	public static int uncompletedTaskIndexWithStartDate(String line, String date, String msg) {
 		Task task = new Task(line, date, msg, true);
@@ -946,12 +995,12 @@ public class crud {
 	}
 
 	/**
-	 * Function to find the index of Task with End Date
+	 * Function to find the index of Task with End Date.
 	 * 
-	 * @param line
-	 * @param date
-	 * @param msg
-	 * @return
+	 * @param line		Issue of Task
+	 * @param date		End Date of Task
+	 * @param msg		Original Message without command
+	 * @return			The integer of Task With the end date
 	 */
 	public static int uncompletedTaskIndexWithEndDate(String line, String date, String msg) {
 		Task task = new Task(line, date, msg, false);
@@ -965,13 +1014,13 @@ public class crud {
 	}
 
 	/**
-	 * Function to find the index of Task with Both Dates
+	 * Function to find the index of Task with Both Dates.
 	 * 
-	 * @param line
-	 * @param startDate
-	 * @param endDate
-	 * @param msg
-	 * @return
+	 * @param line		Issue of Task
+	 * @param startDate	Start Date of Task
+	 * @param endDate	End Date of Task
+	 * @param msg		Original Message without command
+	 * @return			The integer of Task With both the start date the end date
 	 */
 
 	public static int uncompletedTaskIndexWithBothDates(String line, String startDate, String endDate, String msg) {
@@ -986,10 +1035,10 @@ public class crud {
 	}
 
 	/**
-	 * Function to find the index of Task with No Date
+	 * Function to find the index of Task with No Date.
 	 * 
-	 * @param line
-	 * @return
+	 * @param line	Issue of Task
+	 * @return		The integer of Task in ArrayList
 	 */
 
 	public static int uncompletedTaskIndexWithNoDate(String line) {
@@ -1002,7 +1051,14 @@ public class crud {
 		}
 		return -1;
 	}
-
+	
+	/**
+	 * Function to check duplicate Task in the Arraylist.
+	 * 
+	 * @param task			Task
+	 * @param destination	Arraylist
+	 * @return				Whether there is a duplicate Task in Arraylist
+	 */
 	private static boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
 		boolean noDuplicate = true;
 		for (Task temp : destination) {
@@ -1016,9 +1072,9 @@ public class crud {
 
 	// Copy Description Metthods
 	/**
-	 * Function to copy the Task Description
+	 * Function to copy the Task Description.
 	 * 
-	 * @param temp
+	 * @param temp	Task to Copy
 	 */
 
 	public static void copyTask(Task temp) {
@@ -1031,9 +1087,9 @@ public class crud {
 	}
 
 	/**
-	 * Function to copy the uncompleted Task Description by index of Arraylist
+	 * Function to copy the uncompleted Task Description by index of Arraylist.
 	 * 
-	 * @param index
+	 * @param index Index of Task in Arraylist
 	 */
 	public static void copyTask(int index) {
 		Task edit = Storage.LocalStorage.getUncompletedTask(index - 1);
@@ -1046,9 +1102,9 @@ public class crud {
 	}
 
 	/**
-	 * Function to copy the editing Task Description
+	 * Function to copy the editing Task Description.
 	 * 
-	 * @param index
+	 * @param index		Index of Task in Arraylist
 	 */
 	public static void copyEditingTask(int index) {
 		ArrayList<Task> task1 = Storage.LocalStorage.getUncompletedTasks();
@@ -1084,10 +1140,10 @@ public class crud {
 	}
 
 	/**
-	 * Function to get a task from the list in Uncompleted Task List
+	 * Function to get a task from the list in Uncompleted Task List.
 	 * 
-	 * @param index
-	 * @return
+	 * @param index		index of Task 
+	 * @return			Task in Arraylist with index
 	 */
 	public static Task getUncompletedTask(int index) {
 
@@ -1099,16 +1155,21 @@ public class crud {
 			return Storage.LocalStorage.getFloatingTask(index - size1);
 		}
 	}
-
+	
+	/**
+	 * Function to get a task from the list in Completed Task List.
+	 * @param index		index of Task 
+	 * @return			Task in Arraylist with index
+	 */
 	public static Task getCompletedTask(int index) {
 		return Storage.LocalStorage.getCompletedTask(index);
 	}
 
 	// @@author Cheng Gee
 	/**
-	 * Function to print uncompleted Task List
+	 * Function to print uncompleted Task List.
 	 * 
-	 * @param tempTask
+	 * @param tempTask		Arraylist to be printed
 	 */
 	public static void printUncompletedTask(ArrayList<Task> tempTask) {
 		UI.ui.printGreen("UNCOMPLETED TASKS");
@@ -1125,9 +1186,9 @@ public class crud {
 	}
 
 	/**
-	 * Function to print completed Task List
+	 * Function to print completed Task List.
 	 * 
-	 * @param tempTask
+	 * @param tempTask	Arraylist to be printed
 	 */
 
 	public static void printCompletedTask(ArrayList<Task> tempTask) {
@@ -1142,10 +1203,9 @@ public class crud {
 	}
 
 	/**
-	 * Function to display the details of an individual task
+	 * Function to display the details of an individual task.
 	 * 
-	 * @param index
-	 *            the index of the task to be displayed
+	 * @param index		Index of Task in Arraylist
 	 */
 	public static void viewIndividualTask(int index) {
 		UI.ui.eraseScreen();
@@ -1175,18 +1235,17 @@ public class crud {
 	}
 
 	/**
-	 * Function to clear storage
+	 * Function to clear storage.
 	 * 
-	 * @throws IOException
 	 * @throws ClassNotFoundException
-	 * 
+	 * @throws IOException
 	 */
 	public static void clearTasks() throws ClassNotFoundException, IOException {
 		Storage.LocalStorage.clearAllTasks();
 	}
 
 	/**
-	 * Function to exit the application when user enters exit command
+	 * Function to exit the application when user enters exit command.
 	 */
 	public static void exit() {
 		System.exit(0);
