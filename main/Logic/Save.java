@@ -10,14 +10,17 @@ import java.util.ArrayList;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Save {
 	
 	private ImportTasks importTasksObject;
+	private LocalStorage localStorageObject;
 
 	public Save() {
 		importTasksObject = new ImportTasks();
+		localStorageObject = LocalStorage.getInstance();
 	}
 
 	/**
@@ -28,15 +31,15 @@ public class Save {
 	public void saveToFile() throws IOException {
 		// Save uncompleted tasks
 		String UncompletedTasksStorageFIleName = importTasksObject.getUncompletedTasksStorageFileName();
-		saveArrayToFile(Storage.LocalStorage.getUncompletedTasks(), UncompletedTasksStorageFIleName);
+		saveArrayToFile(localStorageObject.getUncompletedTasks(), UncompletedTasksStorageFIleName);
 
 		// Save completed tasks
 		String CompletedTasksStorageFileName = importTasksObject.getCompletedTasksStorageFileName();
-		saveArrayToFile(Storage.LocalStorage.getCompletedTasks(), CompletedTasksStorageFileName);
+		saveArrayToFile(localStorageObject.getCompletedTasks(), CompletedTasksStorageFileName);
 
 		// Save floating tasks
 		String FloatingTasksStorageFileName = importTasksObject.getFloatingTasksStorageFileName();
-		saveArrayToFile(Storage.LocalStorage.getFloatingTasks(), FloatingTasksStorageFileName);
+		saveArrayToFile(localStorageObject.getFloatingTasks(), FloatingTasksStorageFileName);
 	}
 
 	/**

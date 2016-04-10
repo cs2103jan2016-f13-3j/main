@@ -25,13 +25,13 @@ public class Undo {
 		
 	private ArrayList<String> undoCommands, redoCommands;
 	private ArrayList<Task> uncompletedTasksSnapshot, completedTasksSnapshot, floatingTasksSnapshot;
-	private static LocalStorage localStorageObject; 
+	private LocalStorage localStorageObject; 
 	private Stack<ArrayList<Task>> completedStack, uncompletedStack, floatingStack,
 								   completedRedoStack, uncompletedRedoStack, floatingRedoStack;
 
 	// Private constructor, following the singleton pattern.
 	private Undo() {
-		localStorageObject = new LocalStorage(); 
+		localStorageObject = LocalStorage.getInstance();
 		
 		completedStack = new Stack<ArrayList<Task>>();
 		uncompletedStack = new Stack<ArrayList<Task>>();

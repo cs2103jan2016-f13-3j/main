@@ -4,11 +4,13 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Notification {
 	private static ArrayList<Task> tasksToBeDisplayed;
 	private static int daysInAdvance = 3;
+	private static LocalStorage localStorageObject = LocalStorage.getInstance();
 	
 	public static ArrayList<Task> getTasksToBeDisplayed() {
 		return tasksToBeDisplayed;
@@ -47,7 +49,7 @@ public class Notification {
 		Date today = new Date(todayYear, todayMonth, todayDay);
 
 
-		ArrayList<Task> tempTasks = Storage.LocalStorage.getUncompletedTasks();
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
 		tasksToBeDisplayed = new ArrayList<Task>();
 
 		for(Task temp : tempTasks) {
