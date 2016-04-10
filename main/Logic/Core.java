@@ -20,15 +20,12 @@ import Task.Task;
 import UI.UI;
 
 public class Core {
-	private static boolean arraylistsHaveBeenModified;
-	private static CheckDate checkDateObject = new CheckDate();
-	private static int INVALID_TASK_INDEX = -1;
-	private static LocalStorage localStorageObject = LocalStorage.getInstance();
-	private static String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
-	private static UI uiObject = new UI();
-
-	private static final String[] week = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
-	private static final String[] key = { "by", "at", "during", "before", "to", "in" };
+	
+	private static Core core;
+	
+	private static final int INVALID_TASK_INDEX = -1;
+	private static final String[] WEEK = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
+	private static final String[] KEY = { "by", "at", "during", "before", "to", "in" };
 	private static final String MSG_EMPTY = "Storage is empty. Press \"add\" to add task.";
 	private static final String MSG_CLEAR = "All content deleted";
 	private static final String MSG_ADD = "is added to the task list.";
@@ -57,10 +54,42 @@ public class Core {
 	private static final String MSG_INVALID_REDO_COUNT = "Please enter a valid number of commands you wish to redo";
 	private static final String PROMPT_EDIT = "Insert new description and deadline for the task.";
 	private static final String PROMPT_RECURRING = "Enter <frequency> <date in dd/mm/yyyy>. e.g \"4 01/01/2016\"";
-
-	private static Help helpObject = new Help();
-	private static Parser parserObject = Parser.getInstance();
-	private static Scanner sc = new Scanner(System.in);
+	
+	private boolean arraylistsHaveBeenModified;
+	private CheckDate checkDateObject;
+	private LocalStorage localStorageObject;
+	private String startDate, date, issue, startTime, time, input, dateIn, dateIn2;
+	private UI uiObject;
+	private Help helpObject;
+	private Parser parserObject;
+	private Scanner sc;
+	
+	private Core() {
+		arraylistsHaveBeenModified = false;
+		
+		date = "";
+		dateIn = "";
+		dateIn2 = "";
+		input = "";
+		issue = "";
+		startDate = "";
+		startTime = "";
+		time = "";
+		
+		checkDateObject = new CheckDate();
+		helpObject = new Help();
+		localStorageObject = LocalStorage.getInstance();
+		parserObject = Parser.getInstance();
+		sc = new Scanner(System.in);
+		uiObject = new UI();
+	}
+	
+	public static Core getInstance() {
+		if (core == null) {
+			core = new Core();
+		}
+		return core;
+	}
 
 	/**
 	 * method that simulate command line interface that will responds to user's
@@ -70,7 +99,7 @@ public class Core {
 	 * @throws ClassNotFoundException
 	 *             return boolean
 	 */
-	public static void acceptCommand() throws ClassNotFoundException, IOException {
+	public void acceptCommand() throws ClassNotFoundException, IOException {
 		// take "snapshots" of current storage state
 		Undo.getInstance().copyCurrentTasksState();
 
@@ -111,7 +140,7 @@ public class Core {
 	 * @throws ClassNotFoundException
 	 *             return boolean
 	 */
-	public static boolean parseCommands() throws IOException, ClassNotFoundException {
+	public boolean parseCommands() throws IOException, ClassNotFoundException {
 		arraylistsHaveBeenModified = false;
 		String option = parserObject.getCommand();
 		if (option.equals("add") || option.equals("a") || option.equals("+")) {
@@ -165,7 +194,7 @@ public class Core {
 		return arraylistsHaveBeenModified;
 	}
 
-	private static void setAllRecurringTasksPriorityCommand() {
+	private void setAllRecurringTasksPriorityCommand() {
 		String description = parserObject.getDescription();
 		String[] tmp = description.split(" ");
 		String idx = tmp[1];
@@ -186,7 +215,7 @@ public class Core {
 
 	}
 
-	public static void addCommand() throws IOException, ClassNotFoundException {
+	public void addCommand() throws IOException, ClassNotFoundException {
 		String description = parserObject.getDescription();
 		String startDate = parserObject.getStartDate();
 		String startDateWithTime = parserObject.getStartDateWithTime();
@@ -365,7 +394,7 @@ public class Core {
 	}
 
 	// @@author Kowshik
-	public static void setLabelCommand() {
+	public void setLabelCommand() {
 		String description = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(description);
@@ -392,7 +421,7 @@ public class Core {
 	}
 
 	// @@author Jie Wei
-	public static void changeDirectoryCommand() throws IOException, ClassNotFoundException {
+	public void changeDirectoryCommand() throws IOException, ClassNotFoundException {
 		String description = parserObject.getDescription();
 		ImportTasks importTasksObject = new ImportTasks();
 		if (description.isEmpty()) { // only "dir" was typed, this will display
@@ -411,7 +440,7 @@ public class Core {
 		}
 	}
 
-	public static void redoCommand() throws ClassNotFoundException, IOException {
+	public void redoCommand() throws ClassNotFoundException, IOException {
 		String s = parserObject.getDescription();
 		if (s.isEmpty()) { // only "redo" was typed
 			String outcome = Undo.getInstance().redo();
@@ -454,7 +483,7 @@ public class Core {
 		}
 	}
 
-	public static void undoCommand() throws ClassNotFoundException, IOException {
+	public void undoCommand() throws ClassNotFoundException, IOException {
 		String s = parserObject.getDescription();
 		if (s.isEmpty()) { // only "undo" was typed
 			String outcome = Undo.getInstance().undo();
@@ -506,7 +535,7 @@ public class Core {
 	}
 
 	// @@author Kowshik
-	public static void editCommand() {
+	public void editCommand() {
 		int num;
 		String description = parserObject.getDescription();
 		if (description.contains("all")) {
@@ -639,7 +668,7 @@ public class Core {
 	}
 
 	// @@author Kowshik
-	public static int getCorrectIndexFromSearchView(int num) {
+	public int getCorrectIndexFromSearchView(int num) {
 		Task temp = Logic.Search.getSearchedTask(num - 1);
 		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
 		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
@@ -664,7 +693,7 @@ public class Core {
 		return num;
 	}
 
-	public static int getCorrectIndexFromDisplayAll(int num) {
+	public int getCorrectIndexFromDisplayAll(int num) {
 		try {
 			Task temp = Logic.Crud.getTempTask(num - 1);
 
@@ -694,7 +723,7 @@ public class Core {
 		}
 	}
 
-	public static int getCorrectIndexWelcomeView(int num) {
+	public int getCorrectIndexWelcomeView(int num) {
 		Task temp;
 		try {
 			temp = Logic.Notification.getSpecificTask(num);
@@ -725,7 +754,7 @@ public class Core {
 		return num;
 	}
 
-	public static void setPriorityCommand() {
+	public void setPriorityCommand() {
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
 				setPriorityFromDisplayAllView();
@@ -741,7 +770,7 @@ public class Core {
 		}
 	}
 
-	public static void setPriorityFromDisplayView() {
+	public void setPriorityFromDisplayView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -767,7 +796,7 @@ public class Core {
 		}
 	}
 
-	public static void setPriorityFromSearchTaskView() {
+	public void setPriorityFromSearchTaskView() {
 		try {
 			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
@@ -811,7 +840,7 @@ public class Core {
 		}
 	}
 
-	public static void setPriorityFromDisplayAllView() {
+	public void setPriorityFromDisplayAllView() {
 		try {
 			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
@@ -837,7 +866,7 @@ public class Core {
 		}
 	}
 
-	public static void unmarkCommand() {
+	public void unmarkCommand() {
 		try {
 			String s = parserObject.getDescription();
 			int num = Integer.parseInt(s);
@@ -861,7 +890,7 @@ public class Core {
 		}
 	}
 
-	public static void markCommand() {
+	public void markCommand() {
 		String s = parserObject.getDescription();
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) { // marking
@@ -884,7 +913,7 @@ public class Core {
 		}
 	}
 
-	public static void markFromSearchView() {
+	public void markFromSearchView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -922,7 +951,7 @@ public class Core {
 		}
 	}
 
-	public static void markFromDisplayAllView(String s) {
+	public void markFromDisplayAllView(String s) {
 
 		try {
 			int num = Integer.parseInt(s);
@@ -945,7 +974,7 @@ public class Core {
 		}
 	}
 
-	public static void markFromDisplayView() {
+	public void markFromDisplayView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -968,13 +997,13 @@ public class Core {
 		}
 	}
 
-	public static void clearCommand() throws ClassNotFoundException, IOException {
+	public void clearCommand() throws ClassNotFoundException, IOException {
 		Logic.Crud.clearTasks();
 		uiObject.printGreen(MSG_CLEAR);
 		arraylistsHaveBeenModified = true;
 	}
 
-	public static void viewCommand() {
+	public void viewCommand() {
 		String s = parserObject.getDescription();
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
 			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
@@ -997,7 +1026,7 @@ public class Core {
 		}
 	}
 
-	public static void viewFromSearchView() {
+	public void viewFromSearchView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -1036,7 +1065,7 @@ public class Core {
 		}
 	}
 
-	public static void viewFromDisplayView() {
+	public void viewFromDisplayView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -1056,7 +1085,7 @@ public class Core {
 		}
 	}
 
-	public static void displayCommand() {
+	public void displayCommand() {
 		String s = parserObject.getDescription();
 		if (s.equals("completed") || s.equals("c")) {
 			Logic.Crud.displayCompletedTasks();
@@ -1090,7 +1119,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteCommand() {
+	public void deleteCommand() {
 		String s = parserObject.getDescription();
 		if ((Logic.Head.getLastDisplay().equals("d") == true
 				|| Logic.Head.getLastDisplay().equals("display")) == true) {
@@ -1141,7 +1170,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteFromDisplayView() {
+	public void deleteFromDisplayView() {
 		String s = parserObject.getDescription();
 		String[] splitInput = s.split(" ");
 		try {
@@ -1169,7 +1198,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteFromDisplayCompletedView() {
+	public void deleteFromDisplayCompletedView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -1191,7 +1220,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteFromSearchView() {
+	public void deleteFromSearchView() {
 		String s = parserObject.getDescription();
 		try {
 			int num = Integer.parseInt(s);
@@ -1214,7 +1243,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteFromDisplayAllView(String s) {
+	public void deleteFromDisplayAllView(String s) {
 		try {
 			int num = Integer.parseInt(s);
 			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
@@ -1248,7 +1277,7 @@ public class Core {
 		}
 	}
 
-	public static void deleteAllRecurringTasks() {
+	public void deleteAllRecurringTasks() {
 		String s = parserObject.getDescription();
 		try {
 			String[] tmp = s.split(" ");
@@ -1302,7 +1331,7 @@ public class Core {
 	 * @param arr
 	 * @return String
 	 */
-	public static String arrayToString(String[] arr) {
+	public String arrayToString(String[] arr) {
 		String temp = Arrays.toString(arr);
 		temp = temp.substring(1, temp.length() - 1).replaceAll(", ", " ");
 		return temp;
@@ -1320,7 +1349,7 @@ public class Core {
 	 * @param endTime
 	 * @return String
 	 */
-	public static String getIssue(String[] arr, int start, int end, boolean startTime, boolean endTime) {
+	public String getIssue(String[] arr, int start, int end, boolean startTime, boolean endTime) {
 		if (start == -1) {// no start date
 			if (endTime) { // has end time
 				int size = arr.length - 3;
@@ -1457,11 +1486,11 @@ public class Core {
 	 * @param arr
 	 * @return Integer
 	 */
-	public static int getIndexOfKey(String[] arr) {
+	public int getIndexOfKey(String[] arr) {
 		int idx = -1;
 		for (int j = 0; j < arr.length; j++) {
-			for (int i = 0; i < key.length; i++) {
-				if (arr[j].equals(key[i])) {
+			for (int i = 0; i < KEY.length; i++) {
+				if (arr[j].equals(KEY[i])) {
 					idx = j;
 				}
 			}
@@ -1476,7 +1505,7 @@ public class Core {
 	 * @param arr
 	 * @return Integer
 	 */
-	public static int getStartingIndex(String[] arr) {
+	public int getStartingIndex(String[] arr) {
 		int idx = -1;
 		for (int i = 0; i < arr.length; i++) {
 			if (arr[i].equals("from") || arr[i].equals("on")) {
@@ -1494,7 +1523,7 @@ public class Core {
 	 * @param arr
 	 * @return boolean
 	 */
-	public static boolean hasStartTime(String[] arr) {
+	public boolean hasStartTime(String[] arr) {
 		boolean containTime = true;
 		int start = getStartingIndex(arr);
 		// if date is the last argument => no time
@@ -1515,7 +1544,7 @@ public class Core {
 	 * @param arr
 	 * @return boolean
 	 */
-	public static boolean hasEndTime(String[] arr) {
+	public boolean hasEndTime(String[] arr) {
 		boolean containTime = true;
 		int end = getIndexOfKey(arr);
 		// if date is the last argument => no time
@@ -1531,12 +1560,12 @@ public class Core {
 	}
 
 	// return existing issue processed by the parser
-	public static String getIssue() {
+	public String getIssue() {
 		return issue;
 	}
 
 	// return existing date processed by the parser
-	public static String getDate() {
+	public String getDate() {
 		return date;
 	}
 
@@ -1547,10 +1576,10 @@ public class Core {
 	 * @param s
 	 * @return int
 	 */
-	public static int getIndexOfWeek(String s) {
+	public int getIndexOfWeek(String s) {
 		int idx = -1;
 		for (int i = 0; i < 7; i++) {
-			if (s.equals(week[i])) {
+			if (s.equals(WEEK[i])) {
 				idx = i;
 				break;
 			}
@@ -1564,7 +1593,7 @@ public class Core {
 	 * @param n
 	 * @return String
 	 */
-	public static String matchDate(int n) {
+	public String matchDate(int n) {
 		String output;
 		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
 		Date date = new Date();
@@ -1594,7 +1623,7 @@ public class Core {
 	 * @param n
 	 * @return
 	 */
-	public static String processDate(String s, int n) {
+	public String processDate(String s, int n) {
 		String[] temp = s.split("/");
 		temp[0] = String.valueOf(Integer.parseInt(temp[0]) + n);
 		YearMonth yearMonthObject;
@@ -1630,7 +1659,7 @@ public class Core {
 	 * @throws ClassNotFoundException
 	 * @throws IOException
 	 */
-	public static boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
+	public boolean delAllRecurringTask(int n) throws ClassNotFoundException, IOException {
 		ArrayList<Task> list = localStorageObject.getUncompletedTasks();
 		Task deleted = list.get(n);
 
@@ -1658,7 +1687,7 @@ public class Core {
 	 * @throws ClassNotFoundException
 	 */
 
-	public static void editRecurringTask(int n) throws ClassNotFoundException, IOException {
+	public void editRecurringTask(int n) throws ClassNotFoundException, IOException {
 		Task replaced = localStorageObject.getUncompletedTask(n);
 
 		if (replaced.getId().equals("")) { // if the task at the user-entered
@@ -1819,7 +1848,7 @@ public class Core {
 		}
 	}
 
-	public static void checkDateAndAdd(Task task) {
+	public void checkDateAndAdd(Task task) {
 		try {
 			String id = task.getId();
 			String ed = task.getDateCompare();
@@ -1858,7 +1887,7 @@ public class Core {
 		}
 	}
 
-	public static boolean isExpired(String currentRecurDate, String recurDeadline) {
+	public boolean isExpired(String currentRecurDate, String recurDeadline) {
 		String[] splitCurrentRecurDate = currentRecurDate.split("/");
 		String[] splitRecurDeadline = recurDeadline.split("/");
 		if (Integer.parseInt(splitRecurDeadline[2]) < Integer.parseInt(splitCurrentRecurDate[2])) { // end

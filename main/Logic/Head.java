@@ -15,6 +15,7 @@ public class Head {
 	private static String lastDisplayArg = "";
 	private static UI uiObject = new UI();
 	private static Parser parserObject = Parser.getInstance();
+	private static Core coreObject = Core.getInstance();
 
 	private static final String USER_PROMPT = "command: ";
 	private static final String WELCOME_HELP = "Enter \"help\" for instructions.\n";
@@ -50,7 +51,7 @@ public class Head {
 
 		while (true) {
 			uiObject.printRed(USER_PROMPT);
-			Logic.Core.acceptCommand();
+			coreObject.acceptCommand();
 
 			lastDisplay = parserObject.getCommand();
 			lastDisplayArg = parserObject.getDescription();
