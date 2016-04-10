@@ -1156,7 +1156,7 @@ public class crud {
 					}
 
 					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
-							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else if(temp.getStartDate() != null) {
 					int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - todayCalendar.get(Calendar.DAY_OF_YEAR);
@@ -1167,12 +1167,12 @@ public class crud {
 						message = "starts today";
 					}
 					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
-							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 				else {
 					String message = "";
 					UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),
-							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getIssue(), message);
+							temp.getEndDateLineOne(), temp.getEndDateLineTwo(), temp.getShortPriority()+temp.getIssue(), message);
 				}
 			}
 		} else {
