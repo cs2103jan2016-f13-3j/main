@@ -1,15 +1,11 @@
 //@@author Jung Kai
 package Parser;
 
-import java.text.SimpleDateFormat;
-import java.time.YearMonth;
+
 import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
+
 
 public class Parser {
-	private static int start, end;
-	private static String startDate, date, startTime, time, dateIn, dateIn2;
 	private static final String[] key = { "by", "at", "during", "before", "to", "in" };
 
 	private static String command,sd,stime,sdWithTime,ed,etime,edWithTime,originalMsg,issueM;
@@ -123,112 +119,6 @@ public class Parser {
 		return issueM;
 	}
 
-	// @@author Cheng Gee
-	public static void checkStartEndDate(String[] temp){
-		start = getStartingIndex(temp);// start has value of -1 if no start date
-		end = getIndexOfKey(temp);
-		if(start>end){
-			end=-1;
-		}
-	}
-	public static void setStartEndDate(String[] temp){
-		if (start == -1 && end != -1) {// no start date but has end date
-			startDate = "-";
-			startTime = "-";
-			// read date & time
-			date = temp[end + 1];
-			dateIn = date;
-			if (hasEndTime(temp)) {// check if contain end time
-				time = temp[end + 2];
-				time = time.replaceAll(":", "/");
-				dateIn = dateIn + "/" + time;
-			} else {
-				time = "-";
-			}
-		} else if (start != -1 && end == -1) {// has start date but no end date
-			date = "-";
-			time = "-";
-			startDate = temp[start + 1];			
-			dateIn2 = startDate;
-
-			if (hasStartTime(temp)) {
-				startTime = temp[start + 2];
-				startTime = startTime.replaceAll(":", "/");
-				dateIn2 = dateIn2 + "/" + startTime;
-			} else {
-				startTime = "-";
-			}
-		}else { // has both start date and end date
-			startDate = temp[start + 1];
-			date = temp[end + 1];
-			dateIn = date;
-			dateIn2 = startDate;
-			if (hasStartTime(temp)) {
-				startTime = temp[start + 2];
-				startTime = startTime.replaceAll(":", "/");
-				dateIn2 = dateIn2 + "/" + startTime;
-			} else {
-				startTime = "-";
-			}
-			if (hasEndTime(temp)) {
-				time = temp[end + 2];
-				time = time.replaceAll(":", "/");
-				dateIn = dateIn + "/" + time;
-
-			} else {
-				time = "-";
-			}
-		}
-	}
-
-	public static void setStartEndDateRecurring(String[] temp){
-		if (start == -1 && end != -1) {// no start date but has end date
-			startDate = "-";
-			startTime = "-";
-			// read date & time
-			date = temp[end + 1];
-			dateIn = date;
-			if (hasEndTime(temp)) {// check if contain end time
-				time = temp[end + 2];
-				time = time.replaceAll(":", "/");
-				dateIn = dateIn + "/" + time;
-			} else {
-				time = "-";
-			}
-		}else if (start != -1 && end == -1) {// has start date but no end date
-			date = "-";
-			time = "-";
-			startDate = temp[start + 1];
-			dateIn2 = startDate;
-
-			if (hasStartTime(temp)) {
-				startTime = temp[start + 2];
-				startTime = startTime.replaceAll(":", "/");
-				dateIn2 = dateIn2 + "/" + startTime;
-			} else {
-				startTime = "-";
-			}
-		}else { // has both start date and end date
-			startDate = temp[start + 1];
-			dateIn = date;
-			dateIn2 = startDate;
-			if (hasStartTime(temp)) {
-				startTime = temp[start + 2];
-				startTime = startTime.replaceAll(":", "/");
-				dateIn2 = dateIn2 + "/" + startTime;
-			} else {
-				startTime = "-";
-			}
-			if (hasEndTime(temp)) {
-				time = temp[end + 2];
-				time = time.replaceAll(":", "/");
-				dateIn = dateIn + "/" + time;
-
-			} else {
-				time = "-";
-			}
-		}
-	}
 
 	// @@author Jung Kai
 	/**
@@ -263,7 +153,7 @@ public class Parser {
 	}
 
 	/**
-	 * Method that return the index of "from" from the input String[] and return
+	 * Method that return the index of "from" or "on" from the input String[] and return
 	 * -1 if no starting index is present
 	 * 
 	 * @param arr
@@ -285,7 +175,7 @@ public class Parser {
 	 * starting time
 	 * 
 	 * @param arr
-	 * @return boolean
+	 * @return 
 	 */
 	public static boolean hasStartTime(String[] arr) {
 		boolean containTime = true;
