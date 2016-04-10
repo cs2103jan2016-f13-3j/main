@@ -265,6 +265,7 @@ public class crud {
 			temp.setEndDate(date);
 			temp.setDescription(message);
 			// deleteTask(index,1);
+			
 			// Storage.localStorage.addToUncompletedTasks(temp);
 			Storage.LocalStorage.setUncompletedTask(index, temp);
 		} else {
