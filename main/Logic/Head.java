@@ -16,6 +16,7 @@ public class Head {
 	private static UI uiObject = new UI();
 	private static Parser parserObject = Parser.getInstance();
 	private static Core coreObject = Core.getInstance();
+	private static Sort sortObject = new Sort();
 
 	private static final String USER_PROMPT = "command: ";
 	private static final String WELCOME_HELP = "Enter \"help\" for instructions.\n";
@@ -56,7 +57,7 @@ public class Head {
 			lastDisplay = parserObject.getCommand();
 			lastDisplayArg = parserObject.getDescription();
 
-			Logic.Sort.sortTasksPriority();
+			sortObject.sortTasksPriority();
 
 			// save all arraylists (and their tasks) into respective files after each command is done
 			arrayListsSaver.saveToFile();		

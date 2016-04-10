@@ -23,6 +23,7 @@ public class Core {
 	
 	private static Core coreObject;
 	private static Mark markObject;
+	private static Sort sortObject;
 	
 	private static final int INVALID_TASK_INDEX = -1;
 	private static final String[] WEEK = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday" };
@@ -83,6 +84,7 @@ public class Core {
 		markObject = new Mark();
 		parserObject = Parser.getInstance();
 		sc = new Scanner(System.in);
+		sortObject = new Sort();
 		uiObject = new UI();
 	}
 	
@@ -246,7 +248,7 @@ public class Core {
 						} else {
 							isAdded = Logic.Crud.addTaskWithEndDate(issue, endDateWithTime, description);
 							if (isAdded) {
-								Logic.Sort.sortTasksChronologically();
+								sortObject.sortTasksChronologically();
 								int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
 										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
@@ -266,7 +268,7 @@ public class Core {
 						} else {
 							isAdded = Logic.Crud.addTaskWithStartDate(issue, startDateWithTime, description);
 							if (isAdded) {
-								Logic.Sort.sortTasksChronologically();
+								sortObject.sortTasksChronologically();
 								int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue, startDateWithTime,
 										description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
@@ -284,7 +286,7 @@ public class Core {
 							isAdded = Logic.Crud.addTaskWithBothDates(issue, startDateWithTime, endDateWithTime,
 									description);
 							if (isAdded) {
-								Logic.Sort.sortTasksChronologically();
+								sortObject.sortTasksChronologically();
 								int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue, startDateWithTime,
 										endDateWithTime, description);
 								uiObject.printGreen("\"" + issue + "\" " + MSG_ADD);
@@ -383,7 +385,7 @@ public class Core {
 			} else {
 				isAdded = Logic.Crud.addTask(description);
 				if (isAdded) {
-					Logic.Sort.sortTasksChronologically();
+					sortObject.sortTasksChronologically();
 					int index = Logic.Crud.uncompletedTaskIndexWithNoDate(description);
 					uiObject.printGreen("\"" + description + "\" " + MSG_ADD);
 					Logic.Crud.displayNearestFiveFloating(index);
@@ -605,7 +607,7 @@ public class Core {
 										// Logic.crud.editTask(num-1,issue,startDate,startTime,endDate,endTime,input)
 										// (to be implemented)
 										Logic.Crud.editTaskWithEndDate(issue, endDateWithTime, description, num - 1);
-										Logic.Sort.sortTasksChronologically();
+										sortObject.sortTasksChronologically();
 
 										int index = Logic.Crud.uncompletedTaskIndexWithEndDate(issue, endDateWithTime,
 												description);
@@ -624,7 +626,7 @@ public class Core {
 										// Logic.crud.editTask(issue,startDate,startTime,endDate,endTime,input);
 										Logic.Crud.editTaskWithStartDate(issue, startDateWithTime, description,
 												num - 1);
-										Logic.Sort.sortTasksChronologically();
+										sortObject.sortTasksChronologically();
 										int index = Logic.Crud.uncompletedTaskIndexWithStartDate(issue,
 												startDateWithTime, description);
 
@@ -643,7 +645,7 @@ public class Core {
 												description, num - 1);
 
 										uiObject.printGreen("Task number " + num + MSG_EDIT);
-										Logic.Sort.sortTasksChronologically();
+										sortObject.sortTasksChronologically();
 										int index = Logic.Crud.uncompletedTaskIndexWithBothDates(issue,
 												startDateWithTime, endDateWithTime, input);
 										Logic.Crud.displayNearestFiveUncompleted(index);

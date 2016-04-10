@@ -16,6 +16,7 @@ public class Crud {
 	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
 	private static boolean noDuplicate;
 	private static LocalStorage localStorageObject = LocalStorage.getInstance();
+	private static Sort sortObject = new Sort();
 	private static Task tempTask;
 	private static UI uiObject = new UI();
 
@@ -869,7 +870,7 @@ public class Crud {
 		if (tempTasks.isEmpty()) {
 			uiObject.printGreen("There is no stored task to display");
 		} else {
-			Logic.Sort.sortTasksPriority();
+			sortObject.sortTasksPriority();
 			printUncompletedTask(tempTasks);
 		}
 	}
