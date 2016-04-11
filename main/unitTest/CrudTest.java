@@ -1,28 +1,19 @@
 //@@author Cheng Gee
 package unitTest;
 
-import static org.junit.Assert.*;
+import static org.fusesource.jansi.Ansi.ansi;
+import static org.junit.Assert.assertEquals;
 
 import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.datatransfer.DataFlavor;
 import java.awt.datatransfer.UnsupportedFlavorException;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Scanner;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-import static org.fusesource.jansi.Ansi.ansi;
 
-import org.fusesource.jansi.AnsiConsole;
 import org.junit.Test;
 
-
-import Logic.CheckDate;
 import Logic.Crud;
 import Storage.LocalStorage;
 import Task.Task;

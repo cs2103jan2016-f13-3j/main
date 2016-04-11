@@ -1,12 +1,13 @@
 //@@author Jung Kai
 package unitTest;
 
-import static org.junit.Assert.*;
-import Parser.Parser;
-import Parser.Natty;
-import Task.Task;
-import java.util.ArrayList;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
+
 import org.junit.Test;
+
+import Parser.Natty;
+import Parser.Parser;
 
 public class ParserTest {
 	private static final String input1 = "add floating task";
@@ -27,7 +28,6 @@ public class ParserTest {
 	private static final String input16 = "undo";
 
 	private String issue, startDate, endDate, description, processed;
-	private boolean isRecurring;
 	protected Parser parse;
 	protected Natty natty;
 

@@ -37,8 +37,6 @@ public class ImportTasks {
 	private static final String STRING_BACKSLASH = "\\";
 	private static final String STRING_DEFAULT = "default";
 	private static final String STRING_EMPTY = "";
-
-	private static final Logger logger = Logger.getLogger(Class.class.getName());
 	
 	private Crud crudObject;
 	
@@ -216,7 +214,6 @@ public class ImportTasks {
 }
 
 class LoggerTry {
-	private final static Logger logger = Logger.getLogger(Class.class.getName());
 	private static FileHandler fileHandler = null;
 
 	public static void startLog() throws SecurityException, IOException {

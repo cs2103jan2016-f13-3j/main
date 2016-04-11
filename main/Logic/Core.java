@@ -8,7 +8,6 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
-import java.util.Date;
 import java.util.Scanner;
 
 import org.fusesource.jansi.AnsiConsole;
@@ -30,8 +29,6 @@ public class Core {
 	private static Sort sortObject;
 
 	private static final int INVALID_TASK_INDEX = -1;
-	private static final String[] WEEK = { "monday", "tuesday", "wednesday", "thursday", "friday", "saturday",
-			                               "sunday" };
 	private static final String[] KEY = { "by", "at", "during", "before", "to", "in" };
 	private static final String MSG_EMPTY = "Storage is empty. Press \"add\" to add task.";
 	private static final String MSG_CLEAR = "All content deleted";
