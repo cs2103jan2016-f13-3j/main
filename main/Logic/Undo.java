@@ -315,4 +315,10 @@ public class Undo {
 	public void clearRedoCommands() {
 		redoCommands.clear();
 	}
+	
+	// Helper method for testing
+	public void testFunction() throws ClassNotFoundException, IOException {
+		copyCurrentTasksState();	
+		storeCurrentStateForRedo("Add Buy eggs ` on Friday");
+	}
 }
