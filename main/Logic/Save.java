@@ -30,16 +30,16 @@ public class Save {
 	 */
 	public void saveToFile() throws IOException {
 		// Save uncompleted tasks
-		String UncompletedTasksStorageFIleName = importTasksObject.getUncompletedTasksStorageFileName();
-		saveArrayToFile(localStorageObject.getUncompletedTasks(), UncompletedTasksStorageFIleName);
+		String uncompletedTasksStorageFileName = importTasksObject.getUncompletedTasksStorageFileName();
+		saveArrayToFile(localStorageObject.getUncompletedTasks(), uncompletedTasksStorageFileName);
 
 		// Save completed tasks
-		String CompletedTasksStorageFileName = importTasksObject.getCompletedTasksStorageFileName();
-		saveArrayToFile(localStorageObject.getCompletedTasks(), CompletedTasksStorageFileName);
+		String completedTasksStorageFileName = importTasksObject.getCompletedTasksStorageFileName();
+		saveArrayToFile(localStorageObject.getCompletedTasks(), completedTasksStorageFileName);
 
 		// Save floating tasks
-		String FloatingTasksStorageFileName = importTasksObject.getFloatingTasksStorageFileName();
-		saveArrayToFile(localStorageObject.getFloatingTasks(), FloatingTasksStorageFileName);
+		String floatingTasksStorageFileName = importTasksObject.getFloatingTasksStorageFileName();
+		saveArrayToFile(localStorageObject.getFloatingTasks(), floatingTasksStorageFileName);
 	}
 
 	/**

@@ -49,7 +49,7 @@ public class Head {
 	 * @throws ClassNotFoundException
 	 */
 	public static void runProgram() throws IOException, ClassNotFoundException {
-		Save arrayListsSaver = new Save();
+		Save saveObject = new Save();
 
 		while (true) {
 			uiObject.printRed(USER_PROMPT);
@@ -61,7 +61,7 @@ public class Head {
 			sortObject.sortTasksPriority();
 
 			// save all arraylists (and their tasks) into respective files after each command is done
-			arrayListsSaver.saveToFile();		
+			saveObject.saveToFile();		
 		}
 	}
 
