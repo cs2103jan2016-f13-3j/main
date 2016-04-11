@@ -708,7 +708,8 @@ public class Core {
 			num = Integer.parseInt(description);
 		}
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if (Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
+			if (Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")
+				|| Logic.Head.getLastDisplayArg().equals("f")) {
 				if (description.contains("all")) {
 					String[] tmp = description.split(" ");
 					num = Integer.parseInt(tmp[1]);
@@ -823,7 +824,8 @@ public class Core {
 	 */
 	public void setPriorityCommand() {
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")
+					||Logic.Head.getLastDisplayArg().equals("f")) {
 				setPriorityFromDisplayAllView();
 			} else {
 				setPriorityFromDisplayView();
@@ -969,7 +971,8 @@ public class Core {
 	public void markCommand() {
 		String s = parserObject.getDescription();
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")
+				|| Logic.Head.getLastDisplayArg().equals("f")) {
 				markFromDisplayAllView(s);
 			} else {
 				markFromDisplayView();
@@ -1093,7 +1096,8 @@ public class Core {
 	public void viewCommand() {
 		String s = parserObject.getDescription();
 		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating") 
+				|| Logic.Head.getLastDisplayArg().equals("f")) {
 				int num = Integer.parseInt(s);
 				crudObject.viewIndividualTask(num - 1);
 			} else {
@@ -1218,7 +1222,8 @@ public class Core {
 	public void deleteCommand() {
 		String s = parserObject.getDescription();
 		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
-			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")
+				|| Logic.Head.getLastDisplayArg().equals("f")) {
 				if (s.contains("all") != true) {
 					deleteFromDisplayAllView(s);
 				} else {
