@@ -151,7 +151,7 @@ public class CrudTest {
 		System.setOut(new PrintStream(outContent));
 				test.displayCompletedTasks();
 				String output = "\u001B[1m\u001B[32mThere is no stored task to display"+ansi().reset();
-				assertEquals(outContent.toString().trim(),output.trim());
+				assertEquals(output.trim(),outContent.toString().trim());
 				System.out.println("test"+outContent.toString());
 	}
 	/*
