@@ -342,9 +342,11 @@ public class Crud {
 	 */
 	public void displayCompletedTasks() {
 		tempTasks = localStorageObject.getCompletedTasks();
-		printCompletedTask(tempTasks);
+		
 		if (tempTasks.isEmpty()) {
 			uiObject.printGreen("There is no stored task to display");
+		}else{
+			printCompletedTask(tempTasks);
 		}
 	}
 

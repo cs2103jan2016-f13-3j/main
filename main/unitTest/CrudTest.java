@@ -15,23 +15,28 @@ import java.util.ArrayList;
 import java.util.Scanner;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import static org.fusesource.jansi.Ansi.ansi;
 
+import org.fusesource.jansi.AnsiConsole;
 import org.junit.Test;
 
-import Logic.checkDate;
-import Logic.crud;
+
+import Logic.CheckDate;
+import Logic.Crud;
+import Storage.LocalStorage;
 import Task.Task;
 
-public class crudTest {
+public class CrudTest {
 	@Test
 	public void testuncompletedTaskIndexWithNoDate() throws ClassNotFoundException, IOException{
-		int test =Logic.crud.uncompletedTaskIndexWithNoDate("test");
+		Logic.Crud test = Crud.getInstance();
+		int output =test.uncompletedTaskIndexWithNoDate("test");
 		//final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
 		//System.setOut(new PrintStream(outContent));
 		//Logic.Head.runProgram();
 		
 		
-		assertEquals(test,-1);
+		assertEquals(output,-1);
 		//ByteArrayInputStream in = new ByteArrayInputStream("exit".getBytes());
 		//System.setIn(in);
 		//assertEquals("test",1);
@@ -40,12 +45,114 @@ public class crudTest {
 		 
 	}
 	@Test
-	public void testCopyTask() throws HeadlessException, UnsupportedFlavorException, IOException{
-		Task test = new Task("test");
-		Logic.crud.copyTask(test);
+	public void testcopyTask() throws HeadlessException, UnsupportedFlavorException, IOException{
+		Task output = new Task("test");
+		Logic.Crud test = Crud.getInstance();
+		test.copyTask(output);
 		String data = (String) Toolkit.getDefaultToolkit()
                 .getSystemClipboard().getData(DataFlavor.stringFlavor);
 		assertEquals("test",data);
+	}
+	@Test
+	public void testaddTask() throws ClassNotFoundException, IOException{
+		Logic.Crud test = Crud.getInstance();
+		boolean output = test.addTask("test");
+		assertEquals(output,true);
+		
+	}
+	
+	@Test
+	public void testaddTaskWithStartDate() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		Logic.Crud test = Crud.getInstance();
+		boolean output = test.addTaskWithStartDate("test","11/4/2016","test ` 11/4/2016");
+		assertEquals(output,true);
+	}
+	
+	@Test
+	public void testaddTaskWithEndDate() throws ClassNotFoundException, IOException{
+		Logic.Crud test = Crud.getInstance();
+		boolean output = test.addTaskWithEndDate("test","11/4/2016","test ` 11/4/2016");
+		assertEquals(output,true);
+	}
+	
+	@Test
+	public void testaddTaskWithBothDate() throws ClassNotFoundException, IOException{
+		Logic.Crud test = Crud.getInstance();
+		boolean output = test.addTaskWithBothDates("test","11/4/2016","20/4/2016", "test ` from 11/4/2016 to 20/4/2016");
+		assertEquals(output,true);
+	}
+	
+	@Test
+	public void testaddLabeltoTask() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		
+		Logic.Crud test = Crud.getInstance();
+		test.addTask("test");
+		test.addLabelToTask(0, "first");
+		
+		Task temp= temp1.getFloatingTask(0);
+		String output = temp.getLabel().get(0);
+		assertEquals(output,"first");
+	}
+	@Test
+	public void testeditTaskWithNoDate() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		
+		Logic.Crud test = Crud.getInstance();
+		test.addTask("test");
+		test.editTaskWithNoDate("Hahaha", "Hahaha", 0);
+		Task temp= temp1.getFloatingTask(0);
+		String output = temp.getIssue();
+		assertEquals(output,"Hahaha");
+	}
+	
+	@Test
+	public void testeditTaskWithStartDate() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		
+		Logic.Crud test = Crud.getInstance();
+		test.addTaskWithStartDate("test","11/4/2016","test ` 11/4/2016");
+		Task temp= temp1.getUncompletedTask(0);
+		String output = temp.getDescription();
+		assertEquals(output,"test ` 11/4/2016");
+	}
+	@Test
+	public void testeditTaskWithEndDate() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		
+		Logic.Crud test = Crud.getInstance();
+		test.addTaskWithEndDate("test","11/4/2016","test ` 11/4/2016");
+		Task temp= temp1.getUncompletedTask(0);
+		String output = temp.getDescription();
+		assertEquals(output,"test ` 11/4/2016");
+	}
+	public void testeditTaskBothEndDates() throws ClassNotFoundException, IOException{
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		
+		Logic.Crud test = Crud.getInstance();
+		test.addTaskWithBothDates("test","11/4/2016","20/4/2016", "test ` from 11/4/2016 to 20/4/2016");
+		Task temp= temp1.getUncompletedTask(0);
+		String output = temp.getDescription();
+		assertEquals(output,"test ` from 11/4/2016 to 20/4/2016");
+	}
+	@Test
+	public void testdisplayCompletedList(){
+		LocalStorage temp1 = LocalStorage.getInstance();
+		temp1.clearAllTasks();
+		Logic.Crud test = Crud.getInstance();
+		final ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+		System.setOut(new PrintStream(outContent));
+				test.displayCompletedTasks();
+				String output = "\u001B[1m\u001B[32mThere is no stored task to display"+ansi().reset();
+				assertEquals(outContent.toString().trim(),output.trim());
+				System.out.println("test"+outContent.toString());
 	}
 	/*
 	@Test
