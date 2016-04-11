@@ -1,3 +1,4 @@
+//@@author Kowshik
 package unitTest;
 
 import static org.junit.Assert.*;
@@ -9,8 +10,7 @@ import Logic.Crud;
 import Storage.LocalStorage;
 import Task.Task;
 import Logic.Mark;
-public class markTest {
-	
+public class MarkTest {
 	
 	private Crud crud = Crud.getInstance();
 	private Mark mark = new Mark();
@@ -18,7 +18,12 @@ public class markTest {
 	private ArrayList<Task> uncompleted,completed; 
 	private LocalStorage storage = LocalStorage.getInstance();
 	
-	
+	/**
+	 * To test if mark works.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@Test
 	public void testMark() throws ClassNotFoundException, IOException {
 		issue = "task";
@@ -36,6 +41,13 @@ public class markTest {
 		
 		
 	}
+	
+	/**
+	 * To test if unmark works.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
 	@Test
 	public void testUnMark() throws ClassNotFoundException, IOException {
 		issue = "task";
@@ -56,6 +68,7 @@ public class markTest {
 		assertEquals(0,completed.size());		
 		
 	}
+	
 	@Test
 	public void testPriority() throws ClassNotFoundException, IOException {
 		issue = "task";
