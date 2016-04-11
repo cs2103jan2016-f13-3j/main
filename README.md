@@ -1,14 +1,3 @@
 # 
-/* Task Manager 
-*  Basic features:
-*   1. Add task
-*   2. Edit task
-*   3. Delete task
-*   4. Search tasks
-*   5. View all tasks
-*   6. Sort tasks alphabetically
-*/	 	
-Jung Kai in
-Cheng Gee here
-Jw here
-Kowshik in!
+As an office goer or a university student, you will have plenty of tasks to perform on a daily basis.  
+Let us introduce to you, Agendah! It is a simple-to-use application that allows you to schedule and manage your tasks effectively and efficiently. 
