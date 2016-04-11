@@ -48,53 +48,53 @@ public class ParserTest {
 		issue = "floating task";
 		processed = natty.parseString(input1);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
+		assertEquals("add", parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
 
 		issue = "task";
 		startDate = "11/04/2016";
 		processed = natty.parseString(input2);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getStartDate(), startDate);
+		assertEquals("add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(startDate,parse.getStartDate());
 
 		startDate = "11/04/2016/00/00";
 		processed = natty.parseString(input3);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getStartDateWithTime(), startDate);
+		assertEquals("add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(startDate,parse.getStartDateWithTime());
 
 		endDate = "11/04/2016";
 		processed = natty.parseString(input4);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getEndDate(), endDate);
+		assertEquals("add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(endDate,parse.getEndDate());
 
 		endDate = "12/04/2016/23/59";
 		processed = natty.parseString(input5);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getEndDateWithTime(), endDate);
+		assertEquals("add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(endDate,parse.getEndDateWithTime());
 
 		startDate = "11/04/2016/01/00";
 		processed = natty.parseString(input6);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getStartDateWithTime(), startDate);
-		assertEquals(parse.getEndDateWithTime(), endDate);
+		assertEquals( "add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(startDate,parse.getStartDateWithTime());
+		assertEquals(endDate,parse.getEndDateWithTime());
 
 		endDate = "11/04/2016";
 		issue = "recurring task";
 		processed = natty.parseString(input13);
 		parse.parse(processed);
-		assertEquals(parse.getCommand(), "add");
-		assertEquals(parse.getIssueM(), issue);
-		assertEquals(parse.getEndDate(), endDate);
+		assertEquals("add",parse.getCommand());
+		assertEquals(issue,parse.getIssueM());
+		assertEquals(endDate,parse.getEndDate());
 		assertTrue(parse.getRecurrence());
 
 	}
@@ -104,51 +104,49 @@ public class ParserTest {
 		initParser();
 		description = "1";
 		parse.parse(input7);
-		assertEquals(parse.getCommand(), "edit");
-		assertEquals(parse.getDescription(), description);
-
+		assertEquals("edit",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 		
 		parse.parse(input8);
-		assertEquals(parse.getCommand(), "mark");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("mark",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 
-		description = "all";
-		parse.parse(input9);
-		assertEquals(parse.getCommand(), "display");
-		assertEquals(parse.getDescription(), description);
-
-		description = "1";
 		parse.parse(input10);
-		assertEquals(parse.getCommand(), "priority");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("priority",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 
 		
 		parse.parse(input11);
-		assertEquals(parse.getCommand(), "view");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("view",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 
 		parse.parse(input12);
-		assertEquals(parse.getCommand(), "delete");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("delete",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 	}
 
 	@Test
 	public void testCommandWithNoIndex() {
 		initParser();
+		description = "all";
+		parse.parse(input9);
+		assertEquals("display",parse.getCommand());
+		assertEquals(description,parse.getDescription());
+		
 		description = "task";
 		parse.parse(input14);
-		assertEquals(parse.getCommand(), "search");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("search",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 
 		description = "";
 		parse.parse(input15);
-		assertEquals(parse.getCommand(), "clear");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("clear",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 
 		description = "";
 		parse.parse(input16);
-		assertEquals(parse.getCommand(), "undo");
-		assertEquals(parse.getDescription(), description);
+		assertEquals("undo",parse.getCommand());
+		assertEquals(description,parse.getDescription());
 	}
 
 }
