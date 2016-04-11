@@ -1,2344 +1,2866 @@
 # Kowshik
-###### main\Logic\crud.java
+###### main\Logic\Core.java
 ``` java
-	 public static ArrayList<Task> getTemp(){
-		 return tempTasks;
-	 }
-	 
-	 public static Task getTempTask(int index) {
-		 return tempTasks.get(index);
-	 }
-	 
-	 /**
-	  * Function to add task without time into storage
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static boolean addTask(String line) throws IOException, ClassNotFoundException {
-		 Task task = new Task(line);
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		 boolean noDuplicate = true;
-		 for(Task temp : tempTasks) {
-			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 noDuplicate = false;
-			 }
-		 }
-		 if(noDuplicate) {
-			 Storage.localStorage.addToFloatingTasks(task);
-			 return true;
-		 }
-		 else {
-			 return false;
-		 }
-	 }
+	/**
+	 * Function that take in command and the body as the argument and process them to to meet the requests of the user.
+	 * 
+	 * @return true                   if storage has been modified, false otherwise.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public boolean parseCommands() throws IOException, ClassNotFoundException {
+		arraylistsHaveBeenModified = false;
+		String option = parserObject.getCommand();
 
-	 
-
-	 /**
-	  * Function to add task with only start date into storage
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static boolean addTaskWithStartDate(String line,String date, String msg) throws IOException, ClassNotFoundException {
-		 Task task = new Task(line, date, msg, true);
-
-		 boolean noDuplicate = true;
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		 for(Task temp : tempTasks) {
-			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 UI.ui.printRed(temp.getTaskString());
-				 noDuplicate = false;
-			 }
-		 }
-		 if(noDuplicate) {
-			 Storage.localStorage.addToUncompletedTasks(task);
-			 return true;
-		 }
-		 else {
-			 return false;
-		 }
-	 }
-
-	 /**
-	  * Function to add task with only end date into storage
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static boolean addTaskWithEndDate(String line, String date, String msg) throws IOException, ClassNotFoundException {
-		 Task task = new Task(line, date, msg, false);
-
-		 boolean noDuplicate = true;
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		 for(Task temp : tempTasks) {
-			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 UI.ui.printRed(temp.getTaskString());
-				 noDuplicate = false;
-			 }
-		 }
-		 if(noDuplicate) {
-			 Storage.localStorage.addToUncompletedTasks(task);
-			 return true;
-		 }
-		 else {
-			 return false;
-		 }
-	 }
-
-	 /**
-	  * Function to add task with both start and end date into storage
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static boolean addTaskWithBothDates(String line,String startDate, String endDate, String msg) throws IOException, ClassNotFoundException {
-		 Task task = new Task(line, startDate, endDate, msg);
-
-		 boolean noDuplicate = true;
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		 for(Task temp : tempTasks) {
-			 if(temp.getTaskString().equals(task.getTaskString())) {
-				 UI.ui.printRed(temp.getTaskString());
-				 noDuplicate = false;
-			 }
-
-			 if(temp.getStartDate() != null && temp.getEndDate() != null) {
-				 if(temp.getStartDateString().equals(task.getStartDateString()) && temp.getEndDateString().equals(task.getEndDateString())) {
-					 UI.ui.printRed("CLASH IN TIMING DETECTED WITH - ");
-					 UI.ui.printRed(temp.getTaskString());
-				 }
-			 }
-		 }
-		 if(noDuplicate) {
-			 Storage.localStorage.addToUncompletedTasks(task);
-			 return true;
-		 }
-		 else {
-			 return false;
-		 }
-	 }
+		if (option.equals("add") || option.equals("a") || option.equals("+")) {
+			addCommand();
+		} else if (option.equals("display") || option.equals("d")) {
+			displayCommand();
+		} else if (option.equals("edit") || option.equals("e")) {
+			editCommand();
+		} else if (option.equals("delete") || option.equals("-")) {
+			deleteCommand();
+		} else if (option.equals("view") || option.equals("v")) {
+			viewCommand();
+		} else if (option.equals("search") || option.equals("s")) {
+			searchObject.searchTasksByKeyword(parserObject.getDescription());
+		} else if (option.equals("mark") || option.equals("m")) {
+			markCommand();
+		} else if (option.equals("unmark") || option.equals("um")) {
+			unmarkCommand();
+		} else if (option.equals("priority") || option.equals("p")) {
+			String s = parserObject.getIssueM();
+			if (s.contains("all")) {
+				setAllRecurringTasksPriorityCommand();
+			} else {
+				setPriorityCommand();
+			}
+		} else if (option.equals("history")) {
+			String pastCommands = Undo.getInstance().viewPastCommands();
+			uiObject.printYellow(pastCommands);
+		} else if (option.equals("future")) {
+			String possibleRedoCommands = Undo.getInstance().viewRedoCommands();
+			uiObject.printYellow(possibleRedoCommands);
+		} else if (option.equals("undo")) {
+			undoCommand();
+		} else if (option.equals("redo")) {
+			redoCommand();
+		} else if (option.equals("help")) {
+			helpObject.printHelpMenu();
+		} else if (option.equals("dir")) {
+			changeDirectoryCommand();
+		} else if (option.equals("label")) {
+			setLabelCommand();
+		} else if (option.equals("clear") || option.equals("c")) {
+			clearCommand();
+		} else if (option.equals("exit")) {
+			uiObject.printGreen("Bye!");
+			AnsiConsole.systemUninstall();
+			crudObject.exit();
+		} else {
+			uiObject.printRed(MSG_INVALID);
+		}
+		return arraylistsHaveBeenModified;
+	}
 
 ```
-###### main\Logic\crud.java
+###### main\Logic\Core.java
 ``` java
-	 /**
-	  * Function to edit task (edited task has no date)
-	  * @param line
-	  * @param date
-	  * @param msg
-	  * @param index
-	  * @throws IOException
-	  * @throws ClassNotFoundException
-	  */
-	 public static void editTaskWithNoDate(String line, String msg, int index) throws IOException, ClassNotFoundException {
-		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
-
-		 if(index < uncompleteList){
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
-			 deleteTask(index,1);
-
-			 addTask(msg);
-		 } else {
-			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
-			 temp.setStartDate(null);
-			 temp.setEndDate(null);
-			 temp.setDescription(msg);
-			 temp.setIssue(line);
-			 Storage.localStorage.setFloatingTask(index - uncompleteList, temp);
-		 }
-
-	 }
-
-	 /**
-	  * Function to edit task (edited task has only start date)
-	  * @param line
-	  * @param date
-	  * @param msg
-	  * @param index
-	  * @throws IOException
-	  * @throws ClassNotFoundException
-	  */
-	 public static void editTaskWithStartDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {		 
-		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
-
-		 if(index < uncompleteList){
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
-			 temp.setIssue(line);
-			 temp.setDescription(msg);
-			 temp.setEndDate(null);
-			 temp.setStartDate(date);
-			 temp.resetID();
-			 Storage.localStorage.setUncompletedTask(index, temp);
-		 } else {
-			 Task temp = Storage.localStorage.getFloatingTask(index-uncompleteList);
-			 temp.setIssue(line);
-			 temp.setDescription(msg);
-			 temp.setEndDate(null);
-			 temp.setStartDate(date);
-			 Storage.localStorage.delFromFloatingTasks(index-uncompleteList);
-			 Storage.localStorage.addToUncompletedTasks(temp);
-		 }
-	 }
-
-	 /**
-	  * Function to edit task (edited task has only end date)
-	  * @param index
-	  * @param line
-	  * @throws IOException
-	  * @throws ClassNotFoundException
-	  */
-	 public static void editTaskWithEndDate(String line, String date, String msg, int index) throws IOException, ClassNotFoundException {
-		 int uncompleteList=Storage.localStorage.getUncompletedTasks().size();
-
-		 if(index < uncompleteList){
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
-			 temp.setIssue(line);
-			 temp.setStartDate(null);
-			 temp.setEndDate(date);
-			 temp.setDescription(msg);
-			 deleteTask(index,1);
-			 addTaskWithEndDate(line, date, msg);
-			 //Storage.localStorage.addToUncompletedTasks(temp);
-			 //Storage.localStorage.setUncompletedTask(index, temp);
-		 } else {
-			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
-			 deleteTask(index, 1);
-			 temp.setDescription(msg);
-			 temp.setIssue(line);
-			 temp.setStartDate(null);
-			 temp.setEndDate(date);
-			 addTaskWithEndDate(line, date, msg);
-
-		 }
-	 }
-
-	 /**
-	  * Function to edit task (edited task has both start and end dates)
-	  * @param index
-	  * @param line
-	  * @throws IOException
-	  * @throws ClassNotFoundException
-	  */
-	 public static void editTaskWithBothDates(String line, String startDate, String endDate, String msg, int index) throws IOException, ClassNotFoundException {
-		 int uncompleteList = Storage.localStorage.getUncompletedTasks().size();
-		 if(index < uncompleteList){
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
-			 temp.setIssue(line);
-			 temp.setDescription(msg);
-			 temp.setStartDate(startDate);
-			 temp.setEndDate(endDate);
-			 temp.resetID();
-			 Storage.localStorage.setUncompletedTask(index, temp);
-		 }else{
-			 Task temp = Storage.localStorage.getFloatingTask(index - uncompleteList);
-			 deleteTask(index, 1);
-			 temp.setDescription(msg);
-			 temp.setIssue(line);
-			 temp.setStartDate(startDate);
-			 temp.setEndDate(endDate);
-			 addTaskWithBothDates(line,startDate,endDate,msg);
-		 }
-	 }
-	 /**
-	  * Function to get a task from the list in Uncompleted Task List
-	  * @param index
-	  * @return
-	  */
-	 public static Task getUncompletedTask(int index){
-
-		 int size1=Storage.localStorage.getUncompletedTasks().size();
-		 if(index<size1){
-		 return Storage.localStorage.getUncompletedTask(index);
-		 }else{
-		 
-			 return Storage.localStorage.getFloatingTask(index-size1);
-		 }
-	 }
-	 public static Task getCompletedTask(int index){
-		 return Storage.localStorage.getCompletedTask(index);
-	 }
-
-	 /**
-	  * Function to delete task according to index in storage
-	  * @throws IOException 
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException{
-		 if(listOfTasks == 1) { //delete from "display all" view
-			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-			 if(index < getSize.size()) {
-				 Storage.localStorage.delFromUncompletedTasks(index);
-			 }
-			 else {
-				 Storage.localStorage.delFromFloatingTasks(index - getSize.size());
-			 }
-		 }
-		 else if(listOfTasks == 2) { //delete from completed tasks
-			 Storage.localStorage.delFromCompletedTasks(index);
-		 }
-		 else if(listOfTasks == 3) { //delete from search completed tasks view
-			 ArrayList<Task> searchTemp = Search.getSearchedTasks();
-			 Task taskToBeDeleted = searchTemp.get(index);
-			 ArrayList<Task> uncompletedTemp = Storage.localStorage.getUncompletedTasks();
-			 for(int i = 0; i<uncompletedTemp.size(); i++) {
-				 if(uncompletedTemp.get(i).equals(taskToBeDeleted)) {
-					 uncompletedTemp.remove(i);
-					 break;
-				 }
-			 }
-		 }
-		 else if(listOfTasks == 4) { //delete from floating tasks view
-			 Storage.localStorage.delFromFloatingTasks(index);
-		 }
-		 else if(listOfTasks == 5) { //delete from "display" view
-			 Task temp = tempTasks.get(index);
-			 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-			 for(int i = 0; i<tempUncompletedTasks.size(); i++) {
-				 if(tempUncompletedTasks.get(i).getTaskString().equals(temp.getTaskString())) {
-					 tempUncompletedTasks.remove(i);
-					 break;
-				 }
-			 }
-			 Storage.localStorage.setUncompletedTasks(tempUncompletedTasks);
-		 }
-	 }
-
-	 /**
-	  * Function to display all the uncompleted tasks in the storage
-	  * 
-	  */
-	 public static void displayUncompletedAndFloatingTasks() {
-
-		 UI.ui.eraseScreen();
-		 boolean isEmptyUn = false;
-		 tempTasks = Storage.localStorage.getUncompletedTasks();
-		 String dt="";
-
-		 if (tempTasks.isEmpty()) {
-			 isEmptyUn = true;
-		 } else {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-
-			 for(int i=0; i<tempTasks.size(); i++) {
-				 Task temp = tempTasks.get(i);
-
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-			 UI.ui.print("________________________________________________________________");
-		 }
-
-
-		 boolean isEmptyF = false;
-		 tempTasks = Storage.localStorage.getFloatingTasks();
-		 if (tempTasks.isEmpty()) {
-			 isEmptyF = true;
-		 }
-		 else {
-			 UI.ui.printGreen("FLOATING TASKS");
-			 UI.ui.printGreen("Index\tTask");
-			 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-			 for(int i=0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
-			 }
-		 }
-		 if(isEmptyUn && isEmptyF) {
-			 UI.ui.printGreen("There are no tasks to show.");
-		 }
-	 }
-	 /**
-	  * function to display all floating task in storage
-	  * 
-	  */
-	 public static void displayFloatingTasks() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("FLOATING TASKS");
-		 UI.ui.printGreen("Index\tTask");
-		 boolean isEmptyF = false;
-		 tempTasks = Storage.localStorage.getFloatingTasks();
-		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-		 for(int i=0; i<tempTasks.size(); i++) {
-			 UI.ui.printYellow((getSize.size() + i+1) + ".\t" + tempTasks.get(i).getIssue());
-		 }
-		 if (tempTasks.isEmpty()) {
-			 isEmptyF = true;
-		 }  if(isEmptyF) {
-			 UI.ui.printGreen("There are no floating tasks to show.");
-		 }
-	 }
-	 /**
-	  * Function to display the details of an individual task
-	  * 
-	  * @param index the index of the task to be displayed
-	  */
-	 public static void viewIndividualTask(int index) {
-		 UI.ui.eraseScreen();
-		 ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
-		 if(index < getSize.size()) {
-			 tempTask = Storage.localStorage.getUncompletedTask(index);
-		 }
-		 else {
-			 tempTask = Storage.localStorage.getFloatingTask(index - getSize.size());
-		 }
-		 boolean isCompleted = tempTask.getCompletedStatus();
-		 String completed = "Not completed";
-		 if(isCompleted) {
-			 completed = "Completed";
-		 }
-
-		 UI.ui.printYellow(tempTask.getTaskString());
-		 UI.ui.print("Status: " + completed);
-		 UI.ui.print("Priority: " + tempTask.getPriority());
-		 UI.ui.print("Labels:");
-		 for(String label : tempTask.getLabel()) {
-			 UI.ui.print(label);
-		 }
-	 }
-
-	 /**
-	  * Function to display all the completed tasks in the storage
-	  * 
-	  */
-	 public static void displayCompletedTasks() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("COMPLETED TASKS");
-		 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-		 tempTasks = Storage.localStorage.getCompletedTasks();
-		 for(int i=0; i<tempTasks.size(); i++) {
-			 Task temp=tempTasks.get(i);
-			 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-		 }
-		 if (tempTasks.isEmpty()) {
-			 UI.ui.printGreen("There is no stored task to display");
-		 }
-	 }
-
-	 public static void displayScheduleForADay(String inputDate) {
-		 inputDate = inputDate.replace("/0", "/");
-		 if(inputDate.startsWith("0")) {
-			 inputDate = inputDate.replaceFirst("0", "");
-		 }
-		 System.out.println(inputDate);
-		 String[] splitDate = inputDate.split("/");
-		 //run through all the tasks and find which have same date
-		 tempTasks = new ArrayList<Task>();
-		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-
-		 for(Task temp : tempUncompletedTasks) {
-			 if(temp.getStartDate() != null) {
-				 String startDay = "" + temp.getStartDate().get(Calendar.DAY_OF_MONTH);
-				 String startMonth = "" + (temp.getStartDate().get(Calendar.MONTH) + 1);
-				 String startYear = "" + temp.getStartDate().get(Calendar.YEAR);
-				 if(checkIfDateIsContained(splitDate, startDay, startMonth, startYear)) {
-					 tempTasks.add(temp);
-					 continue;
-				 }
-			 } else {
-				 String endDay = "" + temp.getEndDate().get(Calendar.DAY_OF_MONTH);
-				 String endMonth = "" + (temp.getEndDate().get(Calendar.MONTH) + 1);
-				 String endYear = "" + temp.getEndDate().get(Calendar.YEAR);
-				 if(checkIfDateIsContained(splitDate, endDay, endMonth, endYear)) {
-					 tempTasks.add(temp);
-				 }
-
-			 }
-		 }
-
-		 if (tempTasks.isEmpty()) {
-			 UI.ui.printGreen("There is no stored task to display");
-		 }
-		 else {
-			 UI.ui.eraseScreen();
-			 UI.ui.print("Index\tTask");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 Task temp=tempTasks.get(i);
-				 UI.ui.printTask(i,temp.getStartDateString(),temp.getEndDateString(),temp.getIssue());
-			 }
-		 }
-	 }
-
-	 public static boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
-		 if(day.contains(splitDate[0]) && month.contains(splitDate[1]) && year.contains(splitDate[2])) {
-			 return true;
-		 }
-		 return false;
-	 }
-
-	 public static void displayByLabel(String s) {
-		 UI.ui.eraseScreen();
-		 tempTasks = new ArrayList<Task>();
-		 ArrayList<Task> displayResults = Storage.localStorage.getUncompletedTasks();
-
-		 for(Task temp : displayResults) {
-			 if(temp.getLabel().contains(s)) {
-				 tempTasks.add(temp);
-			 }
-		 }
-
-		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index \t Task");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
-			 }
-			 UI.ui.print("________________________________");
-		 }
-
-		 tempTasks = new ArrayList<Task>();
-		 displayResults = Storage.localStorage.getFloatingTasks();
-		 for(Task temp : displayResults) {
-			 if(temp.getLabel().contains(s)) {
-				 tempTasks.add(temp);
-			 }
-		 }
-
-		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("FLOATING TASKS");
-			 UI.ui.printGreen("Index \t Task");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
-			 }
-			 UI.ui.print("________________________________");
-		 }
-
-		 tempTasks = new ArrayList<Task>();
-		 displayResults = Storage.localStorage.getCompletedTasks();
-		 for(Task temp : displayResults) {
-			 if(temp.getLabel().contains(s)) {
-				 tempTasks.add(temp);
-			 }
-		 }
-		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("COMPLETED TASKS");
-			 UI.ui.printYellow("Index \t Task");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 UI.ui.printYellow((i+1) + ".\t" + tempTasks.get(i).getTaskString());
-			 }
-		 }
-	 }
-
-
-	 /**
-	  * Function to clear storage
-	  * @throws IOException 
-	  * @throws ClassNotFoundException 
-	  * 
-	  */
-	 public static void clearTasks() throws ClassNotFoundException, IOException{
-		 Storage.localStorage.clear();
-	 }
-
-	 /**
-	  * Function to exit the application when user enters exit command
-	  */
-	 public static void exit(){
-		 System.exit(0);
-	 }
-
-
-
-	 public static void addLabelToTask(int index, String label) {
-		 int sizeOfUncompletedTasks = Storage.localStorage.getUncompletedTasks().size();
-		 if(index < sizeOfUncompletedTasks) {
-			 Task temp = Storage.localStorage.getUncompletedTask(index);
-			 temp.setLabel(label);
-			 Storage.localStorage.setUncompletedTask(index, temp);
-		 } else {
-			 Task temp = Storage.localStorage.getFloatingTask(index);
-			 temp.setLabel(label);
-			 Storage.localStorage.setFloatingTask(index, temp);
-		 }
-	 }
-
-	 public static void displayTasksForThisWeek() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("Upcoming tasks this week - ");
-		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-
-		 //getting today and seven days later
-		 /*Calendar d1 = Calendar.getInstance();
-		 int todayDay = d1.get(Calendar.DAY_OF_MONTH);
-		 int todayMonth = d1.get(Calendar.MONTH);
-		 int todayYear = d1.get(Calendar.YEAR);
-		 Date today = new Date(todayYear, todayMonth, todayDay);
-
-		 Calendar d2 = Calendar.getInstance();
-		 d2.add(Calendar.DAY_OF_MONTH, 7);
-		 int futureDay = d2.get(Calendar.DAY_OF_MONTH);
-		 int futureMonth = d2.get(Calendar.MONTH);
-		 int futureYear = d2.get(Calendar.YEAR);
-		 Date future = new Date(futureYear, futureMonth, futureDay);*/
-
-		 Calendar date = Calendar.getInstance();
-		 int thisWeek = date.get(Calendar.WEEK_OF_YEAR);
-
-		 //finding tasks which has dates in current week
-		 for(Task temp : tempTasks) {
-			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
-					 tasksToBeDisplayed.add(temp);
-					 continue;
-				 }
-			 }
-			 if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == thisWeek) {
-					 tasksToBeDisplayed.add(temp);
-				 }
-			 }
-		 }
-
-		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-		 }
-		 else {
-			 UI.ui.printRed("No tasks this week");
-		 }
-	 }
-
-	 public static void displayTasksForNextWeek() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("Upcoming tasks next week - ");
-		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-
-		 Calendar date = Calendar.getInstance();
-		 date.add(Calendar.WEEK_OF_YEAR, 1);
-		 int nextWeek = date.get(Calendar.WEEK_OF_YEAR);
-
-		 //finding tasks which has dates in the next week
-		 for(Task temp : tempTasks) {
-			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
-					 tasksToBeDisplayed.add(temp);
-					 continue;
-				 }
-			 }
-			 if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
-					 tasksToBeDisplayed.add(temp);
-				 }
-			 }
-		 }
-
-		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-		 }
-		 else {
-			 UI.ui.printRed("No tasks next week");
-		 }
-
-	 }
-
-	 public static void displayTaksForTwoWeeksLater() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("Upcoming tasks for two weeks later - ");
-		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-
-		 Calendar date = Calendar.getInstance();
-		 date.add(Calendar.WEEK_OF_YEAR, 2);
-		 int twoWeeksLater = date.get(Calendar.WEEK_OF_YEAR);
-
-		 //finding tasks which has dates in two weeks time
-		 for(Task temp : tempTasks) {
-			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
-					 tasksToBeDisplayed.add(temp);
-					 continue;
-				 }
-			 }
-			 if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == twoWeeksLater) {
-					 tasksToBeDisplayed.add(temp);
-				 }
-			 }
-		 }
-
-		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-		 }
-		 else {
-			 UI.ui.printRed("No tasks for two weeks later");
-		 }
-
-	 }
-
-	 public static void displayTasksForLastWeek() {
-		 UI.ui.eraseScreen();
-		 UI.ui.printGreen("Tasks uncompleted from last week - ");
-		 ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-		 ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-
-		 Calendar date = Calendar.getInstance();
-		 date.add(Calendar.WEEK_OF_YEAR, -1);
-		 int lastWeek = date.get(Calendar.WEEK_OF_YEAR);
-
-		 //finding tasks which has dates in two weeks time
-		 for(Task temp : tempTasks) {
-			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
-					 tasksToBeDisplayed.add(temp);
-					 continue;
-				 }
-			 }
-			 if(temp.getStartDate() != null) {
-				 if(temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == lastWeek) {
-					 tasksToBeDisplayed.add(temp);
-				 }
-			 }
-		 }
-
-		 if(tasksToBeDisplayed.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				 Task temp = tasksToBeDisplayed.get(i);
-				 UI.ui.printTask1(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-			 }
-		 }
-		 else {
-			 UI.ui.printRed("No tasks left from last week");
-		 }
-
-	 }
-
-
-	 public static void displayUpcomingTasks() {
-		 UI.ui.eraseScreen();
-		 ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-		 //today
-		 Calendar d1 = Calendar.getInstance();
-		 d1.add(Calendar.DAY_OF_MONTH, -1);
-
-		 //7 days in advance
-		 Calendar d2 = Calendar.getInstance();
-		 d2.add(Calendar.DAY_OF_MONTH, 7);
-
-		 tempTasks = new ArrayList<Task>();
-
-		 for(Task temp : tempUncompletedTasks) {
-			 if(temp.getEndDate() != null) {
-				 if(temp.getEndDate().compareTo(d1) >= 0 && temp.getEndDate().compareTo(d2) <=0) {
-					 tempTasks.add(temp);
-					 continue;
-				 }
-			 }
-			 else if(temp.getStartDate() != null) {
-				 if((temp.getStartDate().compareTo(d1) >= 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
-					 tempTasks.add(temp);
-				 }
-			 }
-		 }
-		 
-		 if(tempTasks.size() > 0) {
-			 UI.ui.printGreen("UNCOMPLETED TASKS");
-			 UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-			 for(int i = 0; i<tempTasks.size(); i++) {
-				 Task temp = tempTasks.get(i);
-				 UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-
-			 }
-		 }
-	 }
- }
+	/**
+	 * Function to add a label to a task.
+	 */
+	public void setLabelCommand() {
+		String description = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(description);
+			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
+			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
+
+			if (list.size() + list2.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+				uiObject.printRed(MSG_PRIORITY_FAIL);
+			} else {
+				uiObject.print("Enter label");
+				String label = sc.nextLine();
+				crudObject.addLabelToTask(num - 1, label);
+				arraylistsHaveBeenModified = true;
+				Task temp = localStorageObject.getUncompletedTask(num - 1);
+				String issue = temp.getIssue();
+				uiObject.printGreen("Task " + issue + " has been labelled " + label);
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+	
+	/**
+	 * Function to edit a task.
+	 */
+	public void editCommand() {
+		int num;
+		String description = parserObject.getDescription();
+		num = findTheLastDisplay(description);
 
 ```
-###### main\Logic\Help.java
+###### main\Logic\Core.java
+``` java
+	/**
+	 * Function to find the last display.
+	 * 
+	 * @param description the command entered by the user.
+	 * 
+	 * @return            the index of the task to be edited.
+	 */
+	public int findTheLastDisplay(String description) {
+		int num;
+		if (description.contains("all")) {
+			String[] tmp = description.split(" ");
+			num = Integer.parseInt(tmp[1]);
+		} else {
+			num = Integer.parseInt(description);
+		}
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("all")) {
+				if (description.contains("all")) {
+					String[] tmp = description.split(" ");
+					num = Integer.parseInt(tmp[1]);
+				} else {
+					num = Integer.parseInt(description);
+				}
+			} else {
+				num = getCorrectIndexFromDisplayAll(num);
+			}
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+			num = getCorrectIndexFromSearchView(num);
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			num = getCorrectIndexWelcomeView(num - 1);
+		}
+		return num;
+	}
+
+	/**
+	 * Function to get the index of the last from search "view".
+	 * 
+	 * @param num the current index of the task.
+	 * 
+	 * @return    the actual index of the task from the storage arraylist.
+	 */
+	public int getCorrectIndexFromSearchView(int num) {
+		Task temp = searchObject.getSearchedTask(num - 1);
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+
+		num = getCorrectIndexFromStorage(num, temp, tempUncompletedTasks, tempFloatingTasks);
+		return num;
+	}
+
+	/**
+	 * Function to get the actual index of the task from storage arraylist.
+	 * 
+	 * @param num                   the current index of the task.
+	 * @param temp                  the task.
+	 * @param tempUncompletedTasks  the arraylist containing the uncompleted tasks.
+	 * @param tempFloatingTasks     the arraylist containing the floating tasks.
+	 * 
+	 * @return                      the actual index of the task.
+	 */
+	public int getCorrectIndexFromStorage(int num, Task temp, ArrayList<Task> tempUncompletedTasks,
+			                              ArrayList<Task> tempFloatingTasks) {
+		int counter = 1;
+		for (Task t : tempUncompletedTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
+				num = counter;
+				break;
+			}
+			counter++;
+		}
+		counter++;
+		
+		for (Task t : tempFloatingTasks) {
+			if (t.getTaskString().equals(temp.getTaskString())) {
+				num = counter;
+				break;
+			}
+			counter++;
+		}
+		return num;
+	}
+
+	/**
+	 * Function to get the index of the last from display all "view".
+	 * 
+	 * @param num the current index of the task.
+	 * 
+	 * @return    the actual index of the task from the storage arraylist.
+	 */
+	public int getCorrectIndexFromDisplayAll(int num) {
+		try {
+			Task temp = crudObject.getTempTask(num - 1);
+
+			ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+			ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+
+			num = getCorrectIndexFromStorage(num, temp, tempUncompletedTasks, tempFloatingTasks);
+			return num;
+			
+		} catch (Exception e) {
+			return -1;
+		}
+	}
+
+	/**
+	 * Function to get the index of the last from welcome "view".
+	 * 
+	 * @param num the current index of the task.
+	 * 
+	 * @return    the actual index of the task from the storage arraylist.
+	 */
+	public int getCorrectIndexWelcomeView(int num) {
+		Task temp;
+		try {
+			temp = notificationObject.getSpecificTask(num);
+		} catch (IndexOutOfBoundsException e) {
+			return INVALID_TASK_INDEX;
+		}
+
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+
+		num = getCorrectIndexFromStorage(num, temp, tempUncompletedTasks, tempFloatingTasks);
+		return num;
+	}
+
+	/**
+	 * Function to determine which "view" to set priority from.
+	 */
+	public void setPriorityCommand() {
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				setPriorityFromDisplayAllView();
+			} else {
+				setPriorityFromDisplayView();
+			}
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+			setPriorityFromSearchTaskView();
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			setPriorityFromDisplayAllView();
+		} else {
+			setPriorityFromDisplayAllView();
+		}
+	}
+
+	/**
+	 * Function to set priority to task from display "view".
+	 */
+	public void setPriorityFromDisplayView() {
+		ArrayList<Task> list = crudObject.getTemp();
+		try {
+			String s = parserObject.getDescription();
+			int num = Integer.parseInt(s);
+			int oldNum = num;
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_PRIORITY_FAIL);
+			} else {
+				String priority = acceptPriorityFromUser();
+				uiObject.printGreen(crudObject.getTempTask(oldNum - 1).getIssue() + " has been set to " + priority 
+						            + " priority");
+				num = getCorrectIndexFromDisplayAll(num);
+				markObject.setPriority(num - 1, priority);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to set priority from search "view".
+	 */
+	public void setPriorityFromSearchTaskView() {
+		try {
+			String s = parserObject.getDescription();
+			int num = Integer.parseInt(s);
+			int oldNum = num;
+			ArrayList<Task> list = searchObject.getSearchedTasks();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_PRIORITY_FAIL);
+			} else {
+				String priority = acceptPriorityFromUser();
+				uiObject.printGreen(searchObject.getSearchedTask(oldNum - 1).getIssue() + " has been set to " + priority
+						            + " priority");
+				num = getCorrectIndexFromSearchView(num);
+				markObject.setPriority(num - 1, priority);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to set priority from the display all "view".
+	 */
+	public void setPriorityFromDisplayAllView() {
+		try {
+			String s = parserObject.getDescription();
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
+			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
+			if (list.size() + list2.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+				uiObject.printRed(MSG_PRIORITY_FAIL);
+			} else {
+				String priority = acceptPriorityFromUser();
+
+				int sizeOfUncompletedTasksList = localStorageObject.getUncompletedTasks().size();
+				if (num <= localStorageObject.getUncompletedTasks().size()) {
+					uiObject.printGreen(localStorageObject.getUncompletedTask(num - 1).getIssue() + " has been set to "
+							            + priority + " priority");
+				} else {
+					uiObject.printGreen(
+							localStorageObject.getFloatingTask(num - sizeOfUncompletedTasksList - 1).getIssue()
+									                           + " has been set to " + priority + " priority");
+				}
+				markObject.setPriority(num - 1, priority);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+	
+	/**
+	 * Function to accept priority from user.
+	 * 
+	 * @return the priority entered by the user.
+	 */
+	public String acceptPriorityFromUser() {
+		uiObject.printYellow("Enter priority");
+		String priority = sc.nextLine();
+		while ((priority.equals("high") != true) && (priority.equals("medium") != true)
+				&& priority.equals("low") != true) {
+			uiObject.printRed("Invalid priority entered. Please enter high, medium or low.");
+			priority = sc.nextLine();
+		}
+		return priority;
+	}
+
+	/**
+	 * Function to unmark a completed task.
+	 */
+	public void unmarkCommand() {
+		try {
+			String s = parserObject.getDescription();
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = localStorageObject.getCompletedTasks();
+			
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_NO_COMPLETED_TASKS);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_UNMARK_FAIL);
+			} else {
+				Task temp = crudObject.getCompletedTask(num - 1);
+				markObject.markTaskAsUncompleted(num - 1);
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_UNMARK);
+				crudObject.displayNearestFiveUnmarkCompleteTaskList(temp);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to determine which "view" to mark a task from.
+	 */
+	public void markCommand() {
+		String s = parserObject.getDescription();
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				markFromDisplayAllView(s);
+			} else {
+				markFromDisplayView();
+			}
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+			markFromSearchView();
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
+			String index = "" + num;
+			markFromDisplayAllView(index);
+		} else {
+			markFromDisplayAllView(s);
+		}
+	}
+
+	/**
+	 * Function to mark a task from search "view".
+	 */
+	public void markFromSearchView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = searchObject.getSearchedTasks();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_MARK_FAIL);
+			} else {
+				Task temp = list.get(num - 1);
+				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+				int counter = 0;
+				for (Task t : tempUncompletedTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+						markObject.markTaskAsCompleted(counter);
+						break;
+					}
+					counter++;
+				}
+				for (Task t : tempFloatingTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+						markObject.markTaskAsCompleted(counter);
+						break;
+					}
+					counter++;
+				}
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to mark a task from display all "view".
+	 * @param s
+	 */
+	public void markFromDisplayAllView(String s) {
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
+			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
+			if (list.size() + list2.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
+				uiObject.printRed(MSG_MARK_FAIL);
+			} else {
+				Task temp = crudObject.getUncompletedTask(num - 1);
+				markObject.markTaskAsCompleted(num - 1);
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to mark a task from welcome "view".
+	 */
+	public void markFromDisplayView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = crudObject.getTemp();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_MARK_FAIL);
+			} else {
+				Task temp = crudObject.getTempTask(num - 1);
+				num = getCorrectIndexFromDisplayAll(num);
+				markObject.markTaskAsCompleted(num - 1);
+				uiObject.printGreen("\"" + temp.getIssue() + "\"" + MSG_MARK);
+				crudObject.displayNearestFiveCompletedTaskList(temp);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to clear all the tasks in the storage.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void clearCommand() throws ClassNotFoundException, IOException {
+		crudObject.clearTasks();
+		uiObject.printGreen(MSG_CLEAR);
+		arraylistsHaveBeenModified = true;
+	}
+
+	/**
+	 * Function to determine which "view" should the details of the task be shown from.
+	 */
+	public void viewCommand() {
+		String s = parserObject.getDescription();
+		if (Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				int num = Integer.parseInt(s);
+				crudObject.viewIndividualTask(num - 1);
+			} else {
+				viewFromDisplayView();
+			}
+		} else if (Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s")) {
+			viewFromSearchView();
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
+			crudObject.viewIndividualTask(num - 1);
+		} else {
+			try {
+				int num = Integer.parseInt(s);
+				crudObject.viewIndividualTask(num - 1);
+			} catch (Exception e) {
+				uiObject.printRed(MSG_INVALID);
+			}
+		}
+	}
+
+	/**
+	 * Function to view a task from search "view".
+	 */
+	public void viewFromSearchView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = searchObject.getSearchedTasks();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed("Invalid index entered");
+			} else {
+				Task temp = list.get(num - 1);
+				ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+				ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+				int counter = 0;
+				for (Task t : tempUncompletedTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+						crudObject.viewIndividualTask(counter);
+						arraylistsHaveBeenModified = true;
+						break;
+					}
+					counter++;
+				}
+				for (Task t : tempFloatingTasks) {
+					if (t.getTaskString().equals(temp.getTaskString())) {
+						crudObject.viewIndividualTask(counter);
+						arraylistsHaveBeenModified = true;
+						break;
+					}
+					counter++;
+				}
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to view a task from display "view".
+	 */
+	public void viewFromDisplayView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = crudObject.getTemp();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed("Wrong index entered");
+			} else {
+				num = getCorrectIndexFromDisplayAll(num);
+				crudObject.viewIndividualTask(num - 1);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to read which display the user has entered.
+	 */
+	public void displayCommand() {
+		String s = parserObject.getDescription();
+		if (s.equals("completed") || s.equals("c")) {
+			crudObject.displayCompletedTasks();
+		} else if (s.equals("floating") || s.equals("f")) {
+			crudObject.displayFloatingTasks();
+		} else if (checkDateObject.checkDateformat(s)) {
+			crudObject.displayScheduleForADay(s);
+		} else if (s.equals("all")) {
+			crudObject.displayUncompletedAndFloatingTasks();
+		} else if (s.equals("")) {
+			crudObject.displayUpcomingTasks();
+		} else if (s.equals("today")) {
+			Calendar today = Calendar.getInstance();
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			String todayString = df.format(today.getTime());
+			crudObject.displayScheduleForADay(todayString);
+		} else if (s.equals("tomorrow")) {
+			Calendar tomorrow = Calendar.getInstance();
+			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
+			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
+			String tomorrowString = df.format(tomorrow.getTime());
+			crudObject.displayScheduleForADay(tomorrowString);
+		} else if (s.equals("next week") || s.equals("w+1")) {
+			crudObject.displayTasksForNextWeek();
+		} else if (s.equals("two weeks later") || s.equals("w+2")) {
+			crudObject.displayTaksForTwoWeeksLater();
+		} else if (s.equals("last week") || s.equals("w -1")) {
+			crudObject.displayTasksForLastWeek();
+		} else {
+			crudObject.displayByLabel(s);
+		}
+	}
+
+	/**
+	 * Function to determine from which "view" task should be deleted.
+	 */
+	public void deleteCommand() {
+		String s = parserObject.getDescription();
+		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
+			if (Logic.Head.getLastDisplayArg().equals("all") || Logic.Head.getLastDisplayArg().equals("floating")) {
+				if (s.contains("all") != true) {
+					deleteFromDisplayAllView(s);
+				} else {
+					deleteAllRecurringTasks();
+				}
+			} else if (Logic.Head.getLastDisplayArg().equals("completed")|| Logic.Head.getLastDisplayArg().equals("c")) {
+				if (s.contains("all") != true) {
+					deleteFromDisplayCompletedView();
+				} else {
+					deleteAllRecurringTasks();
+				}
+			} else { // this is "display" only.
+				if (s.contains("all") != true) {
+					deleteFromDisplayView();
+				} else {
+					deleteAllRecurringTasks();
+				}
+			}
+		} else if ((Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s"))) {
+			// delete from search results.
+			if (s.contains("all") != true) {
+				deleteFromSearchView();
+			} else {
+				deleteAllRecurringTasks();
+			}
+		} else if (Logic.Head.getLastDisplay().equals("")) {
+			if (s.contains("all") != true) {
+				int num = getCorrectIndexWelcomeView(Integer.parseInt(s) - 1);
+				if (num == -1) { // -1 when storage is empty, and user tries to delete immediately after launch.
+					uiObject.printRed(MSG_EMPTY);
+					return;
+				}
+
+				String index = "" + num;
+				deleteFromDisplayAllView(index);
+			} else {
+				deleteAllRecurringTasks();
+			}
+		} else {
+			deleteFromDisplayAllView(s);
+		}
+	}
+
+	/**
+	 * Function to delete a task from display "view".
+	 */
+	public void deleteFromDisplayView() {
+		String s = parserObject.getDescription();
+		String[] splitInput = s.split(" ");
+		try {
+			int num;
+			if (splitInput.length == 2) {
+				num = Integer.parseInt(splitInput[1]);
+			} else {
+				num = Integer.parseInt(splitInput[0]);
+			}
+
+			ArrayList<Task> list = crudObject.getTemp();
+			Task deleted = list.get(num - 1);
+			issue = deleted.getIssue();
+			try {
+				crudObject.deleteTask(num - 1, 5);
+			} catch (ClassNotFoundException | IOException e) {
+				e.printStackTrace();
+			}
+			uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
+			crudObject.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+			arraylistsHaveBeenModified = true;
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to delete a task from display completed "view".
+	 */
+	public void deleteFromDisplayCompletedView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = localStorageObject.getCompletedTasks();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_TASK_DES_NOT_EXIST);
+			} else {
+				Task deleted = list.get(num - 1);
+				issue = deleted.getIssue();
+				crudObject.deleteTask(num - 1, 2);
+				uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to delete a task from display completed "view".
+	 */
+	public void deleteFromSearchView() {
+		String s = parserObject.getDescription();
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = searchObject.getSearchedTasks();
+			if (list.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if (list.size() < num || num - 1 < 0) {
+				uiObject.printRed(MSG_TASK_DES_NOT_EXIST);
+			} else {
+				Task deleted = list.get(num - 1);
+				issue = deleted.getIssue();
+				crudObject.deleteTask(num - 1, 3);
+
+				uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
+				arraylistsHaveBeenModified = true;
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+	/**
+	 * Function to delete a task from display all "view".
+	 * 
+	 * @param s the index of the task to be deleted.
+	 */
+	public void deleteFromDisplayAllView(String s) {
+		try {
+			int num = Integer.parseInt(s);
+			ArrayList<Task> list = localStorageObject.getUncompletedTasks();
+			ArrayList<Task> list2 = localStorageObject.getFloatingTasks();
+			if (list.size() + list2.size() == 0) {
+				uiObject.printRed(MSG_EMPTY);
+			} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
+				uiObject.printRed(MSG_TASK_DES_NOT_EXIST);
+			} else {
+				if ((num - 1) < list.size()) {
+					Task deleted = list.get(num - 1);
+					issue = deleted.getIssue();
+					crudObject.deleteTask(num - 1, 1);
+
+					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					crudObject.displayNearestFiveDeleteUncompleteTaskList(num - 1);
+					arraylistsHaveBeenModified = true;
+				} else {
+					Task deleted = list2.get(num - list.size() - 1);
+					issue = deleted.getIssue();
+					crudObject.deleteTask(num - 1, 1);
+
+					uiObject.printGreen("\"" + issue + "\" " + MSG_DELETE);
+					crudObject.displayNearestFiveDeleteFloatingTask(num - 1);
+					arraylistsHaveBeenModified = true;
+				}
+			}
+		} catch (Exception e) {
+			uiObject.printRed(MSG_INVALID);
+		}
+	}
+
+```
+###### main\Logic\Crud.java
 ``` java
 package Logic;
-public class Help {
 
-	public static void printHelpMenu() {
-		String addCommand = "Type \"add/+/a\" followed by task description. Press Enter. Now enter the date or -.";
-		String editCommand = "Type \"edit/e\" followed by edited task description and edited date.";
-		String deleteCommand = "Enter \"delete/-\" followed by the task number that you want to delete.";
-		String markCommand = "Enter \"mark/m\" to mark a task as completed or uncompleted";
-		String exitCommand = "Enter \"exit\" to quit Agendah";
-		String clearCommand = "Enter \"clear/c\" to delete all the tasks.";
-		String sortCommand = "Enter \"sort\" to sort the tasks alphabetically";
-		String searchCommand = "Enter \"search/s\" followed by the word you want to search for to display all tasks containing that word";
-		String displayUncompletedCommand = "Enter \"display/d\" to display the uncompleted tasks";
-		String displayCompletedCommand = "Enter \"displaycompleted/dc\" to display the completed tasks";
+import java.awt.Toolkit;
+import java.awt.datatransfer.Clipboard;
+import java.awt.datatransfer.StringSelection;
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Calendar;
+
+import Storage.LocalStorage;
+import Task.Task;
+import UI.UI;
+
+public class Crud {
+	private static Crud crud;
+
+	private static ArrayList<Task> tempTasks = new ArrayList<Task>();
+	private static boolean noDuplicate;
+	private static Task tempTask;
+
+	private static final String FLAG_COMPLETED = "completed";
+	private static final String FLAG_FLOATING = "floating";
+	private static final String FLAG_UNCOMPLETED = "uncompleted";
+	private static final String MSG_NO_TASK_UNDER_THIS_LABEL = "There is no task under this label";
+	private static final String MSG_NO_TASK = "There are no tasks to show.";
+	private static final String MSG_INVALID = "Invalid inputs! Please try again";
+
+	private LocalStorage localStorageObject;
+	private Search searchObject;
+	private Sort sortObject = new Sort();
+	private UI uiObject;
+
+	// Private constructor, following the singleton pattern.
+	private Crud() {
+		localStorageObject = LocalStorage.getInstance();
+		searchObject = Search.getInstance();
+		sortObject = new Sort();
+		uiObject = new UI();
+	}
+
+	/**
+	 * Method to access this class, following the singleton pattern. 
+	 * Invokes constructor if Crud has not been initialised.
+	 * 
+	 * @return The Crud object.
+	 */
+	public static Crud getInstance() {
+		if (crud == null) {
+			crud = new Crud();
+		}
+		return crud;
+	}
+
+	// Getter methods.
+	public ArrayList<Task> getTemp() {
+		return tempTasks;
+	}
+
+	public Task getTempTask(int index) {
+		return tempTasks.get(index);
+	}
+
+	/**
+	 * Function to get a task from the list in Uncompleted Task List
+	 * 
+	 * @param index
+	 * @return
+	 */
+	public Task getUncompletedTask(int index) {
+		int size1 = localStorageObject.getUncompletedTasks().size();
+		if (index < size1) {
+			return localStorageObject.getUncompletedTask(index);
+		} else {
+
+			return localStorageObject.getFloatingTask(index - size1);
+		}
+	}
+
+	public Task getCompletedTask(int index) {
+		return localStorageObject.getCompletedTask(index);
+	}
+	/**
+	 * Function to add task without time.
+	 * 
+	 * @param line                    the task to be added.
+	 * 
+	 * @return                        true if no duplicate found, false other.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public boolean addTask(String line) throws IOException, ClassNotFoundException {
+		Task task = new Task(line);
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+		boolean noDuplicate = true;
+		for (Task temp : tempTasks) {
+			if (temp.getTaskString().equals(task.getTaskString())) {
+				noDuplicate = false;
+			}
+		}
+		if (noDuplicate) {
+			localStorageObject.addToFloatingTasks(task);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Function to add a task with only start date.
+	 * 
+	 * @param line                   task description to be added.
+	 * @param date                   start date of the task to be added.
+	 * @param msg                    the task description and the start date to be added.
+	 * 
+	 * @return                       true if no duplicate is found, false otherwise.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public boolean addTaskWithStartDate(String line, String date, String msg)
+			throws IOException, ClassNotFoundException {
+		Task task = new Task(line, date, msg, true);
+
+		boolean noDuplicate = true;
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+		for (Task temp : tempTasks) {
+			if (temp.getTaskString().equals(task.getTaskString())) {
+				uiObject.printRed(temp.getTaskString());
+				noDuplicate = false;
+			}
+		}
+		if (noDuplicate) {
+			localStorageObject.addToUncompletedTasks(task);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Function to add a task with only end date.
+	 * 
+	 * @param line                   task description to be added.
+	 * @param date                   end date of the task to be added.
+	 * @param msg                    the task description and the end
+           
+	 * @return                       true if no duplicate if found, false otherwise.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public boolean addTaskWithEndDate(String line, String date, String msg) throws IOException, ClassNotFoundException {
+		Task task = new Task(line, date, msg, false);
+
+		boolean noDuplicate = true;
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+		for (Task temp : tempTasks) {
+			if (temp.getTaskString().equals(task.getTaskString())) {
+				uiObject.printRed(temp.getTaskString());
+				noDuplicate = false;
+			}
+		}
+		if (noDuplicate) {
+			localStorageObject.addToUncompletedTasks(task);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Function to add a task with both start date and end date.
+	 * 
+	 * @param line                    task description to be added.
+	 * @param startDate               start date of the task to be added.
+	 * @param endDate                 end date of the task to be added.
+	 * @param msg                     the task description and both the dates to be added.
+	 * 
+	 * @return                        true if no duplicate is found, false otherwise.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public boolean addTaskWithBothDates(String line, String startDate, String endDate, String msg)
+			throws IOException, ClassNotFoundException {
+		Task task = new Task(line, startDate, endDate, msg);
+
+		boolean noDuplicate = true;
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+		for (Task temp : tempTasks) {
+			if (temp.getTaskString().equals(task.getTaskString())) {
+				uiObject.printRed(temp.getTaskString());
+				noDuplicate = false;
+			}
+
+			if (temp.getStartDate() != null && temp.getEndDate() != null) {
+				if (temp.getStartDateString().equals(task.getStartDateString())
+						&& temp.getEndDateString().equals(task.getEndDateString())) {
+					uiObject.printRed("CLASH IN TIMING DETECTED WITH - ");
+					uiObject.printRed(temp.getTaskString());
+				}
+			}
+		}
+		if (noDuplicate) {
+			localStorageObject.addToUncompletedTasks(task);
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	/**
+	 * Function to add a label to a task.
+	 * 
+	 * @param index  index of the task for which label is be added.
+	 * @param label  label to be added.
+	 */
+	public void addLabelToTask(int index, String label) {
+		int sizeOfUncompletedTasks = localStorageObject.getUncompletedTasks().size();
+		if (index < sizeOfUncompletedTasks) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			temp.setLabel(label);
+			localStorageObject.setUncompletedTask(index, temp);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index);
+			temp.setLabel(label);
+			localStorageObject.setFloatingTask(index, temp);
+		}
+	}
+
+```
+###### main\Logic\Crud.java
+``` java
+	/**
+	 * Function to edit a task (edited task has no date).
+	 * 
+	 * @param line                    the edited task description. 
+	 * @param date                    the edited task date.
+	 * @param message                 the edited task description with the edited task date.
+	 * @param index                   index of the task to be edited.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void editTaskWithNoDate(String line, String message, int index) throws IOException, ClassNotFoundException {
+		int uncompleteList = localStorageObject.getUncompletedTasks().size();
+
+		if (index < uncompleteList) {
+			deleteTask(index, 1);
+			addTask(message);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index - uncompleteList);
+			temp.setStartDate(null);
+			temp.setEndDate(null);
+			temp.setDescription(message);
+			temp.setIssue(line);
+			localStorageObject.setFloatingTask(index - uncompleteList, temp);
+		}
+	}
+
+	/**
+	 * Function to edit a task (edited task has start date).
+	 * 
+	 * @param line                    the edited task description. 
+	 * @param date                    the edited task date.
+	 * @param message                 the edited task description with the edited task date.
+	 * @param index                   index of the task to be edited.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void editTaskWithStartDate(String line, String date, String message, int index)
+			                          throws IOException, ClassNotFoundException {
+		int uncompleteList = localStorageObject.getUncompletedTasks().size();
+
+		if (index < uncompleteList) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			if (!temp.getIssue().equals(line)) {
+				temp.resetID();
+			}
+			temp.setIssue(line);
+			temp.setDescription(message);
+			temp.setEndDate(null);
+			temp.setStartDate(date);
+			localStorageObject.setUncompletedTask(index, temp);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index - uncompleteList);
+			temp.setIssue(line);
+			temp.setDescription(message);
+			temp.setEndDate(null);
+			temp.setStartDate(date);
+			localStorageObject.deleteFromFloatingTasks(index - uncompleteList);
+			localStorageObject.addToUncompletedTasks(temp);
+		}
+	}
+
+	/**
+	 * Function to edit a task (edited task has end date).
+	 * 
+	 * @param line                    the edited task description. 
+	 * @param date                    the edited task date.
+	 * @param message                 the edited task description with the edited task date.
+	 * @param index                   index of the task to be edited.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void editTaskWithEndDate(String line, String date, String message, int index)
+			                        throws IOException, ClassNotFoundException {
+		int uncompleteList = localStorageObject.getUncompletedTasks().size();
+
+		if (index < uncompleteList) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			if (!temp.getIssue().equals(line)) {
+				temp.resetID();
+			}
+			temp.setIssue(line);
+			temp.setStartDate(null);
+			temp.setEndDate(date);
+			temp.setDescription(message);
+
+			localStorageObject.setUncompletedTask(index, temp);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index - uncompleteList);
+			deleteTask(index, 1);
+			temp.setDescription(message);
+			temp.setIssue(line);
+			temp.setStartDate(null);
+			temp.setEndDate(date);
+			addTaskWithEndDate(line, date, message);
+		}
+	}
+
+	/**
+	 * Function to edit a task (edited task has start and end dates).
+	 * 
+	 * @param line                    the edited task description. 
+	 * @param startDate               the edited task start date.
+	 * @param startDate               the edited task end date.
+	 * @param message                 the edited task description with the edited task date.
+	 * @param index                   index of the task to be edited.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void editTaskWithBothDates(String line, String startDate, String endDate, String message, int index)
+			                          throws IOException, ClassNotFoundException {
+		int uncompleteList = localStorageObject.getUncompletedTasks().size();
+		if (index < uncompleteList) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			if (!temp.getIssue().equals(line)) {
+				temp.resetID();
+			}
+			temp.setIssue(line);
+			temp.setDescription(message);
+			temp.setStartDate(startDate);
+			temp.setEndDate(endDate);
+			localStorageObject.setUncompletedTask(index, temp);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index - uncompleteList);
+			deleteTask(index, 1);
+			temp.setDescription(message);
+			temp.setIssue(line);
+			temp.setStartDate(startDate);
+			temp.setEndDate(endDate);
+			addTaskWithBothDates(line, startDate, endDate, message);
+		}
+	}
+
+	/**
+	 * Function to display all the completed tasks in the storage.
+	 */
+	public void displayCompletedTasks() {
+		tempTasks = localStorageObject.getCompletedTasks();
+
+		if (tempTasks.isEmpty()) {
+			uiObject.printGreen("There is no stored task to display");
+		} else {
+			printCompletedTask(tempTasks);
+		}
+	}
+
+	/**
+	 * Function to display all floating task in storage.
+	 */
+	public void displayFloatingTasks() {
+		tempTasks = localStorageObject.getFloatingTasks();
+		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
+		if (tempTasks.isEmpty()) {
+			uiObject.printGreen("There are no floating tasks to show.");
+		}else{
+			uiObject.printGreen("FLOATING TASKS");
+			uiObject.printGreen("Index\tTask");
+			for (int i = 0; i < tempTasks.size(); i++) {
+				Task temp = tempTasks.get(i);
+				uiObject.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+			}
+		}
+
+	}
+
+```
+###### main\Logic\Crud.java
+``` java
+	/**
+	 * Function to display all the uncompleted tasks and storage in the storage.
+	 */
+	public void displayUncompletedAndFloatingTasks() {
+		boolean isEmptyUn = false;
+		tempTasks = localStorageObject.getUncompletedTasks();
+		if (tempTasks.isEmpty()) {
+			isEmptyUn = true;
+		} else {
+			printUncompletedTask(tempTasks);
+		}
+
+		boolean isEmptyF = false;
+		tempTasks = localStorageObject.getFloatingTasks();
+		if (tempTasks.isEmpty()) {
+			isEmptyF = true;
+		} else {
+			printFloatingTasks();
+		}
+		if (isEmptyUn && isEmptyF) {
+			uiObject.printGreen(MSG_NO_TASK);
+		}
+	}
+
+	/**
+	 * Function to display all the uncompleted tasks and storage in the storage.
+	 */
+	public void displayUpcomingTasks() {
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+
+		// 7 days in advance
+		Calendar sevenDaysLaterCalendar = Calendar.getInstance();
+		sevenDaysLaterCalendar.add(Calendar.DAY_OF_MONTH, 7);
+
+		// today
+		Calendar todayCalendar = Calendar.getInstance();
+
+		tempTasks = new ArrayList<Task>();
+		findUpcomingTasks(tempUncompletedTasks, sevenDaysLaterCalendar);
+		printUpcomingTasks(todayCalendar);
+	}
+
+	/**
+	 * Function to find the upcoming tasks.
+	 * 
+	 * @param tempUncompletedTasks   the arraylist containing the uncompleted tasks.
+	 * @param sevenDaysLaterCalendar the Calendar object of seven days after current day.
+	 */
+	public void findUpcomingTasks(ArrayList<Task> tempUncompletedTasks, Calendar sevenDaysLaterCalendar) {
+		for (Task temp : tempUncompletedTasks) {
+			if (temp.getEndDate() != null) {
+				if (temp.getEndDate().compareTo(sevenDaysLaterCalendar) <= 0) {
+					tempTasks.add(temp);
+					continue;
+				}
+			} else if (temp.getStartDate() != null) {
+				if (temp.getStartDate().compareTo(sevenDaysLaterCalendar) <= 0) {
+					tempTasks.add(temp);
+				}
+			}
+		}
+	}
+	
+	/**
+	 * Function to print the upcoming tasks.
+	 * 
+	 * @param todayCalendar the Calendar object of current day.
+	 */
+	public void printUpcomingTasks(Calendar todayCalendar) {
+		if (tempTasks.size() > 0) {
+			uiObject.printGreen("UNCOMPLETED TASKS");
+			uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
+
+			for (int i = 0; i < tempTasks.size(); i++) {
+				Task temp = tempTasks.get(i);
+				if (temp.getEndDate() != null) {
+					int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - todayCalendar.get(Calendar.DAY_OF_YEAR);
+					String message = "";
+					if (result < 0) {
+						message = "overdue by " + Math.abs(result) + " days";
+					} else if (result == 0) {
+						message = "deadline today";
+					}
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				} else if (temp.getStartDate() != null) {
+					int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR)
+							     - todayCalendar.get(Calendar.DAY_OF_YEAR);
+					String message = "";
+					if (result < 0) {
+						message = "started " + Math.abs(result) + " days ago";
+					} else if (result == 0) {
+						message = "starts today";
+					}
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				} else {
+					String message = "";
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				}
+			}
+		} else {
+			uiObject.printGreen(MSG_NO_TASK);
+		}
+	}
+	
+	/**
+	 * Function to display the uncompleted tasks starting from/due next week.
+	 */
+	public void displayTasksForNextWeek() {
+		uiObject.printGreen("Upcoming tasks next week - ");
+		tempTasks = new ArrayList<Task>();
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.WEEK_OF_YEAR, 1);
+		int nextWeek = date.get(Calendar.WEEK_OF_YEAR);
+
+		// finding tasks which has dates in the next week
+		findTasksInThatWeek(tempUncompletedTasks, nextWeek);
+		if (tempTasks.size() > 0) {
+			printUncompletedTask(tempTasks);
+		} else {
+			uiObject.printRed("No tasks next week");
+		}
+	}
+
+	/**
+	 * Function to find the uncompleted tasks starting from/due in the respective week.
+	 * 
+	 * @param tempUncompletedTasks the arraylist containing the uncompleted tasks.
+	 * @param nextWeek             the week number entered by the user.
+	 */
+	public void findTasksInThatWeek(ArrayList<Task> tempUncompletedTasks, int nextWeek) {
+		for (Task temp : tempUncompletedTasks) {
+			if (temp.getEndDate() != null) {
+				if (temp.getEndDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
+					tempTasks.add(temp);
+					continue;
+				}
+			}
+			if (temp.getStartDate() != null) {
+				if (temp.getStartDate().get(Calendar.WEEK_OF_YEAR) == nextWeek) {
+					tempTasks.add(temp);
+				}
+			}
+		}
+	}
+
+	/**
+	 * Function to display the uncompleted tasks starting from/due two weeks later.
+	 */
+	public void displayTaksForTwoWeeksLater() {
+		uiObject.printGreen("Upcoming tasks for two weeks later - ");
+		tempTasks = new ArrayList<Task>();
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.WEEK_OF_YEAR, 2);
+		int twoWeeksLater = date.get(Calendar.WEEK_OF_YEAR);
+
+		findTasksInThatWeek(tempUncompletedTasks, twoWeeksLater);
+		if (tempTasks.size() > 0) {
+			printUncompletedTask(tempTasks);
+
+		} else {
+			uiObject.printRed("No tasks for two weeks later");
+		}
+	}
+
+	/**
+	 * Function to display the uncompleted tasks starting from/due last week.
+	 */
+	public void displayTasksForLastWeek() {
+		uiObject.printGreen("Tasks uncompleted from last week - ");
+		tempTasks = new ArrayList<Task>();
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+
+		Calendar date = Calendar.getInstance();
+		date.add(Calendar.WEEK_OF_YEAR, -1);
+		int lastWeek = date.get(Calendar.WEEK_OF_YEAR);
+
+		findTasksInThatWeek(tempUncompletedTasks, lastWeek);
+
+		if (tempTasks.size() > 0) {
+			printUncompletedTask(tempTasks);
+		} else {
+			uiObject.printRed("No tasks left from last week");
+		}
+	}
+
+	/**
+	 * Function to display tasks with a particular label.
+	 * 
+	 * @param description the label entered by the user.
+	 */
+	public void displayByLabel(String description) {
+		boolean hasTaskUnderThisLabel = false;
+
+		tempTasks = new ArrayList<Task>();
+		ArrayList<Task> displayResults = localStorageObject.getUncompletedTasks();
+
+		for (Task temp : displayResults) {
+			if (temp.getLabel().contains(description)) {
+				tempTasks.add(temp);
+			}
+		}
+
+		if (tempTasks.size() > 0) {
+			hasTaskUnderThisLabel = true;
+			printUncompletedTask(tempTasks);
+		}
+
+		tempTasks = new ArrayList<Task>();
+		displayResults = localStorageObject.getFloatingTasks();
+		for (Task temp : displayResults) {
+			if (temp.getLabel().contains(description)) {
+				tempTasks.add(temp);
+			}
+		}
+
+		if (tempTasks.size() > 0) {
+			hasTaskUnderThisLabel = true;
+			printFloatingTasks();
+			/*uiObject.printGreen("FLOATING TASKS");
+			uiObject.printGreen("Index \t Task");
+			ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
+			for (int i = 0; i < tempTasks.size(); i++) {
+				Task temp = tempTasks.get(i);
+				uiObject.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+			}
+			uiObject.print("________________________________");*/
+		}
+
+		tempTasks = new ArrayList<Task>();
+		displayResults = localStorageObject.getCompletedTasks();
+		for (Task temp : displayResults) {
+			if (temp.getLabel().contains(description)) {
+				tempTasks.add(temp);
+			}
+		}
+
+		if (tempTasks.size() > 0) {
+			hasTaskUnderThisLabel = true;
+			printCompletedTask(tempTasks);
+		}
+
+		if (!hasTaskUnderThisLabel) {
+			uiObject.printRed(MSG_NO_TASK_UNDER_THIS_LABEL);
+		}
+	}
+
+	/**
+	 * Function to display the schedule for a specific date.
+	 * 
+	 * @param inputDate the date entered by the user.
+	 */
+	public void displayScheduleForADay(String inputDate) {
+		inputDate = inputDate.replace("/0", "/");
+		if (inputDate.startsWith("0")) {
+			inputDate = inputDate.replaceFirst("0", "");
+		}
+		String[] splitDate = inputDate.split("/");
+		// run through all the tasks and find which have same date
+		tempTasks = new ArrayList<Task>();
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+
+		for (Task temp : tempUncompletedTasks) {
+			if (temp.getStartDate() != null) {
+				String startDay = "" + temp.getStartDate().get(Calendar.DAY_OF_MONTH);
+				String startMonth = "" + (temp.getStartDate().get(Calendar.MONTH) + 1);
+				String startYear = "" + temp.getStartDate().get(Calendar.YEAR);
+				if (checkIfDateIsContained(splitDate, startDay, startMonth, startYear)) {
+					tempTasks.add(temp);
+					continue;
+				}
+			}
+			if (temp.getEndDate() != null) {
+				String endDay = "" + temp.getEndDate().get(Calendar.DAY_OF_MONTH);
+				String endMonth = "" + (temp.getEndDate().get(Calendar.MONTH) + 1);
+				String endYear = "" + temp.getEndDate().get(Calendar.YEAR);
+				if (checkIfDateIsContained(splitDate, endDay, endMonth, endYear)) {
+					tempTasks.add(temp);
+				}
+			}
+		}
+
+		if (tempTasks.isEmpty()) {
+			uiObject.printGreen("There is no stored task to display");
+		} else {
+			sortObject.sortTasksPriority();
+			printUncompletedTask(tempTasks);
+		}
+	}
+
+	/**
+	 * Function to check if two dates match.
+	 * 
+	 * @param splitDate the date entered by the user.
+	 * @param day       the day to be checked for.
+	 * @param month     the month to be checked for.
+	 * @param year      the year to be checked for.
+	 * 
+	 * @return          true if date is contained, false otherwise.
+	 */
+	public boolean checkIfDateIsContained(String[] splitDate, String day, String month, String year) {
+		if (day.equals(splitDate[0]) && month.equals(splitDate[1]) && year.equals(splitDate[2])) {
+			return true;
+		}
+		return false;
+	}
+
+	/**
+	 * Function to delete a task from the list of tasks.
+	 * 
+	 * @param index                    the index of the task to be deleted.
+	 * @param listOfTasks              to indicate from which list, the task should be deleted.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	public void deleteTask(int index, int listOfTasks) throws ClassNotFoundException, IOException {
+		if (listOfTasks == 1) { // delete from "display all" view
+			ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
+			if (index < getSize.size()) {
+				localStorageObject.deleteFromUncompletedTasks(index);
+			} else {
+				localStorageObject.deleteFromFloatingTasks(index - getSize.size());
+			}
+		} else if (listOfTasks == 2) { // delete from completed tasks.
+			localStorageObject.deleteFromCompletedTasks(index);
+		} else if (listOfTasks == 3) { // delete from search completed tasks view.
+			ArrayList<Task> searchTemp = searchObject.getSearchedTasks();
+			Task taskToBeDeleted = searchTemp.get(index);
+			ArrayList<Task> uncompletedTemp = localStorageObject.getUncompletedTasks();
+			for (int i = 0; i < uncompletedTemp.size(); i++) {
+				if (uncompletedTemp.get(i).equals(taskToBeDeleted)) {
+					uncompletedTemp.remove(i);
+					break;
+				}
+			}
+		} else if (listOfTasks == 4) { // delete from floating tasks view.
+			localStorageObject.deleteFromFloatingTasks(index);
+		} else if (listOfTasks == 5) { // delete from "display" view.
+			Task temp = tempTasks.get(index);
+			ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+			for (int i = 0; i < tempUncompletedTasks.size(); i++) {
+				if (tempUncompletedTasks.get(i).getTaskString().equals(temp.getTaskString())) {
+					tempUncompletedTasks.remove(i);
+					break;
+				}
+			}
+			localStorageObject.setUncompletedTasks(tempUncompletedTasks);
+		}
+	}
+
+```
+###### main\Logic\Crud.java
+``` java
+	/**
+	 * Function to print the list of uncompleted tasks.
+	 * 
+	 * @param tempTask the list of uncompleted Tasks.
+	 */
+	public void printUncompletedTask(ArrayList<Task> tempTask) {
+		uiObject.printGreen("UNCOMPLETED TASKS");
+		uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
+
+		for (int i = 0; i < tempTask.size(); i++) {
+			Task temp = tempTask.get(i);
+			uiObject.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+					temp.getEndDateLineTwo(), temp.getShortPriority() + temp.getIssue(), temp.getRecurFrequency());
+		}
+		uiObject.print("________________________________________________________________");
+
+	}
+
+	/**
+	 * Function to print the list of floating tasks.
+	 */
+	public void printFloatingTasks() {
+		uiObject.printGreen("FLOATING TASKS");
+		uiObject.printGreen("Index\tTask");
 		
-		UI.ui.print("1. " + addCommand);
-		UI.ui.print("2. " + editCommand);
-		UI.ui.print("3. " + deleteCommand);
-		UI.ui.print("4. " + displayUncompletedCommand);
-		UI.ui.print("5. " + displayCompletedCommand);
-		UI.ui.print("6. " + sortCommand);
-		UI.ui.print("7. " + searchCommand);
-		UI.ui.print("8. " + clearCommand);
-		UI.ui.print("9. " + markCommand);
-		UI.ui.print("10. " + exitCommand);
+		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
+		for (int i = 0; i < tempTasks.size(); i++) {
+			Task temp = tempTasks.get(i);
+			uiObject.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+		}
+	}
+	
+	/**
+	 * Function to print the list of completed tasks.
+	 * 
+	 * @param tempTask the arraylist of tasks to be printed.
+	 */
+
+	public void printCompletedTask(ArrayList<Task> tempTask) {
+		uiObject.printGreen("COMPLETED TASKS");
+		uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
+		for (int i = 0; i < tempTasks.size(); i++) {
+			Task temp = tempTasks.get(i);
+			uiObject.printTask1(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(), temp.getEndDateLineOne(),
+					temp.getEndDateLineTwo(), temp.getIssue(), temp.getRecurFrequency());
+		}
+	}
+	
+	/**
+	 * Function to check for duplicate tasks.
+	 * 
+	 * @param task        the task to be checked for.
+	 * @param destination the arraylist containing the tasks.
+	 * 
+	 * @return            true if no duplicate, false otherwise.
+	 */
+	private boolean checkForDuplicateTasks(Task task, ArrayList<Task> destination) {
+		boolean noDuplicate = true;
+		for (Task temp : destination) {
+			if (temp.getTaskString().equals(task.getTaskString())) {
+				noDuplicate = false;
+				break;
+			}
+		}
+		return noDuplicate;
+	}
+
+	/**
+	 * Function to display the details of an individual task.
+	 * 
+	 * @param index the index of the task to be displayed.
+	 */
+	public void viewIndividualTask(int index) {
+		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
+		if (index < getSize.size()) {
+			tempTask = localStorageObject.getUncompletedTask(index);
+		} else {
+			tempTask = localStorageObject.getFloatingTask(index - getSize.size());
+		}
+		if (tempTask == null) {
+			uiObject.printRed(MSG_INVALID);
+			return;
+		}
+		
+		boolean isCompleted = tempTask.getCompletedStatus();
+		String completed = "Not completed";
+		if (isCompleted) {
+			completed = "Completed";
+		}
+
+		uiObject.printYellow(tempTask.getTaskString());
+		uiObject.print("Status: " + completed);
+		uiObject.print("Priority: " + tempTask.getPriority());
+		uiObject.print("Labels:");
+		for (String label : tempTask.getLabel()) {
+			uiObject.print(label);
+		}
+	}
+
+	/**
+	 * Function to delete all the tasks.
+	 * 
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void clearTasks() throws ClassNotFoundException, IOException {
+		localStorageObject.clearAllTasks();
+	}
+
+	/**
+	 * Function to exit the application when user enters exit.
+	 */
+	public void exit() {
+		System.exit(0);
 	}
 }
 ```
 ###### main\Logic\Mark.java
 ``` java
 package Logic;
+
 import java.io.IOException;
 import java.util.ArrayList;
 
-import Storage.localStorage;
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Mark {
 
-	/**
-	 * Function to mark tasks as completed
-	 * 
-	 * @param index the index of the task to be marked as completed
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 */
-	public static void markTaskAsCompleted(int index) throws IOException, ClassNotFoundException {
-		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+	private LocalStorage localStorageObject;
 
-		if(index < getSize.size()) {
-			Task temp = Storage.localStorage.getUncompletedTask(index);
-			temp.setComplete();
-			Storage.localStorage.delFromUncompletedTasks(index);
-			Storage.localStorage.addToCompletedTasks(temp);
-		}
-		else {
-			Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
-			temp.setComplete();
-			Storage.localStorage.delFromFloatingTasks(index - getSize.size());
-			Storage.localStorage.addToCompletedTasks(temp);
-		}
+	//Constructor.
+	public Mark() {
+		localStorageObject = LocalStorage.getInstance();
 	}
 
 	/**
-	 * Function to mark a task as uncompleted
+	 * Function to mark tasks as completed.
 	 * 
-	 * @param index the index of the task to be marked as uncompleted
+	 * @param index                  the index of the task to be marked as completed.
 	 * @throws IOException
-	 * @throws ClassNotFoundException 
+	 * @throws ClassNotFoundException
 	 */
-	public static void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
-		Task temp = Storage.localStorage.getCompletedTask(index);
+	public void markTaskAsCompleted(int index) throws IOException, ClassNotFoundException {
+		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 
-		if(temp.getEndDate() != null || temp.getStartDate() != null) {
-			Storage.localStorage.addToUncompletedTasks(temp);
-			Storage.localStorage.delFromCompletedTasks(index);
+		if (index < getSize.size()) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			temp.setComplete();
+			localStorageObject.deleteFromUncompletedTasks(index);
+			localStorageObject.addToCompletedTasks(temp);
 		} else {
-			Storage.localStorage.addToFloatingTasks(temp);
-			Storage.localStorage.delFromCompletedTasks(index);
+			Task temp = localStorageObject.getFloatingTask(index - getSize.size());
+			temp.setComplete();
+			localStorageObject.deleteFromFloatingTasks(index - getSize.size());
+			localStorageObject.addToCompletedTasks(temp);
 		}
 	}
 
 	/**
-	 * Function to set the priority for a task
+	 * Function to mark a task as uncompleted.
 	 * 
-	 * @param index the index of the task to be updated
-	 * @param priority the priority to be set for the task
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @param index                   the index of the task to be marked as uncompleted.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
 	 */
-	public static void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
-		//		localStorage.copyCurrentState();
-		ArrayList<Task> getSize = Storage.localStorage.getUncompletedTasks();
+	public void markTaskAsUncompleted(int index) throws IOException, ClassNotFoundException {
+		Task temp = localStorageObject.getCompletedTask(index);
 
-		if(index < getSize.size()) {
-			Task temp = Storage.localStorage.getUncompletedTask(index);
-			temp.setPriority(priority);
-			Storage.localStorage.setUncompletedTask(index, temp);
-		}
-		else {
-			Task temp = Storage.localStorage.getFloatingTask(index - getSize.size());
-			temp.setPriority(priority);
-			Storage.localStorage.setFloatingTask(index - getSize.size(), temp);
+		if (temp.getEndDate() != null || temp.getStartDate() != null) {
+			localStorageObject.addToUncompletedTasks(temp);
+			localStorageObject.deleteFromCompletedTasks(index);
+		} else {
+			localStorageObject.addToFloatingTasks(temp);
+			localStorageObject.deleteFromCompletedTasks(index);
 		}
 	}
 
-	public static void setRecurringTasksPriority(int index, String priority) {
-		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
+	/**
+	 * Function to set the priority for a task.
+	 * 
+	 * @param index                   the index of the task to be updated.
+	 * @param priority                the priority to be set for the task.
+	 * @throws IOException
+	 * @throws ClassNotFoundException
+	 */
+	public void setPriority(int index, String priority) throws ClassNotFoundException, IOException {
+		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
 
+		if (index < getSize.size()) {
+			Task temp = localStorageObject.getUncompletedTask(index);
+			temp.setPriority(priority);
+			localStorageObject.setUncompletedTask(index, temp);
+		} else {
+			Task temp = localStorageObject.getFloatingTask(index - getSize.size());
+			temp.setPriority(priority);
+			localStorageObject.setFloatingTask(index - getSize.size(), temp);
+		}
+	}
 
-		Task temp = Storage.localStorage.getUncompletedTask(index);
+	/**
+	 * Function to set priority for all instances of a recurring task.
+	 * 
+	 * @param index    the index of the tasks.
+	 * @param priority the priority to be set for the task.
+	 */
+	public void setRecurringTasksPriority(int index, String priority) {
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+
+		Task temp = localStorageObject.getUncompletedTask(index);
 		String idOfTask = temp.getId();
 
-	if (!idOfTask.equals("")) {
-			for(int i = 0; i<tempTasks.size(); i++) {
-				if(!tempTasks.get(i).getId().equals("")) {
-					if(tempTasks.get(i).getId().equals(idOfTask)) {
+		checkIfIdMatches(priority, tempTasks, idOfTask);
+		
+		try {
+			localStorageObject.setUncompletedTasks(tempTasks);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Function to check if the id of the task matches recurring task id.
+	 * 
+	 * @param priority  the priority to be set for the task.
+	 * @param tempTasks the arraylist of tasks.
+	 * @param idOfTask  the id of the task.
+	 */
+	public void checkIfIdMatches(String priority, ArrayList<Task> tempTasks, String idOfTask) {
+		if (!idOfTask.equals("")) {
+			for (int i = 0; i < tempTasks.size(); i++) {
+				if (!tempTasks.get(i).getId().equals("")) {
+					if (tempTasks.get(i).getId().equals(idOfTask)) {
 						tempTasks.get(i).setPriority(priority);
 					}
 				}
 			}
-
-	}		
-
-			try {
-				Storage.localStorage.setUncompletedTasks(tempTasks);
-			} catch (ClassNotFoundException | IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-		
-	} 
+		}
+	}
 }
 ```
 ###### main\Logic\Notification.java
 ``` java
 package Logic;
+
 import java.util.ArrayList;
 import java.util.Calendar;
-import java.util.Date;
 
-import Storage.localStorage;
+import Storage.LocalStorage;
 import Task.Task;
+import UI.UI;
 
 public class Notification {
-	private static int daysInAdvance = 3;
-	/**
-	 * Function that prints the upcoming uncompleted tasks in the next three days
-	 */
-	public static void welcomeReminder() {
-		// before daysInAdvance
-		UI.ui.printRed("DEADLINES APPROACHING - ");
-		Calendar d1 = Calendar.getInstance();
-		d1.add(Calendar.DAY_OF_MONTH, -daysInAdvance);
-		int pastDay = d1.get(Calendar.DAY_OF_MONTH);
-		int pastMonth = d1.get(Calendar.MONTH);
-		int pastYear = d1.get(Calendar.YEAR);
-		Date past = new Date(pastYear, pastMonth, pastDay);
+	private static final int DAYS_WINDOW = 3;
 
-		//after daysInAdvance
+	private ArrayList<Task> tasksToBeDisplayed;
+	private LocalStorage localStorageObject;
+	private UI uiObject;
+
+	// Constructor.
+	public Notification() {
+		localStorageObject = LocalStorage.getInstance();
+		tasksToBeDisplayed = new ArrayList<Task>();
+		uiObject = new UI();
+	}
+
+	// Getter methods.
+	public ArrayList<Task> getTasksToBeDisplayed() {
+		return tasksToBeDisplayed;
+	}
+
+	public Task getSpecificTask(int index) throws IndexOutOfBoundsException {
+		return tasksToBeDisplayed.get(index);
+	}
+
+	/**
+	 * Function that prints the upcoming uncompleted tasks in the next three days.
+	 */
+	public void welcomeReminder() {
+		// before daysInAdvance
+		uiObject.printRed("DEADLINES APPROACHING - ");
+		Calendar d1 = Calendar.getInstance();
+		d1.add(Calendar.DAY_OF_MONTH, -DAYS_WINDOW);
+
+		// after daysInAdvance
 		Calendar d2 = Calendar.getInstance();
 		d2.add(Calendar.DAY_OF_MONTH, 3);
-		int futureDay = d2.get(Calendar.DAY_OF_MONTH);
-		int futureMonth = d2.get(Calendar.MONTH);
-		int futureYear = d2.get(Calendar.YEAR);
-		Date future = new Date(futureYear, futureMonth, futureDay);
 
-		//today
+		// today
 		Calendar d3 = Calendar.getInstance();
-		int todayDay = d2.get(Calendar.DAY_OF_MONTH);
-		int todayMonth = d2.get(Calendar.MONTH);
-		int todayYear = d2.get(Calendar.YEAR);
-		Date today = new Date(todayYear, todayMonth, todayDay);
 
+		findRelevantTasks(d1, d2);
+		printRelevantTasks(d3);
+	}
 
-		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		ArrayList<Task> tasksToBeDisplayed = new ArrayList<Task>();
-
-		for(Task temp : tempTasks) {
-			if(temp.getEndDate() != null) {
-				if((temp.getEndDate().compareTo(d1) > 0) && (temp.getEndDate().compareTo(d2) <= 0)) {
+	/**
+	 * Function to find those tasks within the give window.
+	 * 
+	 * @param d1 the Calendar object of 3 days before current day.
+	 * @param d2 the Calendar object of 3 days after current day.
+	 */
+	public void findRelevantTasks(Calendar d1, Calendar d2) {
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+		for (Task temp : tempTasks) {
+			if (temp.getEndDate() != null) {
+				if ((temp.getEndDate().compareTo(d1) > 0) && (temp.getEndDate().compareTo(d2) <= 0)) {
 					tasksToBeDisplayed.add(temp);
 					continue;
 				}
-			}
-			else if(temp.getStartDate() != null) {
-				if((temp.getStartDate().compareTo(d1) > 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
+			} else if (temp.getStartDate() != null) {
+				if ((temp.getStartDate().compareTo(d1) > 0) && (temp.getStartDate().compareTo(d2) <= 0)) {
 					tasksToBeDisplayed.add(temp);
-				}
-			}
-		}
-
-		if(tasksToBeDisplayed.size() > 0) {
-			UI.ui.printGreen("UNCOMPLETED TASKS");
-			UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-			for(int i = 0; i<tasksToBeDisplayed.size(); i++) {
-				Task temp = tasksToBeDisplayed.get(i);
-				if(temp.getEndDate() != null) {
-					if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) < d3.get(Calendar.DAY_OF_YEAR)) {
-						int overdue = d3.get(Calendar.DAY_OF_MONTH) - temp.getEndDate().get(Calendar.DAY_OF_MONTH);
-						String message = "";
-						if(overdue != 1) {
-							message = "overdue by " + overdue + " days";
-						} else {
-							message = "overdue by " + overdue + " day";
-						}
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),message);
-
-					} else if(temp.getEndDate().get(Calendar.DAY_OF_YEAR) == d3.get(Calendar.DAY_OF_YEAR)) {
-						String message = "deadline today";
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),message);
-
-					} 
-					else {
-						UI.ui.printTask2(i,temp.getStartDateLineOne(),temp.getStartDateLineTwo(),temp.getEndDateLineOne(),temp.getEndDateLineTwo(),temp.getIssue(),temp.getRecurFrequency());
-
-					}
 				}
 			}
 		}
 	}
+	
+	/**
+	 * Function to print the relevant tasks.
+	 * 
+	 * @param d3 the Calendar object of the current day.
+	 */
+	public void printRelevantTasks(Calendar d3) {
+		if (tasksToBeDisplayed.size() > 0) {
+			uiObject.printGreen("UNCOMPLETED TASKS");
+			uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
+			
+			for (int i = 0; i < tasksToBeDisplayed.size(); i++) {
+				Task temp = tasksToBeDisplayed.get(i);
 
-	public static void changeDaysInAdvance(int change) {
-		daysInAdvance = change;
+				if (temp.getEndDate() != null) {
+					String message = "";
+					
+					int result = temp.getEndDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					if (result < 0) {
+						message = "overdue by " + Math.abs(result) + " days";
+					} else if (result == 0) {
+						message = "deadline today";
+					}
+
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				} else if (temp.getStartDate() != null) {
+					String message = "";
+					
+					int result = temp.getStartDate().get(Calendar.DAY_OF_YEAR) - d3.get(Calendar.DAY_OF_YEAR);
+					if (result < 0) {
+						message = "started " + Math.abs(result) + " days ago";
+					} else if (result == 0) {
+						message = "starts today";
+					}
+					
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				} else {
+					String message = "";
+					
+					uiObject.printTask2(i, temp.getStartDateLineOne(), temp.getStartDateLineTwo(),
+							            temp.getEndDateLineOne(), temp.getEndDateLineTwo(),
+							            temp.getShortPriority() + temp.getIssue(), message);
+				}
+			}
+		}
 	}
 }
 ```
 ###### main\Logic\Search.java
 ``` java
 package Logic;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
+import java.util.ArrayList;
+
+import Storage.LocalStorage;
 import Task.Task;
+import UI.UI;
 
 public class Search {
 
-	private static ArrayList<Task> searchedTasks;
+	private static Search search;
 
-	public static ArrayList<Task> getSearchedTasks() {
+	private static ArrayList<Task> searchedTasks;
+	private static boolean isFloating;
+	private static LocalStorage localStorageObject = LocalStorage.getInstance();
+	private static UI uiObject = new UI();
+
+	// Private constructor, following the singleton pattern.
+	private Search() {
+		searchedTasks = new ArrayList<Task>();
+		isFloating = false;
+	}
+
+	/**
+	 * Method to access this class, following the singleton pattern. 
+	 * Invokes constructor if Search has not been initialised.
+	 * 
+	 * @return The Search object.
+	 */
+	public static Search getInstance() {
+		if (search == null) {
+			search = new Search();
+		}
+		return search;
+	}
+
+	// Getter methods.
+	public ArrayList<Task> getSearchedTasks() {
 		return searchedTasks;
 
 	}
 
+	public Task getSearchedTask(int index) {
+		return searchedTasks.get(index);
+
+	}
+
 	/**
-	 * Function to search task according to keyword in list of uncompleted tasks
+	 * Function to search task according to keyword in list of uncompleted tasks.
 	 * 
-	 * @param keyword the string to be searched for in the list of tasks
+	 * @param keyword the string to be searched for in the list of tasks.
 	 */
-	public static void searchTasksByKeyword(String keyword){
-		UI.ui.eraseScreen();
+	public void searchTasksByKeyword(String keyword) {
 		searchedTasks = new ArrayList<Task>();
 		String[] searchKeywords = keyword.split(" ");
 
-
 		int counter = 0;
-		ArrayList<Task> temp = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> temp = new ArrayList<Task>();
 
-		if((searchKeywords.length == 1) && (searchKeywords[0].length() == 1)) {
+		if ((searchKeywords.length == 1) && (searchKeywords[0].length() == 1)) {
 			searchSingleLetter(searchKeywords, counter, temp);
-		}
-		else {
+		} else {
 			searchPhrase(searchKeywords, counter, temp);
 		}
 	}
 
-	public static void searchSingleLetter(String[] searchKeywords, int counter, ArrayList<Task> temp) {
+	/**
+	 * Function to search tasks that have the single letter keyword entered by user.
+	 * 
+	 * @param searchKeywords the keyword entered by the user.
+	 * @param counter        the index of the tasks.
+	 * @param temp           the arraylist containing the tasks.
+	 */
+	public void searchSingleLetter(String[] searchKeywords, int counter, ArrayList<Task> temp) {
 		String search = searchKeywords[0];
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				String[] taskParts = temp.get(i).getIssue().split(" ");
-				for(int j = 0; j<taskParts.length; j++) {
-					if(taskParts[j].trim().equals(search)) {
-						searchedTasks.add(temp.get(i));
-						break;
-					}
-				}
-			}
 
-			if(searchedTasks.size() > 0) {
-				UI.ui.printGreen("UNCOMPLETED TASKS");
-				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-				for(int i = 0; i<searchedTasks.size(); i++) {
-					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+		temp = localStorageObject.getUncompletedTasks();
+		isFloating = false;
+		counter = checkIfSingleLetterMatches(counter, temp, search, isFloating);
 
-					counter++;
-				}
+		temp = localStorageObject.getFloatingTasks();
+		isFloating = true;
+		counter = checkIfSingleLetterMatches(counter, temp, search, isFloating);
 
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
-			}
-		}
-		
-		temp = Storage.localStorage.getFloatingTasks();
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				String[] taskParts = temp.get(i).getIssue().split(" ");
-				for(int j = 0; j<taskParts.length; j++) {
-					if(taskParts[j].trim().equals(search)) {
-						searchedTasks.add(temp.get(i));
-						break;
-					}
-				}
-			}
-
-			if(searchedTasks.size() > counter) {
-				UI.ui.printGreen("FLOATING TASKS");
-				UI.ui.printGreen("Index\tTask");
-				for(int i = counter; i<searchedTasks.size(); i++) {
-					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
-					counter++;
-				}
-
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
-			}
-		}
-		
-		temp = Storage.localStorage.getCompletedTasks();
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				String[] taskParts = temp.get(i).getIssue().split(" ");
-				for(int j = 0; j<taskParts.length; j++) {
-					if(taskParts[j].trim().equals(search)) {
-						searchedTasks.add(temp.get(i));
-						break;
-					}
-				}
-			}
-
-			if(searchedTasks.size() > counter) {
-				UI.ui.printGreen("COMPLETED TASKS");
-				UI.ui.printGreen("Index\tTask");
-				for(int i = counter; i<searchedTasks.size(); i++) {
-					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
-
-				}
-			}
-		}
-		
-		if(searchedTasks.size() == 0) {
-			UI.ui.printRed("NO TASKS FOUND");
+		if (searchedTasks.size() == 0) {
+			uiObject.printRed("NO TASKS FOUND");
 		}
 	}
 
-	public static void searchPhrase(String[] searchKeywords, int counter, ArrayList<Task> temp) {
-		
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				boolean isSuccess = true;
-				for(int j = 0; j<searchKeywords.length; j++) {
-					if(isContainsKeyword(searchKeywords, temp, i, j)) {
-						
-					}
-					else {
-						isSuccess = false;
+	/**
+	 * Function to search if the single letter entered by the user matches a word in the task list.
+	 * 
+	 * @param counter    the index of the tasks.
+	 * @param temp       the arraylist containing the tasks.
+	 * @param search     the letter to be searched for.
+	 * @param isFloating to indicate if the arraylist is floating task arraylist or not.
+	 * 
+	 * @return           true if match found, false otherwise.
+	 */
+	public int checkIfSingleLetterMatches(int counter, ArrayList<Task> temp, String search, boolean isFloating) {
+		if (temp.size() > 0) {
+			for (int i = 0; i < temp.size(); i++) {
+				String[] taskParts = temp.get(i).getIssue().split(" ");
+				for (int j = 0; j < taskParts.length; j++) {
+					if (taskParts[j].trim().equals(search)) {
+						searchedTasks.add(temp.get(i));
 						break;
 					}
 				}
-				if(isSuccess) {
-					searchedTasks.add(temp.get(i));
-				}
 			}
+			counter = printSearchesFromUncompletedTasks(counter, isFloating);
+		}
+		return counter;
+	}
 
-			if(searchedTasks.size() > 0) {
-				UI.ui.printGreen("UNCOMPLETED TASKS");
-				UI.ui.printGreen("Index\tStart Date\tEnd Date\tTask");
-				for(int i = 0; i<searchedTasks.size(); i++) {
+	/**
+	 * Function to print the search results.
+	 * 
+	 * @param counter    the index of the tasks.
+	 * @param isFloating to indicate whether searched results are from floating tasks or not.
+	 * 
+	 * @return           the index of the tasks.
+	 */
+	public int printSearchesFromUncompletedTasks(int counter, boolean isFloating) {
+		if (!isFloating) {
+			if (searchedTasks.size() > counter) {
+				uiObject.printGreen("UNCOMPLETED TASKS");
+				uiObject.printGreen("Index\tStart Date\tEnd Date\tTask");
+				for (int i = 0; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					uiObject.printTask1(i, temp1.getStartDateLineOne(), temp1.getStartDateLineTwo(),
+							temp1.getEndDateLineOne(), temp1.getEndDateLineTwo(), temp1.getIssue(),
+							temp1.getRecurFrequency());
 
 					counter++;
 				}
-
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				uiObject.print("________________________________________________________________");
+				uiObject.print("\n");
 			}
-		}
-
-		temp = Storage.localStorage.getFloatingTasks();
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				boolean isSuccess = true;
-				for(int j = 0; j<searchKeywords.length; j++) {
-					if(isContainsKeyword(searchKeywords, temp, i, j)) {
-						
-					}
-					else {
-						isSuccess = false;
-						break;
-					}
-				}
-				if(isSuccess) {
-					searchedTasks.add(temp.get(i));
-				}
-			}
-
-			if(searchedTasks.size() > counter) {
-				UI.ui.printGreen("FLOATING TASKS");
-				UI.ui.printGreen("Index\tTask");
-				for(int i = counter; i<searchedTasks.size(); i++) {
+			return counter;
+		} else {
+			if (searchedTasks.size() > counter) {
+				uiObject.printGreen("FLOATING TASKS");
+				uiObject.printGreen("Index\tTask");
+				for (int i = counter; i < searchedTasks.size(); i++) {
 					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
+					uiObject.printYellow((i + 1) + ".\t" + temp1.getIssue());
 					counter++;
 				}
-
-				UI.ui.print("________________________________________________________________");
-				UI.ui.print("\n");
+				uiObject.print("________________________________________________________________");
+				uiObject.print("\n");
 			}
-		}
-
-		temp = Storage.localStorage.getCompletedTasks();
-		if(temp.size() > 0) {
-			for(int i = 0; i<temp.size(); i++) {
-				boolean isSuccess = true;
-				for(int j = 0; j<searchKeywords.length; j++) {
-					if(isContainsKeyword(searchKeywords, temp, i, j)) {
-						
-					}
-					else {
-						isSuccess = false;
-						break;
-					}
-				}
-				if(isSuccess) {
-					searchedTasks.add(temp.get(i));
-				}
-			}
-
-			if(searchedTasks.size() > counter) {
-				UI.ui.printGreen("COMPLETED TASKS");
-				UI.ui.printGreen("Index\tTask");
-				for(int i = counter; i<searchedTasks.size(); i++) {
-					Task temp1 = searchedTasks.get(i);
-					UI.ui.printTask(i, temp1.getStartDateString(), temp1.getEndDateString(), temp1.getIssue());
-
-				}
-			}
-		}
-		
-		if(searchedTasks.size() == 0) {
-			UI.ui.printRed("NO TASKS FOUND");
+			return counter;
 		}
 	}
 
-	public static boolean isContainsKeyword(String[] searchKeywords, ArrayList<Task> temp, int i, int j) {
-		return temp.get(i).getIssue().toLowerCase().contains(searchKeywords[j].toLowerCase()) || 
-				temp.get(i).getTaskString().toLowerCase().contains(searchKeywords[j].toLowerCase());
+	/**
+	 * Function to search tasks that have matching phrase / keyword entered by the user.
+	 * 
+	 * @param searchKeywords the phrase/keyword to be searched for.
+	 * @param counter        the index of the task list.
+	 * @param temp           the arraylist containing the tasks.
+	 */
+	public void searchPhrase(String[] searchKeywords, int counter, ArrayList<Task> temp) {
+		isFloating = false;
+		temp = localStorageObject.getUncompletedTasks();
+		counter = checkIfKeywordMatches(searchKeywords, counter, temp, isFloating);
+
+		temp = localStorageObject.getFloatingTasks();
+		isFloating = true;
+		counter = checkIfKeywordMatches(searchKeywords, counter, temp, isFloating);
+
+		if (searchedTasks.size() == 0) {
+			uiObject.printRed("NO TASKS FOUND");
+		}
+	}
+
+	/**
+	 * Function to check if search keyword matches a word in task.
+	 * 
+	 * @param searchKeywords the keyword/phrase to be searched for.
+	 * @param counter        the index of the tasks.
+	 * @param temp           the arraylist containing the tasks.
+	 * @param isFloating     to indicate if arraylist is floating task arraylist or not.
+	 * @return
+	 */
+	public int checkIfKeywordMatches(String[] searchKeywords, int counter, ArrayList<Task> temp, boolean isFloating) {
+		if (temp.size() > 0) {
+			for (int i = 0; i < temp.size(); i++) {
+				boolean isSuccess = true;
+				for (int j = 0; j < searchKeywords.length; j++) {
+					if (isContainsKeyword(searchKeywords, temp, i, j)) {
+
+					} else {
+						isSuccess = false;
+						break;
+					}
+				}
+				if (isSuccess) {
+					searchedTasks.add(temp.get(i));
+				}
+			}
+			counter = printSearchesFromUncompletedTasks(counter, isFloating);
+		}
+		return counter;
+	}
+
+	/**
+	 * Function to check if the task contains the given search keyword.
+	 * 
+	 * @param searchKeywords the keyword to be searched, for entered by the user.
+	 * @param temp           the array list of tasks.
+	 * @param i              the arraylist task index.
+	 * @param j              the array index.
+	 * 
+	 * @return true if match is found, false otherwise.
+	 */
+	public boolean isContainsKeyword(String[] searchKeywords, ArrayList<Task> temp, int i, int j) {
+		if (temp.get(i).getIssue().toLowerCase().contains(searchKeywords[j].toLowerCase())
+			|| temp.get(i).getTaskString().toLowerCase().contains(searchKeywords[j].toLowerCase())) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 }
 ```
 ###### main\Logic\Sort.java
 ``` java
 package Logic;
+
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Calendar;
 
+import Storage.LocalStorage;
 import Task.Task;
 
 public class Sort {
 
-	/**
-	 * Function to sorts tasks in storage alphabetically
-	 * 
-	 */
-	public static void sortTasksAlphabetically(){
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+	private LocalStorage localStorageObject;
 
-		for(int i = 0; i<tempUncompletedTasks.size()-1; i++) {
-			for(int j = i+1; j<tempUncompletedTasks.size(); j++) {
-				int result = tempUncompletedTasks.get(i).getIssue().compareTo(tempUncompletedTasks.get(j).getIssue());
-				if(result > 0) {
-					Task setTask = tempUncompletedTasks.get(i);
-					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
-					tempUncompletedTasks.set(j, setTask);
-				}
-			}
-		}
-		try {
-			Storage.localStorage.setUncompletedTasks(tempUncompletedTasks);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-
-		for(int i = 0; i<tempFloatingTasks.size()-1; i++) {
-			for(int j = i+1; j<tempFloatingTasks.size(); j++) {
-				int result = tempFloatingTasks.get(i).getIssue().compareTo(tempFloatingTasks.get(j).getIssue());
-				if(result > 0) {
-					Task setTask = tempFloatingTasks.get(i);
-					tempFloatingTasks.set(i, tempFloatingTasks.get(j));
-					tempFloatingTasks.set(j, setTask);
-				}
-			}
-		}
-		try {
-			Storage.localStorage.setFloatingTasks(tempFloatingTasks);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+	public Sort() {
+		localStorageObject = LocalStorage.getInstance();
 	}
 
 	/**
-	 * Function to sort tasks in chronological order
+	 * Function to sort tasks according to priority.
 	 */
-	public static void sortTasksChronologically() {
-		ArrayList<Task> tempTasks = Storage.localStorage.getUncompletedTasks();
-		for(int i = 0; i<tempTasks.size(); i++) {
-			for(int j = i+1; j<tempTasks.size(); j++) {
-				Calendar startDate1 = tempTasks.get(i).getStartDate();
-				Calendar startDate2 = tempTasks.get(j).getStartDate();
-				Calendar endDate1 = tempTasks.get(i).getEndDate();
-				Calendar endDate2 = tempTasks.get(j).getEndDate();
-
-				if(endDate1 == null && endDate2 == null) { //both end dates are null
-					if(startDate1.compareTo(startDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-				else if(endDate1 != null && endDate2 != null) { //both end dates are not null
-					if(endDate1.compareTo(endDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-
-				else if(endDate1 == null && endDate2 != null) { //one end date is null
-					if(startDate1.compareTo(endDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-				else {
-					if(endDate1.compareTo(startDate2) > 0) { //one end date is null
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-			}
-		}
-
-		try {
-			Storage.localStorage.setUncompletedTasks(tempTasks);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-	}
-
-	public static ArrayList<Task> sortArrayListInChronologicalOrder(ArrayList<Task> tempTasks) {
-		for(int i = 0; i<tempTasks.size(); i++) {
-			for(int j = i+1; j<tempTasks.size(); j++) {
-				Calendar startDate1 = tempTasks.get(i).getStartDate();
-				Calendar startDate2 = tempTasks.get(j).getStartDate();
-				Calendar endDate1 = tempTasks.get(i).getEndDate();
-				Calendar endDate2 = tempTasks.get(j).getEndDate();
-
-				if(endDate1 == null && endDate2 == null) { //both end dates are null
-					if(startDate1.compareTo(startDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-				else if(endDate1 != null && endDate2 != null) { //both end dates are not null
-					if(endDate1.compareTo(endDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-
-				else if(endDate1 == null && endDate2 != null) { //one end date is null
-					if(startDate1.compareTo(endDate2) > 0) {
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-				else {
-					if(endDate1.compareTo(startDate2) > 0) { //one end date is null
-						Task temp = tempTasks.get(i);
-						tempTasks.set(i, tempTasks.get(j));
-						tempTasks.set(j, temp);
-					}
-				}
-			}
-		}
-		return tempTasks;
-	}
-
-	/**
-	 * Function to sort tasks according to priority
-	 */
-	public static void sortTasksPriority() {
+	public void sortTasksPriority() {
 		sortTasksChronologically();
-		ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
+		ArrayList<Task> tempUncompletedTasks = localStorageObject.getUncompletedTasks();
+		ArrayList<Task> changedTasks = getArrayListSortedInPriority(tempUncompletedTasks, false);
 
-		for(int i = 0; i<tempUncompletedTasks.size(); i++) {
-			for(int j = i+1; j<tempUncompletedTasks.size(); j++) {
-				if(tempUncompletedTasks.get(i).getPriority().equals("low") && tempUncompletedTasks.get(j).getPriority().equals("high")) {
-					Task temp = tempUncompletedTasks.get(i);
-					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
-					tempUncompletedTasks.set(j, temp);
-				}
-
-				else if(tempUncompletedTasks.get(i).getPriority().equals("medium") && tempUncompletedTasks.get(j).getPriority().equals("high")) {
-					Task temp = tempUncompletedTasks.get(i);
-					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
-					tempUncompletedTasks.set(j, temp);
-				}
-
-				else if(tempUncompletedTasks.get(i).getPriority().equals("low") && tempUncompletedTasks.get(j).getPriority().equals("medium")) {
-					Task temp = tempUncompletedTasks.get(i);
-					tempUncompletedTasks.set(i, tempUncompletedTasks.get(j));
-					tempUncompletedTasks.set(j, temp);
-				}
-			}
+		try {
+			localStorageObject.setUncompletedTasks(changedTasks);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
 		}
+
+		ArrayList<Task> tempFloatingTasks = localStorageObject.getFloatingTasks();
+		changedTasks = getArrayListSortedInPriority(tempFloatingTasks, true);
+
+		try {
+			localStorageObject.setFloatingTasks(changedTasks);
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+	}
+
+	/**
+	 * Function to sort given arraylist according to priority.
+	 * 
+	 * @param tempTasks  the arraylist to be sorted.
+	 * @param isFloating to indicate if arraylist is floating task arraylist or not.
+	 * 
+	 * @return arraylist sorted according to priority .
+	 */
+	public ArrayList<Task> getArrayListSortedInPriority(ArrayList<Task> tempTasks, boolean isFloating) {
 		ArrayList<Task> highPriorityTasks = new ArrayList<Task>();
 		ArrayList<Task> mediumPriorityTasks = new ArrayList<Task>();
 		ArrayList<Task> lowPriorityTasks = new ArrayList<Task>();
 
-		for(Task t : tempUncompletedTasks) {
-			if(t.getPriority().equals("high")) {
+		for (Task t : tempTasks) {
+			if (t.getPriority().equals("high")) {
 				highPriorityTasks.add(t);
-			}
-			else if(t.getPriority().equals("medium")) {
+			} else if (t.getPriority().equals("medium")) {
 				mediumPriorityTasks.add(t);
-			}
-			else if(t.getPriority().equals("low")) {
+			} else if (t.getPriority().equals("low")) {
 				lowPriorityTasks.add(t);
 			}
 		}
 
-		highPriorityTasks = sortArrayListInChronologicalOrder(highPriorityTasks);
-		mediumPriorityTasks = sortArrayListInChronologicalOrder(mediumPriorityTasks);
-		lowPriorityTasks = sortArrayListInChronologicalOrder(lowPriorityTasks);
+		if (!isFloating) {
+			highPriorityTasks = sortArrayListInChronologicalOrder(highPriorityTasks);
+			mediumPriorityTasks = sortArrayListInChronologicalOrder(mediumPriorityTasks);
+			lowPriorityTasks = sortArrayListInChronologicalOrder(lowPriorityTasks);
+		}
 
 		ArrayList<Task> changedTasks = new ArrayList<Task>();
-		for(Task t : highPriorityTasks) {
+		for (Task t : highPriorityTasks) {
 			changedTasks.add(t);
 		}
-		for(Task t : mediumPriorityTasks) {
+		for (Task t : mediumPriorityTasks) {
 			changedTasks.add(t);
 		}
-		for(Task t : lowPriorityTasks) {
+		for (Task t : lowPriorityTasks) {
 			changedTasks.add(t);
 		}
-		
-		try {
-			Storage.localStorage.setUncompletedTasks(changedTasks);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-
-		ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-
-		/*for(int i = 0; i<tempFloatingTasks.size(); i++) {
-			for(int j = i+1; j<tempFloatingTasks.size(); j++) {
-				if(tempFloatingTasks.get(i).getPriority().equals("low") && tempFloatingTasks.get(j).getPriority().equals("high")) {
-					Task temp = tempFloatingTasks.get(i);
-					tempFloatingTasks.set(i, tempFloatingTasks.get(j));
-					tempFloatingTasks.set(j, temp);
-				}
-
-				else if(tempFloatingTasks.get(i).getPriority().equals("medium") && tempFloatingTasks.get(j).getPriority().equals("high")) {
-					Task temp = tempFloatingTasks.get(i);
-					tempFloatingTasks.set(i, tempFloatingTasks.get(j));
-					tempFloatingTasks.set(j, temp);
-				}
-
-				else if(tempFloatingTasks.get(i).getPriority().equals("low") && tempFloatingTasks.get(j).getPriority().equals("medium")) {
-					Task temp = tempFloatingTasks.get(i);
-					tempFloatingTasks.set(i, tempFloatingTasks.get(j));
-					tempFloatingTasks.set(j, temp);
-				}
-			}
-		}*/
-		
-		highPriorityTasks = new ArrayList<Task>();
-		 mediumPriorityTasks = new ArrayList<Task>();
-		lowPriorityTasks = new ArrayList<Task>();
-
-		for(Task t : tempFloatingTasks) {
-			if(t.getPriority().equals("high")) {
-				highPriorityTasks.add(t);
-			}
-			else if(t.getPriority().equals("medium")) {
-				mediumPriorityTasks.add(t);
-			}
-			else if(t.getPriority().equals("low")) {
-				lowPriorityTasks.add(t);
-			}
-		}
-
-		changedTasks = new ArrayList<Task>();
-		for(Task t : highPriorityTasks) {
-			changedTasks.add(t);
-		}
-		for(Task t : mediumPriorityTasks) {
-			changedTasks.add(t);
-		}
-		for(Task t : lowPriorityTasks) {
-			changedTasks.add(t);
-		}
-		
-		try {
-			Storage.localStorage.setFloatingTasks(changedTasks);
-		} catch (ClassNotFoundException | IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
+		return changedTasks;
 	}
-}
-
-
-```
-###### main\Parser\Parser.java
-``` java
-	public static void setLabelCommand(String s) {
-		try {
-			int num = Integer.parseInt(s);
-
-			ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-			ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-
-			if (list.size() + list2.size() == 0) {
-				UI.ui.printRed(MSG_EMPTY);
-			} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_PRIORITY_FAIL);
-			} else {
-				UI.ui.print("Enter label");
-				String label = sc.nextLine();
-				Logic.crud.addLabelToTask(num - 1, label);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-
-		}
-	}
-
-```
-###### main\Parser\Parser.java
-``` java
-	public static void setPriorityCommand(String s) {
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("")) { //set priority from "display" view
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.crud.getTemp();
-					if (list.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if (list.size() < num || num - 1 < 0) {
-						UI.ui.printRed(MSG_PRIORITY_FAIL);
-					} else {
-						UI.ui.printYellow("Enter priority");
-						String priority = sc.nextLine();
-
-						Task temp = list.get(num - 1);
-						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-						int counter = 1;
-						for(Task t : tempUncompletedTasks) {
-							if(t.getTaskString().equals(temp.getTaskString())) {
-								num = counter;
-								break;
-							}
-							counter++;
-						}
-						Logic.Mark.setPriority(num - 1, priority);
-						arraylistsHaveBeenModified = true;
-					}
-				} catch (Exception e) {
-				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("all")) {
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-					if (list.size() + list2.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-						UI.ui.printRed(MSG_PRIORITY_FAIL);
-					} else {
-						UI.ui.printYellow("Enter priority");
-						String priority = sc.nextLine();
-						Logic.Mark.setPriority(num - 1, priority);
-						arraylistsHaveBeenModified = true;
-					}
-				} catch (Exception e) {
-				}
-			}
-		} else {
-			try {
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
-				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-					UI.ui.printRed(MSG_PRIORITY_FAIL);
-				} else {
-					UI.ui.printYellow("Enter priority");
-					String priority = sc.nextLine();
-					Logic.Mark.setPriority(num - 1, priority);
-					arraylistsHaveBeenModified = true;
-				}
-			} catch (Exception e) {
-			}
-		}
-	}
-
-```
-###### main\Parser\Parser.java
-``` java
-	public static void unmarkCommand(String s) {
-		try {
-			int num = Integer.parseInt(s);
-			// check if user input integer is valid. If it is valid, unmark
-			// should
-			// work
-			ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
-			if (list.size() == 0) {
-				UI.ui.printRed(MSG_NO_COMPLETED_TASKS);
-			} else if (list.size() < num || num - 1 < 0) {
-				UI.ui.printRed(MSG_UNMARK_FAIL);
-			} else {
-				Task temp = Logic.crud.getCompletedTask(num - 1);
-				Logic.Mark.markTaskAsUncompleted(num - 1);
-				UI.ui.printGreen(s + MSG_UNMARK);
-				Logic.crud.displayNearestFiveUnmarkCompleteTaskList(temp);
-				arraylistsHaveBeenModified = true;
-			}
-		} catch (Exception e) {
-
-		}
-	}
-
-	public static void markCommand(String s) {
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("")) { // marking from "display" view
-
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.crud.getTemp();
-					if (list.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if (list.size() < num || num - 1 < 0) {
-						UI.ui.printRed(MSG_MARK_FAIL);
-					} else {
-
-						Task temp = Logic.crud.getTempTask(num - 1);
-						ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-						int counter = 0;
-						for(Task t : tempUncompletedTasks) {
-							if(t.getTaskString().equals(temp.getTaskString())) {
-								Logic.Mark.markTaskAsCompleted(counter);
-								UI.ui.eraseScreen();
-								UI.ui.printGreen(s + MSG_MARK);
-								Logic.crud.displayNearestFiveCompletedTaskList(temp);
-								arraylistsHaveBeenModified = true;
-								break;
-							}
-							counter++;
-						}
-					}
-				} catch (Exception e) {
-
-				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("all")) {
-				try { 
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-					if (list.size() + list2.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-						UI.ui.printRed(MSG_MARK_FAIL);
-					} else {
-						Task temp = Logic.crud.getUncompletedTask(num - 1);
-						Logic.Mark.markTaskAsCompleted(num - 1);
-						UI.ui.eraseScreen();
-						UI.ui.printGreen(s + MSG_MARK);
-						Logic.crud.displayNearestFiveCompletedTaskList(temp);
-						arraylistsHaveBeenModified = true;
-					}
-				} catch (Exception e) {
-
-				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("floating") || Logic.Head.getLastDisplayArg().equals("f")) {
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-					ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-					if (list.size() + list2.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-						UI.ui.printRed(MSG_MARK_FAIL);
-					} else {
-						int i = list.size();
-						Task temp = Logic.crud.getUncompletedTask(num -1);
-						Logic.Mark.markTaskAsCompleted(num - 1);
-						UI.ui.eraseScreen();
-						UI.ui.printGreen(s + MSG_MARK);
-						Logic.crud.displayNearestFiveCompletedTaskList(temp);
-						arraylistsHaveBeenModified = true;
-					}
-				} catch (Exception e) {
-
-				}
-
-			}
-		}
-		else {
-			try { 
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
-				} else if ((list.size() + list2.size()) < num || num - 1 < 0) {
-					UI.ui.printRed(MSG_MARK_FAIL);
-				} else {
-					Task temp = Logic.crud.getUncompletedTask(num - 1);
-					Logic.Mark.markTaskAsCompleted(num - 1);
-					UI.ui.eraseScreen();
-					UI.ui.printGreen(s + MSG_MARK);
-					Logic.crud.displayNearestFiveCompletedTaskList(temp);
-					arraylistsHaveBeenModified = true;
-				}
-			} catch (Exception e) {
-
-			}
-		}
-	}
-
-
-	public static void sortCommand(String s) {
-		if (s.equals("p") || s.equals("priority")) {
-			Logic.Sort.sortTasksPriority();
-			Logic.crud.displayUncompletedAndFloatingTasks();
-		} else {
-			Logic.Sort.sortTasksAlphabetically();
-			UI.ui.printGreen(MSG_SORT);
-			arraylistsHaveBeenModified = true;
-		}
-	}
-
-	public static void clearCommand() throws ClassNotFoundException, IOException {
-		Logic.crud.clearTasks();
-		UI.ui.printGreen(MSG_CLEAR);
-		arraylistsHaveBeenModified = true;
-	}
-
-	public static void viewCommand(String s) {
-		if(Logic.Head.getLastDisplay().equals("display") || Logic.Head.getLastDisplay().equals("d")) {
-			if(Logic.Head.getLastDisplayArg().equals("")) {
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.crud.getTemp();
-					Task temp = Logic.crud.getTempTask(num - 1);
-					ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-					int counter = 0;
-					for(Task t : tempUncompletedTasks) {
-						if(t.getTaskString().equals(temp.getTaskString())) {
-							UI.ui.eraseScreen();
-							Logic.crud.viewIndividualTask(counter);
-							arraylistsHaveBeenModified = true;
-							break;
-						}
-						counter++;
-					}
-				}
-				catch (Exception e) {
-
-				}
-
-			}
-			else {
-				try {
-					int num = Integer.parseInt(s);
-					Logic.crud.viewIndividualTask(num - 1);
-				} catch (Exception e) {
-				}
-			}
-		} /*else if(Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplayArg().equals("s")) {
-
-			try {
-				int num = Integer.parseInt(s);
-				Task temp = Logic.crud.getTempTask(num - 1);
-				System.out.println("dsadas");
-				ArrayList<Task> tempUncompletedTasks = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> tempFloatingTasks = Storage.localStorage.getFloatingTasks();
-				int counter = 0;
-				for(Task t : tempUncompletedTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
-					}
-					counter++;
-				}
-
-				for(Task t : tempFloatingTasks) {
-					if(t.getTaskString().equals(temp.getTaskString())) {
-						UI.ui.eraseScreen();
-						Logic.crud.viewIndividualTask(counter);
-						arraylistsHaveBeenModified = true;
-						break;
-					}
-					counter++;
-				}
-			}
-			catch(Exception e) {
-			}
-		}
-		 */	}
-
-
-	public static void displayCommand(String s) {
-		if (s.equals("completed") || s.equals("c")) {
-			Logic.crud.displayCompletedTasks();
-		} else if (s.equals("floating") || s.equals("f")) {
-			Logic.crud.displayFloatingTasks();
-		} else if (Logic.checkDate.checkDateformat(s)) {
-			Logic.crud.displayScheduleForADay(s);
-		} else if (s.equals("all")) {
-			Logic.crud.displayUncompletedAndFloatingTasks();
-		} else if (s.equals("")){
-			Logic.crud.displayUpcomingTasks();
-		} else if (s.equals("today")) {
-			Calendar today = Calendar.getInstance();
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			String todayString = df.format(today.getTime());
-			Logic.crud.displayScheduleForADay(todayString);
-		} else if (s.equals("tomorrow")) {
-			Calendar tomorrow = Calendar.getInstance();
-			tomorrow.add(Calendar.DAY_OF_MONTH, 1);
-			DateFormat df = new SimpleDateFormat("dd/MM/yyyy");
-			String tomorrowString = df.format(tomorrow.getTime());
-
-			Logic.crud.displayScheduleForADay(tomorrowString);
-		} else if (s.equals("week") || s.equals("this week")) {
-			Logic.crud.displayTasksForThisWeek();
-		} else if (s.equals("next week") || s.equals("w+1")) {
-			Logic.crud.displayTasksForNextWeek();
-		} else if (s.equals("two weeks later") || s.equals("w+2")) {
-			Logic.crud.displayTaksForTwoWeeksLater();
-		} else if (s.equals("last week") || s.equals("w -1")) {
-			Logic.crud.displayTasksForLastWeek();
-		}  else {
-			Logic.crud.displayByLabel(s);
-		}
-	}
-
-	public static void deleteCommand(String s) {
-		if ((Logic.Head.getLastDisplay().equals("d") == true || Logic.Head.getLastDisplay().equals("display")) == true) {
-			if(Logic.Head.getLastDisplayArg().equals("")) {
-				if(s.contains("all")!= true) { 
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.crud.getTemp();
-					Task deleted = list.get(num - 1);
-					issue = deleted.getIssue();
-					UI.ui.eraseScreen();
-					try {
-						Logic.crud.deleteTask(num - 1, 5);
-					} catch (ClassNotFoundException | IOException e) {
-						// TODO Auto-generated catch block
-						e.printStackTrace();
-					}
-					UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-					Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-					arraylistsHaveBeenModified = true;
-				}
-				else {
-					try {
-						String[] tmp = s.split(" ");
-						if (s.contains("all")) {
-							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
-						} else {
-							int num = Integer.parseInt(s);
-							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-							if (list.size() + list2.size() == 0) {
-								UI.ui.printRed(MSG_EMPTY);
-							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-								// handle indexOutofBoundException
-								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-							} else {
-								if ((num - 1) < list.size()) {
-									Task deleted = list.get(num - 1);
-									issue = deleted.getIssue();
-									UI.ui.eraseScreen();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-									arraylistsHaveBeenModified = true;
-								} else {
-									Task deleted = list2.get(num - list.size() - 1);
-									issue = deleted.getIssue();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.eraseScreen();
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-									arraylistsHaveBeenModified = true;
-								}
-							}
-						}
-					} catch (Exception e) {
-					}
-				} 
-			} else if(Logic.Head.getLastDisplayArg().equals("completed") || Logic.Head.getLastDisplayArg().equals("c")) {
-				if(s.contains("all")!= true) {
-					try {
-						int num = Integer.parseInt(s);
-						ArrayList<Task> list = Storage.localStorage.getCompletedTasks();
-						if (list.size() == 0) {
-							UI.ui.printRed(MSG_EMPTY);
-						} else if (list.size() < num || num - 1 < 0) {
-							// handle indexOutofBoundException
-							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-						} else {
-							Task deleted = list.get(num - 1);
-							issue = deleted.getIssue();
-							Logic.crud.deleteTask(num - 1, 2);
-							UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-							arraylistsHaveBeenModified = true;
-						}
-					} catch (Exception e) {
-					}
-				}
-				else {
-					try {
-						String[] tmp = s.split(" ");
-						if (s.contains("all")) {
-							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
-						} else {
-							int num = Integer.parseInt(s);
-							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-							if (list.size() + list2.size() == 0) {
-								UI.ui.printRed(MSG_EMPTY);
-							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-								// handle indexOutofBoundException
-								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-							} else {
-								if ((num - 1) < list.size()) {
-									Task deleted = list.get(num - 1);
-									issue = deleted.getIssue();
-									UI.ui.eraseScreen();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-									arraylistsHaveBeenModified = true;
-								} else {
-									Task deleted = list2.get(num - list.size() - 1);
-									issue = deleted.getIssue();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.eraseScreen();
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-									arraylistsHaveBeenModified = true;
-								}
-							}
-						}
-					} catch (Exception e) {
-					}
-				}
-			}
-			else if(Logic.Head.getLastDisplayArg().equals("all")) {
-				if(s.contains("all") != true) {
-					try {
-						int num = Integer.parseInt(s);
-						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-						ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-						if (list.size() + list2.size() == 0) {
-							UI.ui.printRed(MSG_EMPTY);
-						} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-							// handle indexOutofBoundException
-							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-						} else {
-							if ((num - 1) < list.size()) {
-								Task deleted = list.get(num - 1);
-								issue = deleted.getIssue();
-								Logic.crud.deleteTask(num - 1, 1);
-								UI.ui.eraseScreen();
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-								Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-								arraylistsHaveBeenModified = true;
-							} else {
-								Task deleted = list2.get(num - list.size() - 1);
-								issue = deleted.getIssue();
-								Logic.crud.deleteTask(num - 1, 1);
-								UI.ui.eraseScreen();
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-								Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-								arraylistsHaveBeenModified = true;
-							}
-						}
-					} catch (Exception e) {
-					}
-				}
-				else {
-					try {
-						String[] tmp = s.split(" ");
-						if (s.contains("all")) {
-							int num = Integer.parseInt(tmp[1]);
-							Task t = delAllRecurringTask(num - 1);
-							UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-							arraylistsHaveBeenModified = true;
-						} else {
-							int num = Integer.parseInt(s);
-							ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-							ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-							if (list.size() + list2.size() == 0) {
-								UI.ui.printRed(MSG_EMPTY);
-							} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-								// handle indexOutofBoundException
-								UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-							} else {
-								if ((num - 1) < list.size()) {
-									Task deleted = list.get(num - 1);
-									issue = deleted.getIssue();
-									UI.ui.eraseScreen();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-									arraylistsHaveBeenModified = true;
-								} else {
-									Task deleted = list2.get(num - list.size() - 1);
-									issue = deleted.getIssue();
-									Logic.crud.deleteTask(num - 1, 1);
-									UI.ui.eraseScreen();
-									UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-									Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-									arraylistsHaveBeenModified = true;
-								}
-							}
-						}
-					} catch (Exception e) {
-					}
-				}
-			}
-		} else if ((Logic.Head.getLastDisplay().equals("search") || Logic.Head.getLastDisplay().equals("s"))) {
-			// delete from search results
-			if(s.contains("all")!=true) {
-				try {
-					int num = Integer.parseInt(s);
-					ArrayList<Task> list = Logic.Search.getSearchedTasks();
-					if (list.size() == 0) {
-						UI.ui.printRed(MSG_EMPTY);
-					} else if (list.size() < num || num - 1 < 0) {
-						// handle indexOutofBoundException
-						UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-					} else {
-						Task deleted = list.get(num - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 3);
-						UI.ui.eraseScreen();
-						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						arraylistsHaveBeenModified = true;
-					}
-				} catch (Exception e) {
-				}
-			}
-			else {
-				try {
-					String[] tmp = s.split(" ");
-					if (s.contains("all")) {
-						int num = Integer.parseInt(tmp[1]);
-						Task t = delAllRecurringTask(num - 1);
-						UI.ui.printGreen("All recurring tasks with issue " + t.getIssue() + " have been deleted");
-						arraylistsHaveBeenModified = true;
-					} else {
-						int num = Integer.parseInt(s);
-						ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-						ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-						if (list.size() + list2.size() == 0) {
-							UI.ui.printRed(MSG_EMPTY);
-						} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-							// handle indexOutofBoundException
-							UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-						} else {
-							if ((num - 1) < list.size()) {
-								Task deleted = list.get(num - 1);
-								issue = deleted.getIssue();
-								UI.ui.eraseScreen();
-								Logic.crud.deleteTask(num - 1, 1);
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-								Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-								arraylistsHaveBeenModified = true;
-							} else {
-								Task deleted = list2.get(num - list.size() - 1);
-								issue = deleted.getIssue();
-								Logic.crud.deleteTask(num - 1, 1);
-								UI.ui.eraseScreen();
-								UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-								Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-								arraylistsHaveBeenModified = true;
-							}
-						}
-					}
-				} catch (Exception e) {
-				}
-
-			}
-		}
-	}
-
-	/*else {
-			try {
-				int num = Integer.parseInt(s);
-				ArrayList<Task> list = Storage.localStorage.getUncompletedTasks();
-				ArrayList<Task> list2 = Storage.localStorage.getFloatingTasks();
-				if (list.size() + list2.size() == 0) {
-					UI.ui.printRed(MSG_EMPTY);
-				} else if ((list2.size() + list.size()) < num || num - 1 < 0) {
-					// handle indexOutofBoundException
-					UI.ui.printRed(MSG_TASK_DES_NOT_EXIST);
-				} else {
-					if ((num - 1) < list.size()) {
-						Task deleted = list.get(num - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.eraseScreen();
-						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.crud.displayNearestFiveDeleteUncompleteTaskList(num - 1);
-						arraylistsHaveBeenModified = true;
-					} else {
-						Task deleted = list2.get(num - list.size() - 1);
-						issue = deleted.getIssue();
-						Logic.crud.deleteTask(num - 1, 1);
-						UI.ui.eraseScreen();
-						UI.ui.printGreen("\"" + issue + "\" " + MSG_DELETE);
-						Logic.crud.displayNearestFiveDeleteFloatingTask(num - 1);
-						arraylistsHaveBeenModified = true;
-					}
-				}
-			} catch (Exception e) {
-			}
-		}*/
-
-
-```
-###### main\Storage\fileStorage.java
-``` java
-package Storage;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-
-import Task.Task;
-
-public class fileStorage {
 
 	/**
-	 * Function that saves the given arraylist into a file named as the String fileName
-	 * 
+	 * Function to sort tasks in chronological order.
 	 */
-	public static void saveFile(String fileName, ArrayList<Task> details) throws IOException {
-		try {
-			FileOutputStream fout = new FileOutputStream(fileName);
-			ObjectOutputStream oos = new ObjectOutputStream(fout);
-			for (Task t : details) {
-				oos.writeObject(t);
+	public void sortTasksChronologically() {
+		ArrayList<Task> tempTasks = localStorageObject.getUncompletedTasks();
+
+		for (int i = 0; i < tempTasks.size(); i++) {
+			for (int j = i + 1; j < tempTasks.size(); j++) {
+				Calendar startDate1 = tempTasks.get(i).getStartDate();
+				Calendar startDate2 = tempTasks.get(j).getStartDate();
+				Calendar endDate1 = tempTasks.get(i).getEndDate();
+				Calendar endDate2 = tempTasks.get(j).getEndDate();
+
+				compareDates(tempTasks, i, j, startDate1, startDate2, endDate1, endDate2);
 			}
-			oos.flush();
-			oos.close();
-		} catch (IOException e) {
+		}
+
+		try {
+			localStorageObject.setUncompletedTasks(tempTasks);
+		} catch (ClassNotFoundException | IOException e) {
 			e.printStackTrace();
 		}
 	}
+
+	/**
+	 * Function to compare the different dates of uncompleted tasks and sort them accordingly.
+	 * 
+	 * @param tempTasks  arraylist of tasks to be sorted.
+	 * @param i          index of first Task.
+	 * @param j          index of second Task.
+	 * @param startDate1 start date of first Calendar object.
+	 * @param startDate2 start date of second Calendar object.
+	 * @param endDate1   end date of first Calendar object.
+	 * @param endDate2   end date of second Calendar object.
+	 */
+	public void compareDates(ArrayList<Task> tempTasks, int i, int j, Calendar startDate1, Calendar startDate2,
+			Calendar endDate1, Calendar endDate2) {
+		if (endDate1 == null && endDate2 == null) { // both end dates are null.
+			if (startDate1.compareTo(startDate2) > 0) {
+				Task temp = tempTasks.get(i);
+				tempTasks.set(i, tempTasks.get(j));
+				tempTasks.set(j, temp);
+			}
+		} else if (endDate1 != null && endDate2 != null) { // both end dates are
+															// not null.
+			if (endDate1.compareTo(endDate2) > 0) { // endDate1 is greater than
+													// endDate2.
+				Task temp = tempTasks.get(i);
+				tempTasks.set(i, tempTasks.get(j));
+				tempTasks.set(j, temp);
+			} else if (endDate1.compareTo(endDate2) == 0) { // end dates are equal.
+				if (startDate1 != null) {
+					if (startDate2 != null) { // both start dates are not null.
+						if (startDate1.compareTo(startDate2) > 0) { // startDate1 is greater than startDate2.
+							Task temp = tempTasks.get(i);
+							tempTasks.set(i, tempTasks.get(j));
+							tempTasks.set(j, temp);
+						}
+					}
+				} else { // start date 1 is null.
+					Task temp = tempTasks.get(i);
+					tempTasks.set(i, tempTasks.get(j));
+					tempTasks.set(j, temp);
+				}
+			}
+		} else if (endDate1 == null && endDate2 != null) { // endDate1 is null.
+			if (startDate1.compareTo(endDate2) > 0) {
+				Task temp = tempTasks.get(i);
+				tempTasks.set(i, tempTasks.get(j));
+				tempTasks.set(j, temp);
+			} else if (startDate1.compareTo(endDate2) == 0) {
+				Task temp = tempTasks.get(i);
+				tempTasks.set(i, tempTasks.get(j));
+				tempTasks.set(j, temp);
+			}
+		} else {
+			if (endDate1.compareTo(startDate2) > 0) { // endDate2 is null.
+				Task temp = tempTasks.get(i);
+				tempTasks.set(i, tempTasks.get(j));
+				tempTasks.set(j, temp);
+			}
+		}
+	}
+
+	/**
+	 * Function to sort a given arraylist of tasks in chronological order and return the sorted list.
+	 * 
+	 * @param tempTasks arraylist of tasks to be sorted in chronological order.
+	 * 
+	 * @return          the arraylist sortedChronologically.
+	 */
+	public ArrayList<Task> sortArrayListInChronologicalOrder(ArrayList<Task> tempTasks) {
+		for (int i = 0; i < tempTasks.size(); i++) {
+			for (int j = i + 1; j < tempTasks.size(); j++) {
+				Calendar startDate1 = tempTasks.get(i).getStartDate();
+				Calendar startDate2 = tempTasks.get(j).getStartDate();
+				Calendar endDate1 = tempTasks.get(i).getEndDate();
+				Calendar endDate2 = tempTasks.get(j).getEndDate();
+
+				compareDates(tempTasks, i, j, startDate1, startDate2, endDate1, endDate2);
+			}
+		}
+		return tempTasks;
+	}
 }
 ```
-###### main\Storage\localStorage.java
+###### main\Storage\LocalStorage.java
 ``` java
 package Storage;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
 import Task.Task;
 
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.ObjectInputStream;
-import java.io.ObjectOutputStream;
-import java.util.ArrayList;
-import java.util.Calendar;
+public class LocalStorage {
 
-public class localStorage {
+	private static LocalStorage localStorage;
 
-	//ArrayLists to store the contents added to the file
-	private static ArrayList<Task> uncompletedTasks = new ArrayList<Task>();
-	private static ArrayList<Task> completedTasks = new ArrayList<Task>();
-	private static ArrayList<Task> floatingTasks = new ArrayList<Task>();
+	private ArrayList<Task> uncompletedTasks;
+	private ArrayList<Task> floatingTasks;
+	private ArrayList<Task> completedTasks;
+	
+	// Private constructor, following the singleton pattern.
+	private LocalStorage() {
+		uncompletedTasks = new ArrayList<Task>();
+		floatingTasks = new ArrayList<Task>();
+		completedTasks = new ArrayList<Task>();
+	}
 
+	/**
+	 * Method to access this class, following the singleton pattern. 
+	 * Invokes constructor if LocalStorage has not been initialised.
+	 * 
+	 * @return The LocalStorage object.
+	 */
+	public static LocalStorage getInstance() {
+		if (localStorage == null) {
+			localStorage = new LocalStorage();
+		}
+		return localStorage;
+	}
 
-	//getter methods
-	public static ArrayList<Task> getUncompletedTasks() {
+	// Getter methods.
+	public ArrayList<Task> getUncompletedTasks() {
 		return uncompletedTasks;
 	}
 
-	public static ArrayList<Task> getCompletedTasks() {
-		return completedTasks;
-	}
-
-	public static ArrayList<Task> getFloatingTasks() {
+	public ArrayList<Task> getFloatingTasks() {
 		return floatingTasks;
 	}
 	
+	public ArrayList<Task> getCompletedTasks() {
+		return completedTasks;
+	}
 
-	public static Task getUncompletedTask(int index) {
+	public Task getUncompletedTask(int index) {
 		Task temp = null;
-		for(int i = 0; i<uncompletedTasks.size(); i++) {
-			if(i == index) {
+		for (int i = 0; i < uncompletedTasks.size(); i++) {
+			if (i == index) {
 				temp = uncompletedTasks.get(i);
 			}
 		}
 		return temp;
 	}
 
-	public static Task getCertainUncompletedTask(int index) {
-		Task temp = null;
-		if(index >= 0&& index < uncompletedTasks.size())
+	public Task getCertainUncompletedTask(int index) {
+		if (index >= 0 && index < uncompletedTasks.size())
 			return uncompletedTasks.get(index);
 		else
-			return temp;
+			return null;
 	}
-
-	public static Task getCompletedTask(int index) {
+	
+	public Task getFloatingTask(int index) {
 		Task temp = null;
-		for(int i = 0; i<completedTasks.size(); i++) {
-			if(i == index) {
+		for (int i = 0; i < floatingTasks.size(); i++) {
+			if (i == index) {
+				temp = floatingTasks.get(i);
+			}
+		}
+		return temp;
+	}
+	
+	public Task getCompletedTask(int index) {
+		Task temp = null;
+		for (int i = 0; i < completedTasks.size(); i++) {
+			if (i == index) {
 				temp = completedTasks.get(i);
 			}
 		}
 		return temp;
 	}
 
-	public static Task getFloatingTask(int index) {
-		Task temp = null;
-		for(int i = 0; i<floatingTasks.size(); i++) {
-			if(i == index) {
-				temp = floatingTasks.get(i);
-			}
-		}
-		return temp;
-	}
 
-	//setter methods
-	public static void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+	// Setter methods.
+	public void setUncompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
 		uncompletedTasks = changedDetails;
 	}
 
-	public static void setFloatingTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+	public void setFloatingTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
 		floatingTasks = changedDetails;
 	}
 
-	public static void setCompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
+	public void setCompletedTasks(ArrayList<Task> changedDetails) throws ClassNotFoundException, IOException {
 		completedTasks = changedDetails;
 	}
 
-
-	/**
-	 * Function to set a task to a particular index
-	 * @param index
-	 * @param temp
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
-	 */
-	public static void setUncompletedTask(int index, Task temp) {
+	public void setUncompletedTask(int index, Task temp) {
 		uncompletedTasks.set(index, temp);
 	}
 
-	public static void setCompletedTask(int index, Task temp) {
+	public void setCompletedTask(int index, Task temp) {
 		completedTasks.set(index, temp);
 	}
 
-	public static void setFloatingTask(int index, Task temp) {
+	public void setFloatingTask(int index, Task temp) {
 		floatingTasks.set(index, temp);
 	}
 
 	/**
-	 * Function to add a task to the uncompleted task list
+	 * Function to add a task to the list of uncompleted tasks.
 	 * 
-	 * @param task contains the task to be added
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @param task contains the task to be added to list of uncompleted tasks.
 	 */
-	public static void addToUncompletedTasks(Task task) {
+	public void addToUncompletedTasks(Task task) {
 		uncompletedTasks.add(task);
 	}
 
 	/**
-	 * Function to add a task to the list of completed tasks
+	 * Function to add a task to the list of floating tasks.
 	 * 
-	 * @param task the task to be added
-	 * @throws IOException
-	 * @throws ClassNotFoundException 
+	 * @param task contains the task to be added to list of floating tasks.
 	 */
-	public static void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
+	public void addToFloatingTasks(Task task) {
+		floatingTasks.add(task);
+	}
+
+	/**
+	 * Function to add a task to the list of completed tasks.
+	 * 
+	 * @param task contains the task to be added to list of completed tasks.
+	 */
+	public void addToCompletedTasks(Task task) throws IOException, ClassNotFoundException {
 		completedTasks.add(task);
 	}
 
-	public static void addToFloatingTasks(Task task) {
-		floatingTasks.add(task);
-	}
-	
 	/**
-	 * Function to delete a task from the file
+	 * Function to delete a task from the list of uncompleted tasks.
 	 * 
-	 * @param index contains the index of the task to be deleted
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @param index contains the index of the task to be deleted from list of uncompleted tasks.
 	 */
-	public static Task delFromUncompletedTasks(int index) {
+	public Task deleteFromUncompletedTasks(int index) {
 		Task temp = uncompletedTasks.remove(index);
 		return temp;
 	}
 
 	/**
-	 * Function to delete a task from the list of completed tasks
+	 * Function to delete a task from the list of floating tasks.
 	 * 
-	 * @param index contains the index of the task to be deleted
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * @param index  contains the index of the task to be deleted from list of floating tasks.
 	 */
-	public static Task delFromCompletedTasks(int index) {
+	public Task deleteFromFloatingTasks(int index) {
+		Task temp = floatingTasks.remove(index);
+		return temp;
+	}
+
+	/**
+	 * Function to delete a task from the list of completed tasks.
+	 * 
+	 * @param index contains the index of the task to be deleted from list of completed tasks.
+	 */
+	public Task deleteFromCompletedTasks(int index) {
 		Task temp = completedTasks.remove(index);
 		return temp;
 	}
 
-	public static Task delFromFloatingTasks(int index) {
-		Task temp = floatingTasks.remove(index);
-		return temp;
-	}
 	/**
-	 * Function to clear the contents of the file
-	 * @throws IOException 
-	 * @throws ClassNotFoundException 
+	 * Function to clear the contents of the file.
 	 */
-	public static void clear() {
+	public void clearAllTasks() {
 		uncompletedTasks.clear();
-		completedTasks.clear();
 		floatingTasks.clear();
-
+		completedTasks.clear();
 	}
 
 ```
-###### main\UI\ui.java
+###### main\UI\UI.java
 ``` java
 package UI;
 
-import java.util.Scanner;
+import static org.fusesource.jansi.Ansi.ansi;
 
 import org.fusesource.jansi.AnsiConsole;
 
-import Parser.Natty;
+public class UI {
+```
+###### main\unitTest\markTest.java
+``` java
+package unitTest;
 
-import static org.fusesource.jansi.Ansi.*;
-import static org.fusesource.jansi.Ansi.Color.*;
-public class ui {
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import org.junit.Test;
+import Logic.Crud;
+import Storage.LocalStorage;
+import Task.Task;
+import Logic.Mark;
+public class MarkTest {
+	
+	private Crud crud = Crud.getInstance();
+	private Mark mark = new Mark();
+	private String issue;
+	private ArrayList<Task> uncompleted,completed; 
+	private LocalStorage storage = LocalStorage.getInstance();
+	
+	/**
+	 * To test if mark works.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	public void testMark() throws ClassNotFoundException, IOException {
+		issue = "task";
+		crud.clearTasks();
+		crud.addTaskWithBothDates("task", "11/04/2016", "12/04/2016", "add task ` from 11/04/2016 to 12/04/2016");
+		uncompleted = storage.getUncompletedTasks();
+		completed = storage.getCompletedTasks();
+		Task task = uncompleted.get(0);
+		assertEquals(issue,task.getIssue());
+		assertEquals(0,completed.size());
+		mark.markTaskAsCompleted(0);
+		assertEquals(0,uncompleted.size());
+		task = completed.get(0);
+		assertEquals(issue,task.getIssue());										
+		
+		
+	}
+	
+	/**
+	 * To test if unmark works.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	public void testUnMark() throws ClassNotFoundException, IOException {
+		issue = "task";
+		crud.clearTasks();
+		crud.addTaskWithBothDates("task", "11/04/2016", "12/04/2016", "add task ` from 11/04/2016 to 12/04/2016");
+		uncompleted = storage.getUncompletedTasks();
+		completed = storage.getCompletedTasks();
+		Task task = uncompleted.get(0);
+		assertEquals(issue,task.getIssue());
+		assertEquals(0,completed.size());
+		mark.markTaskAsCompleted(0);
+		assertEquals(0,uncompleted.size());
+		task = completed.get(0);
+		assertEquals(issue,task.getIssue());
+		mark.markTaskAsUncompleted(0);
+		task = uncompleted.get(0);
+		assertEquals(issue,task.getIssue());
+		assertEquals(0,completed.size());		
+		
+	}
+	
+	@Test
+	public void testPriority() throws ClassNotFoundException, IOException {
+		issue = "task";
+		crud.clearTasks();
+		crud.addTaskWithBothDates("task", "11/04/2016", "12/04/2016", "add task ` from 11/04/2016 to 12/04/2016");
+		uncompleted = storage.getUncompletedTasks();
+		Task task = uncompleted.get(0);
+		assertEquals(issue,task.getIssue());
+		mark.setPriority(0,"high");
+		task = uncompleted.get(0);
+		assertEquals(issue,task.getIssue());
+		assertEquals("high",task.getPriority());
+	}
+
+}
+```
+###### main\unitTest\SystemTest.java
+``` java
+package unitTest;
+import static org.junit.Assert.*;
+
+import java.io.IOException;
+import java.util.ArrayList;
+
+import org.junit.Test;
+
+import Logic.Core;
+import Logic.Search;
+import Logic.Undo;
+import Parser.Parser;
+import Storage.LocalStorage;
+import Task.Task;
+
+public class SystemTest {
+
+	/**
+	 * To test if a task is added correctly.
+	 */
+	@Test
+	public void testIfTaskIsAdded() {
+		//Temporary task.
+		Task temp = new Task("Testing", "31/03/2016", "01/04/2016", "Testing from 31/03/2016 to 01/04/2016");
+		String testString = temp.getTaskString();
+		Core test;
+		Parser parse;
+		LocalStorage storage = LocalStorage.getInstance();
+		//Checking if add command works.
+		try {
+			test = Core.getInstance();
+			parse = Parser.getInstance();
+			parse.parse("add Testing ` from 31/03/2016 to 01/04/2016");
+			test.parseCommands();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		
+
+		Task taskAdded = storage.getUncompletedTask(0);
+		String checkString = taskAdded.getTaskString();
+		assertEquals(testString, checkString); //to check if the tast is added correctly.
+		assertEquals(1, storage.getUncompletedTasks().size()); //to check size of array list.
+	}
+
+	/**
+	 * To test if a task is deleted correctly.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	public void testIfTaskIsDeleted() throws ClassNotFoundException, IOException {
+		//adding task first.
+		Task temp = new Task("Testing", "31/03/2016", "01/04/2016", "Testing ` from 31/03/2016 to 01/04/2016");
+		Core test;
+		Parser parse;
+		LocalStorage storage = LocalStorage.getInstance();;
+		storage.clearAllTasks();
+		storage.addToUncompletedTasks(temp);
+		assertEquals(1,storage.getUncompletedTasks().size());
+		test = Core.getInstance();
+		parse = Parser.getInstance();
+		parse.parse("delete 1");
+		test.parseCommands();
+		assertEquals(1, storage.getUncompletedTasks().size());
+	}
+
+	/**
+	 * To test if all tasks are cleared correctly.
+	 */
+	@Test
+	public void testIfTasksAreCleared() {
+		Core test = Core.getInstance();;
+		Parser parse = Parser.getInstance();
+		LocalStorage storage = LocalStorage.getInstance();
+		storage.clearAllTasks();
+		Task temp = new Task("Testing", "31/03/2016", "01/04/2016", "Testing ` from 31/03/2016 to 01/04/2016");
+		storage.addToUncompletedTasks(temp);
+		assertEquals(1, storage.getUncompletedTasks().size());
+		try {
+			parse.parse("clear");
+			test.parseCommands();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(0, storage.getUncompletedTasks().size() + storage.getFloatingTasks().size());
+	}
+	
+	/**
+	 * To test if search results are correct.
+	 */
+	@Test
+	public void testIfSearchResultsAreCorrect() {
+		Task temp = new Task("Testing", "31/03/2016", "01/04/2016", "Testing ` from 31/03/2016 to 01/04/2016");
+		Task temp1 = new Task("Testing", "02/04/2016", "03/04/2016", "Testing ` from 02/04/2016 to 03/04/2016");
+		Task temp2 = new Task("Testing", "05/03/2016", "06/04/2016", "Testing ` from 05/03/2016 to 06/04/2016");
+		
+		Core test = Core.getInstance();;
+		Parser parse = Parser.getInstance();
+		LocalStorage storage = LocalStorage.getInstance();
+		storage.clearAllTasks();
+		storage.addToUncompletedTasks(temp);
+		storage.addToUncompletedTasks(temp1);
+		storage.addToUncompletedTasks(temp2);
+
+		ArrayList<Task> searchResults = new ArrayList<Task>();
+		Search search = Search.getInstance();
+		try {
+			parse.parse("search Testing");
+			test.parseCommands();
+			
+			searchResults = search.getSearchedTasks();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+		assertEquals(searchResults, storage.getUncompletedTasks());
+	}
+	
+	/**
+	 * To test if undo works correctly.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	public void testIfUndoWorks() throws ClassNotFoundException, IOException {
+		// check the initial amount off floating task.
+		Core test = Core.getInstance();;
+		Parser parse = Parser.getInstance();
+		LocalStorage storage = LocalStorage.getInstance();
+		storage.clearAllTasks();
+		int initialFloatingNum = storage.getFloatingTasks().size();
+		System.out.println("Current amount of floating tasks: " + initialFloatingNum);
+
+		//Add a sample floating task.
+		try {
+			parse.parse("add Test Floating");
+			test.parseCommands();
+		} catch (ClassNotFoundException | IOException e) {
+			// TODO Auto-generated catch block.
+			e.printStackTrace();
+		}
+
+		// Ensure that task has been added.
+		System.out.println("Current amount of floating tasks (after adding): " + storage.getFloatingTasks().size());
+		assertEquals(initialFloatingNum + 1, storage.getFloatingTasks().size());
+
+		//Undo the addition of floating task.
+		parse.parse("undo");
+		test.parseCommands();
+
+		// Ensure the added task has been removed (undone).
+		System.out.println("Current amount of floating tasks (after undo): " + storage.getFloatingTasks().size());
+		assertEquals(initialFloatingNum + 1, storage.getFloatingTasks().size());
+
+		// Clear all tasks for clean testing state.
+		storage.clearAllTasks(); 
+		initialFloatingNum = storage.getFloatingTasks().size();
+
+		//Add 2 sample floating tasks.
+		try {
+			parse.parse("add Test Floating 1");
+			test.parseCommands();
+			parse.parse("add Test Floating 2");
+			test.parseCommands();
+		} catch (ClassNotFoundException | IOException e) {
+			e.printStackTrace();
+		}
+
+		// Ensure that task has been added.
+		System.out.println("Current amount of floating tasks (after adding): " + storage.getFloatingTasks().size());
+		assertEquals(initialFloatingNum + 2, storage.getFloatingTasks().size());
+
+		// Remove all tasks.
+		parse.parse("clear");
+		test.parseCommands();
+
+		// Ensure that all tasks has been deleted.
+		System.out.println("Current amount of floating tasks (after clearing): " + storage.getFloatingTasks().size());
+		assertEquals(0, storage.getFloatingTasks().size());
+
+		//Undo the clear command.
+		parse.parse("undo");
+		test.parseCommands();
+
+		// Ensure the removed tasks has been restored (undone).
+		System.out.println("Current amount of floating tasks (after undo): " + storage.getFloatingTasks().size());
+		assertEquals(initialFloatingNum , storage.getFloatingTasks().size());
+
+	}
+	private static Undo undoObject = Undo.getInstance();
+
+	/**
+	 * To test if undo and redo stack are empty initially.
+	 */
+	@Test
+	public void testInitialEmptyUndoAndRedo() {
+		// Wipe redo stack in case any other test methods were run before this.
+		undoObject.clearRedoCommands();
+
+		// Check for zero initial undo-able commands.
+		assertEquals(0, undoObject.getHistoryCount());
+
+		// Check for zero initial redo-able commands.
+		System.out.println(undoObject.getRedoCount());
+		assertEquals(0, undoObject.getRedoCount());
+	}
+	
+	/**
+	 * To test if redo works correctly.
+	 * 
+	 * @throws ClassNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	public void testRedo() throws ClassNotFoundException, IOException {
+		// Helper method to simulate undo (and thus adding of command to redo stack).
+		undoObject.testFunction();
+
+		// Check for correct retrieval of the undo command name.
+		String redoneCommand = undoObject.getRedoneCommand();
+		assertEquals("Add Buy eggs ` on Friday", redoneCommand);
+
+		// Check for one redo-able commands after pseudo-undo.
+		undoObject.testFunction();
+		assertEquals(1, undoObject.getRedoCount());
+	}
+
+
+	
+}
 ```
