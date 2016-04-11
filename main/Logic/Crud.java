@@ -411,21 +411,19 @@ public class Crud {
 	 * Function to display all floating task in storage.
 	 */
 	public void displayFloatingTasks() {
-		uiObject.printGreen("FLOATING TASKS");
-		uiObject.printGreen("Index\tTask");
-		boolean isEmptyF = false;
 		tempTasks = localStorageObject.getFloatingTasks();
 		ArrayList<Task> getSize = localStorageObject.getUncompletedTasks();
-		for (int i = 0; i < tempTasks.size(); i++) {
-			Task temp = tempTasks.get(i);
-			uiObject.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
-		}
 		if (tempTasks.isEmpty()) {
-			isEmptyF = true;
-		}
-		if (isEmptyF) {
 			uiObject.printGreen("There are no floating tasks to show.");
+		}else{
+			uiObject.printGreen("FLOATING TASKS");
+			uiObject.printGreen("Index\tTask");
+			for (int i = 0; i < tempTasks.size(); i++) {
+				Task temp = tempTasks.get(i);
+				uiObject.printYellow((getSize.size() + i + 1) + ".\t" + temp.getShortPriority() + temp.getIssue());
+			}
 		}
+
 	}
 
 	// @@author Cheng Gee

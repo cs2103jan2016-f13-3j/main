@@ -151,7 +151,6 @@ public class Help {
 	private UI uiObject;
 
 	public Help() {
-		sc = new Scanner(System.in);
 		uiObject = new UI();
 	}
 	
@@ -159,6 +158,7 @@ public class Help {
 	 * Method to print the list of help topics, and the specific topic chosen by the user.
 	 */
 	public void printHelpMenu() {
+		sc = new Scanner(System.in);
 		uiObject.printYellow(HELP_MENU);
 		uiObject.printGreen(HELP_PROMPT);
 		
