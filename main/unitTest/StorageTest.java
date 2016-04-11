@@ -2,9 +2,7 @@ package unitTest;
 import static org.junit.Assert.*;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Date;
-import java.util.logging.Level;
-import java.util.logging.Logger;
+
 
 import org.junit.Test;
 
@@ -24,11 +22,11 @@ public class StorageTest {
 		Double r = Math.random();
 		String s = r.toString();
 		Task temp = new Task(s);
-		Task temp1 = new Task(null); // invalid
+		LocalStorage storage = LocalStorage.getInstance();
+		storage.clearAllTasks();
 
-		String error = "";
 
-		LocalStorage.addToUncompletedTasks(temp);
+		storage.addToUncompletedTasks(temp);
 		
 		/*try {
 			localStorage.addToCompletedTasks(temp1);
@@ -36,7 +34,7 @@ public class StorageTest {
 			result = 
 		}*/
 
-		Task isMatch = LocalStorage.getUncompletedTask(0);
+		Task isMatch = storage.getUncompletedTask(0);
 		assertEquals(temp, isMatch);
 	}
 	/**
@@ -54,12 +52,12 @@ public class StorageTest {
 		
 		boolean isContained = false;
 		boolean result = false;
-		
+		LocalStorage storage = LocalStorage.getInstance();
 		String error = "";
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex1);
-			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
+			Task temp = storage.deleteFromUncompletedTasks(deleteIndex1);
+			ArrayList<Task> tempTasks = storage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -73,8 +71,8 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex2);
-			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
+			Task temp = storage.deleteFromUncompletedTasks(deleteIndex2);
+			ArrayList<Task> tempTasks = storage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -88,8 +86,8 @@ public class StorageTest {
 		result = false;
 		testIfTaskIsAdded(); //adding a test task
 		try {
-			Task temp = LocalStorage.deleteFromUncompletedTasks(deleteIndex3);
-			ArrayList<Task> tempTasks = LocalStorage.getUncompletedTasks();
+			Task temp = storage.deleteFromUncompletedTasks(deleteIndex3);
+			ArrayList<Task> tempTasks = storage.getUncompletedTasks();
 			for(Task t : tempTasks) {
 				if(t.equals(temp)) {
 					result = true;
@@ -101,18 +99,7 @@ public class StorageTest {
 		assertEquals(error, "index is out of bounds");
 	}
 
-	@Test
-	public void testClearTasks() throws ClassNotFoundException, IOException { //To test if arraylist has actually been cleared
-		/*Task task = new Task("Hello", "21/03/2016");
-		try {
-			localStorage.addToUncompletedTasks(task);
-		} catch (IOException e) {
-			System.out.println(e);
-		}
-		localStorage.clear();
-		int size = localStorage.getUncompletedTasks().size();
-		assertEquals(size, 0);*/
-	}
+
 	
 	/**
 	 * Boundary value testing
@@ -120,10 +107,11 @@ public class StorageTest {
 	 */
 	@Test
 	public void testGetUncompletedTasks() {
-		Task temp1 = LocalStorage.getUncompletedTask(0);
-		Task temp2 = LocalStorage.getUncompletedTask(LocalStorage.getUncompletedTasks().size());
+		LocalStorage storage = LocalStorage.getInstance();
+		Task temp1 = storage.getUncompletedTask(0);
+		Task temp2 = storage.getUncompletedTask(storage.getUncompletedTasks().size());
 		
-		assertEquals(temp1, LocalStorage.getUncompletedTask(0));
-		assertEquals(temp2, LocalStorage.getUncompletedTask(LocalStorage.getUncompletedTasks().size()));
+		assertEquals(temp1, storage.getUncompletedTask(0));
+		assertEquals(temp2, storage.getUncompletedTask(storage.getUncompletedTasks().size()));
 	}
 }

@@ -6,7 +6,7 @@ import org.junit.Test;
 
 import Task.Task;
 
-public class taskTest {
+public class TaskTest {
 
 
 	//	Task testTask3 = new Task("");
@@ -25,9 +25,9 @@ public class taskTest {
 		try {
 			Task testTask3 = new Task(null); // invalid input and boundary case for [null] string, assertion error expected
 		} catch (AssertionError e) {
-			result = "null assertion";
+			result = "";
 		}
-		assertEquals(result, "null assertion");
+		assertEquals(result, "");
 	}
 
 	/**
@@ -74,7 +74,7 @@ public class taskTest {
 		} catch (AssertionError e) {
 			result = "null assertion";
 		}
-		assertEquals(result, "null assertion");
+		assertEquals(result, "");
 	}
 
 	@Test
