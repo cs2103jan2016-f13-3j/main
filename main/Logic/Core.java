@@ -1444,141 +1444,7 @@ public class Core {
 		return temp;
 	}
 
-	/**
-	 * Method that return the description of task from the String[],position of
-	 * start keyword , position of end keyword,boolean value of startTime and
-	 * boolean value of endTime.
-	 * 
-	 * @param arr       the array containing the user input.
-	 * @param start     the start index of the task description.
-	 * @param end       the end index of the task description.
-	 * @param startTime indicates if task has a start time.
-	 * @param endTime   indicates if task has an end time.
-	 * 
-	 * @return String   the task description.
-	 */
-	public String getIssue(String[] arr, int start, int end, boolean startTime, boolean endTime) {
-		if (start == -1) {// no start date.
-			if (endTime) { // has end time.
-				int size = arr.length - 3;
-				String[] temp = new String[size];
-				int i;
-
-				for (i = 0; i < size; i++) {
-					if (i >= end) {
-						temp[i] = arr[i + 3];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			} else {// no end time
-				int size = arr.length - 2;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= end) {
-						temp[i] = arr[i + 2];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			}
-		} else if (end == -1) { // no end date
-			if (startTime) {// has start time
-				int size = arr.length - 3;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start) {
-						temp[i] = arr[i + 3];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			} else {// no start time
-				int size = arr.length - 2;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start) {
-						temp[i] = arr[i + 2];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			}
-		} else {// has both start date and end date.
-			if (startTime == true && endTime == true) { // has start time and end time.
-				int size = arr.length - 6;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start && i < end) {
-						temp[i] = arr[i + 3];
-					} else if (i >= end) {
-						temp[i] = arr[i + 3];
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			} else if (startTime == false && endTime == true) { // has only end time.
-				int size = arr.length - 5;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start && i < end) {
-						temp[i] = arr[i + 2];
-					} else if (i >= end) {
-						temp[i] = arr[i + 3];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			} else if (startTime == true && endTime == false) { // has only start time.
-				int size = arr.length - 5;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start && i < end) {
-						temp[i] = arr[i + 3];
-					} else if (i >= end) {
-						temp[i] = arr[i + 2];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			} else { // has no start time and no end time.
-
-				int size = arr.length - 4;
-				String[] temp = new String[size];
-				int i;
-				for (i = 0; i < size; i++) {
-					if (i >= start && i < end) {
-						temp[i] = arr[i + 2];
-					} else if (i >= end) {
-						temp[i] = arr[i + 2];
-
-					} else {
-						temp[i] = arr[i];
-					}
-				}
-				return arrayToString(temp);
-			}
-		}
-	}
+	
 
 	/**
 	 * Function that returns the index of first keyword present in the String[] and
@@ -1661,63 +1527,6 @@ public class Core {
 		return containTime;
 	}
 
-	// return existing issue processed by the parser.
-	public String getIssue() {
-		return issue;
-	}
-
-	// return existing date processed by the parser.
-	public String getDate() {
-		return endDate;
-	}
-
-	/**
-	 * Function that returns index of week, if it is not a week day, -1 will be
-	 * returned.
-	 * 
-	 * @param s     the user date input.
-	 * 
-	 * @return int  the index of the week.
-	 */
-	public int getIndexOfWeek(String s) {
-		int idx = -1;
-		for (int i = 0; i < 7; i++) {
-			if (s.equals(WEEK[i])) {
-				idx = i;
-				break;
-			}
-		}
-		return idx;
-	}
-
-	/**
-	 * Function that match a weekday to its date using the index.
-	 * 
-	 * @param n       the day to be checked for.
-	 * 
-	 * @return String the date that is matched.
-	 */
-	public String matchDate(int n) {
-		String output;
-		SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy");
-		Date date = new Date();
-		String today = dateFormat.format(date);
-		int day = Calendar.getInstance().get(Calendar.DAY_OF_WEEK);
-		int diff;
-		if (n + 1 == day) {
-			output = today;
-		} else if (n + 1 > day) {
-
-			diff = n + 1 - day;
-			output = processDate(today, diff);
-		} else {
-			int remaining = 7 - day;
-			diff = remaining + 1 + (n + 1);
-			output = processDate(today, diff);
-		}
-		return output;
-
-	}
 
 	/**
 	 * Function that processes Date for recurring tasks based on the date and number
@@ -1847,10 +1656,7 @@ public class Core {
 				endDate = "-";
 				endTime = "-";
 				startDate = temp[start + 1];
-				int idx = getIndexOfWeek(startDate);
-				if (idx != -1) {
-					startDate = matchDate(idx);
-				}
+		
 				startDateWithTime = startDate;
 
 				if (hasStartTime(temp)) {
@@ -1884,14 +1690,7 @@ public class Core {
 			} else { // has both start date and end date.
 				startDate = temp[start + 1];
 				endDate = temp[end + 1];
-				int idx = getIndexOfWeek(startDate);
-				int idx2 = getIndexOfWeek(endDate);
-				if (idx != -1) {
-					startDate = matchDate(idx);
-				}
-				if (idx2 != -1) {
-					endDate = matchDate(idx2);
-				}
+		
 				endDateWithTime = endDate;
 				startDateWithTime = startDate;
 				if (hasStartTime(temp)) {
